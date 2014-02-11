@@ -71,5 +71,4 @@ public class Engine {
 		}
 		renderingSystem.exit();
 	}
-
 }

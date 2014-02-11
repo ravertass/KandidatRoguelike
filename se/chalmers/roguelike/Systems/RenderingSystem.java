@@ -12,35 +12,56 @@ import se.chalmers.roguelike.Entities.Entity;
 
 import static org.lwjgl.opengl.GL11.*;
 
+/**
+ * This is the system that draws everything to be drawn.
+ * It knows of all entities with both position and sprites, and those are
+ * the components which it uses.
+ */
 public class RenderingSystem implements ISystem {
 
-	private ArrayList<Entity> entities;
+	// Tills vidare ligger denna här, vet ej om den bör vara här
+	private int SPRITE_SIZE = 32; // in pixels
+	private int CAMERA_WIDTH = 15; // in tiles
+	private int CAMERA_HEIGHT = 20; // in tiles
+	
+	// The entities that the RenderingSystem draws
+	private ArrayList<Entity> entitiesToDraw;
+	private Entity camera;
 	
 	public RenderingSystem() {
+		// Magic tricks done by lwjgl
 		setupDisplay();
 		setupOpenGL();
-		entities = new ArrayList<Entity>();
+		
+		// Create a camera entity
+		camera = new Entity();
+		// Kamerans position får helt enkelt vara noll-noll, tills vidare
+		Position camPosition = new Position(0,0);
+		camera.add(camPosition);
+		
+		// Initialize the list of entities to be drawn
+		entitiesToDraw = new ArrayList<Entity>();
 		
 		// Fulkod nedan för att testa att generera en entity
 		// som sedan ska ritas ut
 		Entity testThing = new Entity();
-		Sprite sprite = new Sprite("guy", 32, 32);
-		Position position = new Position(32, 32);
+		Sprite sprite = new Sprite("guy", SPRITE_SIZE, SPRITE_SIZE);
+		Position position = new Position(0,0);
 		testThing.add(position);
 		testThing.add(sprite);
-		entities.add(testThing);
+		entitiesToDraw.add(testThing);
 	}
 	
 	public void update() {
-		// clear the window
+		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		// draw all entities in system
-		for(Entity entity : entities) {
+		// Draw all entities in system
+		for(Entity entity : entitiesToDraw) {
 			drawEntity(entity);
 		}
 		
-		// update and sync display
+		// Update and sync display
 		Display.update();
 		Display.sync(60);
 	}
@@ -75,7 +96,12 @@ public class RenderingSystem implements ISystem {
 		}	
 	}
 	
+	/**
+	 * Method to draw an entity to the game window.
+	 * @param entity The entity to be drawn
+	 */
 	private void drawEntity(Entity entity) {
+		// Get the relevant components from the entity
 		Sprite sprite = entity.getComponent(Sprite.class);
 		Position position = entity.getComponent(Position.class);
 		
@@ -83,20 +109,34 @@ public class RenderingSystem implements ISystem {
 		int width = sprite.getWidth();
 		int height = sprite.getHeight();
 		
-		int x = position.getX();
-		int y = position.getY();
+		// Get the camera's position
+		Position camPos = camera.getComponent(Position.class);
+		int camX = camPos.getX();
+		int camY = camPos.getY();
 		
-		texture.bind();
-		glBegin(GL_QUADS);
-			glTexCoord2f(0, 0);
-			glVertex2d(x, y);
-			glTexCoord2f(1, 0);
-			glVertex2d(x + width, y);
-			glTexCoord2f(1, 1);
-			glVertex2d(x + width, y - height);
-			glTexCoord2f(0, 1);
-			glVertex2d(x, y - height);
-		glEnd();
+		// Subtract the coordinates with the camera's coordinates,
+		// then multiply that with the SPRITE_SIZE, so that we get 
+		// the pixel coordinates, not the tile coordinates.
+		int x = (position.getX() - camX) * SPRITE_SIZE;
+		int y = (position.getY() - camY) * SPRITE_SIZE;
+		
+		// We determine if the entity is within the camera's
+		// view; if so, we draw it
+		// Jag hoppas den här logiken är rätt :P
+		if (x >= 0 && x < CAMERA_WIDTH * SPRITE_SIZE &&
+				y >= 0 && y < CAMERA_HEIGHT * SPRITE_SIZE) {
+			texture.bind();
+			glBegin(GL_QUADS);
+				glTexCoord2f(0, 1);
+				glVertex2d(x, y);
+				glTexCoord2f(1, 1);
+				glVertex2d(x + width, y);
+				glTexCoord2f(1, 0);
+				glVertex2d(x + width, y + height);
+				glTexCoord2f(0, 0);
+				glVertex2d(x, y + height);
+			glEnd();
+		}
 	}
 	
 	public void exit() {
