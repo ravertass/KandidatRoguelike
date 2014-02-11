@@ -1,12 +1,9 @@
 package se.chalmers.roguelike;
 
-<<<<<<< HEAD
 import se.chalmers.roguelike.Systems.*;
-=======
 import java.util.ArrayList;
 
 import se.chalmers.roguelike.Systems.ISystem;
->>>>>>> fb952321855aa55b6e255ae6fb57b59b74d5d849
 
 public class Engine {
 
@@ -38,7 +35,7 @@ public class Engine {
 		return System.nanoTime()/1000000;
 	}
 	
-	private int getDelta(){
+	private int getDelta() {
 		long time = getTime();
 		int delta = (int)(time-lastUpdate);
 		lastUpdate = time;
