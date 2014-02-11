@@ -11,7 +11,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 public class Sprite implements IComponent {
 	private Texture texture;
 	private int width, height;
-	private int STANDARD_SIZE = 32;
+	private int STANDARD_SIZE = 32; // The size used in DC mode
 	
 	public Sprite(String fileName) {
 		texture = loadTexture(fileName);
