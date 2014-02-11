@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.*;
 
-import se.chalmers.roguelike.Components.InputComponent;
+import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.util.Pair;
 /**
@@ -20,11 +20,11 @@ public class InputSystem implements ISystem {
 	public void update() {
 		if(Keyboard.getEventKeyState())
 			for (Entity e : entities) {
-				e.getComponent(InputComponent.class).setNextKey(Keyboard.getEventKey());
+				e.getComponent(Input.class).setNextKey(Keyboard.getEventKey());
 		}
 		if(Mouse.getEventButtonState()) {
 			for (Entity e : entities) {
-				e.getComponent(InputComponent.class).setNextMouseClick(new Pair<Integer,Integer>(Mouse.getX(),Mouse.getY()));
+				e.getComponent(Input.class).setNextMouseClick(new Pair<Integer,Integer>(Mouse.getX(),Mouse.getY()));
 			}
 		}
 		

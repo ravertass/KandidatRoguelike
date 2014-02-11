@@ -3,12 +3,12 @@ package se.chalmers.roguelike.Components;
 import se.chalmers.roguelike.util.Pair;
 
 
-public class InputComponent implements IComponent {
+public class Input implements IComponent {
 	
 	private int nextKey;
 	private Pair<Integer, Integer> nextMouseClick;
 	
-	public InputComponent() {
+	public Input() {
 		nextKey = -1;
 		nextMouseClick = new Pair<Integer,Integer>(-1,-1);
 	}
