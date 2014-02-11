@@ -1,30 +1,30 @@
 package se.chalmers.roguelike.Entities;
 
-import java.util.ArrayList;
-
+import java.util.HashMap;
 import se.chalmers.roguelike.Components.IComponent;
 
 /**
- * Basic Entity interface to get started.
+ * Entity class 
  */
 public class Entity {
 
-	ArrayList<IComponent> components;
+	HashMap<Class<?>, IComponent> components;
 	
 	public Entity(){
-		components = new ArrayList<>();
+		components = new HashMap<Class<?>, IComponent>();
 	}
 	
 	public void add(IComponent component) {
-		components.add(component);
+		components.put(component.getClass(), component);
 	}
 	
 	public void remove(IComponent component) {
-		components.remove(component);
+		components.remove(component.getClass());
 	}
 	
-	public ArrayList<IComponent> get() {
-		return components;
+	public <T extends IComponent> T getComponent(Class<T> type) {
+		
+		return type.cast(components.get(type));
 	}
 	
 }
