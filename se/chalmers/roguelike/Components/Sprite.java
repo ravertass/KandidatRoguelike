@@ -23,7 +23,7 @@ public class Sprite implements IComponent {
 		
 		try {
 			texture = TextureLoader.getTexture("PNG", 
-					new FileInputStream(new File("resources/" + fileName + ".png")));
+					new FileInputStream(new File("./resources/" + fileName + ".png")));
 		} catch (FileNotFoundException e) {
 			System.out.println("Den filen finns icke");
 			e.printStackTrace();

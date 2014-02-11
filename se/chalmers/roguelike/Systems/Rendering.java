@@ -14,11 +14,12 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Rendering implements ISystem {
 
-	private ArrayList<Entity> entitites;
+	private ArrayList<Entity> entities;
 	
 	public Rendering() {
 		setupDisplay();
 		setupOpenGL();
+		entities = new ArrayList<Entity>();
 		
 		// Fulkod nedan för att testa att generera en entity
 		// som sedan ska ritas ut
@@ -27,12 +28,21 @@ public class Rendering implements ISystem {
 		Position position = new Position(32, 32);
 		testThing.add(position);
 		testThing.add(sprite);
-		
+		entities.add(testThing);
 	}
 	
 	public void update() {
 		// clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
+		
+		// draw all entities in system
+		for(Entity entity : entities) {
+			drawEntity(entity);
+		}
+		
+		// update and sync display
+		Display.update();
+		Display.sync(60);
 	}
 	
 	/**
@@ -65,7 +75,7 @@ public class Rendering implements ISystem {
 		}	
 	}
 	
-	private void drawEntities(Entity entity) {
+	private void drawEntity(Entity entity) {
 		Sprite sprite = entity.getComponent(Sprite.class);
 		Position position = entity.getComponent(Position.class);
 		

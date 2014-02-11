@@ -1,6 +1,8 @@
 package se.chalmers.roguelike;
 
 import se.chalmers.roguelike.Systems.*;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import se.chalmers.roguelike.Systems.ISystem;
@@ -11,7 +13,7 @@ public class Engine {
 	private int fps; // updates per second, not necessarly fps
 	private ArrayList<ISystem> systems
 	;
-	public Engine(){
+	public Engine() {
 		System.out.println("Starting new engine.");
 		systems = new ArrayList<ISystem>();
 	}
@@ -46,10 +48,10 @@ public class Engine {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Engine().run();
 
+		System.out.println(new File("./resources/" + "guy" + ".png").getAbsolutePath());
 		Rendering renderingSystem = new Rendering();
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100; i++) {
 			renderingSystem.update();
 		}
 		renderingSystem.exit();
