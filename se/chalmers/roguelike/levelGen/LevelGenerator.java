@@ -1,4 +1,4 @@
-package se.chalmers.roguelike.levelGen;
+package se.chalmers.roguelike.LevelGen;
 
 public class LevelGenerator {
 
