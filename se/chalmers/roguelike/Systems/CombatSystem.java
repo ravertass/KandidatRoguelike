@@ -39,7 +39,13 @@ public class CombatSystem implements ISystem {
 	public void attack(){
 		//TODO a method for attacking!
 	}
-	
+	/**
+	 * an entity with a Health component loses dmg amount of HP and dies if 
+	 * the health becomes 0 or less
+	 *
+	 * @param e			the effected entity 
+	 * @param dmg		amount of health regenerated
+	 */
 	public void takeDamage(Entity e, int dmg){
 		Health health = e.getComponent(Health.class);
 		health.setHealth(health.getHealth()-dmg);
@@ -47,15 +53,28 @@ public class CombatSystem implements ISystem {
 			die(e);
 		}
 	}
-
+	
+	/**
+	 * an entity with a Health component heals for regen amount of HP or get 
+	 * fullHP if the current health + regen is greater than the components fullHP 
+	 * 
+	 * @param e			the effected entity 
+	 * @param regen		amount of health regenerated
+	 */
 	public void regenerate(Entity e, int regen){
 		Health health = e.getComponent(Health.class);
-		health.setHealth(health.getHealth()-regen);
+		int currentHealth = health.getHealth();
+		//TODO hur få ut fullHP?
+		if (currentHealth+regen > fullHP){
+			health.setHealth(fullHP);
+		} else {
+			health.setHealth(currentHealth+regen);
+		}
 	}
 	
 	private void die(Entity e) {
-		// TODO Auto-generated method stub
-		// ligga kvar som död?
+		removeEntity(e);
+		// TODO ligga kvar som död?
 	}
 
 }
