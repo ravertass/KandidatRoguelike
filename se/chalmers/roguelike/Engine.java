@@ -40,8 +40,9 @@ public class Engine {
 	public void run(){
 		entityCreator.createPlayer(); 	// Debug, testing EC
 		for(int i=0;i<100;i++){
-			renderingSys.update();
+			//renderingSys.update();
 			inputSys.update();
+			
 		}
 		
 		System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());

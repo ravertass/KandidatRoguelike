@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.lwjgl.input.*;
 
 import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.util.Pair;
 /**
@@ -22,7 +23,6 @@ public class InputSystem implements ISystem {
 	}
 		
 	public void update() {
-		
 		while(Keyboard.next()){
 			if(Keyboard.getEventKeyState()){
 				for (Entity e : entities) {
