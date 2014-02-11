@@ -18,6 +18,11 @@ public class Sprite implements IComponent {
 		this.height = height;
 	}
 	
+	/**
+	 * Loads a texture, raises an error if it goes wrong.
+	 * @param fileName
+	 * @return the loaded texture
+	 */
 	private Texture loadTexture(String fileName) {
 		Texture texture = null;
 		
@@ -25,7 +30,7 @@ public class Sprite implements IComponent {
 			texture = TextureLoader.getTexture("PNG", 
 					new FileInputStream(new File("./resources/" + fileName + ".png")));
 		} catch (FileNotFoundException e) {
-			System.out.println("Den filen finns icke");
+			System.out.println("The file does not exist");
 			e.printStackTrace();
 			// borde stänga ner displayen och stänga av programmet också
 		} catch (IOException e) {
