@@ -16,18 +16,25 @@ public class InputSystem implements ISystem {
 	 * The effected entities.
 	 */
 	private ArrayList<Entity> entities;
+	
+	public InputSystem(){
+		entities = new ArrayList<Entity>();
+	}
 		
 	public void update() {
-		if(Keyboard.getEventKeyState())
-			for (Entity e : entities) {
-				e.getComponent(Input.class).setNextKey(Keyboard.getEventKey());
-		}
-		if(Mouse.getEventButtonState()) {
-			for (Entity e : entities) {
-				e.getComponent(Input.class).setNextMouseClick(new Pair<Integer,Integer>(Mouse.getX(),Mouse.getY()));
+		
+		while(Keyboard.next()){
+			if(Keyboard.getEventKeyState()){
+				for (Entity e : entities) {
+					e.getComponent(Input.class).setNextKey(Keyboard.getEventKey());
+				}
+			}
+			if(Mouse.getEventButtonState()) {
+				for (Entity e : entities) {
+					e.getComponent(Input.class).setNextMouseClick(new Pair<Integer,Integer>(Mouse.getX(),Mouse.getY()));
+				}
 			}
 		}
-		
 	}
 	/**
 	 * Adds an entity who are effected by input from the user.
