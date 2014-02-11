@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class RenderingSystem implements ISystem {
 
-	// Tills vidare ligger denna här, vet ej om den bör vara här
+	// Tills vidare ligger dessa här, känns fel
 	private int SPRITE_SIZE = 32; // in pixels
 	private int CAMERA_WIDTH = 15; // in tiles
 	private int CAMERA_HEIGHT = 20; // in tiles
@@ -41,15 +41,6 @@ public class RenderingSystem implements ISystem {
 		
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
-		
-		// Fulkod nedan för att testa att generera en entity
-		// som sedan ska ritas ut
-		Entity testThing = new Entity();
-		Sprite sprite = new Sprite("guy", SPRITE_SIZE, SPRITE_SIZE);
-		Position position = new Position(0,0);
-		testThing.add(position);
-		testThing.add(sprite);
-		entitiesToDraw.add(testThing);
 	}
 	
 	public void update() {
@@ -146,7 +137,6 @@ public class RenderingSystem implements ISystem {
 
 	@Override
 	public void addEntity(Entity entity) {
-		// TODO Auto-generated method stub
-		
+		entitiesToDraw.add(entity);
 	}
 }

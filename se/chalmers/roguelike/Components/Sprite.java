@@ -11,6 +11,13 @@ import org.newdawn.slick.opengl.TextureLoader;
 public class Sprite implements IComponent {
 	private Texture texture;
 	private int width, height;
+	private int STANDARD_SIZE = 32;
+	
+	public Sprite(String fileName) {
+		texture = loadTexture(fileName);
+		width = STANDARD_SIZE;
+		height = STANDARD_SIZE;
+	}
 	
 	public Sprite(String fileName, int width, int height) {
 		texture = loadTexture(fileName);
