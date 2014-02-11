@@ -24,6 +24,14 @@ public class Input implements IComponent {
 		return nextKey;
 	}
 	
+	public void resetKey() {
+		nextKey = -1;
+	}
+	
+	public void resetMouse() {
+		nextMouseClick = new Pair<Integer,Integer>(-1,-1);
+	}
+	
 	public Pair<Integer,Integer> getMouseCords() {
 		Pair<Integer,Integer> temp = nextMouseClick;
 		nextMouseClick.setFirst(-1);
