@@ -50,7 +50,7 @@ public class Engine {
 	public static void main(String[] args) {
 
 		System.out.println(new File("./resources/" + "guy" + ".png").getAbsolutePath());
-		Rendering renderingSystem = new Rendering();
+		RenderingSystem renderingSystem = new RenderingSystem();
 		for (int i = 0; i < 100; i++) {
 			renderingSystem.update();
 		}
