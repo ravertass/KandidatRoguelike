@@ -24,13 +24,18 @@ public class MoveSystem implements ISystem {
 				switch(i.getNextKey()) {
 					case(Keyboard.KEY_W): 
 						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
+						break;
 					case(Keyboard.KEY_A):
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getX()-1);
+						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
+						break;
 					case(Keyboard.KEY_S):
 						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
+						break;
 					case(Keyboard.KEY_D):
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getX()+1);
+						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
+						break;
 				}
+				i.resetKey();
 			}
 		}
 	}
