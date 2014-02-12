@@ -27,6 +27,7 @@ public class Engine {
 	// Systems:
 	private InputSystem inputSys; // todo: Don't have it public
 	private RenderingSystem renderingSys;
+	private MoveSystem moveSys;
 	
 	public Engine() {
 		System.out.println("Starting new engine.");
@@ -39,6 +40,7 @@ public class Engine {
 		// move the ints to constants?
 		int inputSysReq = CompInput;
 		int renderingSysReq = CompSprite | CompPosition;
+		int moveSysReq = CompInput | CompPosition;
 		
 		int compKey = entity.getComponentKey(); 
 		if((compKey & inputSysReq) == inputSysReq){
@@ -47,21 +49,10 @@ public class Engine {
 		if((compKey & renderingSysReq) == renderingSysReq){
 			renderingSys.addEntity(entity);
 		}
-		
+		if((compKey & moveSysReq) == moveSysReq){
+			moveSys.addEntity(entity);
+		}
 		entities.add(entity);
-	}
-	
-	// Alltså, dessa metoder kan vi ju inte ha...
-
-	/**
-	 * Adds an entity to the input system. Requires a input component.
-	 * @param entity entity to be added to the inputsystem.
-	 */
-	public void addToInputSys(Entity entity){
-		inputSys.addEntity(entity);
-	}
-	public void addToRenderingSys(Entity entity){
-		renderingSys.addEntity(entity);
 	}
 	
 	/**
@@ -69,15 +60,16 @@ public class Engine {
 	 */
 	public void run(){
 		entityCreator.createPlayer(); 	// Debug, testing EC
-		for(int i=0;i<100;i++){
+		//for(int i=0;i<100;i++){
+		while(true){
 			renderingSys.update();
 			inputSys.update();
-			
+			moveSys.update();
 		}
 		
-		System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());
-		System.out.println("Next key: "+entities.get(0).getComponent(Input.class).getNextKey());
-		renderingSys.exit();
+		//System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());
+		//System.out.println("Next key: "+entities.get(0).getComponent(Input.class).getNextKey());
+		//renderingSys.exit();
 	}
 	
 	/**
@@ -106,6 +98,7 @@ public class Engine {
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
 		inputSys = new InputSystem();
+		moveSys = new MoveSystem();
 	}
 	
 	/**
