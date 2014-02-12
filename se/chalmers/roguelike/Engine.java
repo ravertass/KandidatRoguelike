@@ -42,7 +42,7 @@ public class Engine {
 		// move the ints to constants?
 		int inputSysReq = CompInput;
 		int renderingSysReq = CompSprite | CompPosition;
-		int moveSysReq = CompInput | CompPosition;
+		int moveSysReq = CompInput | CompPosition | CompDirection;
 		int mobSpriteSysReq = CompSprite | CompDirection;
 		
 		int compKey = entity.getComponentKey(); 
@@ -71,6 +71,7 @@ public class Engine {
 			renderingSys.update();
 			inputSys.update();
 			moveSys.update();
+			mobSpriteSys.update();
 		}
 		
 		//System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());

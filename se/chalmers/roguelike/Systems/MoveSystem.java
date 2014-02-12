@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
 
+import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.Direction.Dir;
 
 public class MoveSystem implements ISystem {
 	
@@ -24,18 +26,23 @@ public class MoveSystem implements ISystem {
 				switch(i.getNextKey()) {
 					case(Keyboard.KEY_W): 
 						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
+						e.getComponent(Direction.class).setDirection(Dir.NORTH);
 						break;
 					case(Keyboard.KEY_A):
 						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
+						e.getComponent(Direction.class).setDirection(Dir.WEST);
 						break;
 					case(Keyboard.KEY_S):
 						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
+						e.getComponent(Direction.class).setDirection(Dir.SOUTH);
 						break;
 					case(Keyboard.KEY_D):
 						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
+						e.getComponent(Direction.class).setDirection(Dir.EAST);
 						break;
 				}
 				i.resetKey();
+				System.out.println(e.getComponent(Direction.class).getDir());
 			}
 		}
 	}
