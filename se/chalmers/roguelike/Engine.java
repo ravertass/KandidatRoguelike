@@ -30,8 +30,12 @@ public class Engine {
 		entities.add(entity);
 	}
 	
+	// Alltså, dessa metoder kan vi ju inte ha...
 	public void addToInputSys(Entity entity){
 		inputSys.addEntity(entity);
+	}
+	public void addToRenderingSys(Entity entity){
+		renderingSys.addEntity(entity);
 	}
 	
 	/**
@@ -66,12 +70,10 @@ public class Engine {
 		return delta;
 	}
 	
-	
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
 		inputSys = new InputSystem();
 	}
-	
 	
 	/**
 	 * @param args
