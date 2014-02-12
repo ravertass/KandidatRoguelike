@@ -9,6 +9,15 @@ import se.chalmers.roguelike.Entities.Entity;
 
 public class Engine {
 
+	
+	// Constants: Components
+	public static final int CompCharacter = 1 << 0;
+	public static final int CompHealth = 1 << 1;
+	public static final int CompInput = 1 << 2;
+	public static final int CompPosition = 1 << 3;
+	public static final int CompSprite = 1 << 4;
+	public static final int CompTurnsleft = 1 << 5;
+	
 	private long lastUpdate;
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
@@ -27,6 +36,18 @@ public class Engine {
 	}
 	
 	public void addEntity(Entity entity){
+		// move the ints to constants?
+		int inputSysReq = CompInput;
+		int renderingSysReq = CompSprite | CompPosition;
+		
+		int compKey = entity.getComponentKey(); 
+		if((compKey & inputSysReq) == inputSysReq){
+			inputSys.addEntity(entity);
+		}
+		if((compKey & renderingSysReq) == renderingSysReq){
+			renderingSys.addEntity(entity);
+		}
+		
 		entities.add(entity);
 	}
 	
@@ -49,7 +70,7 @@ public class Engine {
 	public void run(){
 		entityCreator.createPlayer(); 	// Debug, testing EC
 		for(int i=0;i<100;i++){
-			//renderingSys.update();
+			renderingSys.update();
 			inputSys.update();
 			
 		}

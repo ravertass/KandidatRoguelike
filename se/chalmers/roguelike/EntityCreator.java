@@ -10,10 +10,9 @@ import se.chalmers.roguelike.Entities.Entity;
 public class EntityCreator {
 	
 	private Engine engine;
-	private Input input; // should be the same for all entities
+	
 	public EntityCreator(Engine engine){
 		this.engine = engine;
-		input = new Input();
 	}
 	
 	public void createPlayer(){
@@ -23,8 +22,8 @@ public class EntityCreator {
 		player.add(new Input());
 		player.add(new Sprite("guy"));
 		player.add(new Position(10,10));
-		engine.addToInputSys(player);
-		engine.addToRenderingSys(player);
+		//engine.addToInputSys(player);
+		//engine.addToRenderingSys(player); // depreached, left to show
 		engine.addEntity(player); // should this be used? possibly just pass it to system directly
 	}
 
