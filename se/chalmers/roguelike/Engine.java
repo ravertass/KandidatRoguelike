@@ -53,7 +53,7 @@ public class Engine {
 		addOrRemoveEntity(entity, true);
 	}
 	
-	public void addOrRemoveEntity(Entity entity, boolean remove){
+	private void addOrRemoveEntity(Entity entity, boolean remove){
 		
 		int compKey = entity.getComponentKey(); 
 		if((compKey & inputSysReq) == inputSysReq) {
