@@ -19,8 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class RenderingSystem implements ISystem {
 
-	// Tills vidare ligger dessa här, känns fel
-	private int SPRITE_SIZE = 32; // in pixels, maybe only true in DC mode
+	// Tills vidare ligger dessa här, känns fel	
 	private int CAMERA_WIDTH = 15; // in tiles
 	private int CAMERA_HEIGHT = 20; // in tiles
 	
@@ -97,8 +96,7 @@ public class RenderingSystem implements ISystem {
 		Position position = entity.getComponent(Position.class);
 		
 		Texture texture = sprite.getTexture();
-		int width = sprite.getWidth();
-		int height = sprite.getHeight();
+		int size = sprite.getSize();
 		
 		// Get the camera's position
 		Position camPos = camera.getComponent(Position.class);
@@ -108,24 +106,31 @@ public class RenderingSystem implements ISystem {
 		// Subtract the coordinates with the camera's coordinates,
 		// then multiply that with the SPRITE_SIZE, so that we get 
 		// the pixel coordinates, not the tile coordinates.
-		int x = (position.getX() - camX) * SPRITE_SIZE;
-		int y = (position.getY() - camY) * SPRITE_SIZE;
+		int x = (position.getX() - camX) * size;
+		int y = (position.getY() - camY) * size;
+		
+		// Get the coordinates of the current sprite
+		// in the spritesheet in a form that OpenGL likes,
+		// which is a float between 0 and 1
+		float spriteULX = sprite.getUpperLeftX();
+		float spriteULY = sprite.getUpperLeftY();
+		float spriteLRX = sprite.getLowerRightX();
+		float spriteLRY = sprite.getLowerRightY();
 		
 		// We determine if the entity is within the camera's
 		// view; if so, we draw it
-		// Jag hoppas den här logiken är rätt :P
-		if (x >= 0 && x < CAMERA_WIDTH * SPRITE_SIZE &&
-				y >= 0 && y < CAMERA_HEIGHT * SPRITE_SIZE) {
+		if (x >= 0 && x < CAMERA_WIDTH * size &&
+				y >= 0 && y < CAMERA_HEIGHT * size) {
 			texture.bind();
 			glBegin(GL_QUADS);
-				glTexCoord2f(0, 1);
+				glTexCoord2f(spriteULX, spriteLRY);
 				glVertex2d(x, y);
-				glTexCoord2f(1, 1);
-				glVertex2d(x + width, y);
-				glTexCoord2f(1, 0);
-				glVertex2d(x + width, y + height);
-				glTexCoord2f(0, 0);
-				glVertex2d(x, y + height);
+				glTexCoord2f(spriteLRX, spriteLRY);
+				glVertex2d(x + size, y);
+				glTexCoord2f(spriteLRX, spriteULY);
+				glVertex2d(x + size, y + size);
+				glTexCoord2f(spriteULX, spriteULY);
+				glVertex2d(x, y + size);
 			glEnd();
 		}
 	}

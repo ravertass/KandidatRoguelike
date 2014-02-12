@@ -8,21 +8,30 @@ import java.io.IOException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
+/**
+ * 
+ * This is a component for sprites. It can take spritesheets and it can keep
+ * track of the coordinates for the current sprite.
+ * 
+ * @author fabian
+ *
+ */
 public class Sprite implements IComponent {
-	private Texture texture;
-	private int width, height;
-	private int STANDARD_SIZE = 32; // The size used in DC mode
+	private static int STANDARD_SIZE = 32; // The size used in DC mode
+	
+	private Texture spritesheet;
+	private int size; // both width and height, in pixels, of individual sprites
+	private int spriteX, spriteY; // the (tile) coordinates for current sprite
 	
 	public Sprite(String fileName) {
-		texture = loadTexture(fileName);
-		width = STANDARD_SIZE;
-		height = STANDARD_SIZE;
+		this(fileName, STANDARD_SIZE);
 	}
 	
-	public Sprite(String fileName, int width, int height) {
-		texture = loadTexture(fileName);
-		this.width = width;
-		this.height = height;
+	public Sprite(String fileName, int size) {
+		spritesheet = loadTexture(fileName);
+		this.size = size;
+		spriteX = 0;
+		spriteY = 0;
 	}
 	
 	/**
@@ -50,14 +59,68 @@ public class Sprite implements IComponent {
 	}
 	
 	public Texture getTexture() {
-		return texture;
+		return spritesheet;
 	}
 	
-	public int getWidth() {
-		return width;
+	/**
+	 * @return the size, which is both the width and the height 
+	 * of the individual sprites in pixels
+	 */
+	public int getSize() {
+		return size;
 	}
 	
-	public int getHeight() {
-		return height;
+	/**
+	 * @return The upperleft x coord of the individual sprite according to OpenGL,
+	 * which is a float between 0 and 1
+	 */
+	public float getUpperLeftX() {
+		float x = ((float) spriteX * size) / spritesheet.getTextureWidth(); 
+		return x;
+	}
+
+	/**
+	 * @return The upperleft y coord of the individual sprite according to OpenGL,
+	 * which is a float between 0 and 1
+	 */
+	public float getUpperLeftY() {
+		float y = ((float) spriteY * size) / spritesheet.getTextureHeight(); 
+		return y;
+	}
+	
+	/**
+	 * @return The lowerright x coord of the individual sprite according to OpenGL,
+	 * which is a float between 0 and 1
+	 */
+	public float getLowerRightX() {
+		float x = ((float) (spriteX * size) + (size - 1)) / spritesheet.getTextureWidth(); 
+		return x;
+	}
+	
+	/**
+	 * @return The lowerright y coord of the individual sprite according to OpenGL,
+	 * which is a float between 0 and 1
+	 */
+	public float getLowerRightY() {
+		float y = ((float) (spriteY * size) + (size - 1)) / spritesheet.getTextureHeight(); 
+		return y;
+	}
+	
+	/**
+	 * Set the tile x coord fo the current sprite
+	 * i.e., change the current sprite.
+	 * @param spriteX
+	 */
+	public void setSpriteX(int spriteX) {
+		this.spriteX = spriteX;
+	}
+	
+	/**
+	 * Set the tile y coord fo the current sprite
+	 * i.e., change the current sprite.
+	 * @param spriteY
+	 */
+	public void setSpriteY(int spriteY) {
+		this.spriteY = spriteY;
 	}
 }

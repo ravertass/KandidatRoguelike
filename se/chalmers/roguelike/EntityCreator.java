@@ -11,6 +11,7 @@ public class EntityCreator {
 	
 	private Engine engine;
 	private Input input; // should be the same for all entities
+	
 	public EntityCreator(Engine engine){
 		this.engine = engine;
 		input = new Input();
