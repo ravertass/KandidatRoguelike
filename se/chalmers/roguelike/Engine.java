@@ -45,11 +45,14 @@ public class Engine {
 	}
 	
 	public void addEntity(Entity entity){
+		entities.add(entity);
 		addOrRemoveEntity(entity, false);
 	}
 	
 	public void removeEntity(Entity entity){
 		// maybe return a bool if it could remove it?¨
+		// Check if removals really work properly or if we need to write some equals function 
+		entities.remove(entity);
 		addOrRemoveEntity(entity, true);
 	}
 	
@@ -83,7 +86,6 @@ public class Engine {
 				mobSpriteSys.addEntity(entity);
 			}
 		}
-		// entities.add(entity);
 	}
 	
 	/**
@@ -91,7 +93,11 @@ public class Engine {
 	 */
 	public void run(){
 		entityCreator.createPlayer(); 	// Debug, testing EC
+		entityCreator.createPlayer();
+		System.out.println("FOOO: "+entities.get(0).equals(entities.get(1)));
 		//for(int i=0;i<100;i++){
+		
+		
 		while(true){
 			renderingSys.update();
 			inputSys.update();

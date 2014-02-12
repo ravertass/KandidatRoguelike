@@ -14,6 +14,12 @@ public class TextSystem implements ISystem {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void removeEntity(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

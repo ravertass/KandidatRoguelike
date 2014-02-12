@@ -52,5 +52,8 @@ public class MoveSystem implements ISystem {
 		entities.add(entity);
 		
 	}
-
+	
+	public void removeEntity(Entity entity) {
+		entities.remove(entity);
+	}
 }
