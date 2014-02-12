@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderingSystem implements ISystem {
 
 	// Tills vidare ligger dessa här, känns fel
-	private int SPRITE_SIZE = 32; // in pixels
+	private int SPRITE_SIZE = 32; // in pixels, maybe only true in DC mode
 	private int CAMERA_WIDTH = 15; // in tiles
 	private int CAMERA_HEIGHT = 20; // in tiles
 	

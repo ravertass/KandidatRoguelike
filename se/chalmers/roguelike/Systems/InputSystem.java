@@ -31,7 +31,8 @@ public class InputSystem implements ISystem {
 			}
 			if(Mouse.getEventButtonState()) {
 				for (Entity e : entities) {
-					e.getComponent(Input.class).setNextMouseClick(new Pair<Integer,Integer>(Mouse.getX(),Mouse.getY()));
+					e.getComponent(Input.class).setNextMouseClick(
+							new Pair<Integer,Integer>(Mouse.getX(),Mouse.getY()));
 				}
 			}
 		}
