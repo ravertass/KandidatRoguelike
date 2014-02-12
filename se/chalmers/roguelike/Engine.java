@@ -16,7 +16,8 @@ public class Engine {
 	public static final int CompInput = 1 << 2;
 	public static final int CompPosition = 1 << 3;
 	public static final int CompSprite = 1 << 4;
-	public static final int CompTurnsleft = 1 << 5;
+	public static final int CompTurnsLeft = 1 << 5;
+	public static final int CompDirection = 1 << 6;
 	
 	private long lastUpdate;
 	/// private int fps; // updates per second, not necessarly fps
@@ -28,6 +29,7 @@ public class Engine {
 	private InputSystem inputSys; // todo: Don't have it public
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
+	private MobSpriteSystem mobSpriteSys;
 	
 	public Engine() {
 		System.out.println("Starting new engine.");
@@ -41,16 +43,20 @@ public class Engine {
 		int inputSysReq = CompInput;
 		int renderingSysReq = CompSprite | CompPosition;
 		int moveSysReq = CompInput | CompPosition;
+		int mobSpriteSysReq = CompSprite | CompDirection;
 		
 		int compKey = entity.getComponentKey(); 
-		if((compKey & inputSysReq) == inputSysReq){
+		if((compKey & inputSysReq) == inputSysReq) {
 			inputSys.addEntity(entity);
 		}
-		if((compKey & renderingSysReq) == renderingSysReq){
+		if((compKey & renderingSysReq) == renderingSysReq) {
 			renderingSys.addEntity(entity);
 		}
-		if((compKey & moveSysReq) == moveSysReq){
+		if((compKey & moveSysReq) == moveSysReq) {
 			moveSys.addEntity(entity);
+		}
+		if((compKey & mobSpriteSysReq) == mobSpriteSysReq) {
+			mobSpriteSys.addEntity(entity);
 		}
 		entities.add(entity);
 	}
@@ -99,6 +105,7 @@ public class Engine {
 		renderingSys = new RenderingSystem();
 		inputSys = new InputSystem();
 		moveSys = new MoveSystem();
+		mobSpriteSys = new MobSpriteSystem();
 	}
 	
 	/**

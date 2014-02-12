@@ -3,12 +3,8 @@ package se.chalmers.roguelike.Entities;
 import java.util.HashMap;
 
 import se.chalmers.roguelike.Engine;
-import se.chalmers.roguelike.Components.Health;
-import se.chalmers.roguelike.Components.IComponent;
-import se.chalmers.roguelike.Components.Input;
-import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.Components.*;
+import se.chalmers.roguelike.Components.Character;
 
 /**
  * Entity class 
@@ -37,7 +33,9 @@ public class Entity {
 		} else if(compClass == Sprite.class){
 			componentKey |= Engine.CompSprite;
 		} else if(compClass == TurnsLeft.class){
-			componentKey |= Engine.CompTurnsleft;
+			componentKey |= Engine.CompTurnsLeft;
+		} else if(compClass == Direction.class){
+			componentKey |= Engine.CompDirection;
 		}
 		System.out.println("New compkey: "+componentKey); // debug
 	}
