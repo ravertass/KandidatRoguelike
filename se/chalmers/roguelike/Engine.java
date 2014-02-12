@@ -53,8 +53,7 @@ public class Engine {
 		addOrRemoveEntity(entity, true);
 	}
 	
-	private void addOrRemoveEntity(Entity entity, boolean remove){
-		
+	private void addOrRemoveEntity(Entity entity, boolean remove){		
 		int compKey = entity.getComponentKey(); 
 		if((compKey & inputSysReq) == inputSysReq) {
 			if(remove){
@@ -97,6 +96,7 @@ public class Engine {
 			renderingSys.update();
 			inputSys.update();
 			moveSys.update();
+			mobSpriteSys.update();
 		}
 		
 		//System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());
