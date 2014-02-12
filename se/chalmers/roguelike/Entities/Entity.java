@@ -1,7 +1,14 @@
 package se.chalmers.roguelike.Entities;
 
 import java.util.HashMap;
+
+import se.chalmers.roguelike.Engine;
+import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.IComponent;
+import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.TurnsLeft;
 
 /**
  * Entity class 
@@ -9,13 +16,34 @@ import se.chalmers.roguelike.Components.IComponent;
 public class Entity {
 
 	HashMap<Class<?>, IComponent> components;
+	private int componentKey;
 	
 	public Entity(){
 		components = new HashMap<Class<?>, IComponent>();
+		componentKey = 0;
 	}
 	
 	public void add(IComponent component) {
-		components.put(component.getClass(), component);
+		Class<?> compClass = component.getClass();
+		components.put(compClass, component);
+		if(compClass == Character.class){
+			componentKey |= Engine.CompCharacter;
+		} else if(compClass == Health.class){
+			componentKey |= Engine.CompHealth;
+		} else if(compClass == Input.class){
+			componentKey |= Engine.CompInput;
+		} else if(compClass == Position.class){
+			componentKey |= Engine.CompPosition;
+		} else if(compClass == Sprite.class){
+			componentKey |= Engine.CompSprite;
+		} else if(compClass == TurnsLeft.class){
+			componentKey |= Engine.CompTurnsleft;
+		}
+		System.out.println("New compkey: "+componentKey); // debug
+	}
+	
+	public int getComponentKey(){
+		return componentKey;
 	}
 	
 	public void remove(IComponent component) {
