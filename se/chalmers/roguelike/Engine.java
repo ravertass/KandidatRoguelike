@@ -19,6 +19,12 @@ public class Engine {
 	public static final int CompTurnsLeft = 1 << 5;
 	public static final int CompDirection = 1 << 6;
 	
+	// Constants: System requirements:
+	public static final int inputSysReq = CompInput;
+	public static final int renderingSysReq = CompSprite | CompPosition;
+	public static final int moveSysReq = CompInput | CompPosition;
+	public static final int mobSpriteSysReq = CompSprite | CompDirection;
+	
 	private long lastUpdate;
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
@@ -39,26 +45,46 @@ public class Engine {
 	}
 	
 	public void addEntity(Entity entity){
-		// move the ints to constants?
-		int inputSysReq = CompInput;
-		int renderingSysReq = CompSprite | CompPosition;
-		int moveSysReq = CompInput | CompPosition;
-		int mobSpriteSysReq = CompSprite | CompDirection;
+		addOrRemoveEntity(entity, false);
+	}
+	
+	public void removeEntity(Entity entity){
+		// maybe return a bool if it could remove it?¨
+		addOrRemoveEntity(entity, true);
+	}
+	
+	public void addOrRemoveEntity(Entity entity, boolean remove){
 		
 		int compKey = entity.getComponentKey(); 
 		if((compKey & inputSysReq) == inputSysReq) {
-			inputSys.addEntity(entity);
+			if(remove){
+				inputSys.removeEntity(entity);
+			} else {
+				inputSys.addEntity(entity);
+			}
 		}
 		if((compKey & renderingSysReq) == renderingSysReq) {
-			renderingSys.addEntity(entity);
+			if(remove){
+				renderingSys.removeEntity(entity);
+			} else {
+				renderingSys.addEntity(entity);
+			}
 		}
 		if((compKey & moveSysReq) == moveSysReq) {
-			moveSys.addEntity(entity);
+			if(remove){
+				moveSys.removeEntity(entity);
+			} else {
+				moveSys.addEntity(entity);
+			}
 		}
 		if((compKey & mobSpriteSysReq) == mobSpriteSysReq) {
-			mobSpriteSys.addEntity(entity);
+			if(remove){
+				mobSpriteSys.addEntity(entity);
+			} else {
+				mobSpriteSys.addEntity(entity);
+			}
 		}
-		entities.add(entity);
+		// entities.add(entity);
 	}
 	
 	/**
