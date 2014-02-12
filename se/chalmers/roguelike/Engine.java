@@ -31,6 +31,11 @@ public class Engine {
 	}
 	
 	// Alltså, dessa metoder kan vi ju inte ha...
+
+	/**
+	 * Adds an entity to the input system. Requires a input component.
+	 * @param entity entity to be added to the inputsystem.
+	 */
 	public void addToInputSys(Entity entity){
 		inputSys.addEntity(entity);
 	}
@@ -63,6 +68,10 @@ public class Engine {
 		return System.nanoTime()/1000000;
 	}
 	
+	/**
+	 * Gives a delta time since last time it was run.
+	 * @return the since last time getDelta was run
+	 */
 	private int getDelta() {
 		long time = getTime();
 		int delta = (int)(time-lastUpdate);
@@ -70,6 +79,9 @@ public class Engine {
 		return delta;
 	}
 	
+	/**
+	 * Initiazes the necessary systems.
+	 */
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
 		inputSys = new InputSystem();
