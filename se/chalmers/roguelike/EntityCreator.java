@@ -21,13 +21,6 @@ public class EntityCreator {
 		this.input = new Input();
 	}
 	
-	public void createCamera() {
-		Entity camera = new Entity();
-		camera.add(new Position(0,0));
-		camera.add(new Camera());
-		engine.addEntity(camera);
-	}
-	
 	public void createPlayer(){
 		Entity player = new Entity();
 		player.add(new Health(100));
