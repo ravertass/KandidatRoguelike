@@ -93,18 +93,19 @@ public class RenderingSystem implements ISystem {
 	 */
 	private void setupDisplay() {
 		try {
-			DisplayMode displayMode = null;
-	        DisplayMode[] modes = Display.getAvailableDisplayModes();
-
-	        for (int i = 0; i < modes.length; i++)
-	        {
-	            if (modes[i].getWidth() == DISPLAY_WIDTH
-	            && modes[i].getHeight() == DISPLAY_HEIGHT
-	            && modes[i].isFullscreenCapable())
-	              {
-	                   displayMode = modes[i];
-	              }
-	        }
+//			DisplayMode displayMode = null;
+//	        DisplayMode[] modes = Display.getAvailableDisplayModes();
+//
+//	        for (int i = 0; i < modes.length; i++)
+//	        {
+//	            if (modes[i].getWidth() == DISPLAY_WIDTH
+//	            && modes[i].getHeight() == DISPLAY_HEIGHT
+//	            && modes[i].isFullscreenCapable())
+//	              {
+//	                   displayMode = modes[i];
+//	              }
+//	        }
+			Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH,DISPLAY_HEIGHT));
 			Display.setFullscreen(true);
 			Display.setTitle("Crimson Poodle");
 			Display.create();
