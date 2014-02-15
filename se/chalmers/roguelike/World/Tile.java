@@ -30,7 +30,7 @@ public class Tile {
 			return null;
 		}
 		
-		public boolean containsEntiy(Entity entity) {
+		public boolean containsEntity(Entity entity) {
 			for (Entity e : entities) {
 				if (e.equals(entity))
 					return true;
