@@ -8,7 +8,6 @@ import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Entities.Entity;
 
 public class Engine {
-
 	
 	// Constants: Components
 	public static final int CompCharacter = 1 << 0;
@@ -50,7 +49,7 @@ public class Engine {
 	}
 	
 	public void removeEntity(Entity entity){
-		// maybe return a bool if it could remove it?¨
+		// maybe return a bool if it could remove it?ï¿½
 		// Check if removals really work properly or if we need to write some equals function 
 		entities.remove(entity);
 		addOrRemoveEntity(entity, true);
