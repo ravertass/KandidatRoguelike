@@ -28,7 +28,15 @@ public class MoveSystem implements ISystem {
 						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
 						e.getComponent(Direction.class).setDirection(Dir.NORTH);
 						break;
+					case(Keyboard.KEY_NUMPAD8):
+						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
+						e.getComponent(Direction.class).setDirection(Dir.NORTH);
+						break;
 					case(Keyboard.KEY_A):
+						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
+						e.getComponent(Direction.class).setDirection(Dir.WEST);
+						break;
+					case(Keyboard.KEY_NUMPAD4):
 						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
 						e.getComponent(Direction.class).setDirection(Dir.WEST);
 						break;
@@ -36,9 +44,37 @@ public class MoveSystem implements ISystem {
 						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
 						e.getComponent(Direction.class).setDirection(Dir.SOUTH);
 						break;
+					case(Keyboard.KEY_NUMPAD2):
+						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
+						e.getComponent(Direction.class).setDirection(Dir.SOUTH);
+						break;
 					case(Keyboard.KEY_D):
 						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
 						e.getComponent(Direction.class).setDirection(Dir.EAST);
+						break;
+					case(Keyboard.KEY_NUMPAD6):
+						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
+						e.getComponent(Direction.class).setDirection(Dir.EAST);
+						break;
+					case(Keyboard.KEY_NUMPAD7):
+						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
+						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
+						e.getComponent(Direction.class).setDirection(Dir.NORTHWEST);
+						break;
+					case(Keyboard.KEY_NUMPAD9):
+						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
+						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
+						e.getComponent(Direction.class).setDirection(Dir.NORTHEAST);
+						break;
+					case(Keyboard.KEY_NUMPAD3):
+						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
+						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
+						e.getComponent(Direction.class).setDirection(Dir.NORTHEAST);
+						break;
+					case(Keyboard.KEY_NUMPAD1):
+						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
+						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
+						e.getComponent(Direction.class).setDirection(Dir.NORTHEAST);
 						break;
 				}
 				i.resetKey();
