@@ -31,7 +31,8 @@ public class World {
 	}
 	
 	public boolean isWalkable(int x, int y){
-		return tiles[x][y].isWalkable();
+		return x >= 0 && x < worldWidth && y >=0 && y < worldHeight && 
+				tiles[x][y].isWalkable() && tiles[x][y] != null;
 	}
 	
 	public Tile getTile(int x, int y){
