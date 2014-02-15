@@ -6,10 +6,13 @@ import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 import org.newdawn.slick.opengl.Texture;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Entities.Entity;
-
+import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.util.Camera;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -19,36 +22,46 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class RenderingSystem implements ISystem {
 
-	// Tills vidare ligger dessa här, känns fel	
-	private final int CAMERA_WIDTH = 20; // in tiles
-	private final int CAMERA_HEIGHT = 15; // in tiles
-	
 	// The entities that the RenderingSystem draws
 	private ArrayList<Entity> entitiesToDraw;
-	private Entity camera;
+	private Camera camera;
+	private Entity player;
 	
-	public RenderingSystem() {
+	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
 		setupDisplay();
 		setupOpenGL();
-		
-		// Create a camera entity
-		camera = new Entity();
-		// Kamerans position får helt enkelt vara noll-noll, tills vidare
-		Position camPosition = new Position(0,0);
-		camera.add(camPosition);
-		
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
 	}
 	
-	public void update() {
+	
+	public void update(World world) { // stupid solution, make it nondependant on world
+		// Sets the cameras position to the current position of the player
+		int cwidth = camera.getWidth();
+		int cheight = camera.getHeight();
+		Position playerPos = player.getComponent(Position.class);
+		camera.setPosition(new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2));
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
-		
+		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
+		Position drawPos = new Position(pos.getX(), pos.getY());
+		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
+			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
+				Tile tile = world.getTile(x,y);
+				drawPos.set(x, y);
+				if(tile != null) {
+					draw(tile.getSprite(),drawPos);					
+				}
+			}
+		}
+	}
+	
+	public void update(){
+
 		// Draw all entities in system
 		for(Entity entity : entitiesToDraw) {
-			drawEntity(entity);
+			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 		}
 		
 		// Update and sync display
@@ -90,16 +103,18 @@ public class RenderingSystem implements ISystem {
 	 * Method to draw an entity to the game window.
 	 * @param entity The entity to be drawn
 	 */
-	private void drawEntity(Entity entity) {
+	private void draw(Sprite sprite, Position position) {
 		// Get the relevant components from the entity
-		Sprite sprite = entity.getComponent(Sprite.class);
-		Position position = entity.getComponent(Position.class);
+		//Sprite sprite = entity.getComponent(Sprite.class);
+		if(!sprite.getVisability())
+			return;
+		//Position position = entity.getComponent(Position.class);
 		
 		Texture texture = sprite.getTexture();
 		int size = sprite.getSize();
 		
 		// Get the camera's position
-		Position camPos = camera.getComponent(Position.class);
+		Position camPos = camera.getPosition();
 		int camX = camPos.getX();
 		int camY = camPos.getY();
 		
@@ -119,8 +134,8 @@ public class RenderingSystem implements ISystem {
 		
 		// We determine if the entity is within the camera's
 		// view; if so, we draw it
-		if (x >= 0 && x < CAMERA_WIDTH * size &&
-				y >= 0 && y < CAMERA_HEIGHT * size) {
+		if (x >= 0 && x < camera.getWidth() * size &&
+				y >= 0 && y < camera.getHeight() * size) {
 			texture.bind();
 			glBegin(GL_QUADS);
 				glTexCoord2f(spriteULX, spriteLRY);
@@ -142,6 +157,9 @@ public class RenderingSystem implements ISystem {
 
 	@Override
 	public void addEntity(Entity entity) {
+		if((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
+			this.player = entity;
+		} 
 		entitiesToDraw.add(entity);
 	}
 	
@@ -149,4 +167,14 @@ public class RenderingSystem implements ISystem {
 	public void removeEntity(Entity entity) {
 	    entitiesToDraw.remove(entity);
     }
+	
+	public void drawMenu(){
+		int height = Display.getHeight();
+		int width = Display.getWidth();
+		
+	}
+	
+	public void setCamera(Camera c) {
+		this.camera = c;
+	}
 }

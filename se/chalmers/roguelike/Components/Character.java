@@ -1,6 +1,6 @@
 package se.chalmers.roguelike.Components;
 
-public class Character {
+public class Character implements IComponent{
 	private String name;
 	private int level;
 	

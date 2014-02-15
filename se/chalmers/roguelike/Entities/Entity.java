@@ -36,6 +36,12 @@ public class Entity {
 			componentKey |= Engine.CompTurnsLeft;
 		} else if(compClass == Direction.class){
 			componentKey |= Engine.CompDirection;
+		} else if(compClass == AI.class){
+			componentKey |= Engine.CompAI;
+		} else if(compClass == Highlight.class){
+			componentKey |= Engine.CompHighlight;
+		} else if(compClass == Player.class){
+			componentKey |= Engine.CompPlayer;
 		}
 		System.out.println("New compkey: "+componentKey); // debug
 	}

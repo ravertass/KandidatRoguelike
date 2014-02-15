@@ -22,6 +22,7 @@ public class Sprite implements IComponent {
 	private Texture spritesheet;
 	private int size; // both width and height, in pixels, of individual sprites
 	private int spriteX, spriteY; // the (tile) coordinates for current sprite
+	private boolean visible;
 	
 	public Sprite(String fileName) {
 		this(fileName, STANDARD_SIZE);
@@ -43,6 +44,7 @@ public class Sprite implements IComponent {
 		this.size = spriteSize;
 		this.spriteX = spriteX;
 		this.spriteY = spriteY;
+		visible = true;
 	}
 	
 	/**
@@ -118,7 +120,7 @@ public class Sprite implements IComponent {
 	 * which is a float between 0 and 1
 	 */
 	public float getLowerRightX() {
-		float x = ((float) (spriteX * size) + (size - 1)) / spritesheet.getTextureWidth(); 
+		float x = ((float) (spriteX * size) + (size)) / spritesheet.getTextureWidth(); 
 		return x;
 	}
 	
@@ -127,8 +129,15 @@ public class Sprite implements IComponent {
 	 * which is a float between 0 and 1
 	 */
 	public float getLowerRightY() {
-		float y = ((float) (spriteY * size) + (size - 1)) / spritesheet.getTextureHeight(); 
+		float y = ((float) (spriteY * size) + (size)) / spritesheet.getTextureHeight(); 
 		return y;
+	}
+	/**
+	 * 
+	 * @return If the sprite should be drawn or not
+	 */
+	public boolean getVisability() {
+		return this.visible;
 	}
 	
 	/**
@@ -147,5 +156,12 @@ public class Sprite implements IComponent {
 	 */
 	public void setSpriteY(int spriteY) {
 		this.spriteY = spriteY;
+	}
+	/**
+	 * Set a boolean value if the sprite should be drawn.
+	 * @param visible
+	 */
+	public void setVisibility(boolean visible) {
+		this.visible = visible;
 	}
 }

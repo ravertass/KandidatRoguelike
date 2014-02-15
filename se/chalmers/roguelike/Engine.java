@@ -1,10 +1,10 @@
 package se.chalmers.roguelike;
 
-import se.chalmers.roguelike.Systems.*;
-
 import java.util.ArrayList;
-import se.chalmers.roguelike.Components.Health;
-import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Systems.*;
+import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.util.Camera;
+import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Entities.Entity;
 
 public class Engine {
@@ -17,12 +17,17 @@ public class Engine {
 	public static final int CompSprite = 1 << 4;
 	public static final int CompTurnsLeft = 1 << 5;
 	public static final int CompDirection = 1 << 6;
+	public static final int CompAI = 1 << 7;
+	public static final int CompHighlight = 1 << 8;
+	public static final int CompPlayer = 1 << 9;
+	public static final int CompCamera = 1 << 10;
 	
 	// Constants: System requirements:
 	public static final int inputSysReq = CompInput;
 	public static final int renderingSysReq = CompSprite | CompPosition;
-	public static final int moveSysReq = CompInput | CompPosition;
+	public static final int moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
 	public static final int mobSpriteSysReq = CompSprite | CompDirection;
+	public static final int highlightSysReq = CompSprite | CompPosition | CompInput | CompHighlight;
 	
 	private long lastUpdate;
 	/// private int fps; // updates per second, not necessarly fps
@@ -31,23 +36,45 @@ public class Engine {
 	private EntityCreator entityCreator;
 	
 	// Systems:
-	private InputSystem inputSys; // todo: Don't have it public
+	private World world;
+	private InputSystem inputSys;
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
 	private MobSpriteSystem mobSpriteSys;
+	private HighlightSystem highlightSys;
+	private Entity player; // TODO: remove somehow?
+	private TurnSystem turnSystem;
 	
+	private enum GameState {
+		DUNGEON, MAIN_MENU, OVERWORLD
+	}
+	private GameState gameState;
+	
+	/**
+	 * Sets up the engine and it's variables.
+	 */
 	public Engine() {
 		System.out.println("Starting new engine.");
 		entities = new ArrayList<Entity>();
 		entityCreator = new EntityCreator(this);
+		gameState = GameState.DUNGEON;
 		spawnSystems();
+		setCamera();
 	}
 	
+	/**
+	 * Add entity to the engine and systems.
+	 * @param entity entity to be added to the systems
+	 */
 	public void addEntity(Entity entity){
 		entities.add(entity);
 		addOrRemoveEntity(entity, false);
 	}
 	
+	/**
+	 * Remove entities from the engine and the systems
+	 * @param entity
+	 */
 	public void removeEntity(Entity entity){
 		// maybe return a bool if it could remove it?�
 		// Check if removals really work properly or if we need to write some equals function 
@@ -55,6 +82,12 @@ public class Engine {
 		addOrRemoveEntity(entity, true);
 	}
 	
+	/**
+	 * Handles adding and removal of entities from systems.
+	 * 
+	 * @param entity entity that should be added or removed
+	 * @param remove if true the entity should be removed from systems, if false it will be added
+	 */
 	private void addOrRemoveEntity(Entity entity, boolean remove){		
 		int compKey = entity.getComponentKey(); 
 		if((compKey & inputSysReq) == inputSysReq) {
@@ -80,33 +113,56 @@ public class Engine {
 		}
 		if((compKey & mobSpriteSysReq) == mobSpriteSysReq) {
 			if(remove){
-				mobSpriteSys.addEntity(entity);
+				mobSpriteSys.removeEntity(entity);
 			} else {
 				mobSpriteSys.addEntity(entity);
 			}
 		}
+		if((compKey & highlightSysReq) == highlightSysReq) {
+			if(remove) {
+				highlightSys.removeEntity(entity);
+			} else {
+				highlightSys.addEntity(entity);
+			}
+		}
+		if((compKey & CompPlayer) == CompPlayer) {
+			player = entity;
+		}
+		if((compKey & CompTurnsLeft) == CompTurnsLeft){
+			turnSystem.addEntity(entity);
+		}
+			
 	}
 	
 	/**
 	 * Worlds worst game loop.
 	 */
 	public void run(){
-//		entityCreator.createPlayer(); 	// Debug, testing EC
 		entityCreator.createPlayer();
-//		System.out.println("FOOO: "+entities.get(0).equals(entities.get(1)));
-		//for(int i=0;i<100;i++){
-		
+		entityCreator.createHighlight();
 		
 		while(true){
-			renderingSys.update();
-			inputSys.update();
-			moveSys.update();
-			mobSpriteSys.update();
+			if(gameState == GameState.DUNGEON) {
+				renderingSys.update(world);
+				renderingSys.update();
+				inputSys.update();
+				moveSys.update();
+				mobSpriteSys.update();
+				highlightSys.update();
+				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
+					// Run AI-system?
+				}
+				turnSystem.update();
+			//} else if(gameState == GameState.MENU) {
+
+			} else if(gameState == GameState.OVERWORLD) {
+				//TODO
+				//add system  that is used in the overworld
+			} else if(gameState == GameState.MAIN_MENU) {
+				//TODO
+				renderingSys.drawMenu();
+			}
 		}
-		
-		//System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());
-		//System.out.println("Next key: "+entities.get(0).getComponent(Input.class).getNextKey());
-		//renderingSys.exit();
 	}
 	
 	/**
@@ -134,18 +190,28 @@ public class Engine {
 	 */
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
+		world = new World();
 		inputSys = new InputSystem();
-		moveSys = new MoveSystem();
+		moveSys = new MoveSystem(world); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
+		highlightSys = new HighlightSystem();
+		turnSystem = new TurnSystem();
+		
+	}
+	
+	/**
+	 * Sets up the camera
+	 */
+	private void setCamera() {
+		Camera c = new Camera();
+		highlightSys.setCamera(c);
+		renderingSys.setCamera(c);
 	}
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		System.out.println(new File("./resources/" + "guy" + ".png").getAbsolutePath());
-
 		new Engine().run();
-
 	}
 }
