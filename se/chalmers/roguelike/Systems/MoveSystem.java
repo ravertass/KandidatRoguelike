@@ -13,6 +13,7 @@ import se.chalmers.roguelike.Components.Direction.Dir;
 public class MoveSystem implements ISystem {
 	
 	ArrayList<Entity> entities;
+	Input i;
 	
 	public MoveSystem() {
 		entities = new ArrayList<Entity>();
@@ -21,60 +22,62 @@ public class MoveSystem implements ISystem {
 	@Override
 	public void update() {
 		for (Entity e : entities) {
-			Input i = e.getComponent(Input.class);
+			i = e.getComponent(Input.class);
+			Position pos = e.getComponent(Position.class);
+			Direction dir = e.getComponent(Direction.class);
 			if(i.getNextKey() != -1) {
 				switch(i.getNextKey()) {
 					case(Keyboard.KEY_W): 
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
-						e.getComponent(Direction.class).setDirection(Dir.NORTH);
+						pos.setY(pos.getY()+1);
+						dir.setDirection(Dir.NORTH);
 						break;
 					case(Keyboard.KEY_NUMPAD8):
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
-						e.getComponent(Direction.class).setDirection(Dir.NORTH);
+						pos.setY(pos.getY()+1);
+						dir.setDirection(Dir.NORTH);
 						break;
 					case(Keyboard.KEY_A):
-						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
-						e.getComponent(Direction.class).setDirection(Dir.WEST);
+						pos.setX(pos.getX()-1);
+						dir.setDirection(Dir.WEST);
 						break;
 					case(Keyboard.KEY_NUMPAD4):
-						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
-						e.getComponent(Direction.class).setDirection(Dir.WEST);
+						pos.setX(pos.getX()-1);
+						dir.setDirection(Dir.WEST);
 						break;
 					case(Keyboard.KEY_S):
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
-						e.getComponent(Direction.class).setDirection(Dir.SOUTH);
+						pos.setY(pos.getY()-1);
+						dir.setDirection(Dir.SOUTH);	
 						break;
 					case(Keyboard.KEY_NUMPAD2):
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
-						e.getComponent(Direction.class).setDirection(Dir.SOUTH);
+						pos.setY(pos.getY()-1);
+						dir.setDirection(Dir.SOUTH);;
 						break;
 					case(Keyboard.KEY_D):
-						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
-						e.getComponent(Direction.class).setDirection(Dir.EAST);
+						pos.setX(pos.getX()+1);
+						dir.setDirection(Dir.EAST);
 						break;
 					case(Keyboard.KEY_NUMPAD6):
-						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
-						e.getComponent(Direction.class).setDirection(Dir.EAST);
+						pos.setX(pos.getX()+1);
+						dir.setDirection(Dir.EAST);
 						break;
 					case(Keyboard.KEY_NUMPAD7):
-						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
-						e.getComponent(Direction.class).setDirection(Dir.NORTHWEST);
+						pos.setX(pos.getX()-1);
+						pos.setY(pos.getY()+1);
+						dir.setDirection(Dir.NORTHWEST);
 						break;
 					case(Keyboard.KEY_NUMPAD9):
-						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()+1);
-						e.getComponent(Direction.class).setDirection(Dir.NORTHEAST);
+						pos.setX(pos.getX()+1);
+						pos.setY(pos.getY()+1);
+						dir.setDirection(Dir.NORTHEAST);
 						break;
 					case(Keyboard.KEY_NUMPAD3):
-						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
-						e.getComponent(Direction.class).setDirection(Dir.SOUTHEAST);
+						pos.setX(pos.getX()+1);
+						pos.setY(pos.getY()-1);
+						dir.setDirection(Dir.SOUTHEAST);
 						break;
 					case(Keyboard.KEY_NUMPAD1):
-						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
-						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
-						e.getComponent(Direction.class).setDirection(Dir.SOUTHWEST);
+						pos.setX(pos.getX()-1);
+						pos.setY(pos.getY()-1);
+						dir.setDirection(Dir.SOUTHWEST);
 						break;
 				}
 				i.resetKey();
