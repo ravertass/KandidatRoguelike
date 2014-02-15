@@ -47,12 +47,14 @@ public class RenderingSystem implements ISystem {
 	public void update(World world) { // stupid solution, make it nondependant on world
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
+		Position pos = new Position(0, 0);
 		
 		for(int x=0;x<world.getWorldWidth();x++){
 			for(int y=0;y<world.getWorldHeight();y++){
-				Tile tile = world.getTile(x,y);;
+				Tile tile = world.getTile(x,y);
 				//System.out.println("TILE  "+tile.getSprite()==null);
-				draw(tile.getSprite(),new Position(x,y));
+				pos.set(x, y);
+				draw(tile.getSprite(),pos);
 			}
 		}
 	}

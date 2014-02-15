@@ -24,6 +24,10 @@ public class Input implements IComponent {
 		return nextKey;
 	}
 	
+	public Pair<Integer,Integer> getNextMouseClick() {
+		return nextMouseClick;
+	}
+	
 	public void resetKey() {
 		nextKey = -1;
 	}

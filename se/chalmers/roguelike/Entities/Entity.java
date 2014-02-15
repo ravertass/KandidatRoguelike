@@ -38,6 +38,8 @@ public class Entity {
 			componentKey |= Engine.CompDirection;
 		} else if(compClass == AI.class){
 			componentKey |= Engine.CompAI;
+		} else if(compClass == Highlight.class){
+			componentKey |= Engine.CompHighlight;
 		}
 		System.out.println("New compkey: "+componentKey); // debug
 	}

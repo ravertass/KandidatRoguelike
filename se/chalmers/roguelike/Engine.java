@@ -21,12 +21,14 @@ public class Engine {
 	public static final int CompTurnsLeft = 1 << 5;
 	public static final int CompDirection = 1 << 6;
 	public static final int CompAI = 1 << 7;
+	public static final int CompHighlight = 1 << 8;
 	
 	// Constants: System requirements:
 	public static final int inputSysReq = CompInput;
 	public static final int renderingSysReq = CompSprite | CompPosition;
-	public static final int moveSysReq = CompInput | CompPosition;
+	public static final int moveSysReq = CompInput | CompPosition | CompDirection;
 	public static final int mobSpriteSysReq = CompSprite | CompDirection;
+	public static final int highlightSysReq = CompSprite | CompPosition | CompInput | CompHighlight;
 	
 	private long lastUpdate;
 	/// private int fps; // updates per second, not necessarly fps
@@ -40,6 +42,7 @@ public class Engine {
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
 	private MobSpriteSystem mobSpriteSys;
+	private HighlightSystem highlightSys;
 	
 	public Engine() {
 		System.out.println("Starting new engine.");
@@ -54,7 +57,7 @@ public class Engine {
 	}
 	
 	public void removeEntity(Entity entity){
-		// maybe return a bool if it could remove it?¨
+		// maybe return a bool if it could remove it?ï¿½
 		// Check if removals really work properly or if we need to write some equals function 
 		entities.remove(entity);
 		addOrRemoveEntity(entity, true);
@@ -85,11 +88,20 @@ public class Engine {
 		}
 		if((compKey & mobSpriteSysReq) == mobSpriteSysReq) {
 			if(remove){
-				mobSpriteSys.addEntity(entity);
+				mobSpriteSys.removeEntity(entity);
 			} else {
 				mobSpriteSys.addEntity(entity);
 			}
 		}
+		if((compKey & highlightSysReq) == highlightSysReq) {
+			System.out.println("fkjasfhalk");
+			if(remove) {
+				highlightSys.removeEntity(entity);
+			} else {
+				highlightSys.addEntity(entity);
+			}
+		}
+			
 	}
 	
 	/**
@@ -98,6 +110,7 @@ public class Engine {
 	public void run(){
 //		entityCreator.createPlayer(); 	// Debug, testing EC
 		entityCreator.createPlayer();
+		entityCreator.createHighlight();
 //		System.out.println("FOOO: "+entities.get(0).equals(entities.get(1)));
 		//for(int i=0;i<100;i++){
 		
@@ -108,6 +121,7 @@ public class Engine {
 			inputSys.update();
 			moveSys.update();
 			mobSpriteSys.update();
+			highlightSys.update();
 		}
 		
 		//System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());
@@ -144,6 +158,7 @@ public class Engine {
 		inputSys = new InputSystem();
 		moveSys = new MoveSystem(world); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
+		highlightSys = new HighlightSystem();
 	}
 	
 	/**
