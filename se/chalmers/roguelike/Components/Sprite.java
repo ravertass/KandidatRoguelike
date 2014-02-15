@@ -120,7 +120,7 @@ public class Sprite implements IComponent {
 	 * which is a float between 0 and 1
 	 */
 	public float getLowerRightX() {
-		float x = ((float) (spriteX * size) + (size - 1)) / spritesheet.getTextureWidth(); 
+		float x = ((float) (spriteX * size) + (size)) / spritesheet.getTextureWidth(); 
 		return x;
 	}
 	
@@ -129,7 +129,7 @@ public class Sprite implements IComponent {
 	 * which is a float between 0 and 1
 	 */
 	public float getLowerRightY() {
-		float y = ((float) (spriteY * size) + (size - 1)) / spritesheet.getTextureHeight(); 
+		float y = ((float) (spriteY * size) + (size)) / spritesheet.getTextureHeight(); 
 		return y;
 	}
 	/**
