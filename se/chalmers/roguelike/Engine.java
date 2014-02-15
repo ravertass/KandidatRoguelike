@@ -94,7 +94,6 @@ public class Engine {
 			}
 		}
 		if((compKey & highlightSysReq) == highlightSysReq) {
-			System.out.println("fkjasfhalk");
 			if(remove) {
 				highlightSys.removeEntity(entity);
 			} else {
