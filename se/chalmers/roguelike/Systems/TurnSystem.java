@@ -23,7 +23,7 @@ public class TurnSystem implements ISystem {
 		// Otherwise: Reset turns
 		for(Entity e : entities){
 			int turnsLeft = e.getComponent(TurnsLeft.class).getTurnsLeft();
-			System.out.println("RESETTING SOME TURNS FROM "+turnsLeft);
+//			System.out.println("RESETTING SOME TURNS FROM "+turnsLeft);
 			e.getComponent(TurnsLeft.class).setTurnsLeft(++turnsLeft);
 		}
 	}
