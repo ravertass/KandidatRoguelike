@@ -69,12 +69,12 @@ public class MoveSystem implements ISystem {
 					case(Keyboard.KEY_NUMPAD3):
 						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()+1);
 						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
-						e.getComponent(Direction.class).setDirection(Dir.NORTHEAST);
+						e.getComponent(Direction.class).setDirection(Dir.SOUTHEAST);
 						break;
 					case(Keyboard.KEY_NUMPAD1):
 						e.getComponent(Position.class).setX(e.getComponent(Position.class).getX()-1);
 						e.getComponent(Position.class).setY(e.getComponent(Position.class).getY()-1);
-						e.getComponent(Direction.class).setDirection(Dir.NORTHEAST);
+						e.getComponent(Direction.class).setDirection(Dir.SOUTHWEST);
 						break;
 				}
 				i.resetKey();
