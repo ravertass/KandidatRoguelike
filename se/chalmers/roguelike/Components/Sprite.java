@@ -22,9 +22,11 @@ public class Sprite implements IComponent {
 	private Texture spritesheet;
 	private int size; // both width and height, in pixels, of individual sprites
 	private int spriteX, spriteY; // the (tile) coordinates for current sprite
+	private boolean visible;
 	
 	public Sprite(String fileName) {
 		this(fileName, STANDARD_SIZE);
+		visible = true;
 	}
 	
 	/**
@@ -130,6 +132,13 @@ public class Sprite implements IComponent {
 		float y = ((float) (spriteY * size) + (size - 1)) / spritesheet.getTextureHeight(); 
 		return y;
 	}
+	/**
+	 * 
+	 * @return If the sprite should be drawn or not
+	 */
+	public boolean getVisability() {
+		return this.visible;
+	}
 	
 	/**
 	 * Set the tile x coord fo the current sprite
@@ -147,5 +156,12 @@ public class Sprite implements IComponent {
 	 */
 	public void setSpriteY(int spriteY) {
 		this.spriteY = spriteY;
+	}
+	/**
+	 * Set a boolean value if the sprite should be drawn.
+	 * @param visible
+	 */
+	public void setVisibility(boolean visible) {
+		this.visible = visible;
 	}
 }

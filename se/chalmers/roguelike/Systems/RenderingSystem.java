@@ -93,6 +93,8 @@ public class RenderingSystem implements ISystem {
 	private void drawEntity(Entity entity) {
 		// Get the relevant components from the entity
 		Sprite sprite = entity.getComponent(Sprite.class);
+		if(!sprite.getVisability())
+			return;
 		Position position = entity.getComponent(Position.class);
 		
 		Texture texture = sprite.getTexture();
