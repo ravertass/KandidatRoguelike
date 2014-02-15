@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.TurnsLeft;
@@ -28,8 +29,11 @@ public class MoveSystem implements ISystem {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
 			int turns = e.getComponent(TurnsLeft.class).getTurnsLeft();
-			if(i.getNextKey() != -1 && turns > 0) { // Could be usefull later when we actually reset turns
+			if(i.getNextKey() != -1 && e.getComponent(TurnsLeft.class).getTurnsLeft() > 0) { // Could be usefull later when we actually reset turns
 			//if(i.getNextKey() != -1) {
+				if((e.getComponentKey() & Engine.CompAI) == Engine.CompAI){
+					System.out.println("AI DOING HIS THING");
+				}
 				int key = i.getNextKey();
 				if(key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
 					moveEntity(e, 0, 1, Dir.NORTH);
@@ -65,9 +69,20 @@ public class MoveSystem implements ISystem {
 		Direction dir = e.getComponent(Direction.class);
 		TurnsLeft turns = e.getComponent(TurnsLeft.class);
 		if(world.isWalkable(pos.getX()+x,pos.getY()+y)){
+// 			System.out.println("AI MOVING");
+			// Debug
+			if((e.getComponentKey() & Engine.CompAI) == Engine.CompAI){
+				System.out.println("AI MOVING");
+			}
 			pos.set(pos.getX()+x, pos.getY()+y);
 			turns.setTurnsLeft(turns.getTurnsLeft()-1);
-			System.out.println("Turns left for entity: "+turns.getTurnsLeft());
+			
+			// Debug
+			if((e.getComponentKey() & Engine.CompAI) == Engine.CompAI){
+				System.out.println("Turns left for AI: "+turns.getTurnsLeft());
+			} else {
+				System.out.println("Turns left for player: "+turns.getTurnsLeft());
+			}
 		}
 		dir.setDirection(direction);
 	}

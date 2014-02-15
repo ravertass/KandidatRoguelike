@@ -25,7 +25,7 @@ public class InputSystem implements ISystem {
 		
 	public void update() {
 		if(player == null){
-			return;
+			return; // keep to avoid crashesh? Remove otherwise
 		}
 		while(Keyboard.next()){
 			if(Keyboard.getEventKeyState()){
@@ -52,18 +52,21 @@ public class InputSystem implements ISystem {
 	 * @param e
 	 */
 	public void addEntity(Entity e) {
+		/*
 		if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
 			player = e;
 		} else {
 			entities.add(e);
-		}
+		}*/
+		player = e;
 	}
 	/**
 	 * Removes and effected entity from the list of effected entities.
 	 * @param e
 	 */
 	public void removeEntity(Entity e) {
-		entities.remove(e);
+		// entities.remove(e);
+		player = e;
 	}
 	
 
