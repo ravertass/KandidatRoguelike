@@ -37,11 +37,12 @@ public class AISystem implements ISystem {
 			}
 			
 			Input input = e.getComponent(Input.class);
-			int randNr = rand.nextInt(9);
+			
 			int x = e.getComponent(Position.class).getX();
 			int y = e.getComponent(Position.class).getY();
-			boolean done = true;
+			boolean done = false;
 			while (!done) {
+				int randNr = rand.nextInt(8);
 				if(randNr==0 && world.getTile(x - 1, y + 1).isWalkable()){
 					input.setNextKey(Keyboard.KEY_Q);
 					done = true;
