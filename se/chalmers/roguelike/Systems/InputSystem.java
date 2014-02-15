@@ -2,11 +2,11 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
-import org.lwjgl.input.*;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
-import se.chalmers.roguelike.Engine;
-import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.util.Pair;
 
 /**
@@ -19,22 +19,19 @@ public class InputSystem implements ISystem {
 	 * The effected entities.
 	 */
 	private ArrayList<Entity> entities;
-	private Entity player;
 
 	public InputSystem() {
 		entities = new ArrayList<Entity>();
 	}
 
 	public void update() {
-		if (player == null) {
-			return; // keep to avoid crashesh? Remove otherwise
-		}
-		while (Keyboard.next()) {
-			if (Keyboard.getEventKeyState()) {
+		while(Keyboard.next()){
+			if(Keyboard.getEventKeyState()){
 				if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
 					System.exit(0);
-				player.getComponent(Input.class).setNextKey(
-						Keyboard.getEventKey());
+				for (Entity e : entities) {
+					e.getComponent(Input.class).setNextKey(Keyboard.getEventKey());
+				}
 			}
 		}
 		// System.out.println("DX: " + Mouse.getX());
@@ -59,11 +56,7 @@ public class InputSystem implements ISystem {
 	 * @param e
 	 */
 	public void addEntity(Entity e) {
-		/*
-		 * if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
-		 * player = e; } else { entities.add(e); }
-		 */
-		player = e;
+			entities.add(e);
 	}
 
 	/**
@@ -72,8 +65,7 @@ public class InputSystem implements ISystem {
 	 * @param e
 	 */
 	public void removeEntity(Entity e) {
-		// entities.remove(e);
-		player = e;
+		 entities.remove(e);
 	}
 
 }
