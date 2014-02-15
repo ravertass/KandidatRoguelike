@@ -1,5 +1,6 @@
 package se.chalmers.roguelike;
 
+import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
@@ -24,14 +25,24 @@ public class EntityCreator {
 		Entity player = new Entity();
 		player.add(new Health(100));
 		player.add(new TurnsLeft(1));
-		player.add(input);
+		player.add(new Input());
 		player.add(new Sprite("player"));
 		player.add(new Position(10,10));
 		player.add(new Direction());
 		player.add(new Player());
-		//engine.addToInputSys(player);
-		//engine.addToRenderingSys(player); // depreached, left to show
-		engine.addEntity(player); // should this be used? possibly just pass it to system directly
+		engine.addEntity(player);
+	}
+	
+	public void createEnemy(){
+		Entity enemy = new Entity();
+		enemy.add(new Health(100));
+		enemy.add(new TurnsLeft(1));
+		enemy.add(new Input()); // readd?
+		enemy.add(new Sprite("guy"));
+		enemy.add(new Position(11,10));
+		enemy.add(new Direction());
+		enemy.add(new AI());
+		engine.addEntity(enemy);
 	}
 	
 	public void createHighlight() {

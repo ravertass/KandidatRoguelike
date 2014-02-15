@@ -24,11 +24,12 @@ public class Engine {
 	public static final int CompCamera = 1 << 10;
 	
 	// Constants: System requirements:
-	public static final int inputSysReq = CompInput;
+	public static final int inputSysReq = CompInput | CompPlayer;
 	public static final int renderingSysReq = CompSprite | CompPosition;
 	public static final int moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
 	public static final int mobSpriteSysReq = CompSprite | CompDirection;
 	public static final int highlightSysReq = CompSprite | CompPosition | CompInput | CompHighlight;
+	public static final int aiSysReq = CompAI | CompInput;
 	
 	private long lastUpdate;
 	/// private int fps; // updates per second, not necessarly fps
@@ -45,6 +46,7 @@ public class Engine {
 	private HighlightSystem highlightSys;
 	private Entity player; // TODO: remove somehow?
 	private TurnSystem turnSystem;
+	private AISystem aiSystem;
 	
 	private enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -132,7 +134,9 @@ public class Engine {
 		if((compKey & CompTurnsLeft) == CompTurnsLeft){
 			turnSystem.addEntity(entity);
 		}
-			
+		if((compKey & aiSysReq) == aiSysReq){
+			aiSystem.addEntity(entity);
+		}
 	}
 	
 	/**
@@ -140,6 +144,7 @@ public class Engine {
 	 */
 	public void run(){
 		entityCreator.createPlayer();
+		entityCreator.createEnemy();
 		entityCreator.createHighlight();
 		
 		while(true){
@@ -151,7 +156,7 @@ public class Engine {
 				mobSpriteSys.update();
 				highlightSys.update();
 				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
-					// Run AI-system?
+					aiSystem.update();
 				}
 				turnSystem.update();
 			//} else if(gameState == GameState.MENU) {
@@ -197,6 +202,7 @@ public class Engine {
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem();
 		turnSystem = new TurnSystem();
+		aiSystem = new AISystem();
 		
 	}
 	
