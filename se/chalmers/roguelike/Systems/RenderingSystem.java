@@ -8,6 +8,8 @@ import org.newdawn.slick.opengl.Texture;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.util.Button;
+import se.chalmers.roguelike.util.FontRenderer;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.World.Tile;
@@ -26,6 +28,7 @@ public class RenderingSystem implements ISystem {
 	private ArrayList<Entity> entitiesToDraw;
 	private Camera camera;
 	private Entity player;
+	private FontRenderer fontRenderer;
 	
 	private final int DISPLAY_WIDTH = 1024;
 	private final int DISPLAY_HEIGHT = 768;
@@ -34,6 +37,10 @@ public class RenderingSystem implements ISystem {
 		// Magic tricks done by lwjgl
 		setupDisplay();
 		setupOpenGL();
+		
+		fontRenderer = new FontRenderer();
+		fontRenderer.load();
+		
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
 	}
@@ -182,11 +189,45 @@ public class RenderingSystem implements ISystem {
 	    entitiesToDraw.remove(entity);
     }
 	
-	public void drawMenu(){
-		int height = Display.getHeight();
-		int width = Display.getWidth();
-		
-	}
+	public void drawMenu(String[] menuItems) {
+					
+			int x = 64;
+			int height = Display.getDisplayMode().getHeight();
+			int width = Display.getDisplayMode().getWidth();
+					
+					
+			//Stuff is upside down without this
+			glDisable(GL_LIGHTING);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho(0, width, height, 0, 1, -1);
+			
+			glMatrixMode(GL_MODELVIEW);
+			glPushMatrix();
+			glLoadIdentity();
+					
+			int y = height/2;
+		 			
+			for (String s : menuItems){
+				fontRenderer.draw(x, y, s);
+				y += 40;
+			}
+					
+			Button button = new Button();
+			button.addButton(x, height-140, "menu_button");
+			button.draw();
+					
+			//create a rectangle (black?)
+			/*glBegin(GL_QUADS);
+				glVertex2f(width/2, height/2);
+				glVertex2f(width/2+100, height/2);
+				glVertex2f(width/2+100, height/2+32);
+				glVertex2f(width/2, height/2+32);
+			glEnd();
+			*/
+			Display.update();
+			Display.sync(60);
+		}
 	
 	public void setCamera(Camera c) {
 		this.camera = c;

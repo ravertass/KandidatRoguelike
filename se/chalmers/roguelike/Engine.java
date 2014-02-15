@@ -164,7 +164,7 @@ public class Engine {
 				//add system  that is used in the overworld
 			} else if(gameState == GameState.MAIN_MENU) {
 				//TODO
-				renderingSys.drawMenu();
+				MainMenu.getInstance().show(renderingSys);
 			}
 		}
 	}

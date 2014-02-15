@@ -44,7 +44,7 @@ public class Entity {
 		} else if(compClass == Player.class){
 			componentKey |= Engine.CompPlayer;
 		}
-		System.out.println("New compkey: "+componentKey); // debug
+//		System.out.println("New compkey: "+componentKey); // debug
 	}
 	
 	public int getComponentKey(){
