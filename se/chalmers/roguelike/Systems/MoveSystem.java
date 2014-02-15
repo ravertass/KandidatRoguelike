@@ -52,7 +52,7 @@ public class MoveSystem implements ISystem {
 						pos.setY(pos.getY()+1);
 						dir.setDirection(Dir.NORTHWEST);
 					}
-					else if(key == Keyboard.KEY_NUMPAD9 || key == Keyboard.KEY_E) {
+					else if(key == Keyboard.KEY_E || key == Keyboard.KEY_NUMPAD9) {
 						pos.setX(pos.getX()+1);
 						pos.setY(pos.getY()+1);
 						dir.setDirection(Dir.NORTHEAST);
