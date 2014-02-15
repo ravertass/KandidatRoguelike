@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.util.Camera;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -27,14 +28,13 @@ public class RenderingSystem implements ISystem {
 	
 	// The entities that the RenderingSystem draws
 	private ArrayList<Entity> entitiesToDraw;
-	private Entity camera;
+	private Camera camera;
 	private Entity player;
 	
 	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
 		setupDisplay();
 		setupOpenGL();
-		
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
 	}
@@ -43,7 +43,8 @@ public class RenderingSystem implements ISystem {
 	public void update(World world) { // stupid solution, make it nondependant on world
 		// Sets the cameras position to the current position of the player
 		Position playerPos = player.getComponent(Position.class);
-		camera.getComponent(Position.class).set(playerPos.getX()-CAMERA_WIDTH/2, playerPos.getY()-CAMERA_HEIGHT/2);
+		System.out.println(camera);
+		camera.setPosition(new Position(playerPos.getX()-CAMERA_WIDTH/2, playerPos.getY()-CAMERA_HEIGHT/2));
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
 		Position pos = new Position(playerPos.getX()-CAMERA_WIDTH/2, playerPos.getY()-CAMERA_HEIGHT/2);
@@ -116,7 +117,7 @@ public class RenderingSystem implements ISystem {
 		int size = sprite.getSize();
 		
 		// Get the camera's position
-		Position camPos = camera.getComponent(Position.class);
+		Position camPos = camera.getPosition();
 		int camX = camPos.getX();
 		int camY = camPos.getY();
 		
@@ -161,9 +162,7 @@ public class RenderingSystem implements ISystem {
 	public void addEntity(Entity entity) {
 		if((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
 			this.player = entity;
-		} else if((entity.getComponentKey() & Engine.CompCamera) == Engine.CompCamera) {
-			this.camera = entity;
-		}
+		} 
 		entitiesToDraw.add(entity);
 	}
 	
@@ -176,5 +175,9 @@ public class RenderingSystem implements ISystem {
 		int height = Display.getHeight();
 		int width = Display.getWidth();
 		
+	}
+	
+	public void setCamera(Camera c) {
+		this.camera = c;
 	}
 }
