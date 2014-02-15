@@ -47,17 +47,15 @@ public class RenderingSystem implements ISystem {
 	
 	
 	public void update(World world) { // stupid solution, make it nondependant on world
-		
 		// Sets the cameras position to the current position of the player
 		Position playerPos = player.getComponent(Position.class);
 		camera.getComponent(Position.class).set(playerPos.getX(), playerPos.getY());
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
 		Position pos = new Position(playerPos.getX()-CAMERA_WIDTH/2, playerPos.getY()-CAMERA_HEIGHT/2);
-		Position drawPos = pos;
-		for(int x = pos.getX(); x < pos.getX()+CAMERA_WIDTH; x++) {
-			for(int y=pos.getY(); y < pos.getY()+CAMERA_HEIGHT; y++) {
-				System.out.println(x+" , "+y);
+		Position drawPos = new Position(pos.getX(), pos.getY());
+		for(int x = pos.getX()-CAMERA_WIDTH/2; x < pos.getX() + CAMERA_WIDTH; x++) {
+			for(int y = pos.getY()-CAMERA_HEIGHT/2; y < pos.getY() + CAMERA_HEIGHT; y++) {
 				Tile tile = world.getTile(x,y);
 				drawPos.set(x, y);
 				draw(tile.getSprite(),drawPos);
