@@ -20,7 +20,6 @@ public class HighlightSystem implements ISystem {
 
 	@Override
 	public void update() {
-		System.out.println(entities.size());
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
 			if(i.getNextMouseClick().getFirst() >= 0) {
