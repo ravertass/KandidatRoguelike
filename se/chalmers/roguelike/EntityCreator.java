@@ -1,5 +1,6 @@
 package se.chalmers.roguelike;
 
+import se.chalmers.roguelike.Components.Camera;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
@@ -18,6 +19,13 @@ public class EntityCreator {
 	public EntityCreator(Engine engine){
 		this.engine = engine;
 		this.input = new Input();
+	}
+	
+	public void createCamera() {
+		Entity camera = new Entity();
+		camera.add(new Position(0,0));
+		camera.add(new Camera());
+		engine.addEntity(camera);
 	}
 	
 	public void createPlayer(){

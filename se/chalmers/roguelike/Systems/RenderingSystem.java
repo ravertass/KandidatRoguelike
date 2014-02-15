@@ -35,12 +35,6 @@ public class RenderingSystem implements ISystem {
 		setupDisplay();
 		setupOpenGL();
 		
-		// Create a camera entity
-		camera = new Entity();
-		// Kamerans position får helt enkelt vara noll-noll, tills vidare
-		Position camPosition = new Position(0,0);
-		camera.add(camPosition);
-		
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
 	}
@@ -167,6 +161,8 @@ public class RenderingSystem implements ISystem {
 	public void addEntity(Entity entity) {
 		if((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
 			this.player = entity;
+		} else if((entity.getComponentKey() & Engine.CompCamera) == Engine.CompCamera) {
+			this.camera = entity;
 		}
 		entitiesToDraw.add(entity);
 	}
