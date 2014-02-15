@@ -32,7 +32,7 @@ public class HighlightSystem implements ISystem {
 				e.getComponent(Sprite.class).setVisibility(true);
 				i.resetMouse();
 			} else if (Mouse.isButtonDown(1)) {
-				e.getComponent(Position.class).set(Mouse.getX()/32, Mouse.getY()/32);
+				e.getComponent(Position.class).set((Mouse.getX()/32)+camera.getPosition().getX(), (Mouse.getY()/32)+camera.getPosition().getY());
 			}
 		}
 		
