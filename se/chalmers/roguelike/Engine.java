@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Entities.Entity;
 
 public class Engine {
@@ -39,11 +40,13 @@ public class Engine {
 	
 	// Systems:
 	private World world;
-	private InputSystem inputSys; // todo: Don't have it public
+	private InputSystem inputSys;
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
 	private MobSpriteSystem mobSpriteSys;
 	private HighlightSystem highlightSys;
+	private Entity player; // TODO: remove somehow?
+	private TurnSystem turnSystem;
 	
 	private enum GameState {
 		DUNGEON, MENU, OVERWORLD
@@ -107,6 +110,12 @@ public class Engine {
 				highlightSys.addEntity(entity);
 			}
 		}
+		if((compKey & CompPlayer) == CompPlayer) {
+			player = entity;
+		}
+		if((compKey & CompTurnsLeft) == CompTurnsLeft){
+			turnSystem.addEntity(entity);
+		}
 			
 	}
 	
@@ -129,6 +138,10 @@ public class Engine {
 				moveSys.update();
 				mobSpriteSys.update();
 				highlightSys.update();
+				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
+					// Run AI-system?
+				}
+				turnSystem.update();
 			} else if(gameState == GameState.MENU) {
 				//TODO
 			}
@@ -169,6 +182,7 @@ public class Engine {
 		moveSys = new MoveSystem(world); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem();
+		turnSystem = new TurnSystem();
 	}
 	
 	/**
