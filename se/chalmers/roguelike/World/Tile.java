@@ -10,12 +10,12 @@ public class Tile {
 		Sprite sprite;
 		ArrayList<Entity> entities;
 		boolean walkable;
-		boolean blockLineOfSight;
+		boolean blocksLineOfSight;
 		
 		public Tile(Sprite sprite, boolean walkable, boolean blocksLineOfSight) {
 			this.sprite = sprite;
 			this.walkable = walkable;
-			this.blockLineOfSight = blocksLineOfSight;
+			this.blocksLineOfSight = blocksLineOfSight;
 		}
 		
 		/**
@@ -30,12 +30,28 @@ public class Tile {
 			return null;
 		}
 		
-		public boolean containsEntiy(Entity entity) {
+		public boolean containsEntity(Entity entity) {
 			for (Entity e : entities) {
 				if (e.equals(entity))
 					return true;
 			}
 			return false;
+		}
+		
+		public boolean isWalkable() {
+			return walkable;
+		}
+		
+		public void setWalkable(boolean walkable) {
+			this.walkable = walkable;
+		}
+		
+		public boolean blocksLineOfSight() {
+			return blocksLineOfSight;
+		}
+		
+		public void setBlocksLineOfSight(boolean blocksLineOfSight) {
+			this.blocksLineOfSight = blocksLineOfSight;
 		}
 		
 		public void addEntity(Entity e) {
@@ -53,5 +69,7 @@ public class Tile {
 		public void setSprite(Sprite sprite) {
 			this.sprite = sprite;
 		}
+		
+
 		
 }
