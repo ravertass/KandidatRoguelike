@@ -92,9 +92,9 @@ public class Engine {
 	 * Worlds worst game loop.
 	 */
 	public void run(){
-		entityCreator.createPlayer(); 	// Debug, testing EC
+//		entityCreator.createPlayer(); 	// Debug, testing EC
 		entityCreator.createPlayer();
-		System.out.println("FOOO: "+entities.get(0).equals(entities.get(1)));
+//		System.out.println("FOOO: "+entities.get(0).equals(entities.get(1)));
 		//for(int i=0;i<100;i++){
 		
 		
