@@ -30,7 +30,6 @@ public class Engine {
 	public static final int highlightSysReq = CompSprite | CompPosition | CompInput | CompHighlight;
 	public static final int aiSysReq = CompAI | CompInput;
 	
-	private long lastUpdate;
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
 	private ArrayList<Entity> entities; // useless?
@@ -169,26 +168,6 @@ public class Engine {
 				renderingSys.drawMenu();
 			}
 		}
-	}
-	
-	/**
-	 * Returns the current system time.
-	 * @return current system time
-	 */
-	private long getTime(){
-		// better solution with lwjgl?
-		return System.nanoTime()/1000000;
-	}
-	
-	/**
-	 * Gives a delta time since last time it was run.
-	 * @return the since last time getDelta was run
-	 */
-	private int getDelta() {
-		long time = getTime();
-		int delta = (int)(time-lastUpdate);
-		lastUpdate = time;
-		return delta;
 	}
 	
 	/**
