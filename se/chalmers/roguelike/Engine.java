@@ -145,7 +145,7 @@ public class Engine {
 					// Run AI-system?
 				}
 				turnSystem.update();
-			} else if(gameState == GameState.MENU) {
+			//} else if(gameState == GameState.MENU) {
 
 			} else if(gameState == GameState.OVERWORLD) {
 				//TODO
