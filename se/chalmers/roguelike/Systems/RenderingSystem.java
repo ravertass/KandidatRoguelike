@@ -27,6 +27,9 @@ public class RenderingSystem implements ISystem {
 	private Camera camera;
 	private Entity player;
 	
+	private final int DISPLAY_WIDTH = 1024;
+	private final int DISPLAY_HEIGHT = 768;
+	
 	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
 		setupDisplay();
@@ -64,6 +67,8 @@ public class RenderingSystem implements ISystem {
 			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 		}
 		
+		//drawHudBackgorund();
+		
 		// Update and sync display
 		Display.update();
 		Display.sync(60);
@@ -75,7 +80,7 @@ public class RenderingSystem implements ISystem {
 	private void setupOpenGL() {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0, 640, 0, 480, 1, -1);
+		glOrtho(0, DISPLAY_WIDTH, 0, DISPLAY_HEIGHT, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
 		glEnable(GL_TEXTURE_2D); 
 		// Enables the use of transparent PNGs
@@ -88,7 +93,18 @@ public class RenderingSystem implements ISystem {
 	 */
 	private void setupDisplay() {
 		try {
-			Display.setDisplayMode(new DisplayMode(640, 480));
+			DisplayMode displayMode = null;
+	        DisplayMode[] modes = Display.getAvailableDisplayModes();
+
+	        for (int i = 0; i < modes.length; i++)
+	        {
+	            if (modes[i].getWidth() == DISPLAY_WIDTH
+	            && modes[i].getHeight() == DISPLAY_HEIGHT
+	            && modes[i].isFullscreenCapable())
+	              {
+	                   displayMode = modes[i];
+	              }
+	        }
 			Display.setFullscreen(true);
 			Display.setTitle("Crimson Poodle");
 			Display.create();
@@ -173,5 +189,13 @@ public class RenderingSystem implements ISystem {
 	
 	public void setCamera(Camera c) {
 		this.camera = c;
+	}
+	
+	private void drawHudBackground() {
+		
+//		glBegin(GL_QUADS);
+//			glVertex2f(x, y);
+//		glEnd();
+		
 	}
 }

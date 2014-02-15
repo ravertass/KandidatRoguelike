@@ -25,6 +25,9 @@ public class InputSystem implements ISystem {
 	}
 
 	public void update() {
+		if(Keyboard.isKeyDown(Keyboard.KEY_LMETA) && Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+			//TODO set fullscreen
+		}
 		while(Keyboard.next()){
 			if(Keyboard.getEventKeyState()){
 				if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
