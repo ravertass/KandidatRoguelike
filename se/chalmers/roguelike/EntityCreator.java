@@ -1,6 +1,5 @@
 package se.chalmers.roguelike;
 
-import se.chalmers.roguelike.Components.Camera;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;

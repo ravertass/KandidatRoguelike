@@ -28,7 +28,7 @@ public class HighlightSystem implements ISystem {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
 			if(i.getNextMouseClick() == 0) {
-				e.getComponent(Position.class).set(i.getNextMouseClickPos().getFirst()/32, i.getNextMouseClickPos().getSecond()/32);
+				e.getComponent(Position.class).set((i.getNextMouseClickPos().getFirst()/32)+camera.getPosition().getX(), (i.getNextMouseClickPos().getSecond()/32)+camera.getPosition().getY());
 				e.getComponent(Sprite.class).setVisibility(true);
 				i.resetMouse();
 			} else if (Mouse.isButtonDown(1)) {

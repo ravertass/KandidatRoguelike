@@ -2,6 +2,7 @@ package se.chalmers.roguelike;
 
 import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.util.Camera;
 
 import java.util.ArrayList;
 
@@ -57,6 +58,7 @@ public class Engine {
 		entityCreator = new EntityCreator(this);
 		gameState = GameState.DUNGEON;
 		spawnSystems();
+		setCamera();
 	}
 	
 	public void addEntity(Entity entity){
@@ -174,6 +176,13 @@ public class Engine {
 		moveSys = new MoveSystem(world); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem();
+		
+	}
+	
+	private void setCamera() {
+		Camera c = new Camera();
+		highlightSys.setCamera(c);
+		renderingSys.setCamera(c);
 	}
 	
 	/**

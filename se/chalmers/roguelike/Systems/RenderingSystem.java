@@ -43,6 +43,7 @@ public class RenderingSystem implements ISystem {
 	public void update(World world) { // stupid solution, make it nondependant on world
 		// Sets the cameras position to the current position of the player
 		Position playerPos = player.getComponent(Position.class);
+		System.out.println(camera);
 		camera.setPosition(new Position(playerPos.getX()-CAMERA_WIDTH/2, playerPos.getY()-CAMERA_HEIGHT/2));
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
