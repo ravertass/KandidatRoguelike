@@ -27,7 +27,7 @@ public class Engine {
 	// Constants: System requirements:
 	public static final int inputSysReq = CompInput;
 	public static final int renderingSysReq = CompSprite | CompPosition;
-	public static final int moveSysReq = CompInput | CompPosition | CompDirection;
+	public static final int moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
 	public static final int mobSpriteSysReq = CompSprite | CompDirection;
 	public static final int highlightSysReq = CompSprite | CompPosition | CompInput | CompHighlight;
 	

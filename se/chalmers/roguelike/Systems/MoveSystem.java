@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.World.World;
 import se.chalmers.roguelike.Components.Position;
@@ -26,6 +27,8 @@ public class MoveSystem implements ISystem {
 	public void update() {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
+			int turns = e.getComponent(TurnsLeft.class).getTurnsLeft();
+			//if(i.getNextKey() != -1 && turns > 0) { // Could be usefull later when we actually reset turns
 			if(i.getNextKey() != -1) {
 				int key = i.getNextKey();
 				if(key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
@@ -60,8 +63,11 @@ public class MoveSystem implements ISystem {
 	public void moveEntity(Entity e, int x, int y, Dir direction){
 		Position pos = e.getComponent(Position.class);
 		Direction dir = e.getComponent(Direction.class);
+		TurnsLeft turns = e.getComponent(TurnsLeft.class);
 		if(world.isWalkable(pos.getX()+x,pos.getY()+y)){
 			pos.set(pos.getX()+x, pos.getY()+y);
+			turns.setTurnsLeft(turns.getTurnsLeft()-1);
+			System.out.println("Turns left for entity: "+turns.getTurnsLeft());
 		}
 		dir.setDirection(direction);
 	}
