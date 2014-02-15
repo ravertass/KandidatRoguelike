@@ -16,6 +16,8 @@ public class HighlightSystem implements ISystem {
 	
 	Input i;
 	
+	Entity camera;
+	
 	public HighlightSystem() {
 		entities = new ArrayList<Entity>();
 	}
@@ -46,6 +48,10 @@ public class HighlightSystem implements ISystem {
 	public void removeEntity(Entity entity) {
 		entities.remove(entity);
 		
+	}
+	
+	public void setCamera(Entity c) {
+		this.camera = c;
 	}
 	
 

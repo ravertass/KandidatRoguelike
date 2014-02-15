@@ -26,7 +26,6 @@ public class Sprite implements IComponent {
 	
 	public Sprite(String fileName) {
 		this(fileName, STANDARD_SIZE);
-		visible = true;
 	}
 	
 	/**
@@ -45,6 +44,7 @@ public class Sprite implements IComponent {
 		this.size = spriteSize;
 		this.spriteX = spriteX;
 		this.spriteY = spriteY;
+		visible = true;
 	}
 	
 	/**

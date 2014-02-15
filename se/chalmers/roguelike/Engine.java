@@ -24,6 +24,7 @@ public class Engine {
 	public static final int CompAI = 1 << 7;
 	public static final int CompHighlight = 1 << 8;
 	public static final int CompPlayer = 1 << 9;
+	public static final int CompCamera = 1 << 10;
 	
 	// Constants: System requirements:
 	public static final int inputSysReq = CompInput;
@@ -49,7 +50,7 @@ public class Engine {
 	private TurnSystem turnSystem;
 	
 	private enum GameState {
-		DUNGEON, MENU, OVERWORLD
+		DUNGEON, MAIN_MENU, OVERWORLD
 	}
 	private GameState gameState;
 	
@@ -143,7 +144,13 @@ public class Engine {
 				}
 				turnSystem.update();
 			} else if(gameState == GameState.MENU) {
+
+			} else if(gameState == GameState.OVERWORLD) {
 				//TODO
+				//add system  that is used in the overworld
+			} else if(gameState == GameState.MAIN_MENU) {
+				//TODO
+				renderingSys.drawMenu();
 			}
 		}
 		
