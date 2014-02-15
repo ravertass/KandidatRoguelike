@@ -3,6 +3,7 @@ package se.chalmers.roguelike.Systems;
 import java.util.ArrayList;
 
 import se.chalmers.roguelike.Entities.Entity;
+import se.chalmers.roguelike.Components.AI;
 
 public class AISystem implements ISystem {
 
@@ -10,10 +11,24 @@ public class AISystem implements ISystem {
 	 * A list of entities that has some kind of AI
 	 */
 	private ArrayList<Entity> entities;
+	AI ai;
 
 	@Override
 	public void update(){
-		// TODO Auto-generated method stub	
+		for (Entity e : entities){
+			//move, attack or sleep?
+			ai = e.getComponent(AI.class);
+			Entity target = ai.getTarget();
+			if (target != null){
+				track(target);
+			}
+		}
+		
+	}
+
+	private void track(Entity target) {
+		// TODO Auto-generated method stub
+		// implement some algorithm that tries to get to the position of 'target'
 	}
 
 	/**
