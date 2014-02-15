@@ -1,6 +1,6 @@
 package se.chalmers.roguelike.Components;
 
-import se.chalmers.roguelike.Entities.Entity;
+import se.chalmers.roguelike.Entity;
 
 public class AI implements IComponent{
 

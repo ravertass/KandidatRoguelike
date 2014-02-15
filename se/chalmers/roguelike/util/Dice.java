@@ -11,7 +11,6 @@ import java.util.Random;
  */
 public class Dice {
 	
-	
 	/**
 	 * Rolls the given number of dice and returns an ArrayList with the results
 	 * 
@@ -71,8 +70,6 @@ public class Dice {
 		for (Integer roll : rolls) {
 			total += roll;
 		}
-		return total;
-		
+		return total;	
 	}
-	
 }

@@ -2,9 +2,9 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.Entities.Entity;
 /**
  * 
  * This system will figure out the correct sprite coordinates for

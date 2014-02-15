@@ -2,8 +2,8 @@ package se.chalmers.roguelike.World;
 
 import java.util.ArrayList;
 
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.Entities.Entity;
 
 public class Tile {
 		

@@ -1,9 +1,9 @@
 package se.chalmers.roguelike.Tests;
 
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.Systems.MobSpriteSystem;
 import se.chalmers.roguelike.Systems.RenderingSystem;
 

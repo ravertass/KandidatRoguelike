@@ -5,7 +5,7 @@ import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
 
-import se.chalmers.roguelike.Entities.Entity;
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Input;
 
@@ -36,7 +36,7 @@ public class AISystem implements ISystem {
 			Input input = e.getComponent(Input.class);
 			int randNr = rand.nextInt(9);
 			if(randNr==0){
-					input.setNextKey(Keyboard.KEY_Q);
+				input.setNextKey(Keyboard.KEY_Q);
 			} else if(randNr==1){
 				input.setNextKey(Keyboard.KEY_W);
 			} else if(randNr==2){

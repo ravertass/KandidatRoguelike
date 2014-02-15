@@ -24,6 +24,15 @@ public class Sprite implements IComponent {
 	private int spriteX, spriteY; // the (tile) coordinates for current sprite
 	private boolean visible;
 	
+	/**
+	 * A constructor where the starting sprite always is the upper-
+	 * leftmost one in the spritesheet and the sprite size is
+	 * STANDARD_SIZE (see above).
+	 * 
+	 * @param fileName The name of the image file. We're assuming
+	 * that all images are PNGs and that they're all in the /resources/
+	 * directory. Example: For 'resources/guy.png', fileName is 'guy'.
+	 */
 	public Sprite(String fileName) {
 		this(fileName, STANDARD_SIZE);
 	}
@@ -136,7 +145,7 @@ public class Sprite implements IComponent {
 	 * 
 	 * @return If the sprite should be drawn or not
 	 */
-	public boolean getVisability() {
+	public boolean getVisibility() {
 		return this.visible;
 	}
 	

@@ -1,6 +1,6 @@
 package se.chalmers.roguelike.Components;
 /**
- * Placeholder so far
+ * Placeholder so far - only used as a flag.
  * @author twister
  *
  */

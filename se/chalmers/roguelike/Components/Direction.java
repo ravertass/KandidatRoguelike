@@ -1,5 +1,10 @@
 package se.chalmers.roguelike.Components;
 
+/**
+ * 
+ * The direction an entity (usually a mob) is facing.
+ *
+ */
 public class Direction implements IComponent {
 	public enum Dir {
 		NORTH, EAST, SOUTH, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST

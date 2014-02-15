@@ -5,7 +5,6 @@ import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.World;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.Components.TurnsLeft;
-import se.chalmers.roguelike.Entities.Entity;
 
 public class Engine {
 	

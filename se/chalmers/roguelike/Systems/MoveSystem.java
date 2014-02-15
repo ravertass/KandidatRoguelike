@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 
 import se.chalmers.roguelike.Engine;
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.TurnsLeft;
-import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.World.World;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Direction.Dir;

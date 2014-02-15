@@ -2,8 +2,8 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.TurnsLeft;
-import se.chalmers.roguelike.Entities.Entity;
 
 public class TurnSystem implements ISystem {
 	

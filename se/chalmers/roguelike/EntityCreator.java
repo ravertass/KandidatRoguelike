@@ -9,7 +9,6 @@ import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
-import se.chalmers.roguelike.Entities.Entity;
 
 public class EntityCreator {
 	
@@ -37,7 +36,7 @@ public class EntityCreator {
 		Entity enemy = new Entity();
 		enemy.add(new Health(100));
 		enemy.add(new TurnsLeft(1));
-		enemy.add(new Input()); // readd?
+		enemy.add(new Input());
 		enemy.add(new Sprite("guy"));
 		enemy.add(new Position(11,10));
 		enemy.add(new Direction());

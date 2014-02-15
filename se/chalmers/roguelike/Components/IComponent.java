@@ -1,7 +1,7 @@
 package se.chalmers.roguelike.Components;
 
 /**
- * Placeholder class in component-class
+ * The component interface.
  */
 public interface IComponent {
 

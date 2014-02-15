@@ -7,9 +7,9 @@ import org.lwjgl.opengl.*;
 import org.newdawn.slick.opengl.Texture;
 
 import se.chalmers.roguelike.Engine;
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.Entities.Entity;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.World.World;
 import se.chalmers.roguelike.util.Camera;
@@ -104,11 +104,8 @@ public class RenderingSystem implements ISystem {
 	 * @param entity The entity to be drawn
 	 */
 	private void draw(Sprite sprite, Position position) {
-		// Get the relevant components from the entity
-		//Sprite sprite = entity.getComponent(Sprite.class);
-		if(!sprite.getVisability())
+		if(!sprite.getVisibility())
 			return;
-		//Position position = entity.getComponent(Position.class);
 		
 		Texture texture = sprite.getTexture();
 		int size = sprite.getSize();

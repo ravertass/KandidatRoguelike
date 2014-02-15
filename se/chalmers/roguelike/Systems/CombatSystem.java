@@ -2,8 +2,8 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Health;
-import se.chalmers.roguelike.Entities.Entity;
 
 /**
  * This system will handle everything that comes with entities losing and gaining health.
@@ -84,7 +84,7 @@ public class CombatSystem implements ISystem {
 	 */
 	private void die(Entity e) {
 		removeEntity(e);
-		// TODO ligga kvar som död?
+		// TODO ligga kvar som dï¿½d?
 	}
 
 }

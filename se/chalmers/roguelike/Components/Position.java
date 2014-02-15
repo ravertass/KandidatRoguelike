@@ -1,5 +1,10 @@
 package se.chalmers.roguelike.Components;
 
+/**
+ * 
+ * The tile position of en entity in the World.
+ *
+ */
 public class Position implements IComponent {
 	private int x, y;
 	

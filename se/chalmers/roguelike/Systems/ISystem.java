@@ -1,6 +1,6 @@
 package se.chalmers.roguelike.Systems;
 
-import se.chalmers.roguelike.Entities.Entity;
+import se.chalmers.roguelike.Entity;
 
 public interface ISystem {
 	
