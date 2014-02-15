@@ -1,6 +1,7 @@
 package se.chalmers.roguelike.World;
 
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.util.Dice;
 
 public class World {
 	
@@ -19,7 +20,7 @@ public class World {
 		// Debug hardcoded world
 		for(int x=0;x<worldWidth;x++){
 			for(int y=0;y<worldHeight;y++){
-				if(x==5 && y==05){
+				if(Dice.roll(2, 6)>=8 && ((x != 10) || (y != 10))) {
 					Sprite sprite = new Sprite("wall");
 					tiles[x][y] = new Tile(sprite, false, true);
 				} else {
