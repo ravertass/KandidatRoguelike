@@ -26,63 +26,50 @@ public class MoveSystem implements ISystem {
 			Position pos = e.getComponent(Position.class);
 			Direction dir = e.getComponent(Direction.class);
 			if(i.getNextKey() != -1) {
-				switch(i.getNextKey()) {
-					case(Keyboard.KEY_W): 
+				int key = i.getNextKey();
+					if(key == Keyboard.KEY_W || key == Keyboard.KEY_8) {
 						pos.setY(pos.getY()+1);
 						dir.setDirection(Dir.NORTH);
-						break;
-					case(Keyboard.KEY_NUMPAD8):
-						pos.setY(pos.getY()+1);
-						dir.setDirection(Dir.NORTH);
-						break;
-					case(Keyboard.KEY_A):
+					}
+					
+					else if(key == Keyboard.KEY_A || key == Keyboard.KEY_NUMPAD4) {
 						pos.setX(pos.getX()-1);
 						dir.setDirection(Dir.WEST);
-						break;
-					case(Keyboard.KEY_NUMPAD4):
-						pos.setX(pos.getX()-1);
-						dir.setDirection(Dir.WEST);
-						break;
-					case(Keyboard.KEY_S):
+					}
+					
+					else if(key == Keyboard.KEY_S || key == Keyboard.KEY_NUMPAD2) {
 						pos.setY(pos.getY()-1);
 						dir.setDirection(Dir.SOUTH);	
-						break;
-					case(Keyboard.KEY_NUMPAD2):
-						pos.setY(pos.getY()-1);
-						dir.setDirection(Dir.SOUTH);;
-						break;
-					case(Keyboard.KEY_D):
+					}
+					
+					else if(key == Keyboard.KEY_D || key == Keyboard.KEY_NUMPAD6) {
 						pos.setX(pos.getX()+1);
 						dir.setDirection(Dir.EAST);
-						break;
-					case(Keyboard.KEY_NUMPAD6):
-						pos.setX(pos.getX()+1);
-						dir.setDirection(Dir.EAST);
-						break;
-					case(Keyboard.KEY_NUMPAD7):
+					}
+					
+					else if(key == Keyboard.KEY_Q || key == Keyboard.KEY_NUMPAD7) {
 						pos.setX(pos.getX()-1);
 						pos.setY(pos.getY()+1);
 						dir.setDirection(Dir.NORTHWEST);
-						break;
-					case(Keyboard.KEY_NUMPAD9):
+					}
+					else if(key == Keyboard.KEY_NUMPAD9 || key == Keyboard.KEY_E) {
 						pos.setX(pos.getX()+1);
 						pos.setY(pos.getY()+1);
 						dir.setDirection(Dir.NORTHEAST);
-						break;
-					case(Keyboard.KEY_NUMPAD3):
+					}
+					else if(key == Keyboard.KEY_NUMPAD3 || key == Keyboard.KEY_C) {
 						pos.setX(pos.getX()+1);
 						pos.setY(pos.getY()-1);
 						dir.setDirection(Dir.SOUTHEAST);
-						break;
-					case(Keyboard.KEY_NUMPAD1):
+					}
+					else if(key == Keyboard.KEY_NUMPAD1 || key == Keyboard.KEY_Z) {
 						pos.setX(pos.getX()-1);
 						pos.setY(pos.getY()-1);
 						dir.setDirection(Dir.SOUTHWEST);
-						break;
+					}
+					i.resetKey();
 				}
-				i.resetKey();
 			}
-		}
 	}
 
 	@Override
