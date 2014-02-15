@@ -36,6 +36,9 @@ public class World {
 	}
 	
 	public Tile getTile(int x, int y){
+		if(x < 0 || x >= worldHeight || y < 0 || y >= worldHeight){
+			return null;
+		}
 		return tiles[x][y];
 	}
 	
