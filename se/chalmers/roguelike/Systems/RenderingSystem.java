@@ -27,6 +27,7 @@ public class RenderingSystem implements ISystem {
 	// The entities that the RenderingSystem draws
 	private ArrayList<Entity> entitiesToDraw;
 	private Entity camera;
+	private Entity player;
 	
 	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
@@ -45,21 +46,25 @@ public class RenderingSystem implements ISystem {
 	
 	
 	public void update(World world) { // stupid solution, make it nondependant on world
+		
+		// Sets the cameras position to the current position of the player
+		Position playerPos = player.getComponent(Position.class);
+		camera.getComponent(Position.class).set(playerPos.getX(), playerPos.getY());
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
-		Position pos = new Position(0, 0);
-		
-		for(int x=0;x<world.getWorldWidth();x++){
-			for(int y=0;y<world.getWorldHeight();y++){
+		Position pos = new Position(playerPos.getX()-CAMERA_WIDTH/2, playerPos.getY()-CAMERA_HEIGHT/2);
+		Position drawPos = pos;
+		for(int x = pos.getX(); x < pos.getX()+CAMERA_WIDTH; x++) {
+			for(int y=pos.getY(); y < pos.getY()+CAMERA_HEIGHT; y++) {
 				Tile tile = world.getTile(x,y);
-				//System.out.println("TILE  "+tile.getSprite()==null);
-				pos.set(x, y);
-				draw(tile.getSprite(),pos);
+				drawPos.set(x, y);
+				draw(tile.getSprite(),drawPos);
 			}
 		}
 	}
 	
 	public void update(){
+
 		// Draw all entities in system
 		for(Entity entity : entitiesToDraw) {
 			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
@@ -158,6 +163,9 @@ public class RenderingSystem implements ISystem {
 
 	@Override
 	public void addEntity(Entity entity) {
+		if(entity.getComponentKey() == Engine.CompPlayer) {
+			this.player = entity;
+		}
 		entitiesToDraw.add(entity);
 	}
 	
