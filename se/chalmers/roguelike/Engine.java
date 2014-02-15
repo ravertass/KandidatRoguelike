@@ -18,6 +18,7 @@ public class Engine {
 	public static final int CompSprite = 1 << 4;
 	public static final int CompTurnsLeft = 1 << 5;
 	public static final int CompDirection = 1 << 6;
+	public static final int CompAI = 1 << 7;
 	
 	// Constants: System requirements:
 	public static final int inputSysReq = CompInput;

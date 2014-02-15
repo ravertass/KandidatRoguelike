@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Entities.Entity;
 
+/**
+ * This system will handle everything that comes with entities losing and gaining health.
+ * 
+ */
 public class CombatSystem implements ISystem {
 	
 	/**
@@ -50,7 +54,7 @@ public class CombatSystem implements ISystem {
 	public void takeDamage(Entity e, int dmg){
 		Health health = e.getComponent(Health.class);
 		health.setHealth(health.getHealth()-dmg);
-		if (health.getHealth() <= 0){
+		if (health.getHealth() == 0){
 			die(e);
 		}
 	}
