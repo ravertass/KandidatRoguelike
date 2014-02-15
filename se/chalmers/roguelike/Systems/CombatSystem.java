@@ -65,8 +65,8 @@ public class CombatSystem implements ISystem {
 	public void regenerate(Entity e, int regen){
 		Health health = e.getComponent(Health.class);
 		int currentHealth = health.getHealth();
-		if (currentHealth+regen > health.getFullHP()){
-			health.setHealth(health.getFullHP());
+		if (currentHealth+regen > health.getMaxHealth()){
+			health.setHealth(health.getMaxHealth());
 		} else {
 			health.setHealth(currentHealth+regen);
 		}

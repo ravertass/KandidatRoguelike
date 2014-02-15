@@ -67,5 +67,9 @@ public class MobSpriteSystem implements ISystem {
 	public void addEntity(Entity entity) {
 		entities.add(entity);
 	}
+	
+	public void removeEntity(Entity entity) {
+		entities.remove(entity);
+	}
 
 }

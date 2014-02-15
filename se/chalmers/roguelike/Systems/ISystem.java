@@ -7,4 +7,6 @@ public interface ISystem {
 	public void update();
 	
 	public void addEntity(Entity entity);
+	
+	public void removeEntity(Entity entity);
 }

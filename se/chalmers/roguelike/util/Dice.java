@@ -2,7 +2,6 @@ package se.chalmers.roguelike.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -21,10 +20,10 @@ public class Dice {
 	 * @return An ArrayList with the rolled dice.
 	 * 
 	 */
-	public static ArrayList<Integer> rollDice(int numberOfDice, int sizeOfDice){
+	public static ArrayList<Integer> rollDice(int numberOfDice, int sizeOfDice) {
 		Random random = new Random();
 		ArrayList<Integer> rolls = new ArrayList<Integer>();
-		for (int i=0; i<numberOfDice; i++){
+		for (int i=0; i<numberOfDice; i++) {
 			rolls.add(random.nextInt(sizeOfDice)+1);
 		}
 		return rolls;
@@ -37,7 +36,7 @@ public class Dice {
 	 * @param sizeOfDice The number of faces of the dice
 	 * @return The sum of the rolled dice.
 	 */
-	public static int roll(int numberOfDice, int sizeOfDice){
+	public static int roll(int numberOfDice, int sizeOfDice) {
 		ArrayList<Integer> rolls = rollDice(numberOfDice, sizeOfDice);
 		return sum(rolls);
 	}
@@ -48,7 +47,7 @@ public class Dice {
 	 * @param sizeOfDice The number of faces of the dice
 	 * @return The sum of the rolled dice minus the lowest dice.
 	 */
-	public static int rollDropLowest (int numberOfDice, int sizeOfDice){
+	public static int rollDropLowest (int numberOfDice, int sizeOfDice) {
 		ArrayList<Integer> rolls = rollDice(numberOfDice,sizeOfDice);
 		rolls.remove(Collections.min(rolls));
 		return sum(rolls);
@@ -60,16 +59,16 @@ public class Dice {
 	 * @param sizeOfDice The number of faces of the dice
 	 * @return The sum of the rolled dice minus the highest dice.
 	 */
-	public static int rollDropHighest (int numberOfDice, int sizeOfDice){
+	public static int rollDropHighest (int numberOfDice, int sizeOfDice) {
 		ArrayList<Integer> rolls = rollDice(numberOfDice,sizeOfDice);
 		rolls.remove(Collections.max(rolls));
 		return sum(rolls);
 	}
 	
 	
-	private static int sum (ArrayList<Integer> rolls){
+	private static int sum (ArrayList<Integer> rolls) {
 		int total = 0;
-		for (Integer roll : rolls){
+		for (Integer roll : rolls) {
 			total += roll;
 		}
 		return total;
