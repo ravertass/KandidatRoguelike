@@ -6,17 +6,17 @@ public class Health implements IComponent{
 	private int maxHealth;
 	private int invulnerable;
 	
-	public Health(int hp){
+	public Health(int hp) {
 		health = hp;
 		maxHealth = hp;
 		invulnerable = 0;
 	}
 	
-	public void setHealth(int hp){
+	public void setHealth(int hp) {
 		health = hp;
 	}
 	
-	public int getHealth(){
+	public int getHealth() {
 		return health;
 	}
 	
@@ -44,8 +44,12 @@ public class Health implements IComponent{
 	 *  
 	 * @return the maxHealth
 	 */
-	public int getMaxHealth(){
+	public int getMaxHealth() {
 		return maxHealth;
+	}
+	
+	public int getHealthPercentage() {
+		return health/maxHealth;
 	}
 	
 }

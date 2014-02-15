@@ -175,4 +175,10 @@ public class RenderingSystem implements ISystem {
 	public void removeEntity(Entity entity) {
 	    entitiesToDraw.remove(entity);
     }
+	
+	public void drawMenu(){
+		int height = Display.getHeight();
+		int width = Display.getWidth();
+		
+	}
 }

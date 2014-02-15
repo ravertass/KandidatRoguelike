@@ -46,7 +46,7 @@ public class Engine {
 	private HighlightSystem highlightSys;
 	
 	private enum GameState {
-		DUNGEON, MENU, OVERWORLD
+		DUNGEON, MAIN_MENU, OVERWORLD
 	}
 	private GameState gameState;
 	
@@ -129,8 +129,12 @@ public class Engine {
 				moveSys.update();
 				mobSpriteSys.update();
 				highlightSys.update();
-			} else if(gameState == GameState.MENU) {
+			} else if(gameState == GameState.OVERWORLD) {
 				//TODO
+				//add system  that is used in the overworld
+			} else if(gameState == GameState.MAIN_MENU) {
+				//TODO
+				renderingSys.drawMenu();
 			}
 		}
 		
