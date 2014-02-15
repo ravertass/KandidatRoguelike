@@ -26,72 +26,45 @@ public class MoveSystem implements ISystem {
 	public void update() {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
-			Position pos = e.getComponent(Position.class);
-			Direction dir = e.getComponent(Direction.class);
 			if(i.getNextKey() != -1) {
 				int key = i.getNextKey();
 				if(key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
-					if(world.isWalkable(pos.getX(),pos.getY()+1)){
-						pos.setY(pos.getY()+1);
-						dir.setDirection(Dir.NORTH);
-					}
+					moveEntity(e, 0, 1, Dir.NORTH);
 				}
-				
 				else if(key == Keyboard.KEY_A || key == Keyboard.KEY_NUMPAD4) {
-					if(world.isWalkable(pos.getX()-1,pos.getY())){
-						pos.setX(pos.getX()-1);
-						dir.setDirection(Dir.WEST);
-					}
+					moveEntity(e, -1, 0, Dir.WEST);
 				}
-				
 				else if(key == Keyboard.KEY_S || key == Keyboard.KEY_NUMPAD2) {
-					if(world.isWalkable(pos.getX(),pos.getY()-1)){
-						pos.setY(pos.getY()-1);
-						dir.setDirection(Dir.SOUTH);
-					}
+					moveEntity(e, 0, -1, Dir.SOUTH);
 				}
-				
 				else if(key == Keyboard.KEY_D || key == Keyboard.KEY_NUMPAD6) {
-					if(world.isWalkable(pos.getX()+1,pos.getY())){
-						pos.setX(pos.getX()+1);
-						dir.setDirection(Dir.EAST);
-					}
+					moveEntity(e, 1, 0, Dir.EAST);
 				}
-				
 				else if(key == Keyboard.KEY_Q || key == Keyboard.KEY_NUMPAD7) {
-					if(world.isWalkable(pos.getX()-1,pos.getY()+1)){
-						pos.setX(pos.getX()-1);
-						pos.setY(pos.getY()+1);
-						dir.setDirection(Dir.NORTHWEST);
-					}
+					moveEntity(e, -1, +1, Dir.NORTHWEST);
 				}
 				else if(key == Keyboard.KEY_E || key == Keyboard.KEY_NUMPAD9) {
-					if(world.isWalkable(pos.getX()+1,pos.getY()+1)){
-						pos.setX(pos.getX()+1);
-						pos.setY(pos.getY()+1);
-						dir.setDirection(Dir.NORTHEAST);
-					}
+					moveEntity(e, 1, 1, Dir.NORTHEAST);
 				}
 				else if(key == Keyboard.KEY_C || key == Keyboard.KEY_NUMPAD3) {
-					if(world.isWalkable(pos.getX()+1,pos.getY()-1)){
-						pos.setX(pos.getX()+1);
-						pos.setY(pos.getY()-1);
-						dir.setDirection(Dir.SOUTHEAST);
-					}
+					moveEntity(e, 1, -1, Dir.SOUTHEAST);
 				}
 				else if(key == Keyboard.KEY_Z || key == Keyboard.KEY_NUMPAD1) {
-					if(world.isWalkable(pos.getX()-1,pos.getY()-1)){
-						pos.setX(pos.getX()-1);
-						pos.setY(pos.getY()-1);
-						dir.setDirection(Dir.SOUTHWEST);
-					}
+					moveEntity(e, -1, -1, Dir.SOUTHWEST);
 				}
 				i.resetKey();
 			}
 		}
 	}
 	
-	
+	public void moveEntity(Entity e, int x, int y, Dir direction){
+		Position pos = e.getComponent(Position.class);
+		Direction dir = e.getComponent(Direction.class);
+		if(world.isWalkable(pos.getX()+x,pos.getY()+y)){
+			pos.set(pos.getX()+x, pos.getY()+y);
+		}
+		dir.setDirection(direction);
+	}
 	@Override
 	public void addEntity(Entity entity) {
 		entities.add(entity);
