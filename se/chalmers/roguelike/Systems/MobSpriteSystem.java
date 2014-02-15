@@ -47,7 +47,7 @@ public class MobSpriteSystem implements ISystem {
 				sprite.setSpriteY(SY);
 			}
 			
-			if (dir == Direction.Dir.WEST) {
+			if (dir == Direction.Dir.WEST ||dir == Direction.Dir.NORTHWEST || dir == Direction.Dir.SOUTHWEST) {
 				sprite.setSpriteX(WX);
 				sprite.setSpriteY(WY);
 			}
@@ -57,7 +57,7 @@ public class MobSpriteSystem implements ISystem {
 				sprite.setSpriteY(NY);
 			}
 			
-			if (dir == Direction.Dir.EAST) {
+			if (dir == Direction.Dir.EAST || dir == Direction.Dir.SOUTHEAST || dir == Direction.Dir.NORTHEAST) {
 				sprite.setSpriteX(EX);
 				sprite.setSpriteY(EY);
 			}

@@ -2,7 +2,7 @@ package se.chalmers.roguelike.Components;
 
 public class Direction implements IComponent {
 	public enum Dir {
-		NORTH, EAST, SOUTH, WEST
+		NORTH, EAST, SOUTH, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST
 	}
 	
 	private Dir dir;
