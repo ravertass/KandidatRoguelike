@@ -66,8 +66,8 @@ public class RenderingSystem implements ISystem {
 		glMatrixMode(GL_MODELVIEW);
 		glEnable(GL_TEXTURE_2D); 
 		// Enables the use of transparent PNGs
-		//glEnable(GL_BLEND);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	/**

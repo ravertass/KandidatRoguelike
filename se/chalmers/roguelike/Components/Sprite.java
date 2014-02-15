@@ -27,11 +27,36 @@ public class Sprite implements IComponent {
 		this(fileName, STANDARD_SIZE);
 	}
 	
-	public Sprite(String fileName, int size) {
+	/**
+	 * @param fileName The name of the image file. We're assuming
+	 * that all images are PNGs and that they're all in the /resources/
+	 * directory. Example: For 'resources/guy.png', fileName is 'guy'.
+	 * @param spriteSize The size of the individual sprites in the
+	 * spritesheet.
+	 * @param spriteX The tile x coord in the spritesheet for the 
+	 * starting sprite.
+	 * @param spriteY The tile y coord in the spritesheet for the 
+	 * starting sprite.
+	 */
+	public Sprite(String fileName, int spriteSize, int spriteX, int spriteY) {
 		spritesheet = loadTexture(fileName);
-		this.size = size;
-		spriteX = 0;
-		spriteY = 0;
+		this.size = spriteSize;
+		this.spriteX = spriteX;
+		this.spriteY = spriteY;
+	}
+	
+	/**
+	 * A constructor where the starting sprite always is the upper-
+	 * leftmost one in the spritesheet.
+	 * 
+	 * @param fileName The name of the image file. We're assuming
+	 * that all images are PNGs and that they're all in the /resources/
+	 * directory. Example: For 'resources/guy.png', fileName is 'guy'.
+	 * @param spriteSize The size of the individual sprites in the
+	 * spritesheet.
+	 */
+	public Sprite(String fileName, int spriteSize) {
+		this(fileName, spriteSize, 0, 0);
 	}
 	
 	/**
