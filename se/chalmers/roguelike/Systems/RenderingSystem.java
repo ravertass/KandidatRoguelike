@@ -22,10 +22,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class RenderingSystem implements ISystem {
 
-	// Tills vidare ligger dessa här, känns fel	
-	private final int CAMERA_WIDTH = 20; // in tiles
-	private final int CAMERA_HEIGHT = 15; // in tiles
-	
 	// The entities that the RenderingSystem draws
 	private ArrayList<Entity> entitiesToDraw;
 	private Camera camera;
@@ -42,14 +38,16 @@ public class RenderingSystem implements ISystem {
 	
 	public void update(World world) { // stupid solution, make it nondependant on world
 		// Sets the cameras position to the current position of the player
+		int cwidth = camera.getWidth();
+		int cheight = camera.getHeight();
 		Position playerPos = player.getComponent(Position.class);
-		camera.setPosition(new Position(playerPos.getX()-CAMERA_WIDTH/2, playerPos.getY()-CAMERA_HEIGHT/2));
+		camera.setPosition(new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2));
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
-		Position pos = new Position(playerPos.getX()-CAMERA_WIDTH/2, playerPos.getY()-CAMERA_HEIGHT/2);
+		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
 		Position drawPos = new Position(pos.getX(), pos.getY());
-		for(int x = pos.getX()-CAMERA_WIDTH/2; x < pos.getX() + CAMERA_WIDTH; x++) {
-			for(int y = pos.getY()-CAMERA_HEIGHT/2; y < pos.getY() + CAMERA_HEIGHT; y++) {
+		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
+			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
 				Tile tile = world.getTile(x,y);
 				drawPos.set(x, y);
 				if(tile != null) {
@@ -136,8 +134,8 @@ public class RenderingSystem implements ISystem {
 		
 		// We determine if the entity is within the camera's
 		// view; if so, we draw it
-		if (x >= 0 && x < CAMERA_WIDTH * size &&
-				y >= 0 && y < CAMERA_HEIGHT * size) {
+		if (x >= 0 && x < camera.getWidth() * size &&
+				y >= 0 && y < camera.getHeight() * size) {
 			texture.bind();
 			glBegin(GL_QUADS);
 				glTexCoord2f(spriteULX, spriteLRY);

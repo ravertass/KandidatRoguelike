@@ -8,7 +8,6 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Entities.Entity;
 
 public class Engine {
-
 	
 	// Constants: Components
 	public static final int CompCharacter = 1 << 0;
