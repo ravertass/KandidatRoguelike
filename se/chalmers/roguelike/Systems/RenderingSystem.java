@@ -6,6 +6,7 @@ import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 import org.newdawn.slick.opengl.Texture;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Entities.Entity;
@@ -56,6 +57,7 @@ public class RenderingSystem implements ISystem {
 		Position drawPos = pos;
 		for(int x = pos.getX(); x < pos.getX()+CAMERA_WIDTH; x++) {
 			for(int y=pos.getY(); y < pos.getY()+CAMERA_HEIGHT; y++) {
+				System.out.println(x+" , "+y);
 				Tile tile = world.getTile(x,y);
 				drawPos.set(x, y);
 				draw(tile.getSprite(),drawPos);
@@ -163,7 +165,7 @@ public class RenderingSystem implements ISystem {
 
 	@Override
 	public void addEntity(Entity entity) {
-		if(entity.getComponentKey() == Engine.CompPlayer) {
+		if((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
 			this.player = entity;
 		}
 		entitiesToDraw.add(entity);
