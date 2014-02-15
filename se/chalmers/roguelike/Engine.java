@@ -44,10 +44,16 @@ public class Engine {
 	private MobSpriteSystem mobSpriteSys;
 	private HighlightSystem highlightSys;
 	
+	private enum GameState {
+		DUNGEON, MENU, OVERWORLD
+	}
+	private GameState gameState;
+	
 	public Engine() {
 		System.out.println("Starting new engine.");
 		entities = new ArrayList<Entity>();
 		entityCreator = new EntityCreator(this);
+		gameState = GameState.MENU;
 		spawnSystems();
 	}
 	
@@ -115,12 +121,16 @@ public class Engine {
 		
 		
 		while(true){
-			renderingSys.update(world);
-			renderingSys.update();
-			inputSys.update();
-			moveSys.update();
-			mobSpriteSys.update();
-			highlightSys.update();
+			if(gameState == GameState.DUNGEON) {
+				renderingSys.update(world);
+				renderingSys.update();
+				inputSys.update();
+				moveSys.update();
+				mobSpriteSys.update();
+				highlightSys.update();
+			} else if(gameState == GameState.MENU) {
+				//TODO
+			}
 		}
 		
 		//System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());
