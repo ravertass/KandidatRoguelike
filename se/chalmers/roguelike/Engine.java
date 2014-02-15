@@ -22,6 +22,7 @@ public class Engine {
 	public static final int CompDirection = 1 << 6;
 	public static final int CompAI = 1 << 7;
 	public static final int CompHighlight = 1 << 8;
+	public static final int CompPlayer = 1 << 9;
 	
 	// Constants: System requirements:
 	public static final int inputSysReq = CompInput;

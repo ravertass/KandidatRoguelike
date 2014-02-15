@@ -4,6 +4,7 @@ import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
@@ -27,6 +28,7 @@ public class EntityCreator {
 		player.add(new Sprite("player"));
 		player.add(new Position(10,10));
 		player.add(new Direction());
+		player.add(new Player());
 		//engine.addToInputSys(player);
 		//engine.addToRenderingSys(player); // depreached, left to show
 		engine.addEntity(player); // should this be used? possibly just pass it to system directly
