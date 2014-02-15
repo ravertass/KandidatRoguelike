@@ -1,8 +1,10 @@
 package se.chalmers.roguelike;
 
 import se.chalmers.roguelike.Systems.*;
+import se.chalmers.roguelike.World.World;
 
 import java.util.ArrayList;
+
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Entities.Entity;
@@ -33,6 +35,7 @@ public class Engine {
 	private EntityCreator entityCreator;
 	
 	// Systems:
+	private World world;
 	private InputSystem inputSys; // todo: Don't have it public
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
@@ -100,6 +103,7 @@ public class Engine {
 		
 		
 		while(true){
+			renderingSys.update(world);
 			renderingSys.update();
 			inputSys.update();
 			moveSys.update();
@@ -136,6 +140,7 @@ public class Engine {
 	 */
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
+		world = new World();
 		inputSys = new InputSystem();
 		moveSys = new MoveSystem();
 		mobSpriteSys = new MobSpriteSystem();

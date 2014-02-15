@@ -9,7 +9,8 @@ import org.newdawn.slick.opengl.Texture;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Entities.Entity;
-
+import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.World.World;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -27,7 +28,7 @@ public class RenderingSystem implements ISystem {
 	private ArrayList<Entity> entitiesToDraw;
 	private Entity camera;
 	
-	public RenderingSystem() {
+	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
 		setupDisplay();
 		setupOpenGL();
@@ -42,13 +43,23 @@ public class RenderingSystem implements ISystem {
 		entitiesToDraw = new ArrayList<Entity>();
 	}
 	
-	public void update() {
+	public void update(World world) {
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
 		
+		for(int x=0;x<world.getWorldWidth();x++){
+			for(int y=0;y<world.getWorldHeight();y++){
+				Tile tile = world.getTile(x,y);;
+				//System.out.println("TILE  "+tile.getSprite()==null);
+				draw(tile.getSprite(),new Position(x,y));
+			}
+		}
+	}
+	
+	public void update(){
 		// Draw all entities in system
 		for(Entity entity : entitiesToDraw) {
-			drawEntity(entity);
+			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 		}
 		
 		// Update and sync display
@@ -90,12 +101,12 @@ public class RenderingSystem implements ISystem {
 	 * Method to draw an entity to the game window.
 	 * @param entity The entity to be drawn
 	 */
-	private void drawEntity(Entity entity) {
+	private void draw(Sprite sprite, Position position) {
 		// Get the relevant components from the entity
-		Sprite sprite = entity.getComponent(Sprite.class);
+		//Sprite sprite = entity.getComponent(Sprite.class);
 		if(!sprite.getVisability())
 			return;
-		Position position = entity.getComponent(Position.class);
+		//Position position = entity.getComponent(Position.class);
 		
 		Texture texture = sprite.getTexture();
 		int size = sprite.getSize();
