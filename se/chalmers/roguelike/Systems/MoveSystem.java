@@ -81,7 +81,6 @@ public class MoveSystem implements ISystem {
 						break;
 				}
 				i.resetKey();
-				System.out.println(e.getComponent(Direction.class).getDir());
 			}
 		}
 	}
