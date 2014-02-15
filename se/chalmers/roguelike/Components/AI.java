@@ -4,6 +4,9 @@ import se.chalmers.roguelike.Entities.Entity;
 
 public class AI implements IComponent{
 
+	/**
+	 * targets the player if it is close to the AI-entity
+	 */
 	private Entity target;
 	
 	
