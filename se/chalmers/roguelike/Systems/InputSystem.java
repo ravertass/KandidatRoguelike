@@ -34,10 +34,15 @@ public class InputSystem implements ISystem {
 				player.getComponent(Input.class).setNextKey(Keyboard.getEventKey());
 			}
 		}
+//		System.out.println("DX: " + Mouse.getX());
+//		System.out.println("DY: " + Mouse.getY());
 		while(Mouse.next()) {
 			if(Mouse.getEventButtonState()) {
-				player.getComponent(Input.class).setNextMouseClick(
-						new Pair<Integer,Integer>(Mouse.getX(),Mouse.getY()));
+				System.out.println("MouseButton: " + Mouse.getEventButton());
+				
+				for (Entity e : entities) {
+					e.getComponent(Input.class).setNextMouseClick(new Pair<Integer,Integer>(Mouse.getX(),Mouse.getY()), Mouse.getEventButton());
+				}
 			}
 			
 		}

@@ -2,6 +2,8 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
+import org.lwjgl.input.Mouse;
+
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
@@ -22,10 +24,14 @@ public class HighlightSystem implements ISystem {
 	public void update() {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
-			if(i.getNextMouseClick().getFirst() >= 0) {
-				e.getComponent(Position.class).set(i.getNextMouseClick().getFirst()/32, i.getNextMouseClick().getSecond()/32);
+			if(i.getNextMouseClick() == 0) {
+				System.out.println(i.getNextMouseClickPos().getFirst()/32);
+				System.out.println(i.getNextMouseClickPos().getSecond()/32);
+				e.getComponent(Position.class).set(i.getNextMouseClickPos().getFirst()/32, i.getNextMouseClickPos().getSecond()/32);
 				e.getComponent(Sprite.class).setVisibility(true);
 				i.resetMouse();
+			} else if (Mouse.isButtonDown(1)) {
+				e.getComponent(Position.class).set(Mouse.getX()/32, Mouse.getY()/32);
 			}
 		}
 		
