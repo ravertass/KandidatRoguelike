@@ -27,7 +27,7 @@ public class MoveSystem implements ISystem {
 			Direction dir = e.getComponent(Direction.class);
 			if(i.getNextKey() != -1) {
 				int key = i.getNextKey();
-					if(key == Keyboard.KEY_W || key == Keyboard.KEY_8) {
+					if(key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
 						pos.setY(pos.getY()+1);
 						dir.setDirection(Dir.NORTH);
 					}
