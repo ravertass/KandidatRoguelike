@@ -1,13 +1,10 @@
 package se.chalmers.roguelike;
 
+import java.util.ArrayList;
 import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.World;
 import se.chalmers.roguelike.util.Camera;
-
-import java.util.ArrayList;
-
-import se.chalmers.roguelike.Components.Health;
-import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Entities.Entity;
 
 public class Engine {
@@ -41,17 +38,22 @@ public class Engine {
 	
 	// Systems:
 	private World world;
-	private InputSystem inputSys; // todo: Don't have it public
+	private InputSystem inputSys;
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
 	private MobSpriteSystem mobSpriteSys;
 	private HighlightSystem highlightSys;
+	private Entity player; // TODO: remove somehow?
+	private TurnSystem turnSystem;
 	
 	private enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
 	}
 	private GameState gameState;
 	
+	/**
+	 * Sets up the engine and it's variables.
+	 */
 	public Engine() {
 		System.out.println("Starting new engine.");
 		entities = new ArrayList<Entity>();
@@ -61,11 +63,19 @@ public class Engine {
 		setCamera();
 	}
 	
+	/**
+	 * Add entity to the engine and systems.
+	 * @param entity entity to be added to the systems
+	 */
 	public void addEntity(Entity entity){
 		entities.add(entity);
 		addOrRemoveEntity(entity, false);
 	}
 	
+	/**
+	 * Remove entities from the engine and the systems
+	 * @param entity
+	 */
 	public void removeEntity(Entity entity){
 		// maybe return a bool if it could remove it?�
 		// Check if removals really work properly or if we need to write some equals function 
@@ -73,6 +83,12 @@ public class Engine {
 		addOrRemoveEntity(entity, true);
 	}
 	
+	/**
+	 * Handles adding and removal of entities from systems.
+	 * 
+	 * @param entity entity that should be added or removed
+	 * @param remove if true the entity should be removed from systems, if false it will be added
+	 */
 	private void addOrRemoveEntity(Entity entity, boolean remove){		
 		int compKey = entity.getComponentKey(); 
 		if((compKey & inputSysReq) == inputSysReq) {
@@ -110,6 +126,12 @@ public class Engine {
 				highlightSys.addEntity(entity);
 			}
 		}
+		if((compKey & CompPlayer) == CompPlayer) {
+			player = entity;
+		}
+		if((compKey & CompTurnsLeft) == CompTurnsLeft){
+			turnSystem.addEntity(entity);
+		}
 			
 	}
 	
@@ -117,12 +139,8 @@ public class Engine {
 	 * Worlds worst game loop.
 	 */
 	public void run(){
-//		entityCreator.createPlayer(); 	// Debug, testing EC
 		entityCreator.createPlayer();
 		entityCreator.createHighlight();
-//		System.out.println("FOOO: "+entities.get(0).equals(entities.get(1)));
-		//for(int i=0;i<100;i++){
-		
 		
 		while(true){
 			if(gameState == GameState.DUNGEON) {
@@ -132,6 +150,12 @@ public class Engine {
 				moveSys.update();
 				mobSpriteSys.update();
 				highlightSys.update();
+				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
+					// Run AI-system?
+				}
+				turnSystem.update();
+			//} else if(gameState == GameState.MENU) {
+
 			} else if(gameState == GameState.OVERWORLD) {
 				//TODO
 				//add system  that is used in the overworld
@@ -140,10 +164,6 @@ public class Engine {
 				renderingSys.drawMenu();
 			}
 		}
-		
-		//System.out.println("HP: "+entities.get(0).getComponent(Health.class).getHealth());
-		//System.out.println("Next key: "+entities.get(0).getComponent(Input.class).getNextKey());
-		//renderingSys.exit();
 	}
 	
 	/**
@@ -176,9 +196,13 @@ public class Engine {
 		moveSys = new MoveSystem(world); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem();
+		turnSystem = new TurnSystem();
 		
 	}
 	
+	/**
+	 * Sets up the camera
+	 */
 	private void setCamera() {
 		Camera c = new Camera();
 		highlightSys.setCamera(c);
@@ -189,9 +213,6 @@ public class Engine {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		System.out.println(new File("./resources/" + "guy" + ".png").getAbsolutePath());
-
 		new Engine().run();
-
 	}
 }

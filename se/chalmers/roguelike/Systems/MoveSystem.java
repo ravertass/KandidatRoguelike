@@ -28,8 +28,8 @@ public class MoveSystem implements ISystem {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
 			int turns = e.getComponent(TurnsLeft.class).getTurnsLeft();
-			//if(i.getNextKey() != -1 && turns > 0) { // Could be usefull later when we actually reset turns
-			if(i.getNextKey() != -1) {
+			if(i.getNextKey() != -1 && turns > 0) { // Could be usefull later when we actually reset turns
+			//if(i.getNextKey() != -1) {
 				int key = i.getNextKey();
 				if(key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
 					moveEntity(e, 0, 1, Dir.NORTH);
