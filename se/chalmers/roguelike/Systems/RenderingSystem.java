@@ -43,7 +43,8 @@ public class RenderingSystem implements ISystem {
 		entitiesToDraw = new ArrayList<Entity>();
 	}
 	
-	public void update(World world) {
+	
+	public void update(World world) { // stupid solution, make it nondependant on world
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
 		

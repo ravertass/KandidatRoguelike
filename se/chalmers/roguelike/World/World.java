@@ -14,17 +14,24 @@ public class World {
 		worldWidth = 50;
 		worldHeight = 50;
 		tiles = new Tile[worldWidth][worldHeight];
+		
+		
+		// Debug hardcoded world
 		for(int x=0;x<worldWidth;x++){
 			for(int y=0;y<worldHeight;y++){
-				Sprite sprite = new Sprite("floor");
-				tiles[x][y] = new Tile(sprite, true, true);
+				if(x==5 && y==05){
+					Sprite sprite = new Sprite("wall");
+					tiles[x][y] = new Tile(sprite, false, true);
+				} else {
+					Sprite sprite = new Sprite("floor");
+					tiles[x][y] = new Tile(sprite, true, true);
+				}
 			}
 		}
 	}
 	
-	public boolean collisionCheck(int x, int y){
-		//return tiles[x][y].collision();
-		return true;
+	public boolean isWalkable(int x, int y){
+		return tiles[x][y].isWalkable();
 	}
 	
 	public Tile getTile(int x, int y){

@@ -142,7 +142,7 @@ public class Engine {
 		renderingSys = new RenderingSystem();
 		world = new World();
 		inputSys = new InputSystem();
-		moveSys = new MoveSystem();
+		moveSys = new MoveSystem(world); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
 	}
 	
