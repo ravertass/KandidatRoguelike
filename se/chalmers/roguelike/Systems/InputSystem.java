@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.util.Pair;
 
@@ -30,7 +31,8 @@ public class InputSystem implements ISystem {
 				if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
 					System.exit(0);
 				for (Entity e : entities) {
-					e.getComponent(Input.class).setNextKey(Keyboard.getEventKey());
+					if (e.getComponent(Player.class) != null)
+						e.getComponent(Input.class).setNextKey(Keyboard.getEventKey());
 				}
 			}
 		}

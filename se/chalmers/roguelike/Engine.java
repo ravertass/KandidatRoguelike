@@ -180,7 +180,7 @@ public class Engine {
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem();
 		turnSystem = new TurnSystem();
-		aiSystem = new AISystem();
+		aiSystem = new AISystem(world);
 		
 	}
 	
