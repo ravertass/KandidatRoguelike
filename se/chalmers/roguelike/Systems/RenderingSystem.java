@@ -20,8 +20,8 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderingSystem implements ISystem {
 
 	// Tills vidare ligger dessa här, känns fel	
-	private int CAMERA_WIDTH = 15; // in tiles
-	private int CAMERA_HEIGHT = 20; // in tiles
+	private final int CAMERA_WIDTH = 20; // in tiles
+	private final int CAMERA_HEIGHT = 15; // in tiles
 	
 	// The entities that the RenderingSystem draws
 	private ArrayList<Entity> entitiesToDraw;
@@ -64,10 +64,10 @@ public class RenderingSystem implements ISystem {
 		glLoadIdentity();
 		glOrtho(0, 640, 0, 480, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
-		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_TEXTURE_2D); 
 		// Enables the use of transparent PNGs
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	/**
