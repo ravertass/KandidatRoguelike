@@ -35,8 +35,9 @@ public class Engine {
 	private ArrayList<Entity> entities; // useless?
 	private EntityCreator entityCreator;
 	
-	// Systems:
 	private World world;
+	
+	// Systems:
 	private InputSystem inputSys;
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
