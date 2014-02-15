@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
-
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Input;

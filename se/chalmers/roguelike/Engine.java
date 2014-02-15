@@ -22,7 +22,7 @@ public class Engine {
 	public static final int CompCamera = 1 << 10;
 	
 	// Constants: System requirements:
-	public static final int inputSysReq = CompInput | CompPlayer;
+	public static final int inputSysReq = CompInput;
 	public static final int renderingSysReq = CompSprite | CompPosition;
 	public static final int moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
 	public static final int mobSpriteSysReq = CompSprite | CompDirection;

@@ -6,7 +6,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Components.Input;
-import se.chalmers.roguelike.Entities.Entity;
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.util.Pair;
 
 /**
