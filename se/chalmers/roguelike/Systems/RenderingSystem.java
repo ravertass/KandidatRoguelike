@@ -144,4 +144,9 @@ public class RenderingSystem implements ISystem {
 	public void addEntity(Entity entity) {
 		entitiesToDraw.add(entity);
 	}
+	
+	@Override
+	public void removeEntity(Entity entity) {
+	    entitiesToDraw.remove(entity);
+    }
 }
