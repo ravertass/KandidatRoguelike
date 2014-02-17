@@ -58,7 +58,7 @@ public class Engine {
 		System.out.println("Starting new engine.");
 		entities = new ArrayList<Entity>();
 		entityCreator = new EntityCreator(this);
-		gameState = GameState.DUNGEON;
+		gameState = GameState.MAIN_MENU;
 		spawnSystems();
 		setCamera();
 	}
