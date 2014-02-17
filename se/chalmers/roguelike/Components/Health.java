@@ -1,5 +1,9 @@
 package se.chalmers.roguelike.Components;
 
+/**
+ * A health component that is used by entities that can be destroyed or killed
+ * 
+ */
 public class Health implements IComponent{
 	
 	private int health;
@@ -48,6 +52,7 @@ public class Health implements IComponent{
 		return maxHealth;
 	}
 	
+	//can be done in the CombatSystem?
 	public int getHealthPercentage() {
 		return health/maxHealth;
 	}
