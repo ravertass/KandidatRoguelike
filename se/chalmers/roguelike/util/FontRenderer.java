@@ -17,6 +17,7 @@ public class FontRenderer {
 		this(new UnicodeFont(new Font("Times New Roman", Font.BOLD, 20)),
 							 Color.white);
 	}
+	
 	public FontRenderer(UnicodeFont font, Color color)
 	{
 		this.font = font;

@@ -1,9 +1,12 @@
 package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
+import java.awt.Color;
 
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 
 import se.chalmers.roguelike.Engine;
@@ -38,7 +41,12 @@ public class RenderingSystem implements ISystem {
 		setupDisplay();
 		setupOpenGL();
 		
-		fontRenderer = new FontRenderer();
+		try {
+			fontRenderer = new FontRenderer(
+					new UnicodeFont("/resources/fonts/circula-medium.otf", 28, false, true), Color.white);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
 		fontRenderer.load();
 		
 		// Initialize the list of entities to be drawn
@@ -213,18 +221,23 @@ public class RenderingSystem implements ISystem {
 				y += 40;
 			}
 					
-			Button button = new Button();
-			button.addButton(x, height-140, "menu_button");
-			button.draw();
-					
-			//create a rectangle (black?)
-			/*glBegin(GL_QUADS);
-				glVertex2f(width/2, height/2);
-				glVertex2f(width/2+100, height/2);
-				glVertex2f(width/2+100, height/2+32);
-				glVertex2f(width/2, height/2+32);
-			glEnd();
+			
+			/*
+			*	//create a button
+			*
+			*	Button button = new Button();
+			*	button.addButton(x, 40, "menu_button");
+			*	button.draw();
+			*		
+			*	//create a rectangle (black?)
+			*	glBegin(GL_QUADS);
+			*		glVertex2f(width/2, height/2);
+			*		glVertex2f(width/2+100, height/2);
+			*		glVertex2f(width/2+100, height/2+32);
+			*		glVertex2f(width/2, height/2+32);
+			*	glEnd();
 			*/
+			
 			Display.update();
 			Display.sync(60);
 		}
