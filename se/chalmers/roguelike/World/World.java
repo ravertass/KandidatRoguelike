@@ -23,6 +23,9 @@ public class World {
 				if(Dice.roll(2, 6)>=8 && ((x != 10) || (y != 10))) {
 					Sprite sprite = new Sprite("wall");
 					tiles[x][y] = new Tile(sprite, false, true);
+				} else if (x == 0 || y == 0 || x == worldWidth-1 || y == worldHeight-1) {
+					Sprite sprite = new Sprite("wall");
+					tiles[x][y] = new Tile(sprite, false, true);
 				} else {
 					Sprite sprite = new Sprite("floor");
 					tiles[x][y] = new Tile(sprite, true, true);

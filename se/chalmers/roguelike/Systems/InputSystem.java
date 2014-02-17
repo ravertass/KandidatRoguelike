@@ -34,8 +34,9 @@ public class InputSystem implements ISystem {
 				if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
 					System.exit(0);
 				for (Entity e : entities) {
-					if (e.getComponent(Player.class) != null)
+					if (e.getComponent(Player.class) != null){
 						e.getComponent(Input.class).setNextKey(Keyboard.getEventKey());
+					}
 				}
 			}
 		}
