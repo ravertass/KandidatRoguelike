@@ -29,12 +29,7 @@ public class MoveSystem implements ISystem {
 	public void update() {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
-			int turns = e.getComponent(TurnsLeft.class).getTurnsLeft();
 			if(i.getNextKey() != -1 && e.getComponent(TurnsLeft.class).getTurnsLeft() > 0) { // Could be usefull later when we actually reset turns
-			//if(i.getNextKey() != -1) {
-				if((e.getComponentKey() & Engine.CompAI) == Engine.CompAI){
-//					System.out.println("AI DOING HIS THING");
-				}
 				int key = i.getNextKey();
 				if(key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
 					moveEntity(e, 0, 1, Dir.NORTH);
@@ -60,6 +55,9 @@ public class MoveSystem implements ISystem {
 				else if(key == Keyboard.KEY_Z || key == Keyboard.KEY_NUMPAD1) {
 					moveEntity(e, -1, -1, Dir.SOUTHWEST);
 				}
+				else if (key == Keyboard.KEY_NUMPAD5) {
+					e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
+				}
 				i.resetKey();
 			}
 		}
@@ -70,7 +68,6 @@ public class MoveSystem implements ISystem {
 		Direction dir = e.getComponent(Direction.class);
 		TurnsLeft turns = e.getComponent(TurnsLeft.class);
 		if(world.isWalkable(pos.getX()+x,pos.getY()+y)){
-// 			System.out.println("AI MOVING");
 			// Debug
 			if((e.getComponentKey() & Engine.CompAI) == Engine.CompAI){
 				System.out.println("AI MOVING");
@@ -79,14 +76,7 @@ public class MoveSystem implements ISystem {
 				System.out.println("PLAYER MOVING");
 			}
 			pos.set(pos.getX()+x, pos.getY()+y);
-			turns.setTurnsLeft(turns.getTurnsLeft()-1);
-			
-			// Debug
-			if((e.getComponentKey() & Engine.CompAI) == Engine.CompAI){
-//				System.out.println("Turns left for AI: "+turns.getTurnsLeft());
-			} else {
-//				System.out.println("Turns left for player: "+turns.getTurnsLeft());
-			}
+			turns.decreaseTurnsLeft();
 		}
 		dir.setDirection(direction);
 	}

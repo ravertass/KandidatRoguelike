@@ -42,4 +42,8 @@ public class TurnsLeft implements IComponent {
 	public void setTurnsLeft(int turnsLeft){
 		this.turnsLeft = turnsLeft;
 	}
+	
+	public void decreaseTurnsLeft(){
+		turnsLeft -= 1;
+	}
 }
