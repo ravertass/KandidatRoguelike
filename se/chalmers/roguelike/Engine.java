@@ -153,10 +153,11 @@ public class Engine {
 				moveSys.update();
 				mobSpriteSys.update();
 				highlightSys.update();
+				turnSystem.update();
 				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
 					aiSystem.update();
 				}
-				turnSystem.update();
+				
 			//} else if(gameState == GameState.MENU) {
 
 			} else if(gameState == GameState.OVERWORLD) {
