@@ -86,13 +86,6 @@ public class MoveSystem implements ISystem {
 		Direction dir = e.getComponent(Direction.class);
 		TurnsLeft turns = e.getComponent(TurnsLeft.class);
 		if(world.isWalkable(pos.getX()+x,pos.getY()+y)){
-			// Debug
-			if((e.getComponentKey() & Engine.CompAI) == Engine.CompAI){
-				System.out.println("AI MOVING");
-			}
-			if (e.getComponent(Player.class) != null){
-				System.out.println("PLAYER MOVING");
-			}
 			pos.set(pos.getX()+x, pos.getY()+y);
 			turns.decreaseTurnsLeft();
 		}
