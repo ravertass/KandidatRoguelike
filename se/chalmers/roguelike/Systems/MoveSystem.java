@@ -10,17 +10,17 @@ import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.TurnsLeft;
-import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Direction.Dir;
 
 public class MoveSystem implements ISystem {
 	
 	ArrayList<Entity> entities;
-	World world;
+	Dungeon world;
 	Input i;
 	
-	public MoveSystem(World world) {
+	public MoveSystem(Dungeon world) {
 		entities = new ArrayList<Entity>();
 		this.world = world;
 	}

@@ -3,13 +3,13 @@ package se.chalmers.roguelike.World;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.Dice;
 
-public class World {
+public class Dungeon {
 	
 	int worldWidth;
 	int worldHeight;
 	Tile[][] tiles;
 	
-	public World(){
+	public Dungeon(){
 		
 		// Debug world
 		worldWidth = 50;
