@@ -16,7 +16,7 @@ import se.chalmers.roguelike.util.FontRenderer;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.World.Tile;
-import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.util.Camera;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -54,28 +54,35 @@ public class RenderingSystem implements ISystem {
 	}
 	
 	
-	public void update(World world) { // stupid solution, make it nondependant on world
+	public void update(Dungeon dungeon) { // stupid solution, make it nondependant on world
 		// Sets the cameras position to the current position of the player
 		int cwidth = camera.getWidth();
 		int cheight = camera.getHeight();
 		Position playerPos = player.getComponent(Position.class);
+		
+		// It's a bit confusing that the camera is set here...
 		camera.setPosition(new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2));
+		
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
+		
+		// This seems to be unnecessary
 		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
+		
+		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());
 		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
 			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
-				Tile tile = world.getTile(x,y);
+				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
 				if(tile != null) {
-					draw(tile.getSprite(),drawPos);					
+					draw(tile.getSprite(),drawPos);
 				}
 			}
 		}
 	}
 	
-	public void update(){
+	public void update() {
 
 		// Draw all entities in system
 		for(Entity entity : entitiesToDraw) {
@@ -140,7 +147,7 @@ public class RenderingSystem implements ISystem {
 			return;
 		
 		Texture texture = sprite.getTexture();
-		int size = sprite.getSize();
+		int size = sprite.getSize(); // Times two, makes sprites twice as large
 		
 		// Get the camera's position
 		Position camPos = camera.getPosition();

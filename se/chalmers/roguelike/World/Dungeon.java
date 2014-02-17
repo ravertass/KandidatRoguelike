@@ -4,13 +4,14 @@ import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.Dice;
 
 /**
- * World is an class that holds the game world along with several helper 
+ * Dungeon is an class that holds the game world along with several helper 
  * functions for determining if the world can be walked on etc.
  * 
  * @author Anttila
  *
  */
-public class World {
+
+public class Dungeon {
 	
 	private int worldWidth;
 	private int worldHeight;
@@ -23,7 +24,7 @@ public class World {
 	 * @param worldHeight the height of the world
 	 * @param tiles the array of tiles the world should have
 	 */
-	public World(int worldWidth, int worldHeight, Tile[][] tiles){
+	public Dungeon(int worldWidth, int worldHeight, Tile[][] tiles){
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
@@ -33,7 +34,7 @@ public class World {
 	 * Currently generates a new world, will probably be removed in the future
 	 * when a real level generator exists
 	 */
-	public World(){
+	public Dungeon(){
 		
 		// Debug world
 		worldWidth = 50;

@@ -10,7 +10,7 @@ import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.TurnsLeft;
-import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Direction.Dir;
 
@@ -20,7 +20,7 @@ import se.chalmers.roguelike.Components.Direction.Dir;
 public class MoveSystem implements ISystem {
 	
 	ArrayList<Entity> entities;
-	World world;
+	Dungeon world;
 	Input i;
 	
 	/**
@@ -28,9 +28,9 @@ public class MoveSystem implements ISystem {
 	 * 
 	 * @param world the dungeon that the move system currently works on
 	 */
-	public MoveSystem(World world) {
-		entities = new ArrayList<Entity>(); 
-		this.world = world; // todo, fix so it no longer takes in a world? otherwise we need to change it when level does
+	public MoveSystem(Dungeon world) {
+		entities = new ArrayList<Entity>();
+		this.world = world;
 	}
 
 	/**
