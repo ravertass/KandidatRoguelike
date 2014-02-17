@@ -13,7 +13,10 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 import se.chalmers.roguelike.Components.Sprite;
 
-
+/**
+ * This class creates buttons and draw them on the screen
+ *
+ */
 public class Button {
 
     public Texture buttonTexture;
@@ -21,12 +24,16 @@ public class Button {
     public boolean isClicked = false;
     Rectangle bounds = new Rectangle();
 
-
+    /**
+     * create a new button
+     * 
+     * @param x			x-coordinate for where you want to print
+     * @param y			y-coordinate for where you want to print
+     * @param fileName	a .PNG-filename of a file that is in the map /resources
+     */
     public void addButton(int x, int y , String fileName){
     	
 //    	sprite = new Sprite(fileName);
-    	
-    	
         try {
             buttonTexture = TextureLoader.getTexture("PNG", 
             		new FileInputStream(new File("./resources/" + fileName + ".png")));
@@ -40,6 +47,9 @@ public class Button {
         System.out.println("WHY DO I GET PRINTED ALL THE TIME?!");
     }
 
+    /**
+     * draw the button				//possible to do in RenderingSystem?
+     */
     public void draw(){
         if(bounds.contains(Mouse.getX(),(600 - Mouse.getY()))&&Mouse.isButtonDown(0)){
             isClicked=true;
