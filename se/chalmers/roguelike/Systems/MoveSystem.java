@@ -14,22 +14,33 @@ import se.chalmers.roguelike.World.World;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Direction.Dir;
 
+/**
+ * MoveSystem handles moving of entities based on their input
+ */
 public class MoveSystem implements ISystem {
 	
 	ArrayList<Entity> entities;
 	World world;
 	Input i;
 	
+	/**
+	 * Creates a new move system 
+	 * 
+	 * @param world the dungeon that the move system currently works on
+	 */
 	public MoveSystem(World world) {
-		entities = new ArrayList<Entity>();
-		this.world = world;
+		entities = new ArrayList<Entity>(); 
+		this.world = world; // todo, fix so it no longer takes in a world? otherwise we need to change it when level does
 	}
 
-	@Override
+	/**
+	 * Moves entities if they have any turns left and if they have any input
+	 * to ove them
+	 */
 	public void update() {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
-			if(i.getNextKey() != -1 && e.getComponent(TurnsLeft.class).getTurnsLeft() > 0) { // Could be usefull later when we actually reset turns
+			if(i.getNextKey() != -1 && e.getComponent(TurnsLeft.class).getTurnsLeft() > 0) {
 				int key = i.getNextKey();
 				if(key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
 					moveEntity(e, 0, 1, Dir.NORTH);
@@ -62,8 +73,15 @@ public class MoveSystem implements ISystem {
 			}
 		}
 	}
-	
-	public void moveEntity(Entity e, int x, int y, Dir direction){
+	/**
+	 * Checks if the entity can move to a new tile, if so moves it.
+	 * 
+	 * @param e entity to add
+	 * @param x x coordinate of the tile the entity wants to move to
+	 * @param y y coordinate of the tile the entity wants to move to
+	 * @param direction the new direction the player should face towards
+	 */
+	private void moveEntity(Entity e, int x, int y, Dir direction){
 		Position pos = e.getComponent(Position.class);
 		Direction dir = e.getComponent(Direction.class);
 		TurnsLeft turns = e.getComponent(TurnsLeft.class);
@@ -80,12 +98,22 @@ public class MoveSystem implements ISystem {
 		}
 		dir.setDirection(direction);
 	}
-	@Override
+	
+	/**
+	 * Adds an entity to the system
+	 * 
+	 * @param entity entity to add to the system
+	 */
 	public void addEntity(Entity entity) {
 		entities.add(entity);
 		
 	}
 	
+	/**
+	 * Removes an entity from the system
+	 * 
+	 * @param entity entity to remove
+	 */
 	public void removeEntity(Entity entity) {
 		entities.remove(entity);
 	}
