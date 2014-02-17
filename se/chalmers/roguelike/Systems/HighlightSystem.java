@@ -31,16 +31,16 @@ public class HighlightSystem implements ISystem {
 				i.resetMouse();
 			} else if (i.getNextMouseClick() == 0) {
 				e.getComponent(Position.class).set(
-						(i.getNextMouseClickPos().getFirst() / 32)
+						(i.getNextMouseClickPos().getFirst() / 16)
 								+ camera.getPosition().getX(),
-						(i.getNextMouseClickPos().getSecond() / 32)
+						(i.getNextMouseClickPos().getSecond() / 16)
 								+ camera.getPosition().getY());
 				e.getComponent(Sprite.class).setVisibility(true);
 				i.resetMouse();
 			} else if (Mouse.isButtonDown(1)) {
 				e.getComponent(Position.class).set(
-						(Mouse.getX() / 32) + camera.getPosition().getX(),
-						(Mouse.getY() / 32) + camera.getPosition().getY());
+						(Mouse.getX() / 16) + camera.getPosition().getX(),
+						(Mouse.getY() / 16) + camera.getPosition().getY());
 			}
 		}
 

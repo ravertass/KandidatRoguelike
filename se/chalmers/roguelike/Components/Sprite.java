@@ -17,7 +17,7 @@ import org.newdawn.slick.opengl.TextureLoader;
  *
  */
 public class Sprite implements IComponent {
-	private static int STANDARD_SIZE = 32; // The size used in DC mode
+	private static int STANDARD_SIZE = 16; // The size used in DC mode
 	
 	private Texture spritesheet;
 	private int size; // both width and height, in pixels, of individual sprites

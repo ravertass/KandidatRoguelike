@@ -25,7 +25,7 @@ public class EntityCreator {
 		player.add(new Health(100));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
-		player.add(new Sprite("player"));
+		player.add(new Sprite("mobs/mob_knight"));
 		player.add(new Position(10,10));
 		player.add(new Direction());
 		player.add(new Player());
@@ -37,7 +37,7 @@ public class EntityCreator {
 		enemy.add(new Health(100));
 		enemy.add(new TurnsLeft(1));
 		enemy.add(new Input());
-		enemy.add(new Sprite("guy"));
+		enemy.add(new Sprite("mobs/mob_devilmarine"));
 		enemy.add(new Position(11,10));
 		enemy.add(new Direction());
 		enemy.add(new AI());
@@ -46,7 +46,7 @@ public class EntityCreator {
 	
 	public void createHighlight() {
 		Entity highlight = new Entity();
-		highlight.add(new Sprite("highlight"));
+		highlight.add(new Sprite("highlight2"));
 		highlight.add(new Position(10,10));
 		highlight.add(input);
 		highlight.add(new Highlight());
