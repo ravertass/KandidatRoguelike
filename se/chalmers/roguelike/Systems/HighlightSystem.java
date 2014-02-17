@@ -14,7 +14,7 @@ public class HighlightSystem implements ISystem {
 
 	ArrayList<Entity> entities;
 
-	Input i;
+	Input input;
 
 	Camera camera;
 
@@ -25,21 +25,22 @@ public class HighlightSystem implements ISystem {
 	@Override
 	public void update() {
 		for (Entity e : entities) {
-			i = e.getComponent(Input.class);
-			if (Mouse.isButtonDown(1) && i.getNextMouseClick() == 0) {
+			input = e.getComponent(Input.class);
+			if (Mouse.isButtonDown(1) && input.getNextMouseClick() == 0) {
 				System.out.println("FIRE!!");
-				i.resetMouse();
+				input.resetMouse();
 
-			} else if (i.getNextMouseClick() == 0) {
+			} else if (input.getNextMouseClick() == 0) {
 				e.getComponent(Position.class).set(
-						(i.getNextMouseClickPos().getFirst() / 16)
+						(input.getNextMouseClickPos().getFirst() / 16)
 								+ camera.getPosition().getX(),
-						(i.getNextMouseClickPos().getSecond() / 16)
+						(input.getNextMouseClickPos().getSecond() / 16)
 								+ camera.getPosition().getY());
 				e.getComponent(Sprite.class).setVisibility(true);
-				i.resetMouse();
+				input.resetMouse();
 			} else if (Mouse.isButtonDown(1)) {
-
+				
+				//Gets all the positions between the player (currently just 10,10) and the Mouse
 				ArrayList<Position> line = calculateLine(new Position(10, 10),
 						new Position((Mouse.getX() / 16)
 								+ camera.getPosition().getX(),
@@ -98,7 +99,7 @@ public class HighlightSystem implements ISystem {
 	 */
 	public ArrayList<Position> calculateLine(int x0, int y0, int x1, int y1) {
 		ArrayList<Position> line = new ArrayList<Position>();
-		
+		//Wizardry below
 		int dx = Math.abs(x1 - x0);
 		int dy = Math.abs(y1 - y0);
 		int x = x0;
