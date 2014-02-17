@@ -55,6 +55,9 @@ public class MoveSystem implements ISystem {
 				else if(key == Keyboard.KEY_Z || key == Keyboard.KEY_NUMPAD1) {
 					moveEntity(e, -1, -1, Dir.SOUTHWEST);
 				}
+				else if (key == Keyboard.KEY_NUMPAD5) {
+					e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
+				}
 				i.resetKey();
 			}
 		}
@@ -73,7 +76,7 @@ public class MoveSystem implements ISystem {
 				System.out.println("PLAYER MOVING");
 			}
 			pos.set(pos.getX()+x, pos.getY()+y);
-			turns.setTurnsLeft(turns.getTurnsLeft()-1);
+			turns.decreaseTurnsLeft();
 		}
 		dir.setDirection(direction);
 	}
