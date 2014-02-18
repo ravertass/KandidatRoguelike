@@ -6,19 +6,24 @@ import org.lwjgl.input.Keyboard;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.InputManager;
+import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.util.Observer;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Direction.Dir;
 
-public class MoveSystem implements ISystem {
+public class MoveSystem implements ISystem, Observer {
 	
 	ArrayList<Entity> entities;
 	World world;
 	Input i;
+	
+	private InputAction playerMove;
 	
 	public MoveSystem(World world) {
 		entities = new ArrayList<Entity>();
@@ -88,5 +93,10 @@ public class MoveSystem implements ISystem {
 	
 	public void removeEntity(Entity entity) {
 		entities.remove(entity);
+	}
+
+	@Override
+	public void notify(Enum<?> i) {
+		playerMove = (InputAction) i;
 	}
 }

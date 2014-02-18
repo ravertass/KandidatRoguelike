@@ -28,6 +28,7 @@ public class Engine {
 	public static final int mobSpriteSysReq = CompSprite | CompDirection;
 	public static final int highlightSysReq = CompSprite | CompPosition | CompInput | CompHighlight;
 	public static final int aiSysReq = CompAI | CompInput;
+	public static final int playerInputSysReq = CompPlayer;
 	
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
@@ -45,6 +46,8 @@ public class Engine {
 	private Entity player; // TODO: remove somehow?
 	private TurnSystem turnSystem;
 	private AISystem aiSystem;
+	private InputManager inputManager; //not quite a system but close enough
+	private PlayerInputSystem playerInputSys;
 	
 	private enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -128,6 +131,7 @@ public class Engine {
 		}
 		if((compKey & CompPlayer) == CompPlayer) {
 			player = entity;
+			playerInputSys.addEntity(player);
 		}
 		if((compKey & CompTurnsLeft) == CompTurnsLeft){
 			turnSystem.addEntity(entity);
@@ -176,12 +180,14 @@ public class Engine {
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
 		world = new World();
-		inputSys = new InputSystem();
+		inputManager = new InputManager();
+		//inputSys = new InputSystem();
 		moveSys = new MoveSystem(world); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem();
 		turnSystem = new TurnSystem();
 		aiSystem = new AISystem(world);
+		playerInputSys = new PlayerInputSystem();
 		
 	}
 	
@@ -192,6 +198,11 @@ public class Engine {
 		Camera c = new Camera();
 		highlightSys.setCamera(c);
 		renderingSys.setCamera(c);
+	}
+	
+	private void registerInputSystems() {
+		inputManager.addObserver(moveSys);
+		inputManager.addObserver(highlightSys);
 	}
 	
 	/**
