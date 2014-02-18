@@ -10,8 +10,8 @@ public class Camera {
 	
 	private Position pos;
 	
-	private final int CAMERA_WIDTH = 32; // in tiles
-	private final int CAMERA_HEIGHT = 24; // in tiles
+	private final int CAMERA_WIDTH = 64; // in tiles
+	private final int CAMERA_HEIGHT = 48; // in tiles
 	
 	public Camera() {
 		pos = new Position(0,0);

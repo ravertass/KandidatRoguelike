@@ -33,4 +33,8 @@ public class Position implements IComponent {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public String toString() {
+		return ("(X:" + x + ",Y:" + y + ")");
+	}
 }

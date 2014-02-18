@@ -2,7 +2,7 @@ package se.chalmers.roguelike;
 
 import java.util.ArrayList;
 import se.chalmers.roguelike.Systems.*;
-import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.Components.TurnsLeft;
 
@@ -35,7 +35,7 @@ public class Engine {
 	private ArrayList<Entity> entities; // useless?
 	private EntityCreator entityCreator;
 	
-	private World world;
+	private Dungeon dungeon;
 	
 	// Systems:
 	private InputSystem inputSys;
@@ -63,6 +63,7 @@ public class Engine {
 		entityCreator = new EntityCreator(this);
 		gameState = GameState.DUNGEON;
 		spawnSystems();
+		registerInputSystems();
 		setCamera();
 	}
 	
@@ -151,7 +152,7 @@ public class Engine {
 		
 		while(true){
 			if(gameState == GameState.DUNGEON) {
-				renderingSys.update(world);
+				renderingSys.update(dungeon);
 				renderingSys.update();
 				inputSys.update();
 				moveSys.update();
@@ -179,14 +180,14 @@ public class Engine {
 	 */
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
-		world = new World();
+		dungeon = new Dungeon();
 		inputManager = new InputManager();
 		//inputSys = new InputSystem();
-		moveSys = new MoveSystem(world); // remember to update pointer for new worlds
+		moveSys = new MoveSystem(dungeon); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem();
 		turnSystem = new TurnSystem();
-		aiSystem = new AISystem(world);
+		aiSystem = new AISystem(dungeon);
 		playerInputSys = new PlayerInputSystem();
 		
 	}

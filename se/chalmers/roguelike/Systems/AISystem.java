@@ -8,7 +8,7 @@ import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.World.World;
+import se.chalmers.roguelike.World.Dungeon;
 
 public class AISystem implements ISystem {
 
@@ -18,9 +18,9 @@ public class AISystem implements ISystem {
 	private ArrayList<Entity> entities;
 	private AI ai;
 	private Random rand;
-	private World world;
+	private Dungeon world;
 
-	public AISystem(World world){
+	public AISystem(Dungeon world){
 		entities = new ArrayList<Entity>();
 		rand = new Random();
 		this.world = world;
