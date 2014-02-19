@@ -38,7 +38,6 @@ public class Engine {
 	private Dungeon dungeon;
 	
 	// Systems:
-	private InputSystem inputSys;
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
 	private MobSpriteSystem mobSpriteSys;

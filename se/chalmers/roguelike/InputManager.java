@@ -11,13 +11,18 @@ import se.chalmers.roguelike.util.Subject;
 public class InputManager implements Subject {
 
 	private ArrayList<Observer> observers;
-
+	/**
+	 * This is where you delcare all the different events that the keyboard and mouse can cause. 
+	 * @author twister
+	 *
+	 */
 	public static enum InputAction {
-		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK // TODO
-																														// add
-																														// more
-																														// stuff
-																														// here
+		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK,
+		DUMMY// TODO
+		// add
+		// more
+		// stuff
+		// here
 	}
 
 	public InputManager() {
@@ -35,7 +40,9 @@ public class InputManager implements Subject {
 		observers.remove(o);
 
 	}
-
+	/**
+	 * This is where the input is passed on to all the system who subscribes to input.
+	 */
 	@Override
 	public void notifyObservers(final Enum<?> e) {
 		for (Observer o : observers) {
@@ -43,13 +50,15 @@ public class InputManager implements Subject {
 		}
 
 	}
-
+	/**
+	 * This is where the keyboard and mouse are checked for input and the appropriate event is sent to subscribers.
+	 */
 	public void update() {
 		while (Keyboard.next()) {
-			if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-				System.exit(0);
+			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+				System.exit(0); //Should be passed on to engine?
 			}
-				
+
 			if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
 					&& Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
 				notifyObservers(InputAction.SET_FULLSCREEN);

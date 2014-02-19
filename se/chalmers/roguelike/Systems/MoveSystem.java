@@ -44,36 +44,39 @@ public class MoveSystem implements ISystem, Observer {
 	public void update() {
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
-			if(i.getNextKey() != -1 && e.getComponent(TurnsLeft.class).getTurnsLeft() > 0) {
-				int key = i.getNextKey();
-				if(key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
-					moveEntity(e, 0, 1, Dir.NORTH);
+			if(i.getNextEvent() != InputAction.DUMMY && e.getComponent(TurnsLeft.class).getTurnsLeft() > 0) {
+				InputAction event = i.getNextEvent();
+				switch (event) {
+					case GO_NORTH:
+						moveEntity(e, 0, 1, Direction.Dir.NORTH);
+						break;
+					case GO_WEST:
+						moveEntity(e, -1, 0, Direction.Dir.WEST);
+						break;
+					case GO_EAST:
+						moveEntity(e, 1, 0, Direction.Dir.EAST);
+						break;
+					case GO_SOUTH:
+						moveEntity(e, 0, -1, Direction.Dir.SOUTH);
+						break;
+					case GO_NORTHWEST:
+						moveEntity(e, -1, 1, Direction.Dir.NORTHWEST);
+						break;
+					case GO_NORTHEAST:
+						moveEntity(e, 1, 1, Direction.Dir.NORTHEAST);
+						break;
+					case GO_SOUTHWEST:
+						moveEntity(e, -1, -1, Direction.Dir.SOUTHWEST);
+						break;
+					case GO_SOUTHEAST:
+						moveEntity(e, 1, -1, Direction.Dir.SOUTHEAST);
+						break;
+//					case DO_NOTHING:
+//						e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
+//						break;
+					
 				}
-				else if(key == Keyboard.KEY_A || key == Keyboard.KEY_NUMPAD4) {
-					moveEntity(e, -1, 0, Dir.WEST);
-				}
-				else if(key == Keyboard.KEY_S || key == Keyboard.KEY_NUMPAD2) {
-					moveEntity(e, 0, -1, Dir.SOUTH);
-				}
-				else if(key == Keyboard.KEY_D || key == Keyboard.KEY_NUMPAD6) {
-					moveEntity(e, 1, 0, Dir.EAST);
-				}
-				else if(key == Keyboard.KEY_Q || key == Keyboard.KEY_NUMPAD7) {
-					moveEntity(e, -1, +1, Dir.NORTHWEST);
-				}
-				else if(key == Keyboard.KEY_E || key == Keyboard.KEY_NUMPAD9) {
-					moveEntity(e, 1, 1, Dir.NORTHEAST);
-				}
-				else if(key == Keyboard.KEY_C || key == Keyboard.KEY_NUMPAD3) {
-					moveEntity(e, 1, -1, Dir.SOUTHEAST);
-				}
-				else if(key == Keyboard.KEY_Z || key == Keyboard.KEY_NUMPAD1) {
-					moveEntity(e, -1, -1, Dir.SOUTHWEST);
-				}
-				else if (key == Keyboard.KEY_NUMPAD5) {
-					e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
-				}
-				i.resetKey();
+				i.resetEvent();
 			}
 		}
 	}

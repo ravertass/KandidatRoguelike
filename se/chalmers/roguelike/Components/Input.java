@@ -1,53 +1,37 @@
 package se.chalmers.roguelike.Components;
 
+import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.util.Pair;
 
-
+/**
+ * A component for storing input for entities
+ * @author twister
+ *
+ */
 public class Input implements IComponent {
 	
-	private int nextKey;
-	private Pair<Integer, Integer> nextMouseClickPos;
-	private int nextMouseClick;
+	
+	private InputAction nextEvent;
 	
 	public Input() {
-		nextKey = -1;
-		nextMouseClickPos = new Pair<Integer,Integer>(-1,-1);
-		nextMouseClick = -1;
+		nextEvent = InputAction.DUMMY;
+	}
+	/**
+	 * This will be set for the player by the playerinputsystem and AI for enemies.
+	 * @param i
+	 */
+	public void setNextEvent(InputAction i) {
+		this.nextEvent = i;
 	}
 	
-	public void setNextKey(int key){
-		nextKey = key;		
+	public InputAction getNextEvent() {
+		return nextEvent;
 	}
-	public void setNextMouseClick(Pair<Integer,Integer> nextClick, int mouseButton) {
-		nextMouseClickPos = nextClick;
-		nextMouseClick = mouseButton;
-	}
-	
-	public int getNextKey() {
-		return nextKey;
+	/**
+	 * Sets the next action to a dummyaction which will tell systems that there is no relevant input.
+	 */
+	public void resetEvent() {
+		nextEvent = InputAction.DUMMY;
 	}
 	
-	public Pair<Integer,Integer> getNextMouseClickPos() {
-		return nextMouseClickPos;
-	}
-	
-	public void resetKey() {
-		nextKey = -1;
-	}
-	
-	public void resetMouse() {
-		nextMouseClickPos = new Pair<Integer,Integer>(-1,-1);
-		nextMouseClick = -1;
-	}
-	
-	public int getNextMouseClick() {
-		return nextMouseClick;
-	}
-	
-	public Pair<Integer,Integer> getMousePos() {
-		Pair<Integer,Integer> temp = nextMouseClickPos;
-		nextMouseClickPos.setFirst(-1);
-		nextMouseClickPos.setSecond(-1);
-		return temp;
-	}
 }

@@ -35,36 +35,7 @@ public class PlayerInputSystem implements ISystem, Observer {
 
 	@Override
 	public void notify(Enum<?> i) {
-		Input in = player.getComponent(Input.class);
-		switch((InputAction) i) {
-		case GO_NORTH:
-			in.setNextKey(Keyboard.KEY_W);
-			break;
-		case GO_WEST:
-			in.setNextKey(Keyboard.KEY_A);
-			break;
-		case GO_EAST:
-			in.setNextKey(Keyboard.KEY_D);
-			break;
-		case GO_SOUTH:
-			in.setNextKey(Keyboard.KEY_S);
-			break;
-		case GO_NORTHWEST:
-			in.setNextKey(Keyboard.KEY_Q);
-			break;
-		case GO_NORTHEAST:
-			in.setNextKey(Keyboard.KEY_E);
-			break;
-		case GO_SOUTHWEST:
-			in.setNextKey(Keyboard.KEY_Z);
-			break;
-		case GO_SOUTHEAST:
-			in.setNextKey(Keyboard.KEY_C);
-			break;
-		default:
-			break;
-			
-		}
+		player.getComponent(Input.class).setNextEvent((InputAction)i);
 	}
 }
 

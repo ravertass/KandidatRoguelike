@@ -3,8 +3,8 @@ package se.chalmers.roguelike.Systems;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.lwjgl.input.Keyboard;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
@@ -44,28 +44,28 @@ public class AISystem implements ISystem {
 			while (!done) {
 				int randNr = rand.nextInt(8);
 				if(randNr==0 && world.getTile(x - 1, y + 1).isWalkable()){
-					input.setNextKey(Keyboard.KEY_Q);
+					input.setNextEvent(InputAction.GO_NORTHWEST);
 					done = true;
 				} else if(randNr==1 && world.getTile(x, y + 1).isWalkable()){
-					input.setNextKey(Keyboard.KEY_W);
+					input.setNextEvent(InputAction.GO_NORTH);
 					done = true;
 				} else if(randNr==2 && world.getTile(x + 1, y + 1).isWalkable()){
-					input.setNextKey(Keyboard.KEY_E);
+					input.setNextEvent(InputAction.GO_NORTHEAST);
 					done = true;
 				} else if(randNr==3 && world.getTile(x - 1, y).isWalkable()){
-					input.setNextKey(Keyboard.KEY_A);
+					input.setNextEvent(InputAction.GO_WEST);
 					done = true;
 				} else if(randNr==4 && world.getTile(x, y - 1).isWalkable()){
-					input.setNextKey(Keyboard.KEY_S);
+					input.setNextEvent(InputAction.GO_SOUTH);
 					done = true;
-				} else if(randNr==5 && world.getTile(x, y + 1).isWalkable()){
-					input.setNextKey(Keyboard.KEY_D);
+				} else if(randNr==5 && world.getTile(x + 1, y).isWalkable()){
+					input.setNextEvent(InputAction.GO_EAST);
 					done = true;
 				} else if(randNr==6 && world.getTile(x - 1, y - 1).isWalkable()){
-					input.setNextKey(Keyboard.KEY_Z);
+					input.setNextEvent(InputAction.GO_SOUTHWEST);
 					done = true;
 				} else if(randNr==7 && world.getTile(x + 1, y - 1).isWalkable()){
-					input.setNextKey(Keyboard.KEY_C);
+					input.setNextEvent(InputAction.GO_SOUTHEAST);
 					done = true;
 				} 
 			}
