@@ -27,11 +27,11 @@ public class Generator {
 		ArrayList<Rectangle> rooms = generateRooms(grid);
 		connectRooms(grid, rooms);
 		worldGrid = grid;
-		/*for(int x=0;x<width;x++){
+		for(int x=0;x<width;x++){
 			//for(int y=0;y<height;y++){
 				System.out.println(grid[x]);
 			//}
-		}*/
+		}
 	}
 	
 	/**
@@ -57,18 +57,26 @@ public class Generator {
 	private ArrayList<Rectangle> generateRooms(char[][] grid){
 		Rectangle room = generateRoom();
 		ArrayList<Rectangle> placedRooms = new ArrayList<Rectangle>();
-		for(int y=1;y<height;y++){
+		ArrayList<Rectangle> bufferedSpace = new ArrayList<Rectangle>(); // includes the area for placedRooms as well as some border area
+		for(int y=1;y<height;y++){ // starts from one to preserve the border
 			for(int x=1;x<width;x++){
 				room.setLocation(x,y);
 				boolean placeRoom = true;
-				for(Rectangle placedRoom : placedRooms){
+				for(Rectangle placedRoom : bufferedSpace){
 					placeRoom = placeRoom & !room.intersects(placedRoom);
 				}
 				if(placedRooms.size() == 0 || placeRoom){
 
 					room.setLocation(x,y);
 					placedRooms.add(room);
-					x+=room.getWidth()+rand.nextInt(5)+1;
+					Rectangle bufferRoom = new Rectangle(room);
+					int bufferX = rand.nextInt(4)+1;
+					int bufferY = rand.nextInt(4)+1;
+					bufferRoom.setSize((int)room.getWidth()+bufferX,(int)room.getHeight()+bufferY);
+					bufferedSpace.add(bufferRoom);
+					//System.out.println("Buffer room width:"+bufferRoom.getWidth());
+					//x+=room.getWidth()+rand.nextInt(5)+1;
+					x+=bufferRoom.getWidth();
 					room = generateRoom();
 				}
 			}
