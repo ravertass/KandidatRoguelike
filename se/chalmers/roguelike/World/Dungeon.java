@@ -70,7 +70,7 @@ public class Dungeon {
 	 */
 	public boolean isWalkable(int x, int y){
 		return x >= 0 && x < worldWidth && y >=0 && y < worldHeight && 
-				tiles[y][x].isWalkable() && tiles[y][x] != null;
+				tiles[y][x] != null && tiles[y][x].isWalkable();
 	}
 	
 	/**
