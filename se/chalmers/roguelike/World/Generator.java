@@ -12,7 +12,7 @@ public class Generator {
 	private int width=50;
 	private int height=50;
 	private char[][] worldGrid;
-	Random rand = new Random();
+	Random rand = new Random(); // replace with new Random(seed); later, already tried and works
 	public Generator(){
 		run();
 	}
@@ -26,13 +26,13 @@ public class Generator {
 		}
 		ArrayList<Rectangle> rooms = generateRooms(grid);
 		connectRooms(grid, rooms);
-		//connectRoomsLine(grid, rooms);
 		worldGrid = grid;
+		/*
 		for(int x=0;x<width;x++){
 			//for(int y=0;y<height;y++){
 				System.out.println(grid[x]);
 			//}
-		}
+		}*/
 	}
 	
 	/**
@@ -117,13 +117,13 @@ public class Generator {
 		for(Rectangle placedRoom : placedRooms){
 			// Get a random spot in the room, reason for -1 is to remove the border,
 			// and +1 is outside of the RNG to make sure it doesn't start on the border
-			int randX = rand.nextInt(((int)placedRoom.getWidth()-1))+1+(int)placedRoom.getX();
-			int randY = rand.nextInt(((int)placedRoom.getHeight()-1))+1+(int)placedRoom.getY();
+			int randX = rand.nextInt(((int)placedRoom.getWidth()-2))+1+(int)placedRoom.getX();
+			int randY = rand.nextInt(((int)placedRoom.getHeight()-2))+1+(int)placedRoom.getY();
 			int randRoom = rand.nextInt(placedRooms.size());
 			Rectangle roomToConnect = placedRooms.get(randRoom);
 			// Get a random spot in the room thats being connected
-			int randXnextRoom = rand.nextInt(((int)roomToConnect.getWidth()-1))+1+(int)roomToConnect.getX();
-			int randYnextRoom = rand.nextInt(((int)roomToConnect.getHeight()-1))+1+(int)roomToConnect.getY();
+			int randXnextRoom = rand.nextInt(((int)roomToConnect.getWidth()-2))+1+(int)roomToConnect.getX();
+			int randYnextRoom = rand.nextInt(((int)roomToConnect.getHeight()-2))+1+(int)roomToConnect.getY();
 			// The following two if-cases runs -1 because of making sure that the
 			// array doesn't go out of bounds, and -1 to add a border
 			if(randX > width-2){
@@ -134,15 +134,7 @@ public class Generator {
 			}
 			// Draws line in Y-axis
 			while(randY!=randYnextRoom && randY > 0 && randY < width-2){
-				grid[randY][randX] = '.';
-				// Places walls next to the line
-				if(grid[randY][randX-1] == ' '){ // Remember to change to tile later
-					grid[randY][randX-1] = 'X';	
-				}
-				if(grid[randY][randX+1] == ' '){ 
-					grid[randY][randX+1] = 'X';
-				}
-
+				drawWallsAround(grid,randX,randY);
 				if(randY<=randYnextRoom){
 					randY++;
 				} else {
@@ -151,14 +143,7 @@ public class Generator {
 			}
 			// Draws line in X-axis
 			while(randX!=randXnextRoom && randX > 0 && randX < height-2){
-				if(grid[randY-1][randX] == ' '){ // Remember to change to tile later
-					grid[randY-1][randX] = 'X';	
-				}
-				if(grid[randY+1][randX] == ' '){ 
-					grid[randY+1][randX] = 'X';
-				}
-
-				grid[randY][randX] = '.';
+				drawWallsAround(grid,randX,randY);
 				if(randX<=randXnextRoom){
 					randX++;
 				} else {
@@ -168,24 +153,41 @@ public class Generator {
 		}
 	}
 	
-	/*
-	 * Currently working on, should be a better version
+	/**
+	 * Puts down a floor tile at the coordinates and places walls around it
+	 * @param grid world grid
+	 * @param x x coordinate for floor tile
+	 * @param y y coordinate for floor tile
 	 */
-	public void connectRoomsLine(char[][] grid, ArrayList<Rectangle> placedRooms){
-		ArrayList<Rectangle> hallways = new ArrayList<Rectangle>();
-		for(Rectangle placedRoom : placedRooms){
-			int randX = rand.nextInt(((int)placedRoom.getWidth()-1))+1+(int)placedRoom.getX();
-			int randY = rand.nextInt(((int)placedRoom.getHeight()-1))+1+(int)placedRoom.getY();
-			int randRoom = rand.nextInt(placedRooms.size());
-			Rectangle roomToConnect = placedRooms.get(randRoom);
-			// Get a random spot in the room thats being connected
-			int randXnextRoom = rand.nextInt(((int)roomToConnect.getWidth()-1))+1+(int)roomToConnect.getX();
-			int randYnextRoom = rand.nextInt(((int)roomToConnect.getHeight()-1))+1+(int)roomToConnect.getY();
-			
-			//Rectangle path = new Rectangle(randX, randY,)
+	private void drawWallsAround(char[][] grid, int x, int y){
+		// Remember to change to tile later
+		if(grid[y-1][x] == ' '){ 
+			grid[y-1][x] = 'X';	// above  (in test, above ingame)
 		}
+		if(grid[y+1][x] == ' '){ 
+			grid[y+1][x] = 'X'; // below (in test, above ingame)
+		}
+		if(grid[y][x+1] == ' '){ 
+			grid[y][x+1] = 'X'; // to the right
+		}
+		if(grid[y][x-1] == ' '){ 
+			grid[y][x-1] = 'X'; // to the left
+		}
+		if(grid[y-1][x-1] == ' '){ 
+			grid[y-1][x-1] = 'X'; // NW
+		}
+		if(grid[y+1][x-1] == ' '){ 
+			grid[y+1][x-1] = 'X'; // SW
+		}
+		if(grid[y-1][x+1] == ' '){ 
+			grid[y-1][x+1] = 'X'; // NE
+		}
+		if(grid[y+1][x+1] == ' '){ 
+			grid[y+1][x+1] = 'X'; // SE
+		}
+		grid[y][x] = '.';
 	}
-	
+
 	
 	/**
 	 * Gives a world made up in tiles
