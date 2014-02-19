@@ -1,8 +1,10 @@
 package se.chalmers.roguelike;
 
 import java.util.ArrayList;
+
 import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.Dungeon;
+import se.chalmers.roguelike.World.Generator;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.Components.TurnsLeft;
 
@@ -181,6 +183,7 @@ public class Engine {
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
 		dungeon = new Dungeon();
+		dungeon.setWorld(50,50,new Generator().toTiles());
 		inputManager = new InputManager();
 		//inputSys = new InputSystem();
 		moveSys = new MoveSystem(dungeon); // remember to update pointer for new worlds
