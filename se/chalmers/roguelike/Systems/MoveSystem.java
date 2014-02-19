@@ -68,9 +68,9 @@ public class MoveSystem implements ISystem{
 					case GO_SOUTHEAST:
 						moveEntity(e, 1, -1, Direction.Dir.SOUTHEAST);
 						break;
-//					case DO_NOTHING:
-//						e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
-//						break;
+					case DO_NOTHING:
+						e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
+						break;
 					
 				}
 				i.resetEvent();
