@@ -6,12 +6,14 @@ import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
-import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.Observer;
 
+/**
+ * A system used for highlighting certain tiles in the Dungeon.
+ */
 public class HighlightSystem implements ISystem, Observer {
 
 	ArrayList<Entity> entities;
@@ -23,11 +25,14 @@ public class HighlightSystem implements ISystem, Observer {
 	final Position noClick = new Position(-1,-1);
 	
 	int buttonClicked;
-
+	
 	public HighlightSystem() {
 		entities = new ArrayList<Entity>();
+		clickPos = noClick;
 	}
-
+	/**
+	 * Will calculate on which tile to draw the highlight-sprite and then set its visibility to true.
+	 */
 	@Override
 	public void update() {
 		for (Entity e : entities) {
@@ -36,9 +41,9 @@ public class HighlightSystem implements ISystem, Observer {
 				resetMouse();
 			} else if (buttonClicked == 0) {
 				e.getComponent(Position.class).set(
-						(clickPos.getX() / 32)
+						(clickPos.getX() / 16)
 								+ camera.getPosition().getX(),
-						(clickPos.getY() / 32)
+						(clickPos.getY() / 16)
 								+ camera.getPosition().getY());
 				e.getComponent(Sprite.class).setVisibility(true);
 				resetMouse();

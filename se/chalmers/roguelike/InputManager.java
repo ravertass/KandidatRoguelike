@@ -39,18 +39,21 @@ public class InputManager implements Subject {
 	@Override
 	public void notifyObservers(final Enum<?> e) {
 		for (Observer o : observers) {
-			// TODO add stuff here
+			o.notify(e);
 		}
 
 	}
 
 	public void update() {
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
-				&& Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-			notifyObservers(InputAction.SET_FULLSCREEN);
-		}
 		while (Keyboard.next()) {
+			if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+				System.exit(0);
+			}
+				
+			if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
+					&& Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+				notifyObservers(InputAction.SET_FULLSCREEN);
+			}
 			if (Keyboard.getEventKeyState()) {
 				int key = Keyboard.getEventKey();
 				if (key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {

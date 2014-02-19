@@ -95,13 +95,13 @@ public class Engine {
 	 */
 	private void addOrRemoveEntity(Entity entity, boolean remove){		
 		int compKey = entity.getComponentKey(); 
-		if((compKey & inputSysReq) == inputSysReq) {
-			if(remove){
-				inputSys.removeEntity(entity);
-			} else {
-				inputSys.addEntity(entity);
-			}
-		}
+//		if((compKey & inputSysReq) == inputSysReq) {
+//			if(remove){
+//				inputSys.removeEntity(entity);
+//			} else {
+//				inputSys.addEntity(entity);
+//			}
+//		}
 		if((compKey & renderingSysReq) == renderingSysReq) {
 			if(remove){
 				renderingSys.removeEntity(entity);
@@ -154,7 +154,8 @@ public class Engine {
 			if(gameState == GameState.DUNGEON) {
 				renderingSys.update(dungeon);
 				renderingSys.update();
-				inputSys.update();
+//				inputSys.update();
+				inputManager.update();
 				moveSys.update();
 				mobSpriteSys.update();
 				highlightSys.update();
@@ -202,7 +203,7 @@ public class Engine {
 	}
 	
 	private void registerInputSystems() {
-		inputManager.addObserver(moveSys);
+		inputManager.addObserver(playerInputSys);
 		inputManager.addObserver(highlightSys);
 	}
 	
