@@ -1,7 +1,6 @@
 package se.chalmers.roguelike.Components;
 
 import se.chalmers.roguelike.InputManager.InputAction;
-import se.chalmers.roguelike.util.Pair;
 
 /**
  * A component for storing input for entities
@@ -13,8 +12,13 @@ public class Input implements IComponent {
 	
 	private InputAction nextEvent;
 	
+	private Position attackPos;
+	
+	private Position noAttack = new Position(-1,-1);
+	
 	public Input() {
 		nextEvent = InputAction.DUMMY;
+		attackPos = noAttack;
 	}
 	/**
 	 * This will be set for the player by the playerinputsystem and AI for enemies.
@@ -32,6 +36,23 @@ public class Input implements IComponent {
 	 */
 	public void resetEvent() {
 		nextEvent = InputAction.DUMMY;
+	}
+	/**
+	 * Sets the cords of an upcoming attack.
+	 * @param p
+	 */
+	public void setAttackCords(Position p) {
+		this.attackPos = p;
+	}
+	
+	public Position getAttackCords() {
+		return attackPos;
+	}
+	/**
+	 * Resets the attackcords(sets them to -1,-1
+	 */
+	public void resetAttackCords() {
+		this.attackPos = noAttack;
 	}
 	
 }

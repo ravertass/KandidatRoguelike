@@ -12,19 +12,16 @@ import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.World.Dungeon;
-import se.chalmers.roguelike.util.Observer;
 
 
 /**
  * MoveSystem handles moving of entities based on their input
  */
-public class MoveSystem implements ISystem, Observer {
+public class MoveSystem implements ISystem{
 	
 	ArrayList<Entity> entities;
 	Dungeon world;
 	Input i;
-	
-	private InputAction playerMove;
 
 
 	/**
@@ -118,8 +115,4 @@ public class MoveSystem implements ISystem, Observer {
 		entities.remove(entity);
 	}
 
-	@Override
-	public void notify(Enum<?> i) {
-		playerMove = (InputAction) i;
-	}
 }
