@@ -26,7 +26,7 @@ public class EntityCreator {
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
 		player.add(new Sprite("mobs/mob_knight"));
-		player.add(new Position(10,10));
+		player.add(new Position(1,1));
 		player.add(new Direction());
 		player.add(new Player());
 		engine.addEntity(player);
@@ -38,7 +38,7 @@ public class EntityCreator {
 		enemy.add(new TurnsLeft(1));
 		enemy.add(new Input());
 		enemy.add(new Sprite("mobs/mob_devilmarine"));
-		enemy.add(new Position(11,10));
+		enemy.add(new Position(2,1));
 		enemy.add(new Direction());
 		enemy.add(new AI());
 		engine.addEntity(enemy);
