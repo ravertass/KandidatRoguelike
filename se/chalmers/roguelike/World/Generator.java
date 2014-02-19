@@ -21,11 +21,12 @@ public class Generator {
 		char[][] grid = new char[width][height]; // change to tile later, char atm so we can print it
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){
-				grid[x][y] = 'X';
+				grid[x][y] = ' ';
 			}
 		}
 		ArrayList<Rectangle> rooms = generateRooms(grid);
 		connectRooms(grid, rooms);
+		//connectRoomsLine(grid, rooms);
 		worldGrid = grid;
 		for(int x=0;x<width;x++){
 			//for(int y=0;y<height;y++){
@@ -58,14 +59,16 @@ public class Generator {
 		Rectangle room = generateRoom();
 		ArrayList<Rectangle> placedRooms = new ArrayList<Rectangle>();
 		ArrayList<Rectangle> bufferedSpace = new ArrayList<Rectangle>(); // includes the area for placedRooms as well as some border area
-		for(int y=1;y<height;y++){ // starts from one to preserve the border
-			for(int x=1;x<width;x++){
+		for(int y=0;y<height;y++){ // starts from one to preserve the border
+			for(int x=0;x<width;x++){
 				room.setLocation(x,y);
 				boolean placeRoom = true;
 				for(Rectangle placedRoom : bufferedSpace){
-					placeRoom = placeRoom & !room.intersects(placedRoom);
+					placeRoom = placeRoom & !room.intersects(placedRoom) 
+							& (room.getWidth()+room.getX() < width)
+							& (room.getHeight()+room.getY() < height);
 				}
-				if(placedRooms.size() == 0 || placeRoom){
+				if(placeRoom){
 
 					room.setLocation(x,y);
 					placedRooms.add(room);
@@ -83,12 +86,19 @@ public class Generator {
 		}
 		
 		// Places the rooms
-		for(Rectangle room2 : placedRooms){
-			// Reason for +1 in declaration and -1 in condition is that those will be left as walls for now
-			// Rewrite later so that the sides gets lined as walls instead
-			for(int y=(int)room2.getY()+1; y<((int)room2.getY()+(int)room2.getHeight())-1 && y < height-1 ;y++){
-				for(int x=(int)room2.getX()+1;x<((int)room2.getX()+(int)room2.getWidth())-1 && x < width-1;x++){ // messy code, clean up later
-					grid[y][x] = '.';
+		for(Rectangle drawRoom : placedRooms){
+			// Line the sides as walls:
+			// new code:
+			int roomHeight = (int)drawRoom.getY()+(int)drawRoom.getHeight();
+			int roomWidth = (int)drawRoom.getX()+(int)drawRoom.getWidth();
+			for(int y=(int)drawRoom.getY(); y<roomHeight;y++){
+				for(int x=(int)drawRoom.getX(); x<roomWidth;x++){
+					if(y==(int)drawRoom.getY() || y==roomHeight-1 ||
+							x==(int)drawRoom.getX() || x==roomWidth-1){
+						grid[y][x] = 'X';
+					} else {
+						grid[y][x] = '.';
+					}
 				}
 			}
 		}
@@ -122,15 +132,32 @@ public class Generator {
 			if(randY > height-2){
 				randY=height-2;
 			}
+			// Draws line in Y-axis
 			while(randY!=randYnextRoom && randY > 0 && randY < width-2){
 				grid[randY][randX] = '.';
+				// Places walls next to the line
+				if(grid[randY][randX-1] == ' '){ // Remember to change to tile later
+					grid[randY][randX-1] = 'X';	
+				}
+				if(grid[randY][randX+1] == ' '){ 
+					grid[randY][randX+1] = 'X';
+				}
+
 				if(randY<=randYnextRoom){
 					randY++;
 				} else {
 					randY--;
 				}
 			}
+			// Draws line in X-axis
 			while(randX!=randXnextRoom && randX > 0 && randX < height-2){
+				if(grid[randY-1][randX] == ' '){ // Remember to change to tile later
+					grid[randY-1][randX] = 'X';	
+				}
+				if(grid[randY+1][randX] == ' '){ 
+					grid[randY+1][randX] = 'X';
+				}
+
 				grid[randY][randX] = '.';
 				if(randX<=randXnextRoom){
 					randX++;
@@ -138,6 +165,24 @@ public class Generator {
 					randX--;
 				}
 			}
+		}
+	}
+	
+	/*
+	 * Currently working on, should be a better version
+	 */
+	public void connectRoomsLine(char[][] grid, ArrayList<Rectangle> placedRooms){
+		ArrayList<Rectangle> hallways = new ArrayList<Rectangle>();
+		for(Rectangle placedRoom : placedRooms){
+			int randX = rand.nextInt(((int)placedRoom.getWidth()-1))+1+(int)placedRoom.getX();
+			int randY = rand.nextInt(((int)placedRoom.getHeight()-1))+1+(int)placedRoom.getY();
+			int randRoom = rand.nextInt(placedRooms.size());
+			Rectangle roomToConnect = placedRooms.get(randRoom);
+			// Get a random spot in the room thats being connected
+			int randXnextRoom = rand.nextInt(((int)roomToConnect.getWidth()-1))+1+(int)roomToConnect.getX();
+			int randYnextRoom = rand.nextInt(((int)roomToConnect.getHeight()-1))+1+(int)roomToConnect.getY();
+			
+			//Rectangle path = new Rectangle(randX, randY,)
 		}
 	}
 	
