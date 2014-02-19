@@ -81,16 +81,22 @@ public class MoveSystem implements ISystem{
 	 * Checks if the entity can move to a new tile, if so moves it.
 	 * 
 	 * @param e entity to add
-	 * @param x x coordinate of the tile the entity wants to move to
-	 * @param y y coordinate of the tile the entity wants to move to
+	 * @param dx x coordinate of the tile the entity wants to move to
+	 * @param dy y coordinate of the tile the entity wants to move to
 	 * @param direction the new direction the player should face towards
 	 */
-	private void moveEntity(Entity e, int x, int y, Dir direction){
+	private void moveEntity(Entity e, int dx, int dy, Dir direction){
 		Position pos = e.getComponent(Position.class);
 		Direction dir = e.getComponent(Direction.class);
 		TurnsLeft turns = e.getComponent(TurnsLeft.class);
-		if(world.isWalkable(pos.getX()+x,pos.getY()+y)){
-			pos.set(pos.getX()+x, pos.getY()+y);
+		int newx = pos.getX()+dx;
+		int newy = pos.getY()+dy;
+		int oldx = pos.getX();
+		int oldy = pos.getY();
+		if(world.isWalkable(newx, newy)){
+			world.getTile(oldx, oldy).removeEntity(e);
+			pos.set(newx,newy);
+			world.getTile(newx, newy).addEntity(e);
 			turns.decreaseTurnsLeft();
 		}
 		dir.setDirection(direction);

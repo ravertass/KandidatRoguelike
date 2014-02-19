@@ -29,6 +29,7 @@ public class EntityCreator {
 		player.add(new Position(1,1));
 		player.add(new Direction());
 		player.add(new Player());
+		player.add(new se.chalmers.roguelike.Components.Character("Player", 1));
 		engine.addEntity(player);
 	}
 	
@@ -41,6 +42,7 @@ public class EntityCreator {
 		enemy.add(new Position(2,1));
 		enemy.add(new Direction());
 		enemy.add(new AI());
+		enemy.add(new se.chalmers.roguelike.Components.Character("Enemy", 1));
 		engine.addEntity(enemy);
 	}
 	

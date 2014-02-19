@@ -16,6 +16,7 @@ public class Tile {
 		this.backgroundSprite = backgroundSprite;
 		this.backgroundWalkable = backgroundWalkable;
 		this.blocksLineOfSight = blocksLineOfSight;
+		entities = new ArrayList<Entity>();
 	}
 
 	/**
