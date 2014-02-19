@@ -39,7 +39,7 @@ public class Dungeon {
 		// Debug world
 		worldWidth = 50;
 		worldHeight = 50;
-		tiles = new Tile[worldWidth][worldHeight];
+		tiles = new Tile[worldHeight][worldWidth];
 		
 		
 		// Debug hardcoded world
