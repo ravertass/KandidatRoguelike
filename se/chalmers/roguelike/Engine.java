@@ -199,6 +199,7 @@ public class Engine {
 		Camera c = new Camera();
 		highlightSys.setCamera(c);
 		renderingSys.setCamera(c);
+		playerInputSys.setCamera(c);
 	}
 	
 	private void registerInputSystems() {

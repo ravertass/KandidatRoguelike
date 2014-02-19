@@ -1,10 +1,12 @@
 package se.chalmers.roguelike.Systems;
 
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.Observer;
 /**
  * A system for directing the right input towards the player. Not really a system since the update-method isn't used.
@@ -13,6 +15,7 @@ import se.chalmers.roguelike.util.Observer;
  */
 public class PlayerInputSystem implements ISystem, Observer {
 	
+	Camera camera;
 	Entity player;
 
 	@Override
@@ -36,6 +39,15 @@ public class PlayerInputSystem implements ISystem, Observer {
 	@Override
 	public void notify(Enum<?> i) {
 		player.getComponent(Input.class).setNextEvent((InputAction)i);
+		if(i.equals(InputAction.MOUSECLICK) && Mouse.isButtonDown(1) && Mouse.getEventButton() == 0) {
+			player.getComponent(Input.class).setAttackCords(new Position((Mouse.getX()/16)+camera.getPosition().getX(),(Mouse.getY()/16)+camera.getPosition().getY()));
+			System.out.println(player.getComponent(Input.class).getAttackCords());
+		}
+		
+	}
+	
+	public void setCamera(Camera c) {
+		this.camera = c;
 	}
 }
 
