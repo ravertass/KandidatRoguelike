@@ -46,13 +46,13 @@ public class Dungeon {
 		for(int x=0;x<worldWidth;x++){
 			for(int y=0;y<worldHeight;y++){
 				if(Dice.roll(2, 6)>=8 && ((x != 10) || (y != 10))) {
-					Sprite sprite = new Sprite("wall2");
+					Sprite sprite = new Sprite("brick");
 					tiles[x][y] = new Tile(sprite, false, true);
 				} else if (x == 0 || y == 0 || x == worldWidth-1 || y == worldHeight-1) {
-					Sprite sprite = new Sprite("wall2");
+					Sprite sprite = new Sprite("brick");
 					tiles[x][y] = new Tile(sprite, false, true);
 				} else {
-					Sprite sprite = new Sprite("grass");
+					Sprite sprite = new Sprite("sand");
 					tiles[x][y] = new Tile(sprite, true, true);
 				}
 			}
