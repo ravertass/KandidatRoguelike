@@ -43,6 +43,8 @@ public class Dungeon {
 		
 		
 		// Debug hardcoded world
+		
+		// X and Y flipped
 		for(int x=0;x<worldWidth;x++){
 			for(int y=0;y<worldHeight;y++){
 				if(Dice.roll(2, 6)>=8 && ((x != 10) || (y != 10))) {
@@ -68,7 +70,7 @@ public class Dungeon {
 	 */
 	public boolean isWalkable(int x, int y){
 		return x >= 0 && x < worldWidth && y >=0 && y < worldHeight && 
-				tiles[x][y].isWalkable() && tiles[x][y] != null;
+				tiles[y][x].isWalkable() && tiles[y][x] != null;
 	}
 	
 	/**
@@ -82,7 +84,7 @@ public class Dungeon {
 		if(x < 0 || x >= worldHeight || y < 0 || y >= worldHeight){
 			return null;
 		}
-		return tiles[x][y];
+		return tiles[y][x];
 	}
 	
 	public int getWorldWidth(){
