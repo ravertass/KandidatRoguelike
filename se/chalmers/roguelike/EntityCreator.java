@@ -9,6 +9,7 @@ import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.Components.Weapon;
 
 public class EntityCreator {
 	
@@ -22,7 +23,7 @@ public class EntityCreator {
 	
 	public void createPlayer(){
 		Entity player = new Entity();
-		player.add(new Health(100));
+		player.add(new Health(5));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
 		player.add(new Sprite("mobs/mob_knight"));
@@ -30,6 +31,7 @@ public class EntityCreator {
 		player.add(new Direction());
 		player.add(new Player());
 		player.add(new se.chalmers.roguelike.Components.Character("Player", 1));
+		player.add(new Weapon(2,6,-3));
 		engine.addEntity(player);
 	}
 	

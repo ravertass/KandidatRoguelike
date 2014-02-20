@@ -8,7 +8,10 @@ import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
+import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.util.Util;
 
 /**
  * This system will handle everything that comes with entities losing and
@@ -40,7 +43,19 @@ public class CombatSystem implements ISystem {
 			Input input = e.getComponent(Input.class);
 			Position attackCords = input.getAttackCords();
 			if (attackCords.getX() != -1) {
-				attack(attackCords);
+				ArrayList<Position> line = Util.calculateLine(e.getComponent(Position.class), attackCords);
+				line.remove(0);
+				for (Position pos : line) {
+					Tile tile = dungeon.getTile(pos.getX(), pos.getY());
+					Entity target = tile.containsCharacter();
+					if (target != null){
+						Position targetpos = target.getComponent(Position.class);
+						attack(targetpos,e.getComponent(Weapon.class).getDamage());
+						break;
+					}
+					if (!tile.isWalkable() && tile.blocksLineOfSight())
+						break;
+				}
 				e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
 			}
 			input.resetAttackCords();
@@ -78,32 +93,19 @@ public class CombatSystem implements ISystem {
 	/**
 	 * attack method
 	 */
-	public void attack(Position pos) {
-		attack(pos.getX(), pos.getY());
+	public void attack(Position pos, int damage) {
+		attack(pos.getX(), pos.getY(), damage);
 	}
 
-	public void attack(int x, int y) {
+	public void attack(int x, int y, int damage) {
 		Entity target = dungeon.getTile(x, y).containsCharacter();
 		if (target != null)
-			target.getComponent(Health.class).decreaseHealth(1);
+			if (damage > 0) {
+				System.out.println("Damage: " + damage);
+				target.getComponent(Health.class).decreaseHealth(damage);
+			}
 	}
 
-	/**
-	 * an entity with a Health component loses dmg amount of HP and dies if the
-	 * health becomes 0 or less
-	 * 
-	 * @param e
-	 *            the effected entity
-	 * @param dmg
-	 *            amount of health regenerated
-	 */
-	public void takeDamage(Entity e, int dmg) {
-		Health health = e.getComponent(Health.class);
-		health.setHealth(health.getHealth() - dmg);
-		if (health.getHealth() == 0) {
-			die(e);
-		}
-	}
 
 	/**
 	 * an entity with a Health component heals for regen amount of HP or get
@@ -125,16 +127,5 @@ public class CombatSystem implements ISystem {
 		}
 	}
 
-	/**
-	 * removes the entity from the CombatSystem since it does not have enough
-	 * health to continue
-	 * 
-	 * @param e
-	 *            the entity that dies
-	 */
-	private void die(Entity e) {
-		removeEntity(e);
-		// TODO ligga kvar som d�d?
-	}
-
+	
 }

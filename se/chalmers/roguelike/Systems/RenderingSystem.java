@@ -100,6 +100,7 @@ public class RenderingSystem implements ISystem {
 	 * This method sets up OpenGL. We're not quite sure of what it does.
 	 */
 	private void setupOpenGL() {
+		
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, DISPLAY_WIDTH, 0, DISPLAY_HEIGHT, 1, -1);

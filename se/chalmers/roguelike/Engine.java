@@ -168,7 +168,7 @@ public class Engine {
 	 */
 	public void run(){
 		entityCreator.createPlayer();
-		for (int i = 0; i <3; i++)
+		for (int i = 0; i <4; i++)
 			entityCreator.createEnemy();
 		entityCreator.createHighlight();
 		
