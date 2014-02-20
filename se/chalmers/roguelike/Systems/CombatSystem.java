@@ -7,7 +7,6 @@ import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.TurnsLeft;
-import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.World.Dungeon;
 
 /**
