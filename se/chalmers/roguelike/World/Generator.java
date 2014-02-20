@@ -16,7 +16,8 @@ public class Generator {
 	public Generator(){
 
 		Random seedRand = new Random();
-		long seed = seedRand.nextLong();
+		//long seed = seedRand.nextLong();
+		long seed = 3182815830558287750L;
 		System.out.println("Using seed: "+seed);
 		rand = new Random(seed);
 		run();
@@ -215,7 +216,12 @@ public class Generator {
 		return tiles;
 		
 	}
+	public void print(){
+		for(int x=0;x<width;x++){
+			System.out.println(worldGrid[x]);
+		}
+	}
 	public static void main(String[] args) {
-		new Generator();
+		new Generator().print();
 	}
 }
