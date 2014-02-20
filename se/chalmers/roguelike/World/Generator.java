@@ -12,8 +12,13 @@ public class Generator {
 	private int width=50;
 	private int height=50;
 	private char[][] worldGrid;
-	Random rand = new Random(); // replace with new Random(seed); later, already tried and works
+	Random rand; // replace with new Random(seed); later, already tried and works
 	public Generator(){
+
+		Random seedRand = new Random();
+		long seed = seedRand.nextLong();
+		System.out.println("Using seed: "+seed);
+		rand = new Random(seed);
 		run();
 	}
 	
