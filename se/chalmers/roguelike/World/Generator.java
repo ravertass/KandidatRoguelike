@@ -204,12 +204,16 @@ public class Generator {
 		Tile[][] tiles = new Tile[height][width];
 		for(int y=0;y<height;y++){
 			for(int x=0;x<width;x++){
+
 				if(worldGrid[y][x] == 'X'){
-					Sprite sprite = new Sprite("brick");
-					tiles[y][x] = new Tile(sprite, false, true);
+					if(x==18 && y==18){
+						System.out.println("Bugging tile: "+worldGrid[y][x]);
+					}
+//					Sprite sprite = new Sprite("brick");
+					tiles[y][x] = new Tile(new Sprite("brick"), false, true);
 				} else if(worldGrid[y][x] == '.'){
-					Sprite sprite = new Sprite("sand");
-					tiles[y][x] = new Tile(sprite, true, true);
+//					Sprite sprite = new Sprite("sand");
+					tiles[y][x] = new Tile(new Sprite("sand"), true, true);
 				}
 			}
 		}
