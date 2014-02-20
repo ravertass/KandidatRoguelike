@@ -37,7 +37,7 @@ public class HighlightSystem implements ISystem, Observer {
 	public void update() {
 		for (Entity e : entities) {
 			if (Mouse.isButtonDown(1) && buttonClicked == 0) {
-				System.out.println("FIRE!!");
+//				System.out.println("FIRE!!");
 				resetMouse();
 			} else if (buttonClicked == 0) {
 				e.getComponent(Position.class).set(

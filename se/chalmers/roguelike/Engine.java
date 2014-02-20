@@ -146,11 +146,21 @@ public class Engine {
 			playerInputSys.addEntity(player);
 		}
 		if((compKey & CompTurnsLeft) == CompTurnsLeft){
-			turnSystem.addEntity(entity);
+			if(remove) {
+				turnSystem.removeEntity(entity);
+			} else {
+				turnSystem.addEntity(entity);
+			}
 		}
 		if((compKey & aiSysReq) == aiSysReq){
-			aiSystem.addEntity(entity);
+			if(remove) {
+				aiSystem.removeEntity(entity);
+			} else {
+				aiSystem.addEntity(entity);
+			}
 		}
+		
+		
 	}
 	
 	/**
@@ -158,7 +168,8 @@ public class Engine {
 	 */
 	public void run(){
 		entityCreator.createPlayer();
-		entityCreator.createEnemy();
+		for (int i = 0; i <3; i++)
+			entityCreator.createEnemy();
 		entityCreator.createHighlight();
 		
 		while(true){
@@ -203,7 +214,7 @@ public class Engine {
 		turnSystem = new TurnSystem();
 		aiSystem = new AISystem(dungeon);
 		playerInputSys = new PlayerInputSystem();
-		combatsystem = new CombatSystem(dungeon);
+		combatsystem = new CombatSystem(dungeon, this);
 		
 	}
 	

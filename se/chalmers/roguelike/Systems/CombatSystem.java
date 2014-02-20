@@ -2,6 +2,7 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Input;
@@ -21,16 +22,21 @@ public class CombatSystem implements ISystem {
 	 */
 	private Dungeon dungeon;
 	private ArrayList<Entity> entities;
-
-	public CombatSystem(Dungeon dungeon) {
+	private Engine engine;
+	private ArrayList<Entity> todie;
+	
+	public CombatSystem(Dungeon dungeon, Engine engine) {
 		this.dungeon = dungeon;
+		this.engine = engine;
 		entities = new ArrayList<Entity>();
+		todie = new ArrayList<Entity>();
 	}
 
 	@Override
 	public void update() {
 
 		for (Entity e : entities) {
+			
 			Input input = e.getComponent(Input.class);
 			Position attackCords = input.getAttackCords();
 			if (attackCords.getX() != -1) {
@@ -38,7 +44,17 @@ public class CombatSystem implements ISystem {
 				e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
 			}
 			input.resetAttackCords();
+			
+			if (e.getComponent(Health.class).getHealth() <= 0) {
+				todie.add(e);
+			}
 		}
+		for (Entity e : todie) {
+			dungeon.getTile(e.getComponent(Position.class).getX(), e.getComponent(Position.class).getY()).removeEntity(e);
+			engine.removeEntity(e);
+		}
+		todie.clear();
+		
 	}
 
 	/**

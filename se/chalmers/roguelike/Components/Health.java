@@ -26,7 +26,6 @@ public class Health implements IComponent{
 	
 	public void decreaseHealth(int n) {
 		health -= n;
-		System.out.println("AJJ! :( health: " + health);
 	}
 	/**
 	 * 
