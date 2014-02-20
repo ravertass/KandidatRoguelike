@@ -35,7 +35,10 @@ public class PlayerInputSystem implements ISystem, Observer {
 		//the player should never be removed so this method is moot
 		
 	}
-
+	/**
+	 * This system subscribes to get input from the inputmanager, this method will be called	
+	 * when inpuc happens. 
+	 */
 	@Override
 	public void notify(Enum<?> i) {
 		player.getComponent(Input.class).setNextEvent((InputAction)i);
