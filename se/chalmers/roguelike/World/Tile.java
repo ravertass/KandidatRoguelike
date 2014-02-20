@@ -16,6 +16,7 @@ public class Tile {
 		this.backgroundSprite = backgroundSprite;
 		this.backgroundWalkable = backgroundWalkable;
 		this.blocksLineOfSight = blocksLineOfSight;
+		entities = new ArrayList<Entity>();
 	}
 
 	/**
@@ -43,6 +44,8 @@ public class Tile {
 	public boolean isWalkable() {
 		// Detta kommer så småningom också att kolla om
 		// entiteterna i tilen är walkable
+		if (entities.size() != 0)
+			return false;
 		return backgroundWalkable;
 	}
 

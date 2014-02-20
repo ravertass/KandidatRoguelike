@@ -24,6 +24,9 @@ public class Health implements IComponent{
 		return health;
 	}
 	
+	public void decreaseHealth(int n) {
+		health -= n;
+	}
 	/**
 	 * 
 	 * @param turns		amount of turns the entity is invulnerable

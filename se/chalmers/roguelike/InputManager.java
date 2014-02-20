@@ -17,7 +17,7 @@ public class InputManager implements Subject {
 	 *
 	 */
 	public static enum InputAction {
-		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK,
+		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING,
 		DUMMY// TODO
 		// add
 		// more
@@ -81,6 +81,8 @@ public class InputManager implements Subject {
 					notifyObservers(InputAction.GO_SOUTHWEST);
 				} else if (key == Keyboard.KEY_C || key == Keyboard.KEY_NUMPAD3) {
 					notifyObservers(InputAction.GO_SOUTHEAST);
+				} else if (key == Keyboard.KEY_NUMPAD5) {
+					notifyObservers(InputAction.DO_NOTHING);
 				}
 			}
 		}
