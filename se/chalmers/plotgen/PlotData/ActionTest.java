@@ -1,4 +1,5 @@
-package se.chalmers.plotgen;
+package se.chalmers.plotgen.PlotData;
+
 
 public class ActionTest {
 

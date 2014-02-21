@@ -1,4 +1,5 @@
-package se.chalmers.plotgen;
+package se.chalmers.plotgen.PlotData;
+
 
 /**
  * This class models an action in a game, e.g. [Leif] [KILLS] [Uffe]
