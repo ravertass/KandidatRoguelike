@@ -13,12 +13,8 @@ public class NameGenerator {
 	String filePath;
 	
 	public NameGenerator(){
-		//Något bekymmer som gör att jag inte kan hitta filen på vanligt sätt, Eclipse har inte rättigheter?
-		filePath = "C:" + File.separator + "Users" + File.separator + "David"
-				+ File.separator + "Documents" + File.separator + "GitHub"
-				+ File.separator + "KandidatRoguelike" + File.separator
-				+ "resources" + File.separator + "lists" + File.separator
-				+ "male_american_names.txt";
+		filePath = "bin" + File.separator + "resources" + File.separator + "lists"
+				+ File.separator + "male_american_names" + ".txt";
 		setupFile(filePath);
 		new Markov(2, filePath);
 	}
