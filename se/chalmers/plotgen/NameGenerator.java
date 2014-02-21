@@ -10,13 +10,40 @@ import java.util.Scanner;
 
 public class NameGenerator {
 	
-	String filePath;
+	private String defaultFilePath;
+	private Markov markov;
+	private int filesLoaded;
 	
-	public NameGenerator(){
-		filePath = "bin" + File.separator + "resources" + File.separator + "lists"
+	public NameGenerator(int order){
+		defaultFilePath = "bin" + File.separator + "resources" + File.separator + "lists"
 				+ File.separator + "male_american_names" + ".txt";
+		markov = new Markov(order);
+		filesLoaded = 0;
+	}
+	
+	/**
+	 * teach the Markov instance a new set of names
+	 * 
+	 * @param fileName the name of the file you want as input
+	 */
+	public void loadFile(String fileName){
+		String filePath = "bin" + File.separator + "resources" + File.separator + "lists"
+				+ File.separator + fileName + ".txt";
 		setupFile(filePath);
-		new Markov(2, filePath);
+		markov.load(filePath);
+		filesLoaded++;
+	}
+	
+	/**
+	 * uses a default name file if nothing was loaded before
+	 * 	
+	 * @return a generated name
+	 */
+	public String generateName(){
+		if (filesLoaded == 0){
+			markov.load(defaultFilePath);
+		}
+		return markov.generateName();
 	}
 
 	/**
@@ -49,9 +76,4 @@ public class NameGenerator {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args) {
-		new NameGenerator();
-	}
-
 }

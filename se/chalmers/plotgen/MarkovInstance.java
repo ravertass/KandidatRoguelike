@@ -32,8 +32,8 @@ public class MarkovInstance {
 		Set<String> keySet = following.keySet();
 		ArrayList<String> probList = new ArrayList<String>();
 		for (String key : keySet) {
-			float value = (float)following.get(key)/total;
-			value *= 1000;
+			double value = (float)following.get(key)/total;
+			value *= 10000;
 			while (value > 0){
 				probList.add(key);
 				value--;
@@ -43,8 +43,9 @@ public class MarkovInstance {
 	}
 	
 	public String toString(){
-		String statString = "The sequence \"" + getString() + "\" has this many followers:";
-		//StringBuilder sb = new StringBuilder();
-		return statString + total + "\n";
+		StringBuilder sb = new StringBuilder();
+		sb.append("The sequence \"" + getString() + "\" has " + total + " followers spread over " 
+				+ following.keySet().size() + " unique instances\n");
+		return sb.toString();
 	}
 }

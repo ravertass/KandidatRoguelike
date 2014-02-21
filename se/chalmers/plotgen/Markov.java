@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Markov {
 
-	// private String markovString;
 	private final int MAX;
 	private final int ORDER;
 	HashMap<String, MarkovInstance> zeroOrderMarkovTable;
@@ -18,23 +16,18 @@ public class Markov {
 	HashMap<String, MarkovInstance> thirdOrderMarkovTable;
 	HashMap<String, MarkovInstance> fourthOrderMarkovTable;
 
-	public Markov(int k, String fileName) {
-		MAX = 15;
+	public Markov(int k) {
+		MAX = 20;
+		if (k < 1 || k > 4) {
+			System.err.println("Order has to be between 0 and 4");
+		}
 		ORDER = k;
-		Scanner s = readFile(fileName);
-		String markovString = init(s);
-
-		String[] names = markovString.split("\\n");
-		trainingText(k, names);
-		System.out.println(zeroOrderMarkovTable.toString().length());
-		System.out.println(firstOrderMarkovTable.toString().length());
-		System.out.println(secondOrderMarkovTable.toString().length());
-		System.out.println(thirdOrderMarkovTable.toString().length());
-		System.out.println(fourthOrderMarkovTable.toString());
-/*		ArrayList<String> nameLengths = new ArrayList<>();
+		init();
+/*
+		ArrayList<String> nameLengths = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
-			String nam = generateName(k, MAX);
-			if (nam.length() < MAX){
+			String nam = generateName();
+			if (nam.length() < MAX) {
 				nameLengths.add(nam);
 			}
 		}
@@ -45,10 +38,10 @@ public class Markov {
 	}
 
 	/**
-	 * Reads the given file if found. This will be used as training set.
+	 * Reads the given file if found
 	 * 
 	 * @param fileName
-	 * @return
+	 * @return a Scanner loaded with a file
 	 */
 	private Scanner readFile(String fileName) {
 		Scanner s;
@@ -62,236 +55,282 @@ public class Markov {
 	}
 
 	/**
-	 * Initiate the filter for the scanner and all HashMaps
+	 * Initiate the HashMaps
 	 * 
-	 * @param s
-	 * @return
 	 */
-	protected String init(Scanner s) {
+	private void init() {
 		zeroOrderMarkovTable = new HashMap<String, MarkovInstance>();
 		firstOrderMarkovTable = new HashMap<String, MarkovInstance>();
 		secondOrderMarkovTable = new HashMap<String, MarkovInstance>();
 		thirdOrderMarkovTable = new HashMap<String, MarkovInstance>();
 		fourthOrderMarkovTable = new HashMap<String, MarkovInstance>();
+	}
+
+	/**
+	 * learn the class a new set of words
+	 * 
+	 * @param filePath the path to the file you want to teach the
+	 * Markov class 
+	 */
+	public void load(String filePath) {
+		Scanner s = readFile(filePath);
+		String markovString = initScanner(s);
+		String[] trainingSet = markovString.split("\\n");
+		for (String word : trainingSet) {
+			addWord(word);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param s 	a Scanner with a file
+	 * @return 		a String with delimiters
+	 */
+	private String initScanner(Scanner s){
 		String markovString = s.useDelimiter("\\Z").next();
 		return markovString;
 	}
 
-	// Train the generator a list of new words
-	private void trainingText(int order, String[] trainingSet) {
-		for (String word : trainingSet) {
-			addWord(word, order);
-		}
-	}
-
-	// Adding a new word to update probabilities
-	private void addWord(String name, int order) { // Currently not using order
+	/**
+	 * 
+	 * @param name
+	 */
+	private void addWord(String name) {
 		int length = name.length();
-		String firstLetter = name.substring(0, 1);
-		String secondLetter = name.substring(1, 2);
+		String startAWord = "START";
+		String endAWord = "EOW";
+		String oneLetter;
+		String twoLetters;
+		String threeLetters;
+		String fourLetters;
+		String following;
 		int i = 0;
 
-		// Currently only updates the first letter, misleading name with
-		// zero-order (now I became unsure if the ordering should be + 1 instead
-		// hmmm)
-		if (i < length - 1) {
-			updateZeroOrder(firstLetter, secondLetter);
+		// Updates the table with starting characters
+		if (i < length) {
+			following = name.substring(i, i + 1);
+			updateTable(startAWord, following, zeroOrderMarkovTable);
 			i++;
+			// Update the strings
+			oneLetter = following;
 		} else {
-			updateZeroOrder(firstLetter, "EOW");
 			return;
 		}
 
-		String twoLetterString = firstLetter.toLowerCase() + secondLetter;
-
-		if (i < length - 1) {
-			updateFirstOrder(twoLetterString, name.substring(2, 3));
+		// Updates the tables including the one based on the history of 1
+		if (i < length) {
+			following = name.substring(i, i + 1);
+			updateTable(oneLetter, following, firstOrderMarkovTable);
 			i++;
+			// Update the strings
+			twoLetters = oneLetter + following;
+			oneLetter = following;
 		} else {
-			updateFirstOrder(twoLetterString, "EOW");
+			updateTable(oneLetter, endAWord, firstOrderMarkovTable);
 			return;
 		}
 
-		String threeLetterString = twoLetterString + name.substring(2, 3);
-		twoLetterString = threeLetterString.substring(1, 3);
-
-		if (i < length - 1) {
-			updateFirstOrder(twoLetterString, name.substring(3, 4));
-			updateSecondOrder(threeLetterString, name.substring(3, 4));
+		// Updates the tables including the one based on the history of 2
+		if (i < length) {
+			following = name.substring(i, i + 1);
+			updateTable(oneLetter, following, firstOrderMarkovTable);
+			updateTable(twoLetters, following, secondOrderMarkovTable);
 			i++;
+			// Update the strings
+			threeLetters = twoLetters + following;
+			twoLetters = oneLetter + following;
+			oneLetter = following;
 		} else {
-			updateFirstOrder(twoLetterString, "EOW");
-			updateSecondOrder(threeLetterString, "EOW");
+			updateTable(oneLetter, endAWord, firstOrderMarkovTable);
+			updateTable(twoLetters, endAWord, secondOrderMarkovTable);
 			return;
 		}
 
-		String fourLetterString = threeLetterString + name.substring(3, 4);
-		threeLetterString = fourLetterString.substring(1, 4);
-		twoLetterString = threeLetterString.substring(1, 3);
-
-		if (i < length - 1) {
-			updateFirstOrder(twoLetterString, name.substring(4, 5));
-			updateSecondOrder(threeLetterString, name.substring(4, 5));
-			updateThirdOrder(fourLetterString, name.substring(4, 5));
+		// Updates the tables including the one based on the history of 3
+		if (i < length) {
+			following = name.substring(i, i + 1);
+			updateTable(oneLetter, following, firstOrderMarkovTable);
+			updateTable(twoLetters, following, secondOrderMarkovTable);
+			updateTable(threeLetters, following, thirdOrderMarkovTable);
 			i++;
+			// Update the strings
+			fourLetters = threeLetters + following;
+			threeLetters = twoLetters + following;
+			twoLetters = oneLetter + following;
+			oneLetter = following;
 		} else {
-			updateFirstOrder(twoLetterString, "EOW");
-			updateSecondOrder(threeLetterString, "EOW");
-			updateThirdOrder(fourLetterString, "EOW");
+			updateTable(oneLetter, endAWord, firstOrderMarkovTable);
+			updateTable(twoLetters, endAWord, secondOrderMarkovTable);
+			updateTable(threeLetters, endAWord, thirdOrderMarkovTable);
 			return;
 		}
 
-		while (i < length - 1) {
-			
-			fourLetterString = threeLetterString + name.substring(i, i + 1);
-			threeLetterString = fourLetterString.substring(1, 4);
-			twoLetterString = threeLetterString.substring(1, 3);
-			
-			if (i < length - 1) {
-				updateFirstOrder(twoLetterString, name.substring(i + 1, i + 2));
-				updateSecondOrder(threeLetterString, name.substring(i + 1, i + 2));
-				updateThirdOrder(fourLetterString, name.substring(i + 1, i + 2));
-				i++;
-			} else {
-				updateFirstOrder(twoLetterString, "EOW");
-				updateSecondOrder(threeLetterString, "EOW");
-				updateThirdOrder(fourLetterString, "EOW");
-			}
+		// Updates the tables including the one based on the history of 4
+		while (i < length) {
+			following = name.substring(i, i + 1);
+			updateTable(oneLetter, following, firstOrderMarkovTable);
+			updateTable(twoLetters, following, secondOrderMarkovTable);
+			updateTable(threeLetters, following, thirdOrderMarkovTable);
+			updateTable(fourLetters, following, fourthOrderMarkovTable);
+			i++;
+			// Update the strings
+			fourLetters = threeLetters + following;
+			threeLetters = twoLetters + following;
+			twoLetters = oneLetter + following;
+			oneLetter = following;
 		}
+
+		updateTable(oneLetter, endAWord, firstOrderMarkovTable);
+		updateTable(twoLetters, endAWord, secondOrderMarkovTable);
+		updateTable(threeLetters, endAWord, thirdOrderMarkovTable);
+		updateTable(fourLetters, endAWord, fourthOrderMarkovTable);
 	}
 
-	//Updating the table for the zero-ordered Markov chain
-	//should be added empty string and following is the start letter
-	private void updateZeroOrder(String firstLetter, String following) {
-		// Check if the first letter has been added earlier
-		if (!zeroOrderMarkovTable.containsKey(firstLetter)) {
-			MarkovInstance instance = new MarkovInstance(firstLetter);
-			instance.updateMap(following);
-			zeroOrderMarkovTable.put(firstLetter, instance);
+	/**
+	 *  Updating the ordered markovtable for the Markov chain
+	 * 
+	 * @param seq	The history that next should be based on
+	 * @param next	the next char seen from the history (seq)
+	 * @param hmap	the k-order table that should be updated
+	 */
+	private void updateTable(String seq, String next, HashMap<String, MarkovInstance> hmap) {
+		if (!hmap.containsKey(seq)) {
+			MarkovInstance instance = new MarkovInstance(seq);
+			instance.updateMap(next);
+			hmap.put(seq, instance);
 		} else {
-			MarkovInstance existing = zeroOrderMarkovTable.get(firstLetter);
-			existing.updateMap(following);
+			MarkovInstance existing = hmap.get(seq);
+			existing.updateMap(next);
 		}
-	}
-
-	//Updating the table for the first-ordered Markov chain
-	private void updateFirstOrder(String currentString, String following) {
-		// Check if the current combination has been added earlier
-		if (!firstOrderMarkovTable.containsKey(currentString)) {
-			MarkovInstance instance = new MarkovInstance(currentString);
-			instance.updateMap(following);
-			firstOrderMarkovTable.put(currentString, instance);
-		} else {
-			MarkovInstance existing = firstOrderMarkovTable.get(currentString);
-			existing.updateMap(following);
-		}
-
-	}
-
-	//Updating the table for the second-ordered Markov chain
-	private void updateSecondOrder(String currentString, String following) {
-		// Check if the combination has been added earlier
-		if (!secondOrderMarkovTable.containsKey(currentString)) {
-			MarkovInstance instance = new MarkovInstance(currentString);
-			instance.updateMap(following);
-			secondOrderMarkovTable.put(currentString, instance);
-		} else {
-			MarkovInstance existing = secondOrderMarkovTable.get(currentString);
-			existing.updateMap(following);
-		}
-
-	}
-
-	//Updating the table for the third-ordered Markov chain
-	private void updateThirdOrder(String currentString, String following) {
-		// Check if the combination has been added earlier
-		if (!thirdOrderMarkovTable.containsKey(currentString)) {
-			MarkovInstance instance = new MarkovInstance(currentString);
-			instance.updateMap(following);
-			thirdOrderMarkovTable.put(currentString, instance);
-		} else {
-			MarkovInstance existing = thirdOrderMarkovTable.get(currentString);
-			existing.updateMap(following);
-		}
-
-	}
-
-	//Updating the table for the fourth-ordered Markov chain
-	private void updateFourthOrder(String currentString, String following) {
-		// Check if the combination has been added earlier
-		if (!fourthOrderMarkovTable.containsKey(currentString)) {
-			MarkovInstance instance = new MarkovInstance(currentString);
-			instance.updateMap(following);
-			fourthOrderMarkovTable.put(currentString, instance);
-		} else {
-			MarkovInstance existing = fourthOrderMarkovTable.get(currentString);
-			existing.updateMap(following);
-		}
-
 	}
 
 	/**
 	 * Returns a randomly generated name
 	 * 
-	 * Returns @null if any order outside the interval [0,4] is chosen. 
-	 * 
-	 * @param k
-	 * @param max
-	 * @return
+	 * @return a Markov chain presented as a String
 	 */
-	private String generateName(int k, int max) {
-		if (k >= 5 || k < 0) {
-			System.err.println("This version only support orders between 0 and 4");
-			return null;
-		}
-		
-		StringBuilder name = new StringBuilder();
-		
-		// TODO complete makeNGram
-		if (k == 0){
-			//TODO stuff
-		} else if (k == 1){
-			//TODO stuff
-		} else if (k == 2){
-			//TODO stuff
-			//Chose a random from zeroOrder 
-			//pick from firstOrder until finding "\n"
-			MarkovInstance inst = zeroOrderMarkovTable.get("b");
-			name.append("b");
-			ArrayList<String> listOfString = inst.toProbabilities();
+	public String generateName() {
 
-			int random = (int) (Math.random()*listOfString.size());
-			name.append(listOfString.get(random));
-			int i = 2;
-		//	String bigram = name.substring(i-2, i);
-		//	bigram.toLowerCase(); //fungerar ej?!
-			while (i < MAX){
-				String bigram = name.substring(i-2, i);
-				MarkovInstance nextInst = firstOrderMarkovTable.get(bigram);
-				try {
-					ArrayList<String> prob = nextInst.toProbabilities();
-					if (prob.isEmpty())
-						System.err.println("THE PROBABILITY LIST IS EMPTY");		//Gone later
-					random = (int) (Math.random()*prob.size());
-					String nextChar = prob.get(random);
-					if(nextChar.equals("EOW")){
-						break;
-					} else {
-						name.append(nextChar);
-					}
-					i++;
-				} catch (Exception e) {
-					System.err.println("ERROR according to problist of: " + name.toString());
-					return "ERROR";											//Gone later
-				}
-			}
-			
-		} else if (k == 3){
-			//TODO stuff
-		} else if (k == 4){
-			//TODO stuff
+		StringBuilder name = new StringBuilder();
+		MarkovInstance start = zeroOrderMarkovTable.get("START");
+		ArrayList<String> list = start.toProbabilities();
+		int random = (int) (Math.random() * list.size());
+		name.append(list.get(random));
+		String genName = "";
+		String endAWord = "EOW";
+
+		if (ORDER == 1) {
+			genName = createName(name.toString(), firstOrderMarkovTable);
 		}
-		
+
+		else if (ORDER == 2) {
+			while (endAWord.equals("EOW")) {
+				MarkovInstance second = firstOrderMarkovTable.get(name
+						.toString());
+				list.clear();
+				list = second.toProbabilities();
+				random = (int) (Math.random() * list.size());
+				endAWord = list.get(random);
+			}
+			name.append(endAWord);
+			genName = createName(name.toString(), secondOrderMarkovTable);
+		}
+
+		else if (ORDER == 3) {
+			while (endAWord.equals("EOW")) {
+				MarkovInstance second = firstOrderMarkovTable.get(name
+						.toString());
+				list.clear();
+				list = second.toProbabilities();
+				random = (int) (Math.random() * list.size());
+				endAWord = list.get(random);
+			}
+			name.append(endAWord);
+			// reset endAWord
+			endAWord = "EOW";
+			while (endAWord.equals("EOW")) {
+				MarkovInstance third = secondOrderMarkovTable.get(name
+						.toString());
+				list.clear();
+				list = third.toProbabilities();
+				random = (int) (Math.random() * list.size());
+				endAWord = list.get(random);
+			}
+			name.append(endAWord);
+			genName = createName(name.toString(), thirdOrderMarkovTable);
+		}
+
+		else if (ORDER == 4) {
+			while (endAWord.equals("EOW")) {
+				MarkovInstance second = firstOrderMarkovTable.get(name
+						.toString());
+				list.clear();
+				list = second.toProbabilities();
+				random = (int) (Math.random() * list.size());
+				endAWord = list.get(random);
+			}
+			name.append(endAWord);
+			// reset endAWord
+			endAWord = "EOW";
+			while (endAWord.equals("EOW")) {
+				MarkovInstance third = secondOrderMarkovTable.get(name
+						.toString());
+				list.clear();
+				list = third.toProbabilities();
+				random = (int) (Math.random() * list.size());
+				endAWord = list.get(random);
+			}
+			name.append(endAWord);
+			// reset endAWord
+			endAWord = "EOW";
+			// while (endAWord.equals("EOW")){
+			MarkovInstance fourth = thirdOrderMarkovTable.get(name.toString());
+			list.clear();
+			list = fourth.toProbabilities();
+			random = (int) (Math.random() * list.size());
+			endAWord = list.get(random);
+			// }
+			if (!endAWord.equals("EOW")) {
+				name.append(endAWord);
+				genName = createName(name.toString(), fourthOrderMarkovTable);
+			} else {
+				genName = name.toString();
+			}
+		}
+		String startLetter = genName.substring(0, 1).toUpperCase();
+		return startLetter + genName.substring(1);
+	}
+
+	/**
+	 * Helper method for generateName
+	 *
+	 * @param currentString is the name so far
+	 * @param hmap 			is the table you should check in
+	 * @return a name
+	 */
+	private String createName(String currentString,
+			HashMap<String, MarkovInstance> hmap) {
+		StringBuilder name = new StringBuilder();
+		name.append(currentString);
+		String sub;
+
+		while (name.length() < MAX) {
+			sub = name.substring(name.length() - ORDER, name.length());
+
+			MarkovInstance nextInst = hmap.get(sub);
+			if (nextInst == null) {
+				System.err.println("ERROR");
+				return "E @ " + sub;
+			}
+			ArrayList<String> prob = nextInst.toProbabilities();
+			int random = (int) (Math.random() * prob.size());
+			String nextChar = prob.get(random);
+			if (nextChar.equals("EOW")) {
+				break;
+			} else {
+				name.append(nextChar);
+			}
+		}
 		return name.toString();
 	}
 }
