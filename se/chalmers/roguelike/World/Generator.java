@@ -16,7 +16,7 @@ public class Generator {
 	public Generator(){
 
 		Random seedRand = new Random();
-		//long seed = seedRand.nextLong();
+//		long seed = seedRand.nextLong();
 		long seed = 3182815830558287750L;
 		System.out.println("Using seed: "+seed);
 		rand = new Random(seed);
@@ -213,7 +213,7 @@ public class Generator {
 					tiles[y][x] = new Tile(new Sprite("brick"), false, true);
 				} else if(worldGrid[y][x] == '.'){
 //					Sprite sprite = new Sprite("sand");
-					tiles[y][x] = new Tile(new Sprite("sand"), true, true);
+					tiles[y][x] = new Tile(new Sprite("sand"), true, false);
 				}
 			}
 		}
