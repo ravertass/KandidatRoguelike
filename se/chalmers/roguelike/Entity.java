@@ -3,7 +3,7 @@ package se.chalmers.roguelike;
 import java.util.HashMap;
 
 import se.chalmers.roguelike.Components.*;
-import se.chalmers.roguelike.Components.Character;
+import se.chalmers.roguelike.Components.Attribute;
 
 /**
  * Entity class 
@@ -23,7 +23,7 @@ public class Entity {
 		components.put(compClass, component);
 		
 		// Determine the new component key for the entity.
-		if(compClass == Character.class){
+		if(compClass == Attribute.class){
 			componentKey |= Engine.CompCharacter;
 		} else if(compClass == Health.class){
 			componentKey |= Engine.CompHealth;

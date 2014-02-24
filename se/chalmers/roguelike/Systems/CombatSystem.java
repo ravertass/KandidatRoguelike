@@ -27,7 +27,7 @@ public class CombatSystem implements ISystem {
 	private ArrayList<Entity> entities;
 	private Engine engine;
 	private ArrayList<Entity> todie;
-	
+
 	public CombatSystem(Dungeon dungeon, Engine engine) {
 		this.dungeon = dungeon;
 		this.engine = engine;
@@ -38,38 +38,54 @@ public class CombatSystem implements ISystem {
 	@Override
 	public void update() {
 
+		// For each entity capable of attacking
 		for (Entity e : entities) {
-			
+
 			Input input = e.getComponent(Input.class);
 			Position attackCords = input.getAttackCords();
+			// If the entity has an attackcordinate
 			if (attackCords.getX() != -1) {
-				ArrayList<Position> line = Util.calculateLine(e.getComponent(Position.class), attackCords);
+				// calculate the line between the attacker and the
+				// attackcordinates
+				ArrayList<Position> line = Util.calculateLine(
+						e.getComponent(Position.class), attackCords);
+				// remove the first position in the line, since it is the
+				// character attacking
 				line.remove(0);
+
+				// Checks for the first character in this line by checking each
+				// position in the line in order
 				for (Position pos : line) {
 					Tile tile = dungeon.getTile(pos.getX(), pos.getY());
 					Entity target = tile.containsCharacter();
-					if (target != null){
-						Position targetpos = target.getComponent(Position.class);
-						attack(targetpos,e.getComponent(Weapon.class).getDamage());
+					// if there is a valid target, attack then break the loop
+					if (target != null) {
+						Position targetpos = target
+								.getComponent(Position.class);
+						attack(targetpos, e.getComponent(Weapon.class)
+								.getDamage());
 						break;
 					}
+					// if there is a wall, break
 					if (!tile.isWalkable() && tile.blocksLineOfSight())
 						break;
 				}
+
 				e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
 			}
 			input.resetAttackCords();
-			
+
 			if (e.getComponent(Health.class).getHealth() <= 0) {
 				todie.add(e);
 			}
 		}
 		for (Entity e : todie) {
-			dungeon.getTile(e.getComponent(Position.class).getX(), e.getComponent(Position.class).getY()).removeEntity(e);
+			dungeon.getTile(e.getComponent(Position.class).getX(),
+					e.getComponent(Position.class).getY()).removeEntity(e);
 			engine.removeEntity(e);
 		}
 		todie.clear();
-		
+
 	}
 
 	/**
@@ -106,7 +122,6 @@ public class CombatSystem implements ISystem {
 			}
 	}
 
-
 	/**
 	 * an entity with a Health component heals for regen amount of HP or get
 	 * fullHP if the current health + regen is greater than the components
@@ -127,5 +142,4 @@ public class CombatSystem implements ISystem {
 		}
 	}
 
-	
 }

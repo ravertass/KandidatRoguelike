@@ -87,6 +87,8 @@ public class RenderingSystem implements ISystem {
 		// Draw all entities in system
 		for(Entity entity : entitiesToDraw) {
 			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+			if((entity.getComponentKey() & Engine.CompHealth) == Engine.CompHealth)
+				drawHealthbar(entity);
 		}
 		
 		//drawHudBackgorund();
@@ -260,5 +262,15 @@ public class RenderingSystem implements ISystem {
 //			glVertex2f(x, y);
 //		glEnd();
 		
+	}
+	
+	private void drawHealthbar(Entity e) {
+		GL11.glColor3f(0.0f, 1.0f, 0.0f);
+			glBegin(GL_QUADS);
+				GL11.glLineWidth(5.0f);
+				GL11.glVertex2f(0,100);
+				GL11.glVertex2f(300,100);
+			glEnd();
+		GL11.glColor3f(1.0f,1.0f,1.0f);
 	}
 }
