@@ -2,6 +2,7 @@ package se.chalmers.roguelike;
 
 import java.util.ArrayList;
 
+import se.chalmers.plotgen.NameGenerator;
 import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Generator;
@@ -10,6 +11,8 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 
 public class Engine {
 	
+	// Debug flag:
+	public static boolean debug = true;
 	// Constants: Components
 	public static final int CompCharacter = 1 << 0;
 	public static final int CompHealth = 1 << 1;

@@ -85,6 +85,9 @@ public class InputManager implements Subject {
 					notifyObservers(InputAction.DO_NOTHING);
 				}
 			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+				Engine.debug = !Engine.debug;
+			}
 		}
 		while (Mouse.next()) {
 			if (Mouse.getEventButtonState()) {

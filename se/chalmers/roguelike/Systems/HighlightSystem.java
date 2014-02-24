@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.Mouse;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.Position;
@@ -47,6 +48,9 @@ public class HighlightSystem implements ISystem, Observer {
 						(clickPos.getY() / 16)
 								+ camera.getPosition().getY());
 				e.getComponent(Sprite.class).setVisibility(true);
+				if(Engine.debug){
+					System.out.println("Mouse click at X: "+e.getComponent(Position.class).getX()+ " Y: "+e.getComponent(Position.class).getY());
+				}
 				resetMouse();
 
 			} else if (Mouse.isButtonDown(1)) {
