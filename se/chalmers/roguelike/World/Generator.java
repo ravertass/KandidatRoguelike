@@ -27,7 +27,7 @@ public class Generator {
 		char[][] grid = new char[width][height]; // change to tile later, char atm so we can print it
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){
-				grid[x][y] = ' ';
+				grid[y][x] = ' ';
 			}
 		}
 		ArrayList<Rectangle> rooms = generateRooms(grid);
@@ -204,12 +204,16 @@ public class Generator {
 		Tile[][] tiles = new Tile[height][width];
 		for(int y=0;y<height;y++){
 			for(int x=0;x<width;x++){
+
 				if(worldGrid[y][x] == 'X'){
-					Sprite sprite = new Sprite("brick");
-					tiles[x][y] = new Tile(sprite, false, true);
+					if(x==18 && y==18){
+						System.out.println("Bugging tile: "+worldGrid[y][x]);
+					}
+//					Sprite sprite = new Sprite("brick");
+					tiles[y][x] = new Tile(new Sprite("brick"), false, true);
 				} else if(worldGrid[y][x] == '.'){
-					Sprite sprite = new Sprite("sand");
-					tiles[x][y] = new Tile(sprite, true, true);
+//					Sprite sprite = new Sprite("sand");
+					tiles[y][x] = new Tile(new Sprite("sand"), true, true);
 				}
 			}
 		}
@@ -217,8 +221,8 @@ public class Generator {
 		
 	}
 	public void print(){
-		for(int x=0;x<width;x++){
-			System.out.println(worldGrid[x]);
+		for(int y=0;y<height;y++){
+			System.out.println(worldGrid[y]);
 		}
 	}
 	public static void main(String[] args) {
