@@ -10,6 +10,7 @@ public class Markov {
 
 	private final int MAX;
 	private final int ORDER;
+	private final String end = "EOW";
 	HashMap<String, MarkovInstance> zeroOrderMarkovTable;
 	HashMap<String, MarkovInstance> firstOrderMarkovTable;
 	HashMap<String, MarkovInstance> secondOrderMarkovTable;
@@ -19,22 +20,11 @@ public class Markov {
 	public Markov(int k) {
 		MAX = 20;
 		if (k < 1 || k > 4) {
-			System.err.println("Order has to be between 0 and 4");
+			System.err
+					.println("Order of this MARKOV has to be between 1 and 4");
 		}
 		ORDER = k;
 		init();
-/*
-		ArrayList<String> nameLengths = new ArrayList<>();
-		for (int i = 0; i < 100; i++) {
-			String nam = generateName();
-			if (nam.length() < MAX) {
-				nameLengths.add(nam);
-			}
-		}
-		System.out.println(nameLengths.size() + "\n");
-		for (String string : nameLengths) {
-			System.out.println(string);
-		}*/
 	}
 
 	/**
@@ -69,24 +59,24 @@ public class Markov {
 	/**
 	 * learn the class a new set of words
 	 * 
-	 * @param filePath the path to the file you want to teach the
-	 * Markov class 
+	 * @param filePath
+	 *            the path to the file you want to teach the Markov class
 	 */
 	public void load(String filePath) {
 		Scanner s = readFile(filePath);
 		String markovString = initScanner(s);
 		String[] trainingSet = markovString.split("\\n");
 		for (String word : trainingSet) {
-			addWord(word);
+			addWord(word.trim());
 		}
 	}
-	
+
 	/**
 	 * 
-	 * @param s 	a Scanner with a file
-	 * @return 		a String with delimiters
+	 * @param s is a Scanner with a file
+	 * @return a String with delimiters
 	 */
-	private String initScanner(Scanner s){
+	private String initScanner(Scanner s) {
 		String markovString = s.useDelimiter("\\Z").next();
 		return markovString;
 	}
@@ -98,7 +88,6 @@ public class Markov {
 	private void addWord(String name) {
 		int length = name.length();
 		String startAWord = "START";
-		String endAWord = "EOW";
 		String oneLetter;
 		String twoLetters;
 		String threeLetters;
@@ -126,7 +115,7 @@ public class Markov {
 			twoLetters = oneLetter + following;
 			oneLetter = following;
 		} else {
-			updateTable(oneLetter, endAWord, firstOrderMarkovTable);
+			updateTable(oneLetter, end, firstOrderMarkovTable);
 			return;
 		}
 
@@ -141,8 +130,8 @@ public class Markov {
 			twoLetters = oneLetter + following;
 			oneLetter = following;
 		} else {
-			updateTable(oneLetter, endAWord, firstOrderMarkovTable);
-			updateTable(twoLetters, endAWord, secondOrderMarkovTable);
+			updateTable(oneLetter, end, firstOrderMarkovTable);
+			updateTable(twoLetters, end, secondOrderMarkovTable);
 			return;
 		}
 
@@ -159,9 +148,9 @@ public class Markov {
 			twoLetters = oneLetter + following;
 			oneLetter = following;
 		} else {
-			updateTable(oneLetter, endAWord, firstOrderMarkovTable);
-			updateTable(twoLetters, endAWord, secondOrderMarkovTable);
-			updateTable(threeLetters, endAWord, thirdOrderMarkovTable);
+			updateTable(oneLetter, end, firstOrderMarkovTable);
+			updateTable(twoLetters, end, secondOrderMarkovTable);
+			updateTable(threeLetters, end, thirdOrderMarkovTable);
 			return;
 		}
 
@@ -180,18 +169,22 @@ public class Markov {
 			oneLetter = following;
 		}
 
-		updateTable(oneLetter, endAWord, firstOrderMarkovTable);
-		updateTable(twoLetters, endAWord, secondOrderMarkovTable);
-		updateTable(threeLetters, endAWord, thirdOrderMarkovTable);
-		updateTable(fourLetters, endAWord, fourthOrderMarkovTable);
+		updateTable(oneLetter, end, firstOrderMarkovTable);
+		updateTable(twoLetters, end, secondOrderMarkovTable);
+		updateTable(threeLetters, end, thirdOrderMarkovTable);
+		updateTable(fourLetters, end, fourthOrderMarkovTable);
 	}
 
 	/**
-	 *  Updating the ordered markovtable for the Markov chain
+	 * Updating the ordered markov table for the Markov chain. Helper method to
+	 * addWord
 	 * 
-	 * @param seq	The history that next should be based on
-	 * @param next	the next char seen from the history (seq)
-	 * @param hmap	the k-order table that should be updated
+	 * @param seq
+	 *            The history that next should be based on
+	 * @param next
+	 *            the next char seen from the history (seq)
+	 * @param hmap
+	 *            the k-order table that should be updated
 	 */
 	private void updateTable(String seq, String next, HashMap<String, MarkovInstance> hmap) {
 		if (!hmap.containsKey(seq)) {
@@ -211,126 +204,94 @@ public class Markov {
 	 */
 	public String generateName() {
 
-		StringBuilder name = new StringBuilder();
 		MarkovInstance start = zeroOrderMarkovTable.get("START");
 		ArrayList<String> list = start.toProbabilities();
 		int random = (int) (Math.random() * list.size());
-		name.append(list.get(random));
-		String genName = "";
-		String endAWord = "EOW";
+		String genName = list.get(random);
 
-		if (ORDER == 1) {
-			genName = createName(name.toString(), firstOrderMarkovTable);
-		}
+//		System.out.println(genName + " is " + genName.length() + " characters long!");
+		
+		if (ORDER == 1)
+			return genName = createName(genName, firstOrderMarkovTable);
 
-		else if (ORDER == 2) {
-			while (endAWord.equals("EOW")) {
-				MarkovInstance second = firstOrderMarkovTable.get(name
-						.toString());
-				list.clear();
-				list = second.toProbabilities();
-				random = (int) (Math.random() * list.size());
-				endAWord = list.get(random);
-			}
-			name.append(endAWord);
-			genName = createName(name.toString(), secondOrderMarkovTable);
-		}
+		String twoLetter = initNextChar(genName, firstOrderMarkovTable);
+		
+//		System.out.println(twoLetter + " is " + twoLetter.length() + " characters long!");
+		
+		if (twoLetter.equals(genName))
+			return firstToUpperCase(twoLetter);
 
-		else if (ORDER == 3) {
-			while (endAWord.equals("EOW")) {
-				MarkovInstance second = firstOrderMarkovTable.get(name
-						.toString());
-				list.clear();
-				list = second.toProbabilities();
-				random = (int) (Math.random() * list.size());
-				endAWord = list.get(random);
-			}
-			name.append(endAWord);
-			// reset endAWord
-			endAWord = "EOW";
-			while (endAWord.equals("EOW")) {
-				MarkovInstance third = secondOrderMarkovTable.get(name
-						.toString());
-				list.clear();
-				list = third.toProbabilities();
-				random = (int) (Math.random() * list.size());
-				endAWord = list.get(random);
-			}
-			name.append(endAWord);
-			genName = createName(name.toString(), thirdOrderMarkovTable);
-		}
+		if (ORDER == 2)
+			genName = createName(twoLetter, secondOrderMarkovTable);
+		
+		String threeLetter = initNextChar(twoLetter, secondOrderMarkovTable);
 
-		else if (ORDER == 4) {
-			while (endAWord.equals("EOW")) {
-				MarkovInstance second = firstOrderMarkovTable.get(name
-						.toString());
-				list.clear();
-				list = second.toProbabilities();
-				random = (int) (Math.random() * list.size());
-				endAWord = list.get(random);
-			}
-			name.append(endAWord);
-			// reset endAWord
-			endAWord = "EOW";
-			while (endAWord.equals("EOW")) {
-				MarkovInstance third = secondOrderMarkovTable.get(name
-						.toString());
-				list.clear();
-				list = third.toProbabilities();
-				random = (int) (Math.random() * list.size());
-				endAWord = list.get(random);
-			}
-			name.append(endAWord);
-			// reset endAWord
-			endAWord = "EOW";
-			// while (endAWord.equals("EOW")){
-			MarkovInstance fourth = thirdOrderMarkovTable.get(name.toString());
-			list.clear();
-			list = fourth.toProbabilities();
-			random = (int) (Math.random() * list.size());
-			endAWord = list.get(random);
-			// }
-			if (!endAWord.equals("EOW")) {
-				name.append(endAWord);
-				genName = createName(name.toString(), fourthOrderMarkovTable);
-			} else {
-				genName = name.toString();
-			}
-		}
-		String startLetter = genName.substring(0, 1).toUpperCase();
-		return startLetter + genName.substring(1);
+//		System.out.println(threeLetter + " is " + threeLetter.length() + " characters long!");
+		
+		if (threeLetter.equals(twoLetter))
+			return firstToUpperCase(threeLetter);
+
+		if (ORDER == 3)
+			return genName = createName(threeLetter, thirdOrderMarkovTable);
+
+		String fourLetter = initNextChar(threeLetter, thirdOrderMarkovTable);
+
+//		System.out.println(fourLetter + " is " + fourLetter.length() + " characters long!");
+		
+		if (fourLetter.equals(threeLetter))
+			return firstToUpperCase(fourLetter);
+
+		if (ORDER == 4)
+			return genName = createName(fourLetter, fourthOrderMarkovTable);
+		
+		return "ERROR";
 	}
 
 	/**
 	 * Helper method for generateName
-	 *
-	 * @param currentString is the name so far
-	 * @param hmap 			is the table you should check in
+	 * 
+	 * @param sequence
+	 *            is the name generated so far
+	 * @param hmap
+	 *            should be the hashmap of order ORDER
 	 * @return a name
 	 */
-	private String createName(String currentString,
+	private String createName(String sequence,
 			HashMap<String, MarkovInstance> hmap) {
 		StringBuilder name = new StringBuilder();
-		name.append(currentString);
+		name.append(sequence);
 		String sub;
 
 		while (name.length() < MAX) {
 			sub = name.substring(name.length() - ORDER, name.length());
 
 			MarkovInstance nextInst = hmap.get(sub);
-			if (nextInst == null) {
-				System.err.println("ERROR");
-				return "E @ " + sub;
-			}
 			ArrayList<String> prob = nextInst.toProbabilities();
 			int random = (int) (Math.random() * prob.size());
 			String nextChar = prob.get(random);
-			if (nextChar.equals("EOW")) {
+			if (nextChar.equals(end)) {
 				break;
 			} else {
 				name.append(nextChar);
 			}
 		}
-		return name.toString();
+		return firstToUpperCase(name.toString());
+	}
+
+	private String initNextChar(String sequence,
+			HashMap<String, MarkovInstance> hmap) {
+		ArrayList<String> list = new ArrayList<String>();
+		MarkovInstance instance = hmap.get(sequence);
+		list = instance.toProbabilitiesWithout(end);
+		if (list.isEmpty()) {
+			return sequence;
+		}
+		int random = (int) (Math.random() * list.size());
+		return sequence + list.get(random);
+	}
+
+	private String firstToUpperCase(String name) {
+		String startLetter = name.substring(0, 1).toUpperCase();
+		return startLetter + name.substring(1);
 	}
 }
