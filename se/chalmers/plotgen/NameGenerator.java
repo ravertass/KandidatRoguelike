@@ -7,7 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
+/**
+ * This name generator uses Markov Chains of orders 1-4 when generating names
+ * 
+ * @author David
+ *
+ */
 public class NameGenerator {
 	
 	private String defaultFilePath;
@@ -15,7 +20,7 @@ public class NameGenerator {
 	private int filesLoaded;
 	
 	public NameGenerator(int order){
-		defaultFilePath = "bin" + File.separator + "resources" + File.separator + "lists"
+		defaultFilePath = "." + File.separator + "resources" + File.separator + "lists"
 				+ File.separator + "male_american_names" + ".txt";
 		markov = new Markov(order);
 		filesLoaded = 0;
@@ -27,7 +32,7 @@ public class NameGenerator {
 	 * @param fileName the name of the file you want as input
 	 */
 	public void loadFile(String fileName){
-		String filePath = "bin" + File.separator + "resources" + File.separator + "lists"
+		String filePath = "." + File.separator + "resources" + File.separator + "lists"
 				+ File.separator + fileName + ".txt";
 		setupFile(filePath);
 		markov.load(filePath);

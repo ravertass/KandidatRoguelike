@@ -15,6 +15,11 @@ public class MarkovInstance {
 		this.chars = chars;
 	}
 
+	/**
+	 * Updates the HashMap with a char that follows the current sequence
+	 * 
+	 * @param follower
+	 */
 	public void updateMap(String follower){
 		total++;
 		if (!following.containsKey(follower)){
@@ -28,6 +33,13 @@ public class MarkovInstance {
 		return chars;
 	}
 	
+	/**
+	 * Creates a somewhat ineffective way to calculate fair probabilities.
+	 * Takes the percentage of following chars and then fills an array with
+	 * the percentage*10000 of each char
+	 * 
+	 * @return an array with following chars occurring according their %
+	 */
 	public ArrayList<String> toProbabilities(){
 		Set<String> keySet = following.keySet();
 		ArrayList<String> probList = new ArrayList<String>();
