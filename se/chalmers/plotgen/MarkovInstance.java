@@ -54,6 +54,29 @@ public class MarkovInstance {
 		return probList;
 	}
 	
+	/**
+	 * gives the probabilities like toProbabilities for every nextChar except
+	 * keyToRemove which will be excluded
+	 * 
+	 * @param keyToRemove
+	 * @return a list of nextChars
+	 */
+	public ArrayList<String> toProbabilitiesWithout(String keyToRemove){
+		Set<String> keySet = following.keySet();
+		ArrayList<String> probList = new ArrayList<String>();
+		for (String key : keySet) {
+			if (!key.equals(keyToRemove)){
+				double value = (float)following.get(key)/total;
+				value *= 10000;
+				while (value > 0){
+					probList.add(key);
+					value--;
+				}
+			}
+		}
+		return probList;
+	}
+	
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		sb.append("The sequence \"" + getString() + "\" has " + total + " followers spread over " 
