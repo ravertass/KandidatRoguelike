@@ -213,7 +213,7 @@ public class Generator {
 					tiles[y][x] = new Tile(new Sprite("brick"), false, true);
 				} else if(worldGrid[y][x] == '.'){
 //					Sprite sprite = new Sprite("sand");
-					tiles[y][x] = new Tile(new Sprite("sand"), true, true);
+					tiles[y][x] = new Tile(new Sprite("sand"), true, false);
 				}
 			}
 		}

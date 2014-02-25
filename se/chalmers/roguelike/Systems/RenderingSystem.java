@@ -42,6 +42,7 @@ import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
+import se.chalmers.roguelike.util.Util;
 
 /**
  * This is the system that draws everything to be drawn.
@@ -98,7 +99,7 @@ public class RenderingSystem implements ISystem {
 			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
 				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
-				if(tile != null) {
+				if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
 					draw(tile.getSprite(),drawPos);
 				}
 			}
@@ -119,6 +120,7 @@ public class RenderingSystem implements ISystem {
 			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 //			drawHealthbar(entity);
 		}
+		
 		//drawHudBackgorund();
 		
 		// Update and sync display
@@ -126,6 +128,9 @@ public class RenderingSystem implements ISystem {
 		Display.sync(60);
 	}
 	
+
+
+
 	/**
 	 * This method sets up OpenGL. We're not quite sure of what it does.
 	 */
@@ -336,4 +341,16 @@ public class RenderingSystem implements ISystem {
 		}
 		glColor3f(1.0f,1.0f,1.0f);
 	}
+	
+	private boolean visibleForPlayer(Dungeon d, Position playerPos, int x, int y) {
+		ArrayList<Position> line = Util.calculateLine(playerPos.getX(), playerPos.getY(), x, y);
+			for (Position p : line) {
+				if(d.getTile(p.getX(), p.getY()).blocksLineOfSight())
+					return false;
+			}
+			return true;
+		
+	}
+
+	
 }
