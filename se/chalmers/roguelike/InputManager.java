@@ -66,24 +66,34 @@ public class InputManager implements Subject {
 			if (Keyboard.getEventKeyState()) {
 				int key = Keyboard.getEventKey();
 				if (key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.GO_NORTH);
 				} else if (key == Keyboard.KEY_A || key == Keyboard.KEY_NUMPAD4) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.GO_WEST);
 				} else if (key == Keyboard.KEY_S || key == Keyboard.KEY_NUMPAD2) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.GO_SOUTH);
 				} else if (key == Keyboard.KEY_D || key == Keyboard.KEY_NUMPAD6) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.GO_EAST);
 				} else if (key == Keyboard.KEY_Q || key == Keyboard.KEY_NUMPAD7) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.GO_NORTHWEST);
 				} else if (key == Keyboard.KEY_E || key == Keyboard.KEY_NUMPAD9) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.GO_NORTHEAST);
 				} else if (key == Keyboard.KEY_Z || key == Keyboard.KEY_NUMPAD1) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.GO_SOUTHWEST);
 				} else if (key == Keyboard.KEY_C || key == Keyboard.KEY_NUMPAD3) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.GO_SOUTHEAST);
 				} else if (key == Keyboard.KEY_NUMPAD5) {
+					System.out.println("-----PLAYERDOESSOMETHING-----");
 					notifyObservers(InputAction.DO_NOTHING);
 				}
+				
 			}
 		}
 		while (Mouse.next()) {

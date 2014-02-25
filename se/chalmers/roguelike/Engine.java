@@ -30,7 +30,7 @@ public class Engine {
 	public static final int renderingSysReq = CompSprite | CompPosition;
 	public static final int moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
 	public static final int mobSpriteSysReq = CompSprite | CompDirection;
-	public static final int highlightSysReq = CompSprite | CompPosition | CompHighlight;
+	public static final int highlightSysReq = CompSprite | CompPosition;
 	public static final int aiSysReq = CompAI | CompInput;
 	public static final int playerInputSysReq = CompPlayer;
 	public static final int combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
@@ -170,7 +170,7 @@ public class Engine {
 	public void run(){
 		entityCreator.createPlayer();
 		for (int i = 0; i <4; i++)
-			entityCreator.createEnemy();
+			entityCreator.createEnemy(i);
 		entityCreator.createHighlight();
 		
 		while(true){

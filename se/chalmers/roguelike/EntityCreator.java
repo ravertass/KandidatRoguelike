@@ -37,8 +37,8 @@ public class EntityCreator {
 		engine.addEntity(player);
 	}
 
-	public void createEnemy() {
-		Entity enemy = new Entity("Enemy");
+	public void createEnemy(int i) {
+		Entity enemy = new Entity("Enemy" + i);
 		enemy.add(new Health(10));
 		enemy.add(new TurnsLeft(1));
 		enemy.add(new Input());

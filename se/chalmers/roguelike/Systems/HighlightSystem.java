@@ -8,6 +8,7 @@ import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.EntityCreator;
 import se.chalmers.roguelike.InputManager;
+import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.Util;
@@ -23,6 +24,7 @@ public class HighlightSystem implements ISystem, Observer {
 	EntityCreator ec;
 	Engine engine;
 	Camera camera;
+	Entity player;
 	
 	Position clickPos;
 	
@@ -43,7 +45,7 @@ public class HighlightSystem implements ISystem, Observer {
 	@Override
 	public void update() {
 		if (Mouse.isButtonDown(1)) {
-			ArrayList<Position> line = Util.calculateLine(new Position(1, 1),
+			ArrayList<Position> line = Util.calculateLine(player.getComponent(Position.class),
 					new Position((Mouse.getX() / 16)
 							+ camera.getPosition().getX(),
 							(Mouse.getY() / 16)
@@ -146,7 +148,12 @@ public class HighlightSystem implements ISystem, Observer {
 
 	@Override
 	public void addEntity(Entity entity) {
-		entities.add(entity);
+		
+		if((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
+			this.player = entity;
+		} else if ((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight){
+			entities.add(entity);
+		}
 	}
 
 	@Override
