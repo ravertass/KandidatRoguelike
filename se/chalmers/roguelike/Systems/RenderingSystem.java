@@ -309,16 +309,30 @@ public class RenderingSystem implements ISystem {
 		
 		int hblength = (int)healthbarLength;
 		
+		//draw the red part of the healthbar
+		glColor3f(1.0f, 0.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * 16 &&
 				y >= 0 && y < camera.getHeight() * 16) {
-			glColor3f(1.0f, 1.0f, 0.0f);
+			glBegin(GL_QUADS);
+				GL11.glVertex2i(x,y+16);
+				GL11.glVertex2i(x+16,y+16);
+				GL11.glVertex2i(x+16,y+18);
+				GL11.glVertex2i(x,y+18);
+				glEnd();
+		}
+		
+		//draw the green part of the healthbar ontop of the red
+		glColor3f(0.0f, 1.0f, 0.0f);
+		if (x >= 0 && x < camera.getWidth() * 16 &&
+				y >= 0 && y < camera.getHeight() * 16) {
 			glBegin(GL_QUADS);
 				GL11.glVertex2i(x,y+16);
 				GL11.glVertex2i(x+hblength,y+16);
 				GL11.glVertex2i(x+hblength,y+18);
 				GL11.glVertex2i(x,y+18);
 			glEnd();
-				glColor3f(1.0f,1.0f,1.0f);
+				
 		}
+		glColor3f(1.0f,1.0f,1.0f);
 	}
 }
