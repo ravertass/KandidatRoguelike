@@ -29,7 +29,7 @@ public class Engine {
 	public static final int renderingSysReq = CompSprite | CompPosition;
 	public static final int moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
 	public static final int mobSpriteSysReq = CompSprite | CompDirection;
-	public static final int highlightSysReq = CompSprite | CompPosition | CompInput | CompHighlight;
+	public static final int highlightSysReq = CompSprite | CompPosition | CompHighlight;
 	public static final int aiSysReq = CompAI | CompInput;
 	public static final int playerInputSysReq = CompPlayer;
 	public static final int combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
@@ -210,7 +210,7 @@ public class Engine {
 		//inputSys = new InputSystem();
 		moveSys = new MoveSystem(dungeon); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
-		highlightSys = new HighlightSystem();
+		highlightSys = new HighlightSystem(entityCreator, this);
 		turnSystem = new TurnSystem();
 		aiSystem = new AISystem(dungeon);
 		playerInputSys = new PlayerInputSystem();

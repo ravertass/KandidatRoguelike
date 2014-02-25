@@ -109,11 +109,13 @@ public class RenderingSystem implements ISystem {
 
 		
 		for (Entity e : entitiesToDraw) {
-			if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth)
+			if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
 				drawHealthbar(e);
+			}
 		}
 		// Draw all entities in system
 		for(Entity entity : entitiesToDraw) {
+			
 			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 //			drawHealthbar(entity);
 		}
@@ -182,7 +184,6 @@ public class RenderingSystem implements ISystem {
 		Position camPos = camera.getPosition();
 		int camX = camPos.getX();
 		int camY = camPos.getY();
-		
 		// Subtract the coordinates with the camera's coordinates,
 		// then multiply that with the SPRITE_SIZE, so that we get 
 		// the pixel coordinates, not the tile coordinates.
@@ -296,12 +297,12 @@ public class RenderingSystem implements ISystem {
 	private void drawHealthbar(Entity e) {
 		Position epos = e.getComponent(Position.class); // tilebased positions
 		Position camPos = camera.getPosition();
-		
+//		System.out.println(e + ": " +epos);
 		int camX = camPos.getX();
 		int camY = camPos.getY();
-		
+
 		int x = (epos.getX() - camX) * 16;
-		int y = (epos.getY() - camY) *16;
+		int y = (epos.getY() - camY) * 16;
 		
 		Health h = e.getComponent(Health.class);
 		double healthPercentage = h.getHealthPercentage();
@@ -318,7 +319,7 @@ public class RenderingSystem implements ISystem {
 				GL11.glVertex2i(x+16,y+16);
 				GL11.glVertex2i(x+16,y+18);
 				GL11.glVertex2i(x,y+18);
-				glEnd();
+			glEnd();
 		}
 		
 		//draw the green part of the healthbar ontop of the red
