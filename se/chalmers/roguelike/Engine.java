@@ -22,6 +22,7 @@ public class Engine {
 	public static final int CompHighlight = 1 << 8;
 	public static final int CompPlayer = 1 << 9;
 	public static final int CompWeapon = 1 << 10;
+	public static final int CompFieldOfView = 1 << 11;
 	
 	
 	// Constants: System requirements:

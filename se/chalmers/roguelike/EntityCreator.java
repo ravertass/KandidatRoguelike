@@ -3,6 +3,7 @@ package se.chalmers.roguelike;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Direction;
+import se.chalmers.roguelike.Components.FieldOfView;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.Input;
@@ -33,6 +34,7 @@ public class EntityCreator {
 		player.add(new Player());
 		player.add(new Attribute("Player", 1));
 		player.add(new Weapon(2, 6, -3));
+		player.add(new FieldOfView(5));
 		engine.addEntity(player);
 	}
 
