@@ -1,6 +1,5 @@
 package se.chalmers.plotgen.PlotData;
 
-import se.chalmers.plotgen.PlotThing;
 
 /**
  * A living person in a plot.

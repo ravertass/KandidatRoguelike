@@ -2,10 +2,11 @@ package se.chalmers.plotgen.util;
 
 import java.util.Set;
 
-public interface IDirectedGraph {
+public interface IDirectedGraph<V,E> {
 
-	public void addVertex(IVertex v);
-	public boolean addEdge(IEdge e, IVertex v1, IVertex v2);
-	public IVertex getRootVertex();
-	public Set<Pair<IEdge,IVertex>> getEdgesFrom(IVertex v);
+	public void addVertex(V v);
+	public void setRootVertex(V rootVertex);
+	public boolean addEdge(E e, V v1, V v2);
+	public V getRootVertex();
+	public Set<Pair<E,V>> getAdjacencies(V v);
 }

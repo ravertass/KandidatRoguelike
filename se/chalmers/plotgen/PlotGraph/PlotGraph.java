@@ -1,6 +1,6 @@
-package se.chalmers.plotgen;
+package se.chalmers.plotgen.PlotGraph;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
+import se.chalmers.plotgen.util.DirectedGraph;
 
 /**
  * This is a graph which models an abstracted plot.
@@ -19,18 +19,10 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  * @author fabian
  */
 public class PlotGraph {
-	DefaultDirectedGraph<PlotVertex, PlotEdge> graph;
+	DirectedGraph<PlotVertex, PlotEdge> graph;
 	
 	public PlotGraph() {
-		graph = new DefaultDirectedGraph<PlotVertex, PlotEdge>(PlotEdge.class);
+		graph = new DirectedGraph<PlotVertex, PlotEdge>();
 	}
 	
-	/**
-	 * This method only added for testing purposes. The PlotGraph class' methods
-	 * should be the only interface between the internal graph and the outside (of course :P).
-	 * @return
-	 */
-	public DefaultDirectedGraph<PlotVertex, PlotEdge> getGraph() {
-		return graph;
-	}
 }
