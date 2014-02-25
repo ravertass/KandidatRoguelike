@@ -12,10 +12,12 @@ public class Entity {
 
 	HashMap<Class<?>, IComponent> components;
 	private int componentKey;
+	private String name;
 	
-	public Entity(){
+	public Entity(String name){
 		components = new HashMap<Class<?>, IComponent>();
 		componentKey = 0;
+		this.name = name;
 	}
 	
 	public void add(IComponent component) {
@@ -60,4 +62,7 @@ public class Entity {
 		return type.cast(components.get(type));
 	}
 	
+	public String toString(){
+		return name;
+	}
 }

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.Mouse;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.EntityCreator;
 import se.chalmers.roguelike.InputManager;
+import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.Util;
@@ -18,8 +21,10 @@ import se.chalmers.roguelike.util.Observer;
 public class HighlightSystem implements ISystem, Observer {
 
 	ArrayList<Entity> entities;
-
+	EntityCreator ec;
+	Engine engine;
 	Camera camera;
+	Entity player;
 	
 	Position clickPos;
 	
@@ -27,15 +32,74 @@ public class HighlightSystem implements ISystem, Observer {
 	
 	int buttonClicked;
 	
-	public HighlightSystem() {
+	public HighlightSystem(EntityCreator ec, Engine engine) {
 		entities = new ArrayList<Entity>();
 		clickPos = noClick;
+		buttonClicked = -1;
+		this.ec = ec;
+		this.engine = engine;
 	}
 	/**
 	 * Will calculate on which tile to draw the highlight-sprite and then set its visibility to true.
 	 */
 	@Override
 	public void update() {
+		if (Mouse.isButtonDown(1)) {
+			ArrayList<Position> line = Util.calculateLine(player.getComponent(Position.class),
+					new Position((Mouse.getX() / 16)
+							+ camera.getPosition().getX(),
+							(Mouse.getY() / 16)
+									+ camera.getPosition().getY()));
+
+			// System.out.println("Line: " + line);
+			for (Entity e : entities) {
+				engine.removeEntity(e);
+			}
+			entities.clear();
+			for (Position pos : line) {
+				// Insert code for highlighting all the tiles
+				entities.add(ec.createHighlight(pos));
+			}
+		}
+		
+		if (!Mouse.isButtonDown(1)) {
+			for (Entity e : entities) {
+				engine.removeEntity(e);
+			}
+			entities.clear();
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/*
+		
 		for (Entity e : entities) {
 			if (Mouse.isButtonDown(1) && buttonClicked == 0) {
 //				System.out.println("FIRE!!");
@@ -46,13 +110,19 @@ public class HighlightSystem implements ISystem, Observer {
 								+ camera.getPosition().getX(),
 						(clickPos.getY() / 16)
 								+ camera.getPosition().getY());
-				e.getComponent(Sprite.class).setVisibility(true);
+//				e.getComponent(Sprite.class).setVisibility(true);
 				resetMouse();
 
-			} else if (Mouse.isButtonDown(1)) {
+			} else if (buttonClicked == 1) { 
 				
-				//Gets all the positions between the player (currently just 10,10) and the Mouse
-				ArrayList<Position> line = Util.calculateLine(new Position(10, 10),
+			} else if (!Mouse.isButtonDown(1)) {
+				
+			} else if (Mouse.isButtonDown(1)) {
+			
+					
+				
+				//Gets all the positions between the player (currently just 1,1) and the Mouse
+				ArrayList<Position> line = Util.calculateLine(new Position(1, 1),
 						new Position((Mouse.getX() / 16)
 								+ camera.getPosition().getX(),
 								(Mouse.getY() / 16)
@@ -62,27 +132,33 @@ public class HighlightSystem implements ISystem, Observer {
 
 				for (Position pos : line) {
 					// Insert code for highlighting all the tiles
+//					ec.createHighlight();
 				}
 
 				e.getComponent(Position.class).set(
 						(Mouse.getX() / 16) + camera.getPosition().getX(),
 						(Mouse.getY() / 16) + camera.getPosition().getY());
-				e.getComponent(Sprite.class).setVisibility(true);
+//				e.getComponent(Sprite.class).setVisibility(true);
 
-			} else if (!Mouse.isButtonDown(1)) {
 			}
-		}
-
+			
+		}*/
+		
 	}
 
 	@Override
 	public void addEntity(Entity entity) {
-		entities.add(entity);
+		
+		if((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
+			this.player = entity;
+		} else if ((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight){
+			entities.add(entity);
+		}
 	}
 
 	@Override
 	public void removeEntity(Entity entity) {
-		entities.remove(entity);
+//		entities.remove(entity);
 
 	}
 
@@ -95,6 +171,7 @@ public class HighlightSystem implements ISystem, Observer {
 		if(i.equals(InputManager.InputAction.MOUSECLICK)) {
 			clickPos = new Position(Mouse.getX(),Mouse.getY());
 			buttonClicked = Mouse.getEventButton();
+			
 		}
 		
 	}

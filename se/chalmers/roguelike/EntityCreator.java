@@ -3,6 +3,7 @@ package se.chalmers.roguelike;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Direction;
+import se.chalmers.roguelike.Components.FieldOfView;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.Input;
@@ -23,7 +24,7 @@ public class EntityCreator {
 	}
 
 	public void createPlayer() {
-		Entity player = new Entity();
+		Entity player = new Entity("Player");
 		player.add(new Health(5));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
@@ -36,9 +37,9 @@ public class EntityCreator {
 		engine.addEntity(player);
 	}
 
-	public void createEnemy() {
-		Entity enemy = new Entity();
-		enemy.add(new Health(5));
+	public void createEnemy(int i) {
+		Entity enemy = new Entity("Enemy" + i);
+		enemy.add(new Health(10));
 		enemy.add(new TurnsLeft(1));
 		enemy.add(new Input());
 		enemy.add(new Sprite("mobs/mob_devilmarine"));
@@ -64,7 +65,7 @@ public class EntityCreator {
 	 */
 	public void createEnemy(int health, String sprite, Position startPos,
 			Attribute attribute) {
-		Entity enemy = new Entity();
+		Entity enemy = new Entity("Enemy");
 		enemy.add(new Health(health));
 		enemy.add(new TurnsLeft(1));
 		enemy.add(new Input());
@@ -77,12 +78,20 @@ public class EntityCreator {
 	}
 
 	public void createHighlight() {
-		Entity highlight = new Entity();
+		Entity highlight = new Entity("Highlight");
 		highlight.add(new Sprite("highlight2"));
-		highlight.add(new Position(10, 10));
-		highlight.add(input);
+		highlight.add(new Position(1,1));
 		highlight.add(new Highlight());
 		engine.addEntity(highlight);
+	}
+	
+	public Entity createHighlight(Position pos) {
+		Entity highlight = new Entity("Highlight");
+		highlight.add(new Sprite("transparenthighlight"));
+		highlight.add(pos);
+		highlight.add(new Highlight());
+		engine.addEntity(highlight);
+		return highlight;
 	}
 
 }

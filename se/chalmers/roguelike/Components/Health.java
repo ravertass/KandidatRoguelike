@@ -56,8 +56,8 @@ public class Health implements IComponent{
 	}
 	
 	//can be done in the CombatSystem?
-	public int getHealthPercentage() {
-		return health/maxHealth;
+	public double getHealthPercentage() {
+		return (double)health/(double)maxHealth;
 	}
 	
 }
