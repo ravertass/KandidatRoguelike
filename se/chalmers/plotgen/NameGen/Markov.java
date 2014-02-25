@@ -1,5 +1,6 @@
 package se.chalmers.plotgen.NameGen;
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -20,8 +21,7 @@ public class Markov {
 	public Markov(int k) {
 		MAX = 20;
 		if (k < 1 || k > 4) {
-			System.err
-					.println("Order of this MARKOV has to be between 1 and 4");
+			System.err.println("Order has to be between 1 and 4 (Markov)");
 		}
 		ORDER = k;
 		init();
@@ -59,8 +59,7 @@ public class Markov {
 	/**
 	 * learn the class a new set of words
 	 * 
-	 * @param filePath
-	 *            the path to the file you want to teach the Markov class
+	 * @param filePath the path to the file you want to teach the Markov class
 	 */
 	public void load(String filePath) {
 		Scanner s = readFile(filePath);
@@ -82,6 +81,7 @@ public class Markov {
 	}
 
 	/**
+	 * Adds a word to the markovtables
 	 * 
 	 * @param name
 	 */
@@ -179,12 +179,9 @@ public class Markov {
 	 * Updating the ordered markov table for the Markov chain. Helper method to
 	 * addWord
 	 * 
-	 * @param seq
-	 *            The history that next should be based on
-	 * @param next
-	 *            the next char seen from the history (seq)
-	 * @param hmap
-	 *            the k-order table that should be updated
+	 * @param seq The history that next should be based on
+	 * @param next the next char seen from the history (seq)
+	 * @param hmap the k-order table that should be updated
 	 */
 	private void updateTable(String seq, String next, HashMap<String, MarkovInstance> hmap) {
 		if (!hmap.containsKey(seq)) {
@@ -208,26 +205,18 @@ public class Markov {
 		ArrayList<String> list = start.toProbabilities();
 		int random = (int) (Math.random() * list.size());
 		String genName = list.get(random);
-
-//		System.out.println(genName + " is " + genName.length() + " characters long!");
 		
-		if (ORDER == 1)
-			return genName = createName(genName, firstOrderMarkovTable);
-
 		String twoLetter = initNextChar(genName, firstOrderMarkovTable);
-		
-//		System.out.println(twoLetter + " is " + twoLetter.length() + " characters long!");
-		
 		if (twoLetter.equals(genName))
 			return firstToUpperCase(twoLetter);
+		
+		if (ORDER == 1)
+			return genName = genName + createName(twoLetter.substring(1), firstOrderMarkovTable);
 
 		if (ORDER == 2)
 			genName = createName(twoLetter, secondOrderMarkovTable);
 		
 		String threeLetter = initNextChar(twoLetter, secondOrderMarkovTable);
-
-//		System.out.println(threeLetter + " is " + threeLetter.length() + " characters long!");
-		
 		if (threeLetter.equals(twoLetter))
 			return firstToUpperCase(threeLetter);
 
@@ -235,9 +224,6 @@ public class Markov {
 			return genName = createName(threeLetter, thirdOrderMarkovTable);
 
 		String fourLetter = initNextChar(threeLetter, thirdOrderMarkovTable);
-
-//		System.out.println(fourLetter + " is " + fourLetter.length() + " characters long!");
-		
 		if (fourLetter.equals(threeLetter))
 			return firstToUpperCase(fourLetter);
 
@@ -250,10 +236,8 @@ public class Markov {
 	/**
 	 * Helper method for generateName
 	 * 
-	 * @param sequence
-	 *            is the name generated so far
-	 * @param hmap
-	 *            should be the hashmap of order ORDER
+	 * @param sequence is the name generated so far
+	 * @param hmap should be the hashmap of order ORDER
 	 * @return a name
 	 */
 	private String createName(String sequence,
