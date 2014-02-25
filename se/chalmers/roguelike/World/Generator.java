@@ -16,8 +16,8 @@ public class Generator {
 	public Generator(){
 
 		Random seedRand = new Random();
-		//long seed = seedRand.nextLong();
-		long seed = 3182815830558287750L;
+		long seed = seedRand.nextLong();
+//		long seed = 3182815830558287750L;
 		System.out.println("Using seed: "+seed);
 		rand = new Random(seed);
 		run();

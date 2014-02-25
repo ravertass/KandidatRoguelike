@@ -84,13 +84,16 @@ public class RenderingSystem implements ISystem {
 	
 	public void update() {
 
+		
+		for (Entity e : entitiesToDraw) {
+			if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth)
+				drawHealthbar(e);
+		}
 		// Draw all entities in system
 		for(Entity entity : entitiesToDraw) {
 			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
-			if((entity.getComponentKey() & Engine.CompHealth) == Engine.CompHealth)
-				drawHealthbar(entity);
+//			drawHealthbar(entity);
 		}
-		
 		//drawHudBackgorund();
 		
 		// Update and sync display
@@ -107,7 +110,7 @@ public class RenderingSystem implements ISystem {
 		glLoadIdentity();
 		glOrtho(0, DISPLAY_WIDTH, 0, DISPLAY_HEIGHT, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
-		glEnable(GL_TEXTURE_2D); 
+//		glEnable(GL_TEXTURE_2D); 
 		// Enables the use of transparent PNGs
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -265,12 +268,27 @@ public class RenderingSystem implements ISystem {
 	}
 	
 	private void drawHealthbar(Entity e) {
-		GL11.glColor3f(0.0f, 1.0f, 0.0f);
+		Position epos = e.getComponent(Position.class); // tilebased positions
+		Position camPos = camera.getPosition();
+		int camX = camPos.getX();
+		int camY = camPos.getY();
+		int x = (epos.getX() - camX) * 16;
+		int y = (epos.getY() - camY) *16;
+		glColor3f(0.0f, 1.0f, 0.0f);
+		if (x >= 0 && x < camera.getWidth() * 16 &&
+				y >= 0 && y < camera.getHeight() * 16) {
 			glBegin(GL_QUADS);
-				GL11.glLineWidth(5.0f);
-				GL11.glVertex2f(0,100);
-				GL11.glVertex2f(300,100);
-			glEnd();
-		GL11.glColor3f(1.0f,1.0f,1.0f);
+//				GL11.glLineWidth(1.0f);
+				GL11.glVertex2i(x,y+16);
+				GL11.glVertex2i(x+16,y+16);
+				GL11.glVertex2i(x+16,y+18);
+				GL11.glVertex2i(x,y+18);
+//				glVertex2i(400, 400);
+//				glVertex2i(500, 400);
+//				glVertex2i(500, 500);
+//				glVertex2i(400, 500);
+				glEnd();
+		}
+		glColor3f(1.0f,1.0f,1.0f);
 	}
 }
