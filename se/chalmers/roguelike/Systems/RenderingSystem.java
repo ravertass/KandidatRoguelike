@@ -289,7 +289,10 @@ public class RenderingSystem implements ISystem {
 //		glEnd();
 		
 	}
-	
+	/**
+	 * draws healthbars for all entities that have health
+	 * @param e
+	 */
 	private void drawHealthbar(Entity e) {
 		Position epos = e.getComponent(Position.class); // tilebased positions
 		Position camPos = camera.getPosition();
@@ -302,20 +305,20 @@ public class RenderingSystem implements ISystem {
 		
 		Health h = e.getComponent(Health.class);
 		double healthPercentage = h.getHealthPercentage();
-		double healthbarLength = healthPercentage * 16;
+		double healthbarLength = healthPercentage * 16; //calculates how much of the green should be drawn over the red
 		
 		int hblength = (int)healthbarLength;
 		
-		glColor3f(0.0f, 1.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * 16 &&
 				y >= 0 && y < camera.getHeight() * 16) {
+			glColor3f(1.0f, 1.0f, 0.0f);
 			glBegin(GL_QUADS);
 				GL11.glVertex2i(x,y+16);
 				GL11.glVertex2i(x+hblength,y+16);
 				GL11.glVertex2i(x+hblength,y+18);
 				GL11.glVertex2i(x,y+18);
-				glEnd();
+			glEnd();
+				glColor3f(1.0f,1.0f,1.0f);
 		}
-		glColor3f(1.0f,1.0f,1.0f);
 	}
 }

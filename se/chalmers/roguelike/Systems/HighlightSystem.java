@@ -30,6 +30,7 @@ public class HighlightSystem implements ISystem, Observer {
 	public HighlightSystem() {
 		entities = new ArrayList<Entity>();
 		clickPos = noClick;
+		buttonClicked = -1;
 	}
 	/**
 	 * Will calculate on which tile to draw the highlight-sprite and then set its visibility to true.
@@ -46,28 +47,28 @@ public class HighlightSystem implements ISystem, Observer {
 								+ camera.getPosition().getX(),
 						(clickPos.getY() / 16)
 								+ camera.getPosition().getY());
-				e.getComponent(Sprite.class).setVisibility(true);
+//				e.getComponent(Sprite.class).setVisibility(true);
 				resetMouse();
 
 			} else if (Mouse.isButtonDown(1)) {
 				
 				//Gets all the positions between the player (currently just 10,10) and the Mouse
-				ArrayList<Position> line = Util.calculateLine(new Position(10, 10),
-						new Position((Mouse.getX() / 16)
-								+ camera.getPosition().getX(),
-								(Mouse.getY() / 16)
-										+ camera.getPosition().getY()));
+//				ArrayList<Position> line = Util.calculateLine(new Position(10, 10),
+//						new Position((Mouse.getX() / 16)
+//								+ camera.getPosition().getX(),
+//								(Mouse.getY() / 16)
+//										+ camera.getPosition().getY()));
 
 				// System.out.println("Line: " + line);
 
-				for (Position pos : line) {
-					// Insert code for highlighting all the tiles
-				}
+//				for (Position pos : line) {
+//					// Insert code for highlighting all the tiles
+//				}
 
 				e.getComponent(Position.class).set(
 						(Mouse.getX() / 16) + camera.getPosition().getX(),
 						(Mouse.getY() / 16) + camera.getPosition().getY());
-				e.getComponent(Sprite.class).setVisibility(true);
+//				e.getComponent(Sprite.class).setVisibility(true);
 
 			} else if (!Mouse.isButtonDown(1)) {
 			}

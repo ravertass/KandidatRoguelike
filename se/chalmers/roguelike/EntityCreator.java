@@ -79,7 +79,7 @@ public class EntityCreator {
 	public void createHighlight() {
 		Entity highlight = new Entity();
 		highlight.add(new Sprite("highlight2"));
-		highlight.add(new Position(10, 10));
+		highlight.add(new Position(1,1));
 		highlight.add(input);
 		highlight.add(new Highlight());
 		engine.addEntity(highlight);
