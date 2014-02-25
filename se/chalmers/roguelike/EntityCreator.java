@@ -38,7 +38,7 @@ public class EntityCreator {
 
 	public void createEnemy() {
 		Entity enemy = new Entity();
-		enemy.add(new Health(5));
+		enemy.add(new Health(10));
 		enemy.add(new TurnsLeft(1));
 		enemy.add(new Input());
 		enemy.add(new Sprite("mobs/mob_devilmarine"));
