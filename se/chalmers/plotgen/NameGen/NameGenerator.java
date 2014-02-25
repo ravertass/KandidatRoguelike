@@ -1,4 +1,4 @@
-package se.chalmers.plotgen;
+package se.chalmers.plotgen.NameGen;
 
 import java.io.BufferedWriter;
 import java.io.File;

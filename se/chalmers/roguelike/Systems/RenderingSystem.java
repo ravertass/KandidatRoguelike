@@ -1,24 +1,48 @@
 package se.chalmers.roguelike.Systems;
 
-import java.util.ArrayList;
-import java.awt.Color;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glVertex2d;
 
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
+import java.awt.Color;
+import java.util.ArrayList;
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
-import se.chalmers.roguelike.util.Button;
-import se.chalmers.roguelike.util.FontRenderer;
-import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.World.Dungeon;
+import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
-import static org.lwjgl.opengl.GL11.*;
+import se.chalmers.roguelike.util.FontRenderer;
+import se.chalmers.roguelike.util.Util;
 
 /**
  * This is the system that draws everything to be drawn.
@@ -75,7 +99,7 @@ public class RenderingSystem implements ISystem {
 			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
 				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
-				if(tile != null) {
+				if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
 					draw(tile.getSprite(),drawPos);
 				}
 			}
@@ -84,9 +108,17 @@ public class RenderingSystem implements ISystem {
 	
 	public void update() {
 
+		
+		for (Entity e : entitiesToDraw) {
+			if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
+				drawHealthbar(e);
+			}
+		}
 		// Draw all entities in system
 		for(Entity entity : entitiesToDraw) {
+			
 			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+//			drawHealthbar(entity);
 		}
 		
 		//drawHudBackgorund();
@@ -96,6 +128,9 @@ public class RenderingSystem implements ISystem {
 		Display.sync(60);
 	}
 	
+
+
+
 	/**
 	 * This method sets up OpenGL. We're not quite sure of what it does.
 	 */
@@ -105,7 +140,7 @@ public class RenderingSystem implements ISystem {
 		glLoadIdentity();
 		glOrtho(0, DISPLAY_WIDTH, 0, DISPLAY_HEIGHT, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
-		glEnable(GL_TEXTURE_2D); 
+//		glEnable(GL_TEXTURE_2D); 
 		// Enables the use of transparent PNGs
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -154,7 +189,6 @@ public class RenderingSystem implements ISystem {
 		Position camPos = camera.getPosition();
 		int camX = camPos.getX();
 		int camY = camPos.getY();
-		
 		// Subtract the coordinates with the camera's coordinates,
 		// then multiply that with the SPRITE_SIZE, so that we get 
 		// the pixel coordinates, not the tile coordinates.
@@ -261,4 +295,62 @@ public class RenderingSystem implements ISystem {
 //		glEnd();
 		
 	}
+	/**
+	 * draws healthbars for all entities that have health
+	 * @param e
+	 */
+	private void drawHealthbar(Entity e) {
+		Position epos = e.getComponent(Position.class); // tilebased positions
+		Position camPos = camera.getPosition();
+//		System.out.println(e + ": " +epos);
+		int camX = camPos.getX();
+		int camY = camPos.getY();
+
+		int x = (epos.getX() - camX) * 16;
+		int y = (epos.getY() - camY) * 16;
+		
+		Health h = e.getComponent(Health.class);
+		double healthPercentage = h.getHealthPercentage();
+		double healthbarLength = healthPercentage * 16; //calculates how much of the green should be drawn over the red
+		
+		int hblength = (int)healthbarLength;
+		
+		//draw the red part of the healthbar
+		glColor3f(1.0f, 0.0f, 0.0f);
+		if (x >= 0 && x < camera.getWidth() * 16 &&
+				y >= 0 && y < camera.getHeight() * 16) {
+			glBegin(GL_QUADS);
+				GL11.glVertex2i(x,y+16);
+				GL11.glVertex2i(x+16,y+16);
+				GL11.glVertex2i(x+16,y+18);
+				GL11.glVertex2i(x,y+18);
+			glEnd();
+		}
+		
+		//draw the green part of the healthbar ontop of the red
+		glColor3f(0.0f, 1.0f, 0.0f);
+		if (x >= 0 && x < camera.getWidth() * 16 &&
+				y >= 0 && y < camera.getHeight() * 16) {
+			glBegin(GL_QUADS);
+				GL11.glVertex2i(x,y+16);
+				GL11.glVertex2i(x+hblength,y+16);
+				GL11.glVertex2i(x+hblength,y+18);
+				GL11.glVertex2i(x,y+18);
+			glEnd();
+				
+		}
+		glColor3f(1.0f,1.0f,1.0f);
+	}
+	
+	private boolean visibleForPlayer(Dungeon d, Position playerPos, int x, int y) {
+		ArrayList<Position> line = Util.calculateLine(playerPos.getX(), playerPos.getY(), x, y);
+			for (Position p : line) {
+				if(d.getTile(p.getX(), p.getY()).blocksLineOfSight())
+					return false;
+			}
+			return true;
+		
+	}
+
+	
 }

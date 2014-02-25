@@ -1,4 +1,4 @@
-package se.chalmers.plotgen;
+package se.chalmers.plotgen.PlotGraph;
 
 /**
  * This is a vertex in a plot graph.

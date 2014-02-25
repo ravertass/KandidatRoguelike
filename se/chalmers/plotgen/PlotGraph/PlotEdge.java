@@ -1,4 +1,6 @@
-package se.chalmers.plotgen;
+package se.chalmers.plotgen.PlotGraph;
+
+import se.chalmers.plotgen.PlotData.Action;
 
 /**
  * This is an edge in a plot graph.
@@ -11,13 +13,13 @@ package se.chalmers.plotgen;
  */
 public class PlotEdge {
 	
-	private Interaction interaction;
+	private Action action;
 
-	public PlotEdge(Interaction interaction) {
-		this.interaction = interaction;
+	public PlotEdge(Action action) {
+		this.action = action;
 	}
 	
-	public Interaction getInteraction() {
-		return interaction;
+	public Action getAction() {
+		return action;
 	}
 }

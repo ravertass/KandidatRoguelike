@@ -1,4 +1,4 @@
-package se.chalmers.plotgen;
+package se.chalmers.plotgen.PlotData;
 
 /**
  * The superclass for subjects and objects in plot actions, that is,

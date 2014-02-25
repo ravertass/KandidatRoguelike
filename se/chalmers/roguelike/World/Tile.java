@@ -3,6 +3,7 @@ package se.chalmers.roguelike.World;
 import java.util.ArrayList;
 
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Sprite;
 
 public class Tile {
@@ -12,7 +13,8 @@ public class Tile {
 	private boolean backgroundWalkable;
 	private boolean blocksLineOfSight;
 
-	public Tile(Sprite backgroundSprite, boolean backgroundWalkable, boolean blocksLineOfSight) {
+	public Tile(Sprite backgroundSprite, boolean backgroundWalkable,
+			boolean blocksLineOfSight) {
 		this.backgroundSprite = backgroundSprite;
 		this.backgroundWalkable = backgroundWalkable;
 		this.blocksLineOfSight = blocksLineOfSight;
@@ -27,7 +29,7 @@ public class Tile {
 	 */
 	public Entity containsCharacter() {
 		for (Entity e : entities) {
-			if (e.getComponent(se.chalmers.roguelike.Components.Character.class) != null)
+			if (e.getComponent(Attribute.class) != null)
 				return e;
 		}
 		return null;
