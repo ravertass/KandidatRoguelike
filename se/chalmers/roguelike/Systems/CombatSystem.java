@@ -62,8 +62,7 @@ public class CombatSystem implements ISystem {
 					if (target != null) {
 						Position targetpos = target
 								.getComponent(Position.class);
-						attack(targetpos, e.getComponent(Weapon.class)
-								.getDamage());
+						attack(targetpos, e);
 						break;
 					}
 					// if there is a wall, break
@@ -109,17 +108,27 @@ public class CombatSystem implements ISystem {
 	/**
 	 * attack method
 	 */
-	public void attack(Position pos, int damage) {
-		attack(pos.getX(), pos.getY(), damage);
+	public void attack(Position targetpos, Entity attacker) {
+		attack(targetpos.getX(), targetpos.getY(), attacker);
 	}
 
-	public void attack(int x, int y, int damage) {
-		Entity target = dungeon.getTile(x, y).containsCharacter();
-		if (target != null)
-			if (damage > 0) {
-				System.out.println("Damage: " + damage);
-				target.getComponent(Health.class).decreaseHealth(damage);
-			}
+	public void attack(int x, int y, Entity attacker) {
+		Weapon weapon = attacker.getComponent(Weapon.class);
+		
+		//Make a list of targets depending on the type of the weapon
+		ArrayList<Entity> targets = new ArrayList<Entity>();
+		targets.add(dungeon.getTile(x, y).containsCharacter());
+		
+		int damage = -1;
+		for(Entity target : targets) {
+			if (target != null)
+				damage = weapon.getDamage();
+				if (damage >= 0) {
+					System.out.println("Damage: " + damage);
+					target.getComponent(Health.class).decreaseHealth(damage);
+				}
+		}
+		
 	}
 
 	/**

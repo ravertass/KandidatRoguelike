@@ -214,7 +214,7 @@ public class Markov {
 			return genName = genName + createName(twoLetter.substring(1), firstOrderMarkovTable);
 
 		if (ORDER == 2)
-			genName = createName(twoLetter, secondOrderMarkovTable);
+			return genName = createName(twoLetter, secondOrderMarkovTable);
 		
 		String threeLetter = initNextChar(twoLetter, secondOrderMarkovTable);
 		if (threeLetter.equals(twoLetter))

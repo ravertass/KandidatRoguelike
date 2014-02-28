@@ -16,13 +16,13 @@ import java.util.Set;
 public class DirectedGraph<V,E> implements IDirectedGraph<V,E> {
 
 	private V rootVertex;
-	private HashMap<V, Set<Pair<E, V>>> adjacencies;
+	private HashMap<V, HashSet<Pair<E, V>>> adjacencies;
 
 	/**
 	 * @param rootVertex The root vertex of the graph.
 	 */
 	public DirectedGraph() {
-		adjacencies = new HashMap<V, Set<Pair<E,V>>>();
+		adjacencies = new HashMap<V, HashSet<Pair<E,V>>>();
 		addVertex(rootVertex);
 	}
 	
@@ -52,12 +52,16 @@ public class DirectedGraph<V,E> implements IDirectedGraph<V,E> {
 		return rootVertex;
 	}
 
+	public Set<V> getVertices() {
+		return adjacencies.keySet();
+	}
+	
 	/**
 	 * Since the graph is directed, this will return
 	 * the outgoing edges from a vertex.
 	 */
 	@Override
-	public Set<Pair<E,V>> getAdjacencies(V v) {
+	public HashSet<Pair<E,V>> getAdjacencies(V v) {
 		return adjacencies.get(v);
 	}
 
