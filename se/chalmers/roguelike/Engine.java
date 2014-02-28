@@ -2,11 +2,7 @@ package se.chalmers.roguelike;
 
 import java.util.ArrayList;
 
-<<<<<<< HEAD
-import se.chalmers.plotgen.NameGenerator;
-=======
 import se.chalmers.plotgen.NameGen.NameGenerator;
->>>>>>> 41fb133984399017152bc349131983bb6922cc0d
 import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Generator;
