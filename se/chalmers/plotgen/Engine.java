@@ -2,9 +2,12 @@ package se.chalmers.plotgen;
 
 import java.util.ArrayList;
 
+import se.chalmers.plotgen.NameGen.NameGenerator;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
+import se.chalmers.plotgen.PlotData.Scene;
 import se.chalmers.plotgen.PlotGraph.PlotEdge;
+import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
 import se.chalmers.plotgen.util.DirectedGraph;
 
@@ -13,21 +16,30 @@ import se.chalmers.plotgen.util.DirectedGraph;
  * 
  * TODO: Jag är osäker på om allt nedan kommer att stämma.
  * 
- * The idea is that it will be possible to initialize it using its main function,
- * independently of its game. Then it will return some randomize plot data via STDOUT.
+ * The idea is that it will be possible to initialize it using its main
+ * function, independently of its game. Then it will return some randomize plot
+ * data via STDOUT.
  * 
- * When using it in the game, it should not only be able to generate plots, but also
- * be able to keep track of the plot state.
+ * When using it in the game, it should not only be able to generate plots, but
+ * also be able to keep track of the plot state.
  * 
  * @author fabian
  */
 
 public class Engine {
 
+	// TODO: Satte antalet plot-grejer (Scenes, Actors, Props) 
+	// till 3 som standard, för testning (hårdkodade algoritmen för plotgen utgår
+	// ifrån siffran 3)
+	private static final int noOfPlotThings = 3;
+
+	private NameGenerator nameGen;
+
 	private ArrayList<Actor> actors;
 	private ArrayList<Prop> props;
+	private ArrayList<Scene> scenes;
 	// TODO: Maybe also scenes? private ArrayList<Scene> scenes;
-	private DirectedGraph<PlotVertex, PlotEdge> plotGraph;
+	private PlotGraph plotGraph;
 
 	/**
 	 * Initializes everything and randomizes new actors, props and a new plot.
@@ -35,47 +47,82 @@ public class Engine {
 	 * @param seed
 	 */
 	private void run(int seed) {
-		actors = randomizeActors(seed);
-		props = randomizeProps(seed);
-
-		plotGraph = randomizePlot(seed, actors, props);
+		nameGen = new NameGenerator(3); // TODO: Satte order på nameGen till 3
+										// som standard, för testning
+		
+		generateScenes(seed);
+		generateActors(seed);
+		generateProps(seed);
+		
+		generatePlot(seed);
+		
+		System.out.println(plotGraph);
 	}
 
 	/**
-	 * Will randomize new actors. Will use the name generator for names.
+	 * TODO: Will randomize new actors. Will use the name generator for names.
 	 * 
 	 * @param seed
 	 * @return
 	 */
-	private ArrayList<Actor> randomizeActors(int seed) {
-		// TODO Auto-generated method stub
-		return null;
+	private void generateActors(int seed) {
+		actors = new ArrayList<Actor>();
+
+		for (int i = 0; i < noOfPlotThings; i++) {
+			Actor actor = new Actor(nameGen.generateName());
+			actors.add(actor);
+			// TODO: Test output
+			System.out.println("Actor: " + actor);
+		}
 	}
 
 	/**
-	 * Will randomize new props. Will use the name generator, to an extent, for
-	 * names.
+	 * TODO Will randomize new props. Will use the name generator, to an
+	 * extent, for names.
 	 * 
 	 * @param seed
 	 * @return
 	 */
-	private ArrayList<Prop> randomizeProps(int seed) {
-		// TODO Auto-generated method stub
-		return null;
+	private void generateProps(int seed) {
+		props = new ArrayList<Prop>();
+
+		for (int i = 0; i < noOfPlotThings; i++) {
+			Prop prop = new Prop(nameGen.generateName());
+			props.add(prop);
+			// TODO: Test output
+			System.out.println("Prop: " + prop);
+		}
 	}
+	
+	/**
+	 * TODO Will randomize new props. Will use the name generator, to an
+	 * extent, for names.
+	 * 
+	 * @param seed
+	 * @return
+	 */
+	private void generateScenes(int seed) {
+		scenes = new ArrayList<Scene>();
+
+		for (int i = 0; i < noOfPlotThings; i++) {
+			Scene scene = new Scene(nameGen.generateName());
+			scenes.add(scene);
+			// TODO: Test output
+			System.out.println("Scene: " + scene);
+		}
+	}
+	
 
 	/**
-	 * Randomizes a plot. This is where the action is!
+	 * TODO: Randomizes a plot. This is where the action is!
 	 * 
 	 * @param seed
 	 * @param actors
 	 * @param props
 	 * @return
 	 */
-	private DirectedGraph<PlotVertex, PlotEdge> randomizePlot(int seed,
-			ArrayList<Actor> actors, ArrayList<Prop> props) {
-		// TODO Auto-generated method stub
-		return null;
+	private void generatePlot(int seed) {
+		plotGraph = PlotGenerator.hardCodedAlgorithm(scenes, actors, props);
 	}
 
 	/**
