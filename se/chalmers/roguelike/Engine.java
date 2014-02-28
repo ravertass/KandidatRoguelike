@@ -2,6 +2,7 @@ package se.chalmers.roguelike;
 
 import java.util.ArrayList;
 
+import se.chalmers.plotgen.NameGen.NameGenerator;
 import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Generator;
@@ -169,8 +170,9 @@ public class Engine {
 	 */
 	public void run(){
 		entityCreator.createPlayer();
+		NameGenerator ng = new NameGenerator(2);
 		for (int i = 0; i <4; i++)
-			entityCreator.createEnemy(i);
+			entityCreator.createEnemy(ng.generateName());
 		entityCreator.createHighlight();
 		
 		while(true){
