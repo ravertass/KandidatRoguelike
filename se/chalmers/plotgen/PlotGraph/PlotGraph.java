@@ -1,9 +1,9 @@
 package se.chalmers.plotgen.PlotGraph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import se.chalmers.plotgen.util.DirectedGraph;
-import se.chalmers.plotgen.util.Pair;
 
 /**
  * This is a graph which models an abstracted plot.
@@ -33,6 +33,7 @@ public class PlotGraph {
 	public void addRootVertex(PlotVertex rootVertex) {
 		graph.addVertex(rootVertex);
 		graph.setRootVertex(rootVertex);
+		activeVertex = rootVertex;
 	}
 
 	/**
@@ -66,17 +67,28 @@ public class PlotGraph {
 		return true;
 	}
 
+	public PlotVertex getActiveVertex() {
+		return activeVertex;
+	}
+
+	/**
+	 * @return all the outgoing edges and adjacent vertices from the active vertex
+	 */
+	public HashMap<PlotEdge, PlotVertex> getAdjacentVertices() {
+		return graph.getAdjacencies(activeVertex);
+	}
+
 	@Override
 	public String toString() {
 		// We iterate through all the vertices and edges, beginning with
 		// the root vertex, and add them to the output string.
 		PlotVertex rootVertex = graph.getRootVertex();
 		String string = rootVertex.getPlotText() + "\n";
-		
-		ArrayList<Pair<PlotEdge, PlotVertex>> adjacencies = new ArrayList<Pair<PlotEdge, PlotVertex>>();
-		adjacencies.addAll(graph.getAdjacencies(rootVertex));
 
-		string = addAdjacents(adjacencies, rootVertex, string, "");
+		ArrayList<PlotEdge> adjacentEdges = new ArrayList<PlotEdge>();
+		adjacentEdges.addAll(graph.getAdjacencies(rootVertex).keySet());
+
+		string = addAdjacents(adjacentEdges, rootVertex, string, "");
 
 		return string;
 	}
@@ -86,24 +98,22 @@ public class PlotGraph {
 	// (this may seem like a bad idea because of stack overflow etc. but I don't
 	// think that will happen in this case)
 	private String addAdjacents(
-			ArrayList<Pair<PlotEdge, PlotVertex>> adjacencies,
+			ArrayList<PlotEdge> adjacentEdges,
 			PlotVertex vertex, String string, String spaces) {
-		
+
 		// These will make the text nicely formatted
 		spaces += "  ";
-		
-		for (Pair<PlotEdge, PlotVertex> edgeVertex : adjacencies) {
-			
+
+		for (PlotEdge edge : adjacentEdges) {
+
 			string += spaces;
-			
-			PlotEdge edge = edgeVertex.getFirst();
-			PlotVertex newVertex = edgeVertex.getSecond();
-			
+
+			PlotVertex newVertex = graph.getAdjacencies(vertex).get(edge);
+
 			string += edge.getAction() + " : ";
 			string += newVertex.getPlotText() + "\n";
-			ArrayList<Pair<PlotEdge, PlotVertex>> newAdjacencies = 
-					new ArrayList<Pair<PlotEdge, PlotVertex>>();
-			newAdjacencies.addAll(graph.getAdjacencies(newVertex));
+			ArrayList<PlotEdge> newAdjacencies = new ArrayList<PlotEdge>();
+			newAdjacencies.addAll(graph.getAdjacencies(newVertex).keySet());
 			string = addAdjacents(newAdjacencies, newVertex, string, spaces);
 		}
 		return string;
