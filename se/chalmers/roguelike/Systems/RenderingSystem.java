@@ -42,7 +42,9 @@ import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
-import se.chalmers.roguelike.util.ShadowCaster2;
+import se.chalmers.roguelike.util.Pair;
+import se.chalmers.roguelike.util.ShadowCaster;
+import se.chalmers.roguelike.util.Util;
 
 /**
  * This is the system that draws everything to be drawn.
@@ -93,23 +95,13 @@ public class RenderingSystem implements ISystem {
 		// This seems to be unnecessary
 		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
 		
-		ShadowCaster2 sc2 = new ShadowCaster2();
+		ShadowCaster sc = new ShadowCaster();
 		
-		int[][] lightMap = sc2.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 10);
+		int[][] lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 10);
 		
-//		ArrayList<Pair<Integer, Integer>> visibleTiles = ShadowCaster.ComputeFieldOfViewWithShadowCasting(playerPos.getX()+cwidth/2, playerPos.getY()+cheight/2, 1, dungeon);
-//		for (Pair<Integer, Integer> p : visibleTiles)
-//			System.out.println("Pairs:" + p.getFirst() + ", " + p.getSecond());
 		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());
-//		for(Pair<Integer, Integer> p : visibleTiles) {
-//			int x = p.getFirst();
-//			int y = p.getSecond();
-//			Tile tile = dungeon.getTile(x+playerPos.getX(), y+playerPos.getY());
-//			if(tile != null && visibleForPlayer(dungeon, playerPos, x+playerPos.getX(), y+playerPos.getY())) {
-//				draw(tile.getSprite(),new Position(x+playerPos.getX(), y+playerPos.getY()));
-//			}
-//		}
+
 		
 		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
 			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
@@ -117,6 +109,7 @@ public class RenderingSystem implements ISystem {
 				drawPos.set(x, y);
 				if(tile != null  && lightMap[x][y] == 1) {
 					draw(tile.getSprite(),drawPos);
+
 				}
 			}
 		}

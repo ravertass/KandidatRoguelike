@@ -58,7 +58,7 @@ public class NameGenerator {
 	 * @param fileName	the path to the file you want to prepare
 	 */
 	public void setupFile(String fileName) {
-		ArrayList<String> names = new ArrayList<>();
+		ArrayList<String> names = new ArrayList<String>();
 
 		try {
 			Scanner s = new Scanner(new File(fileName));
