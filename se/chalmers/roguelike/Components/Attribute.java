@@ -4,6 +4,13 @@ public class Attribute implements IComponent {
 	private String name;
 	private int level;
 
+	private int strength;
+	private int endurance;
+	private int perception;
+	private int intelligence;
+	private int charisma;
+	private int agility;
+	
 	public Attribute(String name, int level) {
 		this.name = name;
 		this.level = level;

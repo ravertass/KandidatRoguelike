@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
+import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 
 public class EntityCreator {
 
@@ -33,7 +34,7 @@ public class EntityCreator {
 		player.add(new Direction());
 		player.add(new Player());
 		player.add(new Attribute("Player", 1));
-		player.add(new Weapon(2, 6, -3));
+		player.add(new Weapon(2, 6, -3, TargetingSystem.LINE, 1, 5));
 		engine.addEntity(player);
 	}
 

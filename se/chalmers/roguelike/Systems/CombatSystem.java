@@ -9,8 +9,10 @@ import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
+import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.util.Dice;
 import se.chalmers.roguelike.util.Util;
 
 /**
@@ -45,6 +47,7 @@ public class CombatSystem implements ISystem {
 			Position attackCords = input.getAttackCords();
 			// If the entity has an attackcordinate
 			if (attackCords.getX() != -1) {
+
 				// calculate the line between the attacker and the
 				// attackcordinates
 				ArrayList<Position> line = Util.calculateLine(
@@ -52,24 +55,38 @@ public class CombatSystem implements ISystem {
 				// remove the first position in the line, since it is the
 				// character attacking
 				line.remove(0);
-
-				// Checks for the first character in this line by checking each
-				// position in the line in order
-				for (Position pos : line) {
-					Tile tile = dungeon.getTile(pos.getX(), pos.getY());
-					Entity target = tile.containsCharacter();
-					// if there is a valid target, attack then break the loop
-					if (target != null) {
-						Position targetpos = target
-								.getComponent(Position.class);
-						attack(targetpos, e);
-						break;
+				TargetingSystem targetingSystem = e.getComponent(Weapon.class)
+						.getTargetingSystem();
+				int range = e.getComponent(Weapon.class).getRange();
+				if (targetingSystem == TargetingSystem.LINE) {
+					int i = 0;
+					for (Position pos : line) {
+						if (i >= range)
+							break;
+						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
+						Entity target = tile.containsCharacter();
+						// if there is a valid target, attack then break the
+						// loop
+						if (target != null) {
+							Position targetpos = target
+									.getComponent(Position.class);
+							attack(targetpos, e);
+						}
+						// if there is a wall, break
+						if (!tile.isWalkable() && tile.blocksLineOfSight())
+							break;
+						i++;
 					}
-					// if there is a wall, break
-					if (!tile.isWalkable() && tile.blocksLineOfSight())
-						break;
-				}
+				} else if (targetingSystem == TargetingSystem.CIRCLE) {
+					Position targetPosition = getFirstViableTarget(line, range);
+					
+				} else if (targetingSystem == TargetingSystem.CONE) {
 
+				} else if (targetingSystem == TargetingSystem.NOVA) {
+
+				} else if (targetingSystem == TargetingSystem.SINGLE_TARGET) {
+					attack(getFirstViableTarget(line, range), e);
+				}
 				e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
 			}
 			input.resetAttackCords();
@@ -114,21 +131,30 @@ public class CombatSystem implements ISystem {
 
 	public void attack(int x, int y, Entity attacker) {
 		Weapon weapon = attacker.getComponent(Weapon.class);
-		
-		//Make a list of targets depending on the type of the weapon
+
+		// Make a list of targets depending on the type of the weapon
 		ArrayList<Entity> targets = new ArrayList<Entity>();
 		targets.add(dungeon.getTile(x, y).containsCharacter());
-		
+
 		int damage = -1;
-		for(Entity target : targets) {
-			if (target != null)
-				damage = weapon.getDamage();
-				if (damage >= 0) {
-					System.out.println("Damage: " + damage);
-					target.getComponent(Health.class).decreaseHealth(damage);
+		for (Entity target : targets) {
+			if (target != null) {
+				int attackroll = Dice.roll(2, 6);
+				if (attackroll >= 7) {
+					damage = weapon.getDamage();
+					if (damage >= 0) {
+						System.out.println("Damage: " + damage);
+						target.getComponent(Health.class)
+								.decreaseHealth(damage);
+					}
+					System.out.println(attacker + " attacks " + target
+							+ " for " + damage + " damage.");
+				} else {
+					System.out.println(attacker + " missed.");
 				}
+			}
 		}
-		
+
 	}
 
 	/**
@@ -149,6 +175,30 @@ public class CombatSystem implements ISystem {
 		} else {
 			health.setHealth(currentHealth + regen);
 		}
+	}
+
+	public Position getFirstViableTarget(ArrayList<Position> line, int range) {
+		// Checks for the first character in this line by checking
+		// each position in the line in order
+		Position targetpos = null;
+		int i = 0;
+		for (Position pos : line) {
+			if (i >= range)
+				break;
+			Tile tile = dungeon.getTile(pos.getX(), pos.getY());
+			Entity target = tile.containsCharacter();
+			// if there is a valid target, attack then break the
+			// loop
+			if (target != null) {
+				targetpos = target.getComponent(Position.class);
+				break;
+			}
+			// if there is a wall, break
+			if (!tile.isWalkable() && tile.blocksLineOfSight())
+				break;
+			i++;
+		}
+		return targetpos;
 	}
 
 }
