@@ -95,7 +95,7 @@ public class RenderingSystem implements ISystem {
 		// This seems to be unnecessary
 		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
 		
-//		ArrayList<Pair<Integer, Integer>> visibleTiles = ShadowCaster.ComputeFieldOfViewWithShadowCasting(pos.getX(), pos.getY(), 1, dungeon);
+//		ArrayList<Pair<Integer, Integer>> visibleTiles = ShadowCaster.ComputeFieldOfViewWithShadowCasting(playerPos.getX(), playerPos.getY(), 1, dungeon);
 		
 		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());
@@ -108,14 +108,14 @@ public class RenderingSystem implements ISystem {
 //			}
 //		}
 		
-				for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
-			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
-				Tile tile = dungeon.getTile(x,y);
-				drawPos.set(x, y);
-				if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
-					draw(tile.getSprite(),drawPos);
+		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
+				for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
+					Tile tile = dungeon.getTile(x,y);
+					drawPos.set(x, y);
+					if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
+						draw(tile.getSprite(),drawPos);						
+					}
 				}
-			}
 		}
 	}
 	

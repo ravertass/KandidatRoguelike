@@ -23,7 +23,7 @@ public class ShadowCaster {
 		while (!queue.isEmpty()) {
 			ColumnPortion current = queue.poll();
 			if (current.x <= radius) {
-				computeFoVForColumnPortion(current.x, current.topVector,
+				computeFoVForColumnPortion(current.x, x, y,  current.topVector,
 						current.bottomVector, radius, queue, result);
 			}
 		}
@@ -32,7 +32,7 @@ public class ShadowCaster {
 
 	}
 
-	private static void computeFoVForColumnPortion(int x, DirectionVector top,
+	private static void computeFoVForColumnPortion(int x, int xcord,int ycord, DirectionVector top,
 			DirectionVector bottom, int radius,
 			PriorityQueue<ColumnPortion> queue, ArrayList<Pair<Integer, Integer>> result) {
 			int topY, bottomY;
@@ -54,14 +54,15 @@ public class ShadowCaster {
 					result.add(new Pair<Integer, Integer>(x, y));
 				}
 				System.out.println(x + " + " +y);
-				boolean currentIsOpaque = !inRadius || dungeon.getTile(x, y).blocksLineOfSight();
+				boolean currentIsOpaque = !inRadius || dungeon.getTile(x+xcord, y+ycord).blocksLineOfSight();
 				if(wasLastCellOpaque != -1) {
 					if(currentIsOpaque) {
 						if(wasLastCellOpaque == 0) {
-							queue.add(new ColumnPortion(x + 1, new DirectionVector(x*2-1, y*2+1),top));
+							System.out.println("hej");
+							queue.add(new ColumnPortion(x + 1, new DirectionVector((x+xcord)*2-1, (y+ycord)*2+1),top));
 						}
 					} else if(wasLastCellOpaque == 1) {
-						top = new DirectionVector(x*2+1,y*2+1);
+						top = new DirectionVector((x+xcord)*2+1,(y+ycord)*2+1);
 					}
 				}
 				wasLastCellOpaque = currentIsOpaque ? 1 : 0;
