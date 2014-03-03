@@ -42,6 +42,8 @@ import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
+import se.chalmers.roguelike.util.Pair;
+import se.chalmers.roguelike.util.ShadowCaster;
 import se.chalmers.roguelike.util.Util;
 
 /**
@@ -93,16 +95,27 @@ public class RenderingSystem implements ISystem {
 		// This seems to be unnecessary
 		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
 		
+//		ArrayList<Pair<Integer, Integer>> visibleTiles = ShadowCaster.ComputeFieldOfViewWithShadowCasting(playerPos.getX(), playerPos.getY(), 1, dungeon);
+		
 		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());
+//		for(Pair<Integer, Integer> p : visibleTiles) {
+//			int x = p.getFirst();
+//			int y = p.getSecond();
+//			Tile tile = dungeon.getTile(x, y);
+//			if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
+//				draw(tile.getSprite(),new Position(x, y));
+//			}
+//		}
+		
 		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
-			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
-				Tile tile = dungeon.getTile(x,y);
-				drawPos.set(x, y);
-				if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
-					draw(tile.getSprite(),drawPos);
+				for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
+					Tile tile = dungeon.getTile(x,y);
+					drawPos.set(x, y);
+					if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
+						draw(tile.getSprite(),drawPos);						
+					}
 				}
-			}
 		}
 	}
 	
@@ -344,13 +357,17 @@ public class RenderingSystem implements ISystem {
 	
 	private boolean visibleForPlayer(Dungeon d, Position playerPos, int x, int y) {
 		ArrayList<Position> line = Util.calculateLine(playerPos.getX(), playerPos.getY(), x, y);
+		if(!Engine.debug){ // makes everything visible if engine is in debug mode
 			for (Position p : line) {
 				if(d.getTile(p.getX(), p.getY()).blocksLineOfSight())
 					return false;
 			}
-			return true;
+		}
+		return true;
 		
 	}
 
 	
 }
+
+
