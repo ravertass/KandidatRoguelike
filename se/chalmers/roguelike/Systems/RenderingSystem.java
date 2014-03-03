@@ -344,11 +344,13 @@ public class RenderingSystem implements ISystem {
 	
 	private boolean visibleForPlayer(Dungeon d, Position playerPos, int x, int y) {
 		ArrayList<Position> line = Util.calculateLine(playerPos.getX(), playerPos.getY(), x, y);
+		if(!Engine.debug){ // makes everything visible if engine is in debug mode
 			for (Position p : line) {
 				if(d.getTile(p.getX(), p.getY()).blocksLineOfSight())
 					return false;
 			}
-			return true;
+		}
+		return true;
 		
 	}
 
