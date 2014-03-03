@@ -56,4 +56,13 @@ public class Util {
 		}
 		return line;
 	}
+	
+	public static ArrayList<Pair<Integer, Integer>> getDirectionPairs() {
+		ArrayList<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer,Integer>>();
+		result.add(new Pair<Integer,Integer>(1,1));
+		result.add(new Pair<Integer,Integer>(1,-1));
+		result.add(new Pair<Integer,Integer>(-1,1));
+		result.add(new Pair<Integer,Integer>(-1,-1));
+		return result;
+	}
 }

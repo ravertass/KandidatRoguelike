@@ -42,9 +42,7 @@ import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
-import se.chalmers.roguelike.util.Pair;
-import se.chalmers.roguelike.util.ShadowCaster;
-import se.chalmers.roguelike.util.Util;
+import se.chalmers.roguelike.util.ShadowCaster2;
 
 /**
  * This is the system that draws everything to be drawn.
@@ -95,24 +93,29 @@ public class RenderingSystem implements ISystem {
 		// This seems to be unnecessary
 		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
 		
-		ArrayList<Pair<Integer, Integer>> visibleTiles = ShadowCaster.ComputeFieldOfViewWithShadowCasting(pos.getX(), pos.getY(), 1, dungeon);
+		ShadowCaster2 sc2 = new ShadowCaster2();
 		
+		int[][] lightMap = sc2.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 10);
+		
+//		ArrayList<Pair<Integer, Integer>> visibleTiles = ShadowCaster.ComputeFieldOfViewWithShadowCasting(playerPos.getX()+cwidth/2, playerPos.getY()+cheight/2, 1, dungeon);
+//		for (Pair<Integer, Integer> p : visibleTiles)
+//			System.out.println("Pairs:" + p.getFirst() + ", " + p.getSecond());
 		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());
-		for(Pair<Integer, Integer> p : visibleTiles) {
-			int x = p.getFirst();
-			int y = p.getSecond();
-			Tile tile = dungeon.getTile(x, y);
-			if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
-				draw(tile.getSprite(),new Position(x, y));
-			}
-		}
+//		for(Pair<Integer, Integer> p : visibleTiles) {
+//			int x = p.getFirst();
+//			int y = p.getSecond();
+//			Tile tile = dungeon.getTile(x+playerPos.getX(), y+playerPos.getY());
+//			if(tile != null && visibleForPlayer(dungeon, playerPos, x+playerPos.getX(), y+playerPos.getY())) {
+//				draw(tile.getSprite(),new Position(x+playerPos.getX(), y+playerPos.getY()));
+//			}
+//		}
 		
 		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
 			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
 				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
-				if(tile != null && visibleForPlayer(dungeon, playerPos, x, y)) {
+				if(tile != null  && lightMap[x][y] == 1) {
 					draw(tile.getSprite(),drawPos);
 				}
 			}
@@ -353,16 +356,6 @@ public class RenderingSystem implements ISystem {
 				
 		}
 		glColor3f(1.0f,1.0f,1.0f);
-	}
-	
-	private boolean visibleForPlayer(Dungeon d, Position playerPos, int x, int y) {
-		ArrayList<Position> line = Util.calculateLine(playerPos.getX(), playerPos.getY(), x, y);
-			for (Position p : line) {
-				if(d.getTile(p.getX(), p.getY()).blocksLineOfSight())
-					return false;
-			}
-			return true;
-		
 	}
 
 	
