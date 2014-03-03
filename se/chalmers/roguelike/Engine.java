@@ -11,6 +11,8 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 
 public class Engine {
 	
+	// Debug flag:
+	public static boolean debug = true; 
 	// Constants: Components
 	public static final int CompCharacter = 1 << 0;
 	public static final int CompHealth = 1 << 1;

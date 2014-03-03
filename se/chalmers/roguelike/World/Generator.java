@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Components.Sprite;
 
 public class Generator {
@@ -18,7 +19,9 @@ public class Generator {
 		Random seedRand = new Random();
 		long seed = seedRand.nextLong();
 //		long seed = 3182815830558287750L;
-		System.out.println("Using seed: "+seed);
+		if(Engine.debug){
+			System.out.println("Using seed: "+seed);
+		}
 		rand = new Random(seed);
 		run();
 	}
@@ -121,7 +124,7 @@ public class Generator {
 	public void connectRooms(char[][] grid, ArrayList<Rectangle> placedRooms){
 		// Connect the rooms:
 		for(Rectangle placedRoom : placedRooms){
-			// Get a random spot in the room, reason for -1 is to remove the border,
+			// Get a random spot in the room, reason for -2 is to remove the border,
 			// and +1 is outside of the RNG to make sure it doesn't start on the border
 			int randX = rand.nextInt(((int)placedRoom.getWidth()-2))+1+(int)placedRoom.getX();
 			int randY = rand.nextInt(((int)placedRoom.getHeight()-2))+1+(int)placedRoom.getY();
