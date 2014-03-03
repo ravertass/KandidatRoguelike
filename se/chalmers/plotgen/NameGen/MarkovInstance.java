@@ -11,7 +11,7 @@ public class MarkovInstance {
 	private HashMap<String, Integer> following;
 	
 	public MarkovInstance(String chars){
-		following = new HashMap<>();
+		following = new HashMap<String, Integer>();
 		this.chars = chars;
 	}
 
