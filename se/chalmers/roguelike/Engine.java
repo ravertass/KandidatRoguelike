@@ -11,6 +11,8 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 
 public class Engine {
 	
+	//Global stuff
+	public static int spriteSize = 16;
 	// Debug flag:
 	public static boolean debug = true; 
 	// Constants: Components

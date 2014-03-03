@@ -46,9 +46,9 @@ public class HighlightSystem implements ISystem, Observer {
 	public void update() {
 		if (Mouse.isButtonDown(1)) {
 			ArrayList<Position> line = Util.calculateLine(player.getComponent(Position.class),
-					new Position((Mouse.getX() / 16)
+					new Position((Mouse.getX() / Engine.spriteSize)
 							+ camera.getPosition().getX(),
-							(Mouse.getY() / 16)
+							(Mouse.getY() / Engine.spriteSize)
 									+ camera.getPosition().getY()));
 
 			// System.out.println("Line: " + line);
