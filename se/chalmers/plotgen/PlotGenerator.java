@@ -35,7 +35,7 @@ public class PlotGenerator {
 				"Once upon a time, there was a young lad named "
 						+ actors.get(0) + ".");
 		plotGraph.addRootVertex(startVertex);
-
+		
 		// The hero departs from home to visit the sage
 		Action depart = new Action(Action.ActionType.VISIT, actors.get(0),
 				actors.get(1));

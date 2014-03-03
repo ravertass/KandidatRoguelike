@@ -1,7 +1,6 @@
 package se.chalmers.plotgen.util;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -13,26 +12,24 @@ import java.util.Set;
  * @param <E> the edge class
  */
 
-public class DirectedGraph<V,E> implements IDirectedGraph<V,E> {
+public class DirectedGraph<V,E> {
 
 	private V rootVertex;
-	private HashMap<V, HashSet<Pair<E, V>>> adjacencies;
+	private HashMap<V, HashMap<E, V>> adjacencies;
 
 	/**
 	 * @param rootVertex The root vertex of the graph.
 	 */
 	public DirectedGraph() {
-		adjacencies = new HashMap<V, HashSet<Pair<E,V>>>();
-		addVertex(rootVertex);
+		adjacencies = new HashMap<V, HashMap<E,V>>();
 	}
 	
 	public void setRootVertex(V rootVertex) {
 		this.rootVertex = rootVertex;
 	}
 	
-	@Override
 	public void addVertex(V v) {
-		adjacencies.put(v, new HashSet<Pair<E,V>>());
+		adjacencies.put(v, new HashMap<E,V>());
 	}
 
 	/**
@@ -41,13 +38,12 @@ public class DirectedGraph<V,E> implements IDirectedGraph<V,E> {
 	public boolean addEdge(E e, V v1, V v2) {
 		// If the vertices exist in the graph
 		if (adjacencies.containsKey(v1) && adjacencies.containsKey(v2)) {
-			adjacencies.get(v1).add(new Pair<E,V>(e, v2));
+			adjacencies.get(v1).put(e, v2);
 			return true;
 		}
 		return false;
 	}
 
-	@Override
 	public V getRootVertex() {
 		return rootVertex;
 	}
@@ -60,8 +56,7 @@ public class DirectedGraph<V,E> implements IDirectedGraph<V,E> {
 	 * Since the graph is directed, this will return
 	 * the outgoing edges from a vertex.
 	 */
-	@Override
-	public HashSet<Pair<E,V>> getAdjacencies(V v) {
+	public HashMap<E, V> getAdjacencies(V v) {
 		return adjacencies.get(v);
 	}
 
