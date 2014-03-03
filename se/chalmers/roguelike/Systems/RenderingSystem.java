@@ -107,7 +107,7 @@ public class RenderingSystem implements ISystem {
 			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
 				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
-				if(tile != null  && lightMap[x][y] == 1) {
+				if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
 					draw(tile.getSprite(),drawPos);
 
 				}
