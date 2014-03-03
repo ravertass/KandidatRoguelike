@@ -13,19 +13,17 @@ public class ShadowCaster {
 	private Dungeon dungeon;
 	/**
 	* Calculates the Field Of View for the provided map from the given x, y
-	* coordinates. Returns a lightmap for a result where the values represent a
-	* percentage of fully lit.
-	*
+	* coordinates. Returns a lightmap for a result where 1 is lit and 0 dark.
 	* A value equal to or below 0 means that cell is not in the
 	* field of view, whereas a value equal to or above 1 means that cell is
 	* in the field of view.
 	*
-	* @param resistanceMap the grid of cells to calculate on where 0 is transparent and 1 is opaque
+	* @param d the dungeon, used for checking if a certain tile blocks line of sight
 	* @param startx the horizontal component of the starting location
 	* @param starty the vertical component of the starting location
 	* @param radius the maximum distance to draw the FOV
-	* @param radiusStrategy provides a means to calculate the radius as desired
-	* @return the computed light grid
+	* @param radiusStrategy provides a means to calculate the radius as desired //TODO
+	* @return the grid of tiles to draw
 	*/
 	public int[][] calculateFOV(Dungeon d, int startx, int starty, float radius) {
 	    this.startx = startx;
@@ -50,7 +48,16 @@ public class ShadowCaster {
 	 
 	    return lightMap;
 	}
-	 
+	/**
+	 * Helper method for calculating FOV, casts light between two blocks.
+	 * @param row 
+	 * @param start
+	 * @param end
+	 * @param xx
+	 * @param xy
+	 * @param yx
+	 * @param yy
+	 */
 	private void castLight(int row, float start, float end, int xx, int xy, int yx, int yy) {
 	    float newStart = 0.0f;
 	    if (start < end) {
@@ -70,7 +77,7 @@ public class ShadowCaster {
 	            } else if (end > leftSlope) {
 	                break;
 	            }
-	 
+	            //TODO implement radius here
 	            //check if it's within the lightable area and light if needed
 //	            if (rStrat.radius(deltaX, deltaY) <= radius) {
 //	                float bright = (float) (1 - (rStrat.radius(deltaX, deltaY) / radius));
