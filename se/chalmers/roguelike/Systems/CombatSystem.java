@@ -61,8 +61,10 @@ public class CombatSystem implements ISystem {
 				if (targetingSystem == TargetingSystem.LINE) {
 					int i = 0;
 					for (Position pos : line) {
-						if (i >= range)
+						if (i >= range){
+							System.out.println("out of range, i="+i);
 							break;
+						}
 						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
 //						if (tile == null)
 //							break;

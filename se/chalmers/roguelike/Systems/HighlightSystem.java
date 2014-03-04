@@ -11,6 +11,7 @@ import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.util.Util;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.Observer;
@@ -56,9 +57,15 @@ public class HighlightSystem implements ISystem, Observer {
 				engine.removeEntity(e);
 			}
 			entities.clear();
+			
+			int range = player.getComponent(Weapon.class).getRange();
+			int i = 0;
 			for (Position pos : line) {
+				if (i>range)
+					break;
 				// Insert code for highlighting all the tiles
 				entities.add(ec.createHighlight(pos));
+				i++;
 			}
 		}
 		
