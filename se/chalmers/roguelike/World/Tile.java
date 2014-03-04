@@ -12,6 +12,7 @@ public class Tile {
 	private ArrayList<Entity> entities;
 	private boolean backgroundWalkable;
 	private boolean blocksLineOfSight;
+	private boolean hasBeenSeen;
 
 	public Tile(Sprite backgroundSprite, boolean backgroundWalkable,
 			boolean blocksLineOfSight) {
@@ -19,6 +20,7 @@ public class Tile {
 		this.backgroundWalkable = backgroundWalkable;
 		this.blocksLineOfSight = blocksLineOfSight;
 		entities = new ArrayList<Entity>();
+		this.hasBeenSeen = false;
 	}
 
 	/**
@@ -77,6 +79,14 @@ public class Tile {
 
 	public void setSprite(Sprite sprite) {
 		this.backgroundSprite = sprite;
+	}
+	
+	public void setHasBeenSeen(Boolean b) {
+		this.hasBeenSeen = b;
+	}
+	
+	public boolean hasBeenSeen() {
+		return this.hasBeenSeen;
 	}
 
 }

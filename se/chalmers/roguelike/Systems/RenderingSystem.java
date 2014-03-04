@@ -108,8 +108,12 @@ public class RenderingSystem implements ISystem {
 				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
 				if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
+					if(!Engine.debug)
+						tile.setHasBeenSeen(true);
 					draw(tile.getSprite(),drawPos);
 
+				} else if(tile != null && tile.hasBeenSeen()) {
+					drawOutShadowed(tile.getSprite(), drawPos);
 				}
 			}
 		}
@@ -153,6 +157,7 @@ public class RenderingSystem implements ISystem {
 		// Enables the use of transparent PNGs
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
 	}
 
 	/**
@@ -226,6 +231,51 @@ public class RenderingSystem implements ISystem {
 				glVertex2d(x + size, y + size);
 				glTexCoord2f(spriteULX, spriteULY);
 				glVertex2d(x, y + size);
+			glEnd();
+		}
+	}
+	
+	private void drawOutShadowed(Sprite sprite, Position position) {
+		if(!sprite.getVisibility())
+			return;
+		
+		Texture texture = sprite.getTexture();
+		int size = sprite.getSize(); // Times two, makes sprites twice as large
+		
+		// Get the camera's position
+		Position camPos = camera.getPosition();
+		int camX = camPos.getX();
+		int camY = camPos.getY();
+		// Subtract the coordinates with the camera's coordinates,
+		// then multiply that with the SPRITE_SIZE, so that we get 
+		// the pixel coordinates, not the tile coordinates.
+		int x = (position.getX() - camX) * size;
+		int y = (position.getY() - camY) * size;
+		
+		// Get the coordinates of the current sprite
+		// in the spritesheet in a form that OpenGL likes,
+		// which is a float between 0 and 1
+		float spriteULX = sprite.getUpperLeftX();
+		float spriteULY = sprite.getUpperLeftY();
+		float spriteLRX = sprite.getLowerRightX();
+		float spriteLRY = sprite.getLowerRightY();
+		
+		// We determine if the entity is within the camera's
+		// view; if so, we draw it
+		if (x >= 0 && x < camera.getWidth() * size &&
+				y >= 0 && y < camera.getHeight() * size) {
+			texture.bind();
+			glBegin(GL_QUADS);
+				glColor3f(0.5f, 0.5f, 0.5f);
+				glTexCoord2f(spriteULX, spriteLRY);
+				glVertex2d(x, y);
+				glTexCoord2f(spriteLRX, spriteLRY);
+				glVertex2d(x + size, y);
+				glTexCoord2f(spriteLRX, spriteULY);
+				glVertex2d(x + size, y + size);
+				glTexCoord2f(spriteULX, spriteULY);
+				glVertex2d(x, y + size);
+				glColor3f(1.0f, 1.0f, 1.0f);
 			glEnd();
 		}
 	}
