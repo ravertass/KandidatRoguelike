@@ -211,24 +211,24 @@ public class Markov {
 			return firstToUpperCase(twoLetter);
 		
 		if (ORDER == 1)
-			return genName = genName + createName(twoLetter.substring(1), firstOrderMarkovTable);
+			return firstToUpperCase(genName + createName(twoLetter.substring(1), firstOrderMarkovTable));
 
 		if (ORDER == 2)
-			return genName = createName(twoLetter, secondOrderMarkovTable);
+			return firstToUpperCase(createName(twoLetter, secondOrderMarkovTable));
 		
 		String threeLetter = initNextChar(twoLetter, secondOrderMarkovTable);
 		if (threeLetter.equals(twoLetter))
 			return firstToUpperCase(threeLetter);
 
 		if (ORDER == 3)
-			return genName = createName(threeLetter, thirdOrderMarkovTable);
+			return firstToUpperCase(createName(threeLetter, thirdOrderMarkovTable));
 
 		String fourLetter = initNextChar(threeLetter, thirdOrderMarkovTable);
 		if (fourLetter.equals(threeLetter))
 			return firstToUpperCase(fourLetter);
 
 		if (ORDER == 4)
-			return genName = createName(fourLetter, fourthOrderMarkovTable);
+			return firstToUpperCase(createName(fourLetter, fourthOrderMarkovTable));
 		
 		return "ERROR";
 	}
@@ -259,7 +259,7 @@ public class Markov {
 				name.append(nextChar);
 			}
 		}
-		return firstToUpperCase(name.toString());
+		return name.toString();
 	}
 
 	private String initNextChar(String sequence,

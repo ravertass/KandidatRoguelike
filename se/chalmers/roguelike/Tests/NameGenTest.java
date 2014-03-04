@@ -17,10 +17,10 @@ public class NameGenTest {
 		String n;
 
 		System.out.println();
-		while (i < 1000){
+		while (i < 100){
 			i++;
 			n = name.generateName();
-			//System.out.println(n);
+//			System.out.println(n);
 			if (n.length() < 2){
 				maxOne++;
 			} else if(n.length() < 5) {

@@ -11,7 +11,7 @@ import se.chalmers.roguelike.Components.Sprite;
 
 public class ModifiedGenerator {
 
-	private final int amountOfRooms = 500;
+	private final int amountOfRooms = 100;
 	private int width = 80;
 	private int height = 80;
 	private int xMinDisplacement = 0, yMinDisplacement = 0;
@@ -206,10 +206,6 @@ public class ModifiedGenerator {
 	}
 
 	public static void main(String[] args) {
-		new ModifiedGenerator();
-		new ModifiedGenerator();
-		new ModifiedGenerator();
-		new ModifiedGenerator();
 		new ModifiedGenerator();
 	}
 }
