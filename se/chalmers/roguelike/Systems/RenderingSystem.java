@@ -391,8 +391,8 @@ public class RenderingSystem implements ISystem {
 			glBegin(GL_QUADS);
 				GL11.glVertex2i(x,y+Engine.spriteSize);
 				GL11.glVertex2i(x+Engine.spriteSize,y+Engine.spriteSize);
-				GL11.glVertex2i(x+Engine.spriteSize,y+Engine.spriteSize+2);
-				GL11.glVertex2i(x,y+Engine.spriteSize+2);
+				GL11.glVertex2i(x+Engine.spriteSize,y+Engine.spriteSize+Engine.spriteSize/8);
+				GL11.glVertex2i(x,y+Engine.spriteSize+Engine.spriteSize/8);
 			glEnd();
 		}
 		
@@ -403,8 +403,8 @@ public class RenderingSystem implements ISystem {
 			glBegin(GL_QUADS);
 				GL11.glVertex2i(x,y+Engine.spriteSize);
 				GL11.glVertex2i(x+hblength,y+Engine.spriteSize);
-				GL11.glVertex2i(x+hblength,y+Engine.spriteSize+2);
-				GL11.glVertex2i(x,y+Engine.spriteSize+2);
+				GL11.glVertex2i(x+hblength,y+Engine.spriteSize+Engine.spriteSize/8);
+				GL11.glVertex2i(x,y+Engine.spriteSize+Engine.spriteSize/8);
 			glEnd();
 				
 		}
