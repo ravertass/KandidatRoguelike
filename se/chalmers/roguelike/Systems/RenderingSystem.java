@@ -323,7 +323,7 @@ public class RenderingSystem implements ISystem {
 		double healthbarLength = healthPercentage * Engine.spriteSize; //calculates how much of the green should be drawn over the red
 		
 		int hblength = (int)healthbarLength;
-		
+		glDisable(GL11.GL_TEXTURE_2D);
 		//draw the red part of the healthbar
 		glColor3f(1.0f, 0.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * Engine.spriteSize &&
@@ -338,8 +338,8 @@ public class RenderingSystem implements ISystem {
 		
 		//draw the green part of the healthbar ontop of the red
 		glColor3f(0.0f, 1.0f, 0.0f);
-		if (x >= 0 && x < camera.getWidth() * 16 &&
-				y >= 0 && y < camera.getHeight() * 16) {
+		if (x >= 0 && x < camera.getWidth() * Engine.spriteSize &&
+				y >= 0 && y < camera.getHeight() * Engine.spriteSize) {
 			glBegin(GL_QUADS);
 				GL11.glVertex2i(x,y+Engine.spriteSize);
 				GL11.glVertex2i(x+hblength,y+Engine.spriteSize);
@@ -349,6 +349,7 @@ public class RenderingSystem implements ISystem {
 				
 		}
 		glColor3f(1.0f,1.0f,1.0f);
+		glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	
