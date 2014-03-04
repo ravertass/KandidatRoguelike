@@ -65,4 +65,23 @@ public class Util {
 		result.add(new Pair<Integer,Integer>(-1,-1));
 		return result;
 	}
+	/**
+	 * Given a position and a radius this method calculates all the tiles that are inside a circle vid radius radius around the position.
+	 * @param p the starting position
+	 * @param radius the length of the radius
+	 * @return
+	 */
+	public static ArrayList<Position> circlePositions(Position p, int radius) {
+		ArrayList<Position> result = new ArrayList<Position>();
+		for(int x = p.getX()-radius; x <= radius*2; x++) {
+			for (int y = p.getY()-radius; y <= radius*2; y++) {
+				int xlength = Math.abs(x-p.getX());
+				int ylength = Math.abs(y-p.getY());
+				if(Math.sqrt(xlength^2 + ylength^2) <= radius)
+					result.add(new Position(x,y));
+			}
+		}
+		return result;
+			
+	}
 }
