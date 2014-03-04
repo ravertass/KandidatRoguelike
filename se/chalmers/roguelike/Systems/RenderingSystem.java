@@ -131,10 +131,12 @@ public class RenderingSystem implements ISystem {
 					drawHealthbar(e);
 			}
 		}
-		// Draw all entities in system if they stand on a lit tile.
+		// Draw all entities in system if they stand on a lit tile
 		for(Entity entity : entitiesToDraw) {
 			Position epos = entity.getComponent(Position.class);
-			if(lightMap[epos.getX()][epos.getY()] == 1)
+			if((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
+				draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+			else if(lightMap[epos.getX()][epos.getY()] == 1)
 				draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 		}
 		
