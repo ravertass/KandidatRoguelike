@@ -187,10 +187,10 @@ public class Engine {
 				renderingSys.update();
 //				inputSys.update();
 				inputManager.update();
-				combatsystem.update();
+				combatsystem.update(dungeon);
 				moveSys.update();
 				mobSpriteSys.update();
-				highlightSys.update();
+				highlightSys.update(dungeon);
 				turnSystem.update();
 				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
 					aiSystem.update();
@@ -223,7 +223,7 @@ public class Engine {
 		turnSystem = new TurnSystem();
 		aiSystem = new AISystem(dungeon);
 		playerInputSys = new PlayerInputSystem();
-		combatsystem = new CombatSystem(dungeon, this);
+		combatsystem = new CombatSystem(this);
 		
 	}
 	
