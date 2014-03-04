@@ -99,7 +99,7 @@ public class RenderingSystem implements ISystem {
 		
 		ShadowCaster sc = new ShadowCaster();
 		
-		lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 50);
+		lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 5);
 		
 		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());

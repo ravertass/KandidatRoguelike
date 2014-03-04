@@ -1,5 +1,6 @@
 package se.chalmers.roguelike.util;
 
+import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.World.Dungeon;
 
 public class ShadowCaster {
@@ -83,7 +84,8 @@ public class ShadowCaster {
 //	                float bright = (float) (1 - (rStrat.radius(deltaX, deltaY) / radius));
 //	                lightMap[currentX][currentY] = bright;
 //	            }
-	            lightMap[currentX][currentY] = 1;
+	            if(Util.inRadius(new Position(startx,starty), new Position(currentX,currentY), (int)radius))
+	            	lightMap[currentX][currentY] = 1;
 	 
 	            if (blocked) { //previous cell was a blocking one
 	                if (dungeon.getTile(currentX, currentY) != null && dungeon.getTile(currentX, currentY).blocksLineOfSight()) {//hit a wall

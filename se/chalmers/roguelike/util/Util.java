@@ -143,13 +143,27 @@ public class Util {
 		ArrayList<Position> result = new ArrayList<Position>();
 		for(int x = p.getX()-radius; x <= radius*2; x++) {
 			for (int y = p.getY()-radius; y <= radius*2; y++) {
-				int xlength = Math.abs(x-p.getX());
-				int ylength = Math.abs(y-p.getY());
-				if(Math.sqrt(xlength^2 + ylength^2) <= radius)
+				float xlength = (float)Math.abs(x-p.getX());
+				float ylength = (float)Math.abs(y-p.getY());
+				if(Math.sqrt(Math.pow(xlength, 2) + Math.pow(ylength, 2)) <= radius)
 					result.add(new Position(x,y));
 			}
 		}
 		return result;
 			
+	}
+	/**
+	 * Returns true if the target is within the radius of a circle around the origin.
+	 * @param origin
+	 * @param target
+	 * @param radius
+	 * @return
+	 */
+	public static boolean inRadius(Position origin, Position target, float radius) {
+		float originx = (float)origin.getX();
+		float originy = (float)origin.getY();
+		float targetx = (float)target.getX();
+		float targety = (float)target.getY();
+		return (Math.sqrt(Math.pow(Math.abs(originx-targetx), 2) + Math.pow(Math.abs(originy - targety), 2)) < radius);
 	}
 }
