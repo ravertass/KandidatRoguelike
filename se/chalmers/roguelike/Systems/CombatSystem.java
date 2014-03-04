@@ -64,6 +64,8 @@ public class CombatSystem implements ISystem {
 						if (i >= range)
 							break;
 						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
+//						if (tile == null)
+//							break;
 						Entity target = tile.containsCharacter();
 						// if there is a valid target, attack then break the
 						// loop
