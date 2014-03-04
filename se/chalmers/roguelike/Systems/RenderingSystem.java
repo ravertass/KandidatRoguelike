@@ -192,7 +192,7 @@ public class RenderingSystem implements ISystem {
 			return;
 		
 		Texture texture = sprite.getTexture();
-		int size = sprite.getSize(); // Times two, makes sprites twice as large
+		int size = Engine.spriteSize;//sprite.getSize(); // Times two, makes sprites twice as large
 		
 		// Get the camera's position
 		Position camPos = camera.getPosition();
