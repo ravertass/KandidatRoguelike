@@ -1,5 +1,6 @@
 package se.chalmers.roguelike.util;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Components.Position;
 /**
  * A class representing the camera with its position and width and height.
@@ -10,8 +11,10 @@ public class Camera {
 	
 	private Position pos;
 	
-	private final int CAMERA_WIDTH = 64; // in tiles
-	private final int CAMERA_HEIGHT = 48; // in tiles
+//	private final int CAMERA_WIDTH = 64; // in tiles
+//	private final int CAMERA_HEIGHT = 48; // in tiles
+	private final int CAMERA_WIDTH = Engine.screenWidth/Engine.spriteSize; // in tiles
+	private final int CAMERA_HEIGHT = Engine.screenHeight/Engine.spriteSize; // in tiles
 	
 	public Camera() {
 		pos = new Position(0,0);

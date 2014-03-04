@@ -13,6 +13,8 @@ public class Engine {
 	
 	//Global stuff
 	public static int spriteSize = 16;
+	public static int screenHeight = 768;
+	public static int screenWidth = 1024;
 	// Debug flag:
 	public static boolean debug = true; 
 	// Constants: Components
