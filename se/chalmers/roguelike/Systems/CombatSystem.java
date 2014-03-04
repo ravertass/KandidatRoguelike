@@ -35,10 +35,11 @@ public class CombatSystem implements ISystem {
 		entities = new ArrayList<Entity>();
 		todie = new ArrayList<Entity>();
 	}
+
 	@Override
 	public void update() {
 	}
-	
+
 	public void update(Dungeon dungeon1) {
 		dungeon = dungeon1;
 		// For each entity capable of attacking
@@ -62,13 +63,13 @@ public class CombatSystem implements ISystem {
 				if (targetingSystem == TargetingSystem.LINE) {
 					int i = 0;
 					for (Position pos : line) {
-						if (i >= range){
-							System.out.println("out of range, i="+i);
+						if (i >= range) {
+							System.out.println("out of range, i=" + i);
 							break;
 						}
 						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
-//						if (tile == null)
-//							break;
+						// if (tile == null)
+						// break;
 						Entity target = tile.containsCharacter();
 						// if there is a valid target, attack then break the
 						// loop
@@ -84,7 +85,13 @@ public class CombatSystem implements ISystem {
 					}
 				} else if (targetingSystem == TargetingSystem.CIRCLE) {
 					Position targetPosition = getFirstViableTarget(line, range);
-					
+					ArrayList<Position> possibleTargets = Util.circlePositions(
+							targetPosition, e.getComponent(Weapon.class)
+									.getAoESize());
+					for(Position p : possibleTargets) { //TODO change here so it can't go through walls
+						attack(p, e);
+					}
+
 				} else if (targetingSystem == TargetingSystem.CONE) {
 
 				} else if (targetingSystem == TargetingSystem.NOVA) {

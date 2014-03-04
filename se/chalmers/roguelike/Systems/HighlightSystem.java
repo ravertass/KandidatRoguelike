@@ -28,13 +28,13 @@ public class HighlightSystem implements ISystem, Observer {
 	Engine engine;
 	Camera camera;
 	Entity player;
-	
+
 	Position clickPos;
-	
-	final Position noClick = new Position(-1,-1);
-	
+
+	final Position noClick = new Position(-1, -1);
+
 	int buttonClicked;
-	
+
 	public HighlightSystem(EntityCreator ec, Engine engine) {
 		entities = new ArrayList<Entity>();
 		clickPos = noClick;
@@ -42,32 +42,34 @@ public class HighlightSystem implements ISystem, Observer {
 		this.ec = ec;
 		this.engine = engine;
 	}
-	
+
 	@Override
 	public void update() {
 	}
-	
+
 	/**
-	 * Will calculate on which tile to draw the highlight-sprite and then set its visibility to true.
+	 * Will calculate on which tile to draw the highlight-sprite and then set
+	 * its visibility to true.
 	 */
 	public void update(Dungeon dungeon) {
 		if (Mouse.isButtonDown(1)) {
-			ArrayList<Position> line = Util.calculateLine(player.getComponent(Position.class),
-					new Position((Mouse.getX() / Engine.spriteSize)
-							+ camera.getPosition().getX(),
-							(Mouse.getY() / Engine.spriteSize)
-									+ camera.getPosition().getY()));
-
+			Position mousePos = new Position((Mouse.getX() / Engine.spriteSize)
+					+ camera.getPosition().getX(),
+					(Mouse.getY() / Engine.spriteSize)
+							+ camera.getPosition().getY());
+			ArrayList<Position> line = Util.calculateLine(
+					player.getComponent(Position.class), mousePos);
+			ArrayList<Position> aoe = Util.circlePositions(mousePos, player.getComponent(Weapon.class).getAoESize());
 			// System.out.println("Line: " + line);
 			for (Entity e : entities) {
 				engine.removeEntity(e);
 			}
 			entities.clear();
-			
+
 			int range = player.getComponent(Weapon.class).getRange();
 			int i = 0;
 			for (Position pos : line) {
-				if (i>range)
+				if (i > range)
 					break;
 				Tile tile = dungeon.getTile(pos.getX(), pos.getY());
 				if (!tile.isWalkable() && tile.blocksLineOfSight())
@@ -76,105 +78,74 @@ public class HighlightSystem implements ISystem, Observer {
 				entities.add(ec.createHighlight(pos));
 				i++;
 			}
+			for(Position p : aoe) {
+				Tile tile = dungeon.getTile(p.getX(), p.getY());
+				if (!(tile == null) && !tile.blocksLineOfSight()) {
+					entities.add(ec.createHighlight(p));
+				}
+			}
 		}
-		
+
 		if (!Mouse.isButtonDown(1)) {
 			for (Entity e : entities) {
 				engine.removeEntity(e);
 			}
 			entities.clear();
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		/*
-		
-		for (Entity e : entities) {
-			if (Mouse.isButtonDown(1) && buttonClicked == 0) {
-//				System.out.println("FIRE!!");
-				resetMouse();
-			} else if (buttonClicked == 0) {
-				e.getComponent(Position.class).set(
-						(clickPos.getX() / 16)
-								+ camera.getPosition().getX(),
-						(clickPos.getY() / 16)
-								+ camera.getPosition().getY());
-//				e.getComponent(Sprite.class).setVisibility(true);
-				resetMouse();
+		 * 
+		 * for (Entity e : entities) { if (Mouse.isButtonDown(1) &&
+		 * buttonClicked == 0) { // System.out.println("FIRE!!"); resetMouse();
+		 * } else if (buttonClicked == 0) { e.getComponent(Position.class).set(
+		 * (clickPos.getX() / 16) + camera.getPosition().getX(),
+		 * (clickPos.getY() / 16) + camera.getPosition().getY()); //
+		 * e.getComponent(Sprite.class).setVisibility(true); resetMouse();
+		 * 
+		 * } else if (buttonClicked == 1) {
+		 * 
+		 * } else if (!Mouse.isButtonDown(1)) {
+		 * 
+		 * } else if (Mouse.isButtonDown(1)) {
+		 * 
+		 * 
+		 * 
+		 * //Gets all the positions between the player (currently just 1,1) and
+		 * the Mouse ArrayList<Position> line = Util.calculateLine(new
+		 * Position(1, 1), new Position((Mouse.getX() / 16) +
+		 * camera.getPosition().getX(), (Mouse.getY() / 16) +
+		 * camera.getPosition().getY()));
+		 * 
+		 * // System.out.println("Line: " + line);
+		 * 
+		 * for (Position pos : line) { // Insert code for highlighting all the
+		 * tiles // ec.createHighlight(); }
+		 * 
+		 * e.getComponent(Position.class).set( (Mouse.getX() / 16) +
+		 * camera.getPosition().getX(), (Mouse.getY() / 16) +
+		 * camera.getPosition().getY()); //
+		 * e.getComponent(Sprite.class).setVisibility(true);
+		 * 
+		 * }
+		 * 
+		 * }
+		 */
 
-			} else if (buttonClicked == 1) { 
-				
-			} else if (!Mouse.isButtonDown(1)) {
-				
-			} else if (Mouse.isButtonDown(1)) {
-			
-					
-				
-				//Gets all the positions between the player (currently just 1,1) and the Mouse
-				ArrayList<Position> line = Util.calculateLine(new Position(1, 1),
-						new Position((Mouse.getX() / 16)
-								+ camera.getPosition().getX(),
-								(Mouse.getY() / 16)
-										+ camera.getPosition().getY()));
-
-				// System.out.println("Line: " + line);
-
-				for (Position pos : line) {
-					// Insert code for highlighting all the tiles
-//					ec.createHighlight();
-				}
-
-				e.getComponent(Position.class).set(
-						(Mouse.getX() / 16) + camera.getPosition().getX(),
-						(Mouse.getY() / 16) + camera.getPosition().getY());
-//				e.getComponent(Sprite.class).setVisibility(true);
-
-			}
-			
-		}*/
-		
 	}
 
 	@Override
 	public void addEntity(Entity entity) {
-		
-		if((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
+
+		if ((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
 			this.player = entity;
-		} else if ((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight){
+		} else if ((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight) {
 			entities.add(entity);
 		}
 	}
 
 	@Override
 	public void removeEntity(Entity entity) {
-//		entities.remove(entity);
+		// entities.remove(entity);
 
 	}
 
@@ -184,14 +155,14 @@ public class HighlightSystem implements ISystem, Observer {
 
 	@Override
 	public void notify(Enum<?> i) {
-		if(i.equals(InputManager.InputAction.MOUSECLICK)) {
-			clickPos = new Position(Mouse.getX(),Mouse.getY());
+		if (i.equals(InputManager.InputAction.MOUSECLICK)) {
+			clickPos = new Position(Mouse.getX(), Mouse.getY());
 			buttonClicked = Mouse.getEventButton();
-			
+
 		}
-		
+
 	}
-	
+
 	public void resetMouse() {
 		this.buttonClicked = -1;
 		this.clickPos = noClick;
