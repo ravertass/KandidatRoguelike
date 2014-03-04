@@ -2,6 +2,7 @@ package se.chalmers.roguelike.Systems;
 
 import org.lwjgl.input.Mouse;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.Input;
@@ -43,7 +44,7 @@ public class PlayerInputSystem implements ISystem, Observer {
 	public void notify(Enum<?> i) {
 		player.getComponent(Input.class).setNextEvent((InputAction)i);
 		if(i.equals(InputAction.MOUSECLICK) && Mouse.isButtonDown(1) && Mouse.getEventButton() == 0) {
-			player.getComponent(Input.class).setAttackCords(new Position((Mouse.getX()/16)+camera.getPosition().getX(),(Mouse.getY()/16)+camera.getPosition().getY()));
+			player.getComponent(Input.class).setAttackCords(new Position((Mouse.getX()/Engine.spriteSize)+camera.getPosition().getX(),(Mouse.getY()/Engine.spriteSize)+camera.getPosition().getY()));
 //			System.out.println(player.getComponent(Input.class).getAttackCords());
 		}
 		
