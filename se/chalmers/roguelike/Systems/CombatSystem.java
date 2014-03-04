@@ -30,16 +30,17 @@ public class CombatSystem implements ISystem {
 	private Engine engine;
 	private ArrayList<Entity> todie;
 
-	public CombatSystem(Dungeon dungeon, Engine engine) {
-		this.dungeon = dungeon;
+	public CombatSystem(Engine engine) {
 		this.engine = engine;
 		entities = new ArrayList<Entity>();
 		todie = new ArrayList<Entity>();
 	}
-
 	@Override
 	public void update() {
-
+	}
+	
+	public void update(Dungeon dungeon1) {
+		dungeon = dungeon1;
 		// For each entity capable of attacking
 		for (Entity e : entities) {
 
@@ -61,9 +62,13 @@ public class CombatSystem implements ISystem {
 				if (targetingSystem == TargetingSystem.LINE) {
 					int i = 0;
 					for (Position pos : line) {
-						if (i >= range)
+						if (i >= range){
+							System.out.println("out of range, i="+i);
 							break;
+						}
 						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
+//						if (tile == null)
+//							break;
 						Entity target = tile.containsCharacter();
 						// if there is a valid target, attack then break the
 						// loop

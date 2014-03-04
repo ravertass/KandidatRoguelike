@@ -11,6 +11,9 @@ import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Weapon;
+import se.chalmers.roguelike.World.Dungeon;
+import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Util;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.Observer;
@@ -39,11 +42,15 @@ public class HighlightSystem implements ISystem, Observer {
 		this.ec = ec;
 		this.engine = engine;
 	}
+	
+	@Override
+	public void update() {
+	}
+	
 	/**
 	 * Will calculate on which tile to draw the highlight-sprite and then set its visibility to true.
 	 */
-	@Override
-	public void update() {
+	public void update(Dungeon dungeon) {
 		if (Mouse.isButtonDown(1)) {
 			ArrayList<Position> line = Util.calculateLine(player.getComponent(Position.class),
 					new Position((Mouse.getX() / Engine.spriteSize)
@@ -56,9 +63,18 @@ public class HighlightSystem implements ISystem, Observer {
 				engine.removeEntity(e);
 			}
 			entities.clear();
+			
+			int range = player.getComponent(Weapon.class).getRange();
+			int i = 0;
 			for (Position pos : line) {
+				if (i>range)
+					break;
+				Tile tile = dungeon.getTile(pos.getX(), pos.getY());
+				if (!tile.isWalkable() && tile.blocksLineOfSight())
+					break;
 				// Insert code for highlighting all the tiles
 				entities.add(ec.createHighlight(pos));
+				i++;
 			}
 		}
 		
