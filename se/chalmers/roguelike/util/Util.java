@@ -110,8 +110,6 @@ public class Util {
 		for (Position pos : templine) {
 			line.add(0, pos);
 		}
-		System.out.println(templine);
-		System.out.println(line);
 		return line;
 	}
 /*	 function line(x0, x1, y0, y1)
