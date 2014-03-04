@@ -127,7 +127,7 @@ public class RenderingSystem implements ISystem {
 		for (Entity e : entitiesToDraw) {
 			if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
 				Position epos = e.getComponent(Position.class);
-				if(lightMap[epos.getX()][epos.getY()] == 1)
+				if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
 					drawHealthbar(e);
 			}
 		}
@@ -136,7 +136,7 @@ public class RenderingSystem implements ISystem {
 			Position epos = entity.getComponent(Position.class);
 			if((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
 				draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
-			else if(lightMap[epos.getX()][epos.getY()] == 1)
+			else if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
 				draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 		}
 		
