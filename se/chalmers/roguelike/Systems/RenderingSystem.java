@@ -59,6 +59,8 @@ public class RenderingSystem implements ISystem {
 	private Entity player;
 	private FontRenderer fontRenderer;
 	
+	private int[][] lightMap;
+	
 	private final int DISPLAY_WIDTH = 1024;
 	private final int DISPLAY_HEIGHT = 768;
 	
@@ -97,7 +99,7 @@ public class RenderingSystem implements ISystem {
 		
 		ShadowCaster sc = new ShadowCaster();
 		
-		int[][] lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 10);
+		lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 10);
 		
 		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());
@@ -121,17 +123,19 @@ public class RenderingSystem implements ISystem {
 	
 	public void update() {
 
-		
+		// Draws healthbars for all entities that stand on a lit tile.
 		for (Entity e : entitiesToDraw) {
 			if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
-				drawHealthbar(e);
+				Position epos = e.getComponent(Position.class);
+				if(lightMap[epos.getX()][epos.getY()] == 1)
+					drawHealthbar(e);
 			}
 		}
-		// Draw all entities in system
+		// Draw all entities in system if they stand on a lit tile.
 		for(Entity entity : entitiesToDraw) {
-			
-			draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
-//			drawHealthbar(entity);
+			Position epos = entity.getComponent(Position.class);
+			if(lightMap[epos.getX()][epos.getY()] == 1)
+				draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 		}
 		
 		//drawHudBackgorund();
@@ -234,7 +238,11 @@ public class RenderingSystem implements ISystem {
 			glEnd();
 		}
 	}
-	
+	/**
+	 * Method for drawing outshadowed entities in the gameworld.
+	 * @param sprite
+	 * @param position
+	 */
 	private void drawOutShadowed(Sprite sprite, Position position) {
 		if(!sprite.getVisibility())
 			return;
