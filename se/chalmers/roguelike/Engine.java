@@ -188,12 +188,12 @@ public class Engine {
 //				inputSys.update();
 				inputManager.update();
 				combatsystem.update(dungeon);
-				moveSys.update();
+				moveSys.update(dungeon);
 				mobSpriteSys.update();
 				highlightSys.update(dungeon);
 				turnSystem.update();
 				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
-					aiSystem.update();
+					aiSystem.update(dungeon);
 				}
 				
 			//} else if(gameState == GameState.MENU) {
@@ -217,11 +217,11 @@ public class Engine {
 		dungeon.setWorld(50,50,new Generator().toTiles());
 		inputManager = new InputManager();
 		//inputSys = new InputSystem();
-		moveSys = new MoveSystem(dungeon); // remember to update pointer for new worlds
+		moveSys = new MoveSystem(); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem(entityCreator, this);
 		turnSystem = new TurnSystem();
-		aiSystem = new AISystem(dungeon);
+		aiSystem = new AISystem();
 		playerInputSys = new PlayerInputSystem();
 		combatsystem = new CombatSystem(this);
 		

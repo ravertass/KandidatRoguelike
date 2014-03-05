@@ -18,16 +18,18 @@ public class AISystem implements ISystem {
 	private ArrayList<Entity> entities;
 	private AI ai;
 	private Random rand;
-	private Dungeon world;
 
-	public AISystem(Dungeon world){
+	public AISystem(){
 		entities = new ArrayList<Entity>();
 		rand = new Random();
-		this.world = world;
 	}
 	
 	@Override
-	public void update(){
+	public void update() {
+		
+	}
+	
+	public void update(Dungeon world){
 		for (Entity e : entities){
 			//move, attack or sleep?
 			ai = e.getComponent(AI.class);

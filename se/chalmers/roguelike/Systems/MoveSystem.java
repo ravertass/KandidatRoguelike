@@ -29,16 +29,21 @@ public class MoveSystem implements ISystem{
 	 * 
 	 * @param world the dungeon that the move system currently works on
 	 */
-	public MoveSystem(Dungeon world) {
+	public MoveSystem() {
 		entities = new ArrayList<Entity>();
-		this.world = world;
 	}
-
+	
+	@Override
+	public void update() {
+		
+	}
+	
 	/**
 	 * Moves entities if they have any turns left and if they have any input
 	 * to ove them
 	 */
-	public void update() {
+	public void update(Dungeon dungeon) {
+		world = dungeon;
 		for (Entity e : entities) {
 			i = e.getComponent(Input.class);
 			if(i.getNextEvent() != InputAction.DUMMY && e.getComponent(TurnsLeft.class).getTurnsLeft() > 0) {
