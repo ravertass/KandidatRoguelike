@@ -15,7 +15,7 @@ public class Weapon implements IComponent{
 	private int modifier;
 	
 	public enum TargetingSystem {
-		SINGLE_TARGET, CONE, CIRCLE, NOVA, LINE
+		SINGLE_TARGET, CONE, CIRCLE, NOVA, LINE, BOX
 	}
 	
 	private TargetingSystem targetingSystem;

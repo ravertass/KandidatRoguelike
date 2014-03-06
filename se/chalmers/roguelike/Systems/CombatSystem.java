@@ -95,6 +95,17 @@ public class CombatSystem implements ISystem {
 					for(Position p : possibleTargets) { //TODO change here so it can't go through walls
 						attack(p, e);
 					}
+				} else if (targetingSystem == TargetingSystem.BOX){
+					ArrayList<Position> possibleTargets = new ArrayList<Position>();
+					int aoeSize = e.getComponent(Weapon.class).getAoESize();
+					for(int x = attackCords.getX()-aoeSize; x <= attackCords.getX() + aoeSize; x++) {
+						for(int y = attackCords.getY()-aoeSize; y <= attackCords.getY() + aoeSize; y++) {
+							possibleTargets.add(new Position(x,y));
+						}
+					}
+					for (Position p : possibleTargets) {
+						attack(p,e);
+					}
 
 				} else if (targetingSystem == TargetingSystem.CONE) {
 

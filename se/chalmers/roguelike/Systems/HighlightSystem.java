@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Weapon;
+import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Util;
@@ -61,8 +62,25 @@ public class HighlightSystem implements ISystem, Observer {
 					player.getComponent(Position.class), mousePos);
 			
 			boolean brokenLine = false; //if the line has been broken or not
+
+			Weapon weapon = player.getComponent(Weapon.class);
 			
-			ArrayList<Position> aoe = Util.circlePositions(mousePos, player.getComponent(Weapon.class).getAoESize());
+			ArrayList<Position> aoe = new ArrayList<Position>();
+			
+			if(weapon.getTargetingSystem() == TargetingSystem.BOX) {
+				for(int x = mousePos.getX()-weapon.getAoESize(); x <= mousePos.getX() + weapon.getAoESize(); x++) {
+					for(int y = mousePos.getY()-weapon.getAoESize(); y <= mousePos.getY() + weapon.getAoESize(); y++) {
+						aoe.add(new Position(x,y));
+					}
+				}
+			} else if(weapon.getTargetingSystem() == TargetingSystem.CIRCLE) {
+				
+			} else if(weapon.getTargetingSystem() == TargetingSystem.CONE) {
+				
+			} else if(weapon.getTargetingSystem() == TargetingSystem.NOVA) {
+				
+			} 
+			
 			// System.out.println("Line: " + line);
 			for (Entity e : entities) {
 				engine.removeEntity(e);

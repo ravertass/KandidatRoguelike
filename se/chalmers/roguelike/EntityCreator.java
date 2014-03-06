@@ -34,7 +34,7 @@ public class EntityCreator {
 		player.add(new Direction());
 		player.add(new Player());
 		player.add(new Attribute("Player", 1,16,16,16,16,16,16));
-		player.add(new Weapon(2, 6, 0, TargetingSystem.LINE, 3, 10));
+		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
 		engine.addEntity(player);
 	}
 
