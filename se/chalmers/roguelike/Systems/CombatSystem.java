@@ -1,9 +1,12 @@
 package se.chalmers.roguelike.Systems;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
@@ -13,6 +16,7 @@ import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Dice;
+import se.chalmers.roguelike.util.TrueTypeFont;
 import se.chalmers.roguelike.util.Util;
 
 /**
@@ -143,7 +147,9 @@ public class CombatSystem implements ISystem {
 
 	public void attack(int x, int y, Entity attacker) {
 		Weapon weapon = attacker.getComponent(Weapon.class);
+		Attribute attackerStats = attacker.getComponent(Attribute.class);
 
+		Attribute targetStats;
 		// Make a list of targets depending on the type of the weapon
 		ArrayList<Entity> targets = new ArrayList<Entity>();
 		targets.add(dungeon.getTile(x, y).containsCharacter());
@@ -151,11 +157,12 @@ public class CombatSystem implements ISystem {
 		int damage = -1;
 		for (Entity target : targets) {
 			if (target != null) {
-				int attackroll = Dice.roll(2, 6);
-				if (attackroll >= 7) {
+				int attackroll = Dice.roll(3, 10) + attackerStats.getMod(attackerStats.perception());
+				attackerStats = attacker.getComponent(Attribute.class);
+				System.out.println("Attackroll: " + attackroll + "| Defender Agility: " + attackerStats.agility());
+				if (attackroll >= attackerStats.agility()) {
 					damage = weapon.getDamage();
 					if (damage >= 0) {
-						System.out.println("Damage: " + damage);
 						target.getComponent(Health.class)
 								.decreaseHealth(damage);
 					}
