@@ -92,19 +92,26 @@ public class CombatSystem implements ISystem {
 					ArrayList<Position> possibleTargets = Util.circlePositions(
 							targetPosition, e.getComponent(Weapon.class)
 									.getAoESize());
-					for(Position p : possibleTargets) { //TODO change here so it can't go through walls
+					for (Position p : possibleTargets) { // TODO CHANGE
+															// EVERYTHING
 						attack(p, e);
 					}
-				} else if (targetingSystem == TargetingSystem.BOX){
+				} else if (targetingSystem == TargetingSystem.BOX) {
 					ArrayList<Position> possibleTargets = new ArrayList<Position>();
 					int aoeSize = e.getComponent(Weapon.class).getAoESize();
-					for(int x = attackCords.getX()-aoeSize; x <= attackCords.getX() + aoeSize; x++) {
-						for(int y = attackCords.getY()-aoeSize; y <= attackCords.getY() + aoeSize; y++) {
-							possibleTargets.add(new Position(x,y));
+					// blow adds all positions around the center with a radius of the wepons getaoesize
+					for (int x = attackCords.getX() - aoeSize; x <= attackCords
+							.getX() + aoeSize; x++) {
+						for (int y = attackCords.getY() - aoeSize; y <= attackCords
+								.getY() + aoeSize; y++) {
+							possibleTargets.add(new Position(x, y));
 						}
 					}
 					for (Position p : possibleTargets) {
-						attack(p,e);
+						if (p.getX() >= 0 && p.getY() >= 0
+								&& p.getX() <= dungeon1.getWorldWidth()
+								&& p.getY() <= dungeon1.getWorldHeight())
+							attack(p, e);
 					}
 
 				} else if (targetingSystem == TargetingSystem.CONE) {
@@ -122,6 +129,7 @@ public class CombatSystem implements ISystem {
 				todie.add(e);
 			}
 		}
+		// Kills all enemies with 0 hp.
 		for (Entity e : todie) {
 			dungeon.getTile(e.getComponent(Position.class).getX(),
 					e.getComponent(Position.class).getY()).removeEntity(e);
@@ -168,9 +176,11 @@ public class CombatSystem implements ISystem {
 		int damage = -1;
 		for (Entity target : targets) {
 			if (target != null) {
-				int attackroll = Dice.roll(3, 10) + attackerStats.getMod(attackerStats.perception());
+				int attackroll = Dice.roll(3, 10)
+						+ attackerStats.getMod(attackerStats.perception());
 				attackerStats = attacker.getComponent(Attribute.class);
-				System.out.println("Attackroll: " + attackroll + "| Defender Agility: " + attackerStats.agility());
+				System.out.println("Attackroll: " + attackroll
+						+ "| Defender Agility: " + attackerStats.agility());
 				if (attackroll >= attackerStats.agility()) {
 					damage = weapon.getDamage();
 					if (damage >= 0) {
