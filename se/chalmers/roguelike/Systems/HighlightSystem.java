@@ -67,6 +67,11 @@ public class HighlightSystem implements ISystem, Observer {
 			
 			ArrayList<Position> aoe = new ArrayList<Position>();
 			
+			for (Entity e : entities) {
+				engine.removeEntity(e);
+			}
+			entities.clear();
+			
 			if(weapon.getTargetingSystem() == TargetingSystem.BOX) {
 				for(int x = mousePos.getX()-weapon.getAoESize(); x <= mousePos.getX() + weapon.getAoESize(); x++) {
 					for(int y = mousePos.getY()-weapon.getAoESize(); y <= mousePos.getY() + weapon.getAoESize(); y++) {
@@ -74,35 +79,34 @@ public class HighlightSystem implements ISystem, Observer {
 					}
 				}
 			} else if(weapon.getTargetingSystem() == TargetingSystem.CIRCLE) {
-				
+				; //TODO shall we even have this at all? doesn't look good
 			} else if(weapon.getTargetingSystem() == TargetingSystem.CONE) {
-				
+				; //TODO
 			} else if(weapon.getTargetingSystem() == TargetingSystem.NOVA) {
-				
-			} 
+				; //TODO
+			} else if(weapon.getTargetingSystem() == TargetingSystem.LINE) {
+				int range = player.getComponent(Weapon.class).getRange();
+				int i = 0;
+				for (Position pos : line) {
+					if (i > range) {
+						brokenLine = true;
+						break;
+					}
+					Tile tile = dungeon.getTile(pos.getX(), pos.getY());
+					if (!tile.isWalkable() && tile.blocksLineOfSight()) {
+						brokenLine = true;
+						break;
+					}
+					// Insert code for highlighting all the tiles
+					entities.add(ec.createHighlight(pos));
+					i++;
+				}
+			}
 			
 			// System.out.println("Line: " + line);
-			for (Entity e : entities) {
-				engine.removeEntity(e);
-			}
-			entities.clear();
 
-			int range = player.getComponent(Weapon.class).getRange();
-			int i = 0;
-			for (Position pos : line) {
-				if (i > range) {
-					brokenLine = true;
-					break;
-				}
-				Tile tile = dungeon.getTile(pos.getX(), pos.getY());
-				if (!tile.isWalkable() && tile.blocksLineOfSight()) {
-					brokenLine = true;
-					break;
-				}
-				// Insert code for highlighting all the tiles
-				entities.add(ec.createHighlight(pos));
-				i++;
-			}
+
+
 			if(!brokenLine) {
 				for(Position p : aoe) {
 					Tile tile = dungeon.getTile(p.getX(), p.getY());
