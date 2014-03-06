@@ -61,8 +61,8 @@ public class RenderingSystem implements ISystem {
 	
 	private int[][] lightMap;
 	
-	private final int DISPLAY_WIDTH = 1024;
-	private final int DISPLAY_HEIGHT = 768;
+	private final int DISPLAY_WIDTH = Engine.screenWidth;
+	private final int DISPLAY_HEIGHT = Engine.screenHeight;
 	
 	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
