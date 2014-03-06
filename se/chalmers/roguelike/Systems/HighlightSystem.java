@@ -59,6 +59,9 @@ public class HighlightSystem implements ISystem, Observer {
 							+ camera.getPosition().getY());
 			ArrayList<Position> line = Util.calculateLine(
 					player.getComponent(Position.class), mousePos);
+			
+			boolean brokenLine = false; //if the line has been broken or not
+			
 			ArrayList<Position> aoe = Util.circlePositions(mousePos, player.getComponent(Weapon.class).getAoESize());
 			// System.out.println("Line: " + line);
 			for (Entity e : entities) {
@@ -69,19 +72,25 @@ public class HighlightSystem implements ISystem, Observer {
 			int range = player.getComponent(Weapon.class).getRange();
 			int i = 0;
 			for (Position pos : line) {
-				if (i > range)
+				if (i > range) {
+					brokenLine = true;
 					break;
+				}
 				Tile tile = dungeon.getTile(pos.getX(), pos.getY());
-				if (!tile.isWalkable() && tile.blocksLineOfSight())
+				if (!tile.isWalkable() && tile.blocksLineOfSight()) {
+					brokenLine = true;
 					break;
+				}
 				// Insert code for highlighting all the tiles
 				entities.add(ec.createHighlight(pos));
 				i++;
 			}
-			for(Position p : aoe) {
-				Tile tile = dungeon.getTile(p.getX(), p.getY());
-				if (!(tile == null) && !tile.blocksLineOfSight()) {
-					entities.add(ec.createHighlight(p));
+			if(!brokenLine) {
+				for(Position p : aoe) {
+					Tile tile = dungeon.getTile(p.getX(), p.getY());
+					if (!(tile == null) && !tile.blocksLineOfSight()) {
+						entities.add(ec.createHighlight(p));
+					}
 				}
 			}
 		}

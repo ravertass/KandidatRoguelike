@@ -141,8 +141,8 @@ public class Util {
 	 */
 	public static ArrayList<Position> circlePositions(Position p, int radius) {
 		ArrayList<Position> result = new ArrayList<Position>();
-		for(int x = p.getX()-radius; x <= radius*2; x++) {
-			for (int y = p.getY()-radius; y <= radius*2; y++) {
+		for(int x = p.getX()-radius; x <= p.getX()+radius*2; x++) {
+			for (int y = p.getY()-radius; y <= p.getY()+radius*2; y++) {
 				float xlength = (float)Math.abs(x-p.getX());
 				float ylength = (float)Math.abs(y-p.getY());
 				if(Math.sqrt(Math.pow(xlength, 2) + Math.pow(ylength, 2)) <= radius)
