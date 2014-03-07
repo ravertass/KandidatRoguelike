@@ -1,53 +1,72 @@
 package se.chalmers.roguelike.Components;
 
+import se.chalmers.roguelike.util.Dice;
+
 public class Attribute implements IComponent {
 	private String name;
-	
+
 	private SpaceClass spaceClass;
 	private SpaceRace spaceRace;
 
 	private int level;
 	private int experience;
 	private int xpyield;
-	
+
 	private int strength;
 	private int endurance;
 	private int perception;
 	private int intelligence;
 	private int charisma;
 	private int agility;
-	
-	public enum SpaceClass {
-		SPACE_WARRIOR, SPACE_ROGUE, SPACE_MAGE //TODO Moar to be added just dummy for now
-	}
-	
-	public enum SpaceRace {
-		SPACE_ALIEN, SPACE_HUMAN, SPACE_DWARF //TODO Moar to be added, just dummy for now
-	}
-	
 
-	public Attribute(String name, SpaceClass spaceClass, SpaceRace spaceRace, int level, int strength, int endurance,
-			int perception, int intelligence, int charisma, int agility, int xpyield) {
+	public enum SpaceClass {
+		SPACE_WARRIOR, SPACE_ROGUE, SPACE_MAGE // TODO Moar to be added just
+												// dummy for now
+	}
+
+	public enum SpaceRace {
+		SPACE_ALIEN, SPACE_HUMAN, SPACE_DWARF // TODO Moar to be added, just
+												// dummy for now
+	}
+
+	public Attribute(String name, SpaceClass spaceClass, SpaceRace spaceRace,
+			int level, int xpyield) {
 		this.name = name;
 		this.level = level;
 
 		this.spaceClass = spaceClass;
 		this.spaceRace = spaceRace;
-		
-		this.strength = strength;
-		this.endurance = endurance;
-		this.perception = perception;
-		this.intelligence = intelligence;
-		this.charisma = charisma;
-		this.agility = agility;
+		this.strength = Dice.rollDropLowest(4, 10);
+		this.endurance = Dice.rollDropLowest(4, 10);
+		this.perception = Dice.rollDropLowest(4, 10);
+		this.intelligence = Dice.rollDropLowest(4, 10);
+		this.charisma = Dice.rollDropLowest(4, 10);
+		this.agility = Dice.rollDropLowest(4, 10);
 		this.xpyield = xpyield;
+		if (spaceRace == SpaceRace.SPACE_ALIEN) {
+			this.perception += 4;
+			this.strength -= 4;
+		}
+		if (spaceRace == SpaceRace.SPACE_HUMAN) {
+			
+		}
+		if (spaceRace == SpaceRace.SPACE_DWARF) {
+			this.endurance += 4;
+			this.agility -= 4;
+		}
+		System.out.println(name +   ", Strength: " + strength + 
+									", Endurance: " + endurance + 
+									", Perception: " + perception +
+									", Intelligence: " + intelligence + 
+									", Charisma: " + charisma + 
+									", Agility: " + agility);
 	}
 
 	public int getMod(int statValue) {
-		
-		return -4 + statValue/4;
+
+		return -4 + statValue / 4;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -111,19 +130,19 @@ public class Attribute implements IComponent {
 	public void setAgility(int agility) {
 		this.agility = agility;
 	}
-	
+
 	public int experience() {
 		return this.experience;
 	}
-	
+
 	public void increaseExperience(int x) {
 		this.experience += x;
 	}
-	
+
 	public int xpyield() {
 		return this.xpyield;
 	}
-	
+
 	public void setXpYield(int x) {
 		this.xpyield = x;
 	}
