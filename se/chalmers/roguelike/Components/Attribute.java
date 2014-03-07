@@ -25,7 +25,8 @@ public class Attribute implements IComponent {
 	}
 
 	public int getMod(int statValue) {
-		return 4;
+		
+		return -4 + statValue/4;
 	}
 	
 	public String getName() {
