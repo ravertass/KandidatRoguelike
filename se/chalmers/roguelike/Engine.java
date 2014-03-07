@@ -7,6 +7,8 @@ import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Generator;
 import se.chalmers.roguelike.util.Camera;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
+import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.TurnsLeft;
 
 public class Engine {
@@ -184,7 +186,7 @@ public class Engine {
 	 * Worlds worst game loop.
 	 */
 	public void run(){
-		entityCreator.createPlayer();
+		entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_HUMAN);
 		NameGenerator ng = new NameGenerator(2);
 		for (int i = 0; i <4; i++)
 			entityCreator.createEnemy(ng.generateName());

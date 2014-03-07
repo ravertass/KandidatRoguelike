@@ -4,7 +4,7 @@ public class Attribute implements IComponent {
 	private String name;
 	
 	private SpaceClass spaceClass;
-	private Race race;
+	private SpaceRace spaceRace;
 
 	private int level;
 	private int experience;
@@ -18,21 +18,21 @@ public class Attribute implements IComponent {
 	private int agility;
 	
 	public enum SpaceClass {
-		WARRIOR, ROGUE, MAGE //TODO Moar to be added just dummy for now
+		SPACE_WARRIOR, SPACE_ROGUE, SPACE_MAGE //TODO Moar to be added just dummy for now
 	}
 	
-	public enum Race {
-		ALIEN, HUMAN, SPACEDWARF //TODO Moar to be added, just dummy for now
+	public enum SpaceRace {
+		SPACE_ALIEN, SPACE_HUMAN, SPACE_DWARF //TODO Moar to be added, just dummy for now
 	}
 	
 
-	public Attribute(String name, SpaceClass spaceClass, Race race, int level, int strength, int endurance,
+	public Attribute(String name, SpaceClass spaceClass, SpaceRace spaceRace, int level, int strength, int endurance,
 			int perception, int intelligence, int charisma, int agility, int xpyield) {
 		this.name = name;
 		this.level = level;
 
 		this.spaceClass = spaceClass;
-		this.race = race;
+		this.spaceRace = spaceRace;
 		
 		this.strength = strength;
 		this.endurance = endurance;
