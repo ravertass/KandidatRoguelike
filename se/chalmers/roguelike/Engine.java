@@ -18,7 +18,7 @@ public class Engine {
 	// Debug flag:
 	public static boolean debug = true; 
 	// Constants: Components
-	public static final int CompCharacter = 1 << 0;
+	public static final int CompAttribute = 1 << 0;
 	public static final int CompHealth = 1 << 1;
 	public static final int CompInput = 1 << 2;
 	public static final int CompPosition = 1 << 3;
@@ -41,6 +41,7 @@ public class Engine {
 	public static final int aiSysReq = CompAI | CompInput;
 	public static final int playerInputSysReq = CompPlayer;
 	public static final int combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
+	public static final int levelSystemReq = CompAttribute;
 	
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?

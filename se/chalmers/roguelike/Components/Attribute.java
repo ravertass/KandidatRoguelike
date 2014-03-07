@@ -2,8 +2,11 @@ package se.chalmers.roguelike.Components;
 
 public class Attribute implements IComponent {
 	private String name;
-	private int level;
 
+	private int level;
+	private int experience;
+	private int xpyield;
+	
 	private int strength;
 	private int endurance;
 	private int perception;
@@ -12,7 +15,7 @@ public class Attribute implements IComponent {
 	private int agility;
 
 	public Attribute(String name, int level, int strength, int endurance,
-			int perception, int intelligence, int charisma, int agility) {
+			int perception, int intelligence, int charisma, int agility, int xpyield) {
 		this.name = name;
 		this.level = level;
 
@@ -22,6 +25,7 @@ public class Attribute implements IComponent {
 		this.intelligence = intelligence;
 		this.charisma = charisma;
 		this.agility = agility;
+		this.xpyield = xpyield;
 	}
 
 	public int getMod(int statValue) {
@@ -91,6 +95,22 @@ public class Attribute implements IComponent {
 
 	public void setAgility(int agility) {
 		this.agility = agility;
+	}
+	
+	public int experience() {
+		return this.experience;
+	}
+	
+	public void increaseExperience(int x) {
+		this.experience += x;
+	}
+	
+	public int xpyield() {
+		return this.xpyield;
+	}
+	
+	public void setXpYield(int x) {
+		this.xpyield = x;
 	}
 
 }

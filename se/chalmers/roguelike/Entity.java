@@ -26,7 +26,7 @@ public class Entity {
 		
 		// Determine the new component key for the entity.
 		if(compClass == Attribute.class){
-			componentKey |= Engine.CompCharacter;
+			componentKey |= Engine.CompAttribute;
 		} else if(compClass == Health.class){
 			componentKey |= Engine.CompHealth;
 		} else if(compClass == Input.class){
