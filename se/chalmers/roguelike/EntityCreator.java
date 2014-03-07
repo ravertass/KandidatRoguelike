@@ -2,8 +2,8 @@ package se.chalmers.roguelike;
 
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
+import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Direction;
-import se.chalmers.roguelike.Components.FieldOfView;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.Input;
@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 
 public class EntityCreator {
@@ -24,7 +25,7 @@ public class EntityCreator {
 		this.input = new Input();
 	}
 
-	public void createPlayer() {
+	public void createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
 		Entity player = new Entity("Player");
 		player.add(new Health(5));
 		player.add(new TurnsLeft(1));
@@ -33,7 +34,7 @@ public class EntityCreator {
 		player.add(new Position(1, 1));
 		player.add(new Direction());
 		player.add(new Player());
-		player.add(new Attribute("Player", Attribute.SpaceClass.WARRIOR, Attribute.Race.HUMAN, 1,16,16,16,16,16,16, 50));
+		player.add(new Attribute("Player", spaceClass, spaceRace, 1,16,16,16,16,16,16, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
 		engine.addEntity(player);
 	}
@@ -47,7 +48,7 @@ public class EntityCreator {
 		enemy.add(new Position(2, 1));
 		enemy.add(new Direction());
 		enemy.add(new AI());
-		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.ROGUE, Attribute.Race.ALIEN, 1,16,16,16,16,16,16,50));
+		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.SPACE_ROGUE, Attribute.SpaceRace.SPACE_ALIEN, 1,16,16,16,16,16,16,50));
 		engine.addEntity(enemy);
 	}
 
