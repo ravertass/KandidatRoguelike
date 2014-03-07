@@ -2,6 +2,9 @@ package se.chalmers.roguelike.Components;
 
 public class Attribute implements IComponent {
 	private String name;
+	
+	private SpaceClass spaceClass;
+	private Race race;
 
 	private int level;
 	private int experience;
@@ -13,12 +16,24 @@ public class Attribute implements IComponent {
 	private int intelligence;
 	private int charisma;
 	private int agility;
+	
+	public enum SpaceClass {
+		WARRIOR, ROGUE, MAGE
+	}
+	
+	public enum Race {
+		ALIEN, HUMAN, SPACEDWARF
+	}
+	
 
-	public Attribute(String name, int level, int strength, int endurance,
+	public Attribute(String name, SpaceClass spaceClass, Race race, int level, int strength, int endurance,
 			int perception, int intelligence, int charisma, int agility, int xpyield) {
 		this.name = name;
 		this.level = level;
 
+		this.spaceClass = spaceClass;
+		this.race = race;
+		
 		this.strength = strength;
 		this.endurance = endurance;
 		this.perception = perception;
