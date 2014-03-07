@@ -48,7 +48,7 @@ public class CombatSystem implements ISystem {
 		dungeon = dungeon1;
 		// For each entity capable of attacking
 		for (Entity e : entities) {
-
+			
 			Input input = e.getComponent(Input.class);
 			Position attackCords = input.getAttackCords();
 			// If the entity has an attackcordinate
@@ -175,6 +175,7 @@ public class CombatSystem implements ISystem {
 
 		int damage = -1;
 		for (Entity target : targets) {
+			targetStats = target.getComponent(Attribute.class);
 			if (target != null) {
 				int attackroll = Dice.roll(3, 10)
 						+ attackerStats.getMod(attackerStats.perception());
@@ -186,6 +187,9 @@ public class CombatSystem implements ISystem {
 					if (damage >= 0) {
 						target.getComponent(Health.class)
 								.decreaseHealth(damage);
+						if (target.getComponent(Health.class).getHealth() <= 0) {
+							attackerStats.increaseExperience(targetStats.xpyield());
+						}
 					}
 					System.out.println(attacker + " attacks " + target
 							+ " for " + damage + " damage.");
