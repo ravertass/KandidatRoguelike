@@ -21,7 +21,7 @@ public class LevelingSystem implements ISystem {
 
 	public LevelingSystem() {
 		entities = new ArrayList<Entity>();
-		xpmodifier = 0.2;
+		xpmodifier = 1.2;
 		xpToSecondLevel = 100;
 	}
 
@@ -29,9 +29,11 @@ public class LevelingSystem implements ISystem {
 	public void update() {
 		for (Entity e : entities) {
 			Attribute a = e.getComponent(Attribute.class);
-			int maxXpForCurrentLevel = (int) Math.pow(xpmodifier, a.getLevel())
-					* xpToSecondLevel;
-			if (a.experience() > maxXpForCurrentLevel)
+			int maxXpForCurrentLevel = 0;
+			for(int i = 1; i <= a.getLevel(); i++) {
+				maxXpForCurrentLevel += xpToSecondLevel*(Math.pow(1.2, a.getLevel()));
+			}
+			if (a.experience() >= maxXpForCurrentLevel)
 				a.setLevel(a.getLevel() + 1);
 		}
 

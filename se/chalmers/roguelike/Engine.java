@@ -41,7 +41,7 @@ public class Engine {
 	public static final int aiSysReq = CompAI | CompInput;
 	public static final int playerInputSysReq = CompPlayer;
 	public static final int combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
-	public static final int levelSystemReq = CompAttribute;
+	public static final int levelingSystemReq = CompAttribute;
 	
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
@@ -61,6 +61,7 @@ public class Engine {
 	private InputManager inputManager; //not quite a system but close enough
 	private PlayerInputSystem playerInputSys;
 	private CombatSystem combatsystem;
+	private LevelingSystem levelingSys;
 	
 	private enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -168,6 +169,13 @@ public class Engine {
 				aiSystem.addEntity(entity);
 			}
 		}
+		if((compKey & levelingSystemReq) == levelingSystemReq) {
+			if(remove) {
+				levelingSys.removeEntity(entity);
+			} else {
+				levelingSys.addEntity(entity);
+			}
+		}
 		
 		
 	}
@@ -192,6 +200,7 @@ public class Engine {
 				moveSys.update(dungeon);
 				mobSpriteSys.update();
 				highlightSys.update(dungeon);
+				levelingSys.update();
 				turnSystem.update();
 				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
 					aiSystem.update(dungeon);
@@ -225,6 +234,8 @@ public class Engine {
 		aiSystem = new AISystem();
 		playerInputSys = new PlayerInputSystem();
 		combatsystem = new CombatSystem(this);
+		levelingSys = new LevelingSystem();
+		
 		
 	}
 	

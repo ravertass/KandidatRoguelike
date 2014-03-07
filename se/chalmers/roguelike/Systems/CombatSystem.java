@@ -48,7 +48,7 @@ public class CombatSystem implements ISystem {
 		dungeon = dungeon1;
 		// For each entity capable of attacking
 		for (Entity e : entities) {
-			
+
 			Input input = e.getComponent(Input.class);
 			Position attackCords = input.getAttackCords();
 			// If the entity has an attackcordinate
@@ -99,7 +99,8 @@ public class CombatSystem implements ISystem {
 				} else if (targetingSystem == TargetingSystem.BOX) {
 					ArrayList<Position> possibleTargets = new ArrayList<Position>();
 					int aoeSize = e.getComponent(Weapon.class).getAoESize();
-					// blow adds all positions around the center with a radius of the wepons getaoesize
+					// blow adds all positions around the center with a radius
+					// of the wepons getaoesize
 					for (int x = attackCords.getX() - aoeSize; x <= attackCords
 							.getX() + aoeSize; x++) {
 						for (int y = attackCords.getY() - aoeSize; y <= attackCords
@@ -110,7 +111,8 @@ public class CombatSystem implements ISystem {
 					for (Position p : possibleTargets) {
 						if (p.getX() >= 0 && p.getY() >= 0
 								&& p.getX() <= dungeon1.getWorldWidth()
-								&& p.getY() <= dungeon1.getWorldHeight())
+								&& p.getY() <= dungeon1.getWorldHeight()
+								&& dungeon1.getTile(p.getX(), p.getY()) != null)
 							attack(p, e);
 					}
 
@@ -175,8 +177,8 @@ public class CombatSystem implements ISystem {
 
 		int damage = -1;
 		for (Entity target : targets) {
-			targetStats = target.getComponent(Attribute.class);
 			if (target != null) {
+				targetStats = target.getComponent(Attribute.class);
 				int attackroll = Dice.roll(3, 10)
 						+ attackerStats.getMod(attackerStats.perception());
 				attackerStats = attacker.getComponent(Attribute.class);
@@ -188,7 +190,8 @@ public class CombatSystem implements ISystem {
 						target.getComponent(Health.class)
 								.decreaseHealth(damage);
 						if (target.getComponent(Health.class).getHealth() <= 0) {
-							attackerStats.increaseExperience(targetStats.xpyield());
+							attackerStats.increaseExperience(targetStats
+									.xpyield());
 						}
 					}
 					System.out.println(attacker + " attacks " + target
