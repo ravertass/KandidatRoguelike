@@ -172,33 +172,26 @@ public class CombatSystem implements ISystem {
 
 		Attribute targetStats;
 		// Make a list of targets depending on the type of the weapon
-		ArrayList<Entity> targets = new ArrayList<Entity>();
-		targets.add(dungeon.getTile(x, y).containsCharacter());
-
+		Entity target = dungeon.getTile(x, y).containsCharacter();
 		int damage = -1;
-		for (Entity target : targets) {
-			if (target != null) {
-				targetStats = target.getComponent(Attribute.class);
-				int attackroll = Dice.roll(3, 10)
-						+ attackerStats.getMod(attackerStats.perception());
-				attackerStats = attacker.getComponent(Attribute.class);
-				System.out.println("Attackroll: " + attackroll
-						+ "| Defender Agility: " + attackerStats.agility());
-				if (attackroll >= attackerStats.agility()) {
-					damage = weapon.getDamage();
-					if (damage >= 0) {
-						target.getComponent(Health.class)
-								.decreaseHealth(damage);
-						if (target.getComponent(Health.class).getHealth() <= 0) {
-							attackerStats.increaseExperience(targetStats
-									.xpyield());
-						}
+		if (target != null) {
+			targetStats = target.getComponent(Attribute.class);
+			int attackroll = Dice.roll(3, 10)
+					+ attackerStats.getMod(attackerStats.perception());
+			System.out.println("Attackroll: " + attackroll
+					+ "| Defender Agility: " + targetStats.agility());
+			if (attackroll >= targetStats.agility()) {
+				damage = weapon.getDamage();
+				if (damage >= 0) {
+					target.getComponent(Health.class).decreaseHealth(damage);
+					if (target.getComponent(Health.class).getHealth() <= 0) {
+						attackerStats.increaseExperience(targetStats.xpyield());
 					}
-					System.out.println(attacker + " attacks " + target
-							+ " for " + damage + " damage.");
-				} else {
-					System.out.println(attacker + " missed.");
 				}
+				System.out.println(attacker + " attacks " + target + " for "
+						+ damage + " damage.");
+			} else {
+				System.out.println(attacker + " missed.");
 			}
 		}
 
