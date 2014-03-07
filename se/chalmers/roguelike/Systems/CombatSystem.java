@@ -96,7 +96,7 @@ public class CombatSystem implements ISystem {
 															// EVERYTHING
 						attack(p, e);
 					}
-				} else if (targetingSystem == TargetingSystem.BOX) {
+				} else if (targetingSystem == TargetingSystem.BOX && line.size() < range) {
 					ArrayList<Position> possibleTargets = new ArrayList<Position>();
 					int aoeSize = e.getComponent(Weapon.class).getAoESize();
 					// blow adds all positions around the center with a radius

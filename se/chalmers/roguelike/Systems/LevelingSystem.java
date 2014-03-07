@@ -17,12 +17,12 @@ public class LevelingSystem implements ISystem {
 	private ArrayList<Entity> entities;
 
 	private double xpmodifier;
-	private int xpToSecondLevel; // xp required to get to second level
+	private int baseXP; // xp required to get to second level
 
 	public LevelingSystem() {
 		entities = new ArrayList<Entity>();
 		xpmodifier = 1.2;
-		xpToSecondLevel = 100;
+		baseXP = 100;
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class LevelingSystem implements ISystem {
 			Attribute a = e.getComponent(Attribute.class);
 			int maxXpForCurrentLevel = 0;
 			for(int i = 1; i <= a.getLevel(); i++) {
-				maxXpForCurrentLevel += xpToSecondLevel*(Math.pow(1.2, a.getLevel()));
+				maxXpForCurrentLevel += baseXP*(Math.pow(1.2, a.getLevel()));
 			}
 			if (a.experience() >= maxXpForCurrentLevel)
 				a.setLevel(a.getLevel() + 1);
