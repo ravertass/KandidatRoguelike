@@ -18,11 +18,11 @@ public class Attribute implements IComponent {
 	private int agility;
 	
 	public enum SpaceClass {
-		WARRIOR, ROGUE, MAGE
+		WARRIOR, ROGUE, MAGE //TODO Moar to be added just dummy for now
 	}
 	
 	public enum Race {
-		ALIEN, HUMAN, SPACEDWARF
+		ALIEN, HUMAN, SPACEDWARF //TODO Moar to be added, just dummy for now
 	}
 	
 

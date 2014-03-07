@@ -33,7 +33,7 @@ public class EntityCreator {
 		player.add(new Position(1, 1));
 		player.add(new Direction());
 		player.add(new Player());
-		player.add(new Attribute("Player", 1,16,16,16,16,16,16, 50));
+		player.add(new Attribute("Player", Attribute.SpaceClass.WARRIOR, Attribute.Race.HUMAN, 1,16,16,16,16,16,16, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
 		engine.addEntity(player);
 	}
@@ -47,7 +47,7 @@ public class EntityCreator {
 		enemy.add(new Position(2, 1));
 		enemy.add(new Direction());
 		enemy.add(new AI());
-		enemy.add(new Attribute("Enemy", 1,16,16,16,16,16,16,50));
+		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.ROGUE, Attribute.Race.ALIEN, 1,16,16,16,16,16,16,50));
 		engine.addEntity(enemy);
 	}
 
