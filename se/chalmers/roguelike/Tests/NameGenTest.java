@@ -30,7 +30,7 @@ public class NameGenTest {
 			} else {
 				fiveToEight++;
 			}
-				}
+		}
 		System.out.println("\nTo short names: " + maxOne + "\nShort names: " + maxFour + 
 				"\nLong names: " + fiveToEight + "\nTo long names: " + aboveEight);
 		int total = maxOne + maxFour + aboveEight + fiveToEight;
