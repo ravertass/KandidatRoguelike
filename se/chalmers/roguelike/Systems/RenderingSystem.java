@@ -185,7 +185,7 @@ public class RenderingSystem implements ISystem {
 //	        }
 			Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH,DISPLAY_HEIGHT));
 			Display.setFullscreen(true);
-			Display.setTitle("Crimson Poodle");
+			Display.setTitle("AstRogue");
 			Display.create();
 		} catch (LWJGLException e) {			
 			e.printStackTrace();
