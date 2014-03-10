@@ -21,24 +21,34 @@ public class Prop extends PlotThing {
 		owner = null;
 	}
 
+	/**
+	 * 
+	 * @return the scene where the prop is at. Will be null if the prop is owned
+	 *         by an actor.
+	 */
 	public Scene getLocation() {
 		return location;
 	}
 
 	public void setLocation(Scene location) {
 		keepConstraints();
-		
+
 		this.location = location;
 		location.addProp(this);
 	}
 
+	/**
+	 * 
+	 * @return the actor whom the prop belongs to. Will be null if the prop is
+	 *         at a location.
+	 */
 	public Actor getOwner() {
 		return owner;
 	}
 
 	public void setOwner(Actor owner) {
 		keepConstraints();
-		
+
 		this.owner = owner;
 		owner.addProp(this);
 	}
@@ -53,7 +63,7 @@ public class Prop extends PlotThing {
 			removeFromScene();
 		}
 	}
-	
+
 	private void removeFromActor() {
 		owner.removeProp(this);
 		owner = null;
@@ -63,5 +73,5 @@ public class Prop extends PlotThing {
 		location.removeProp(this);
 		location = null;
 	}
-	
+
 }

@@ -2,6 +2,7 @@ package se.chalmers.plotgen;
 
 import java.util.ArrayList;
 
+import se.chalmers.plotgen.BasicAIAlgorithm.BasicAIAlgorithm;
 import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
@@ -12,6 +13,12 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
 
 public class PlotGenerator {
 
+	public static PlotGraph basicAIAlgorithm(ArrayList<Scene> scenes,
+	ArrayList<Actor> actors, ArrayList<Prop> props) {
+		
+		return BasicAIAlgorithm.algorithm(scenes, actors, props);
+	}
+	
 	// Notice that this should also alter the state of the Props, Actors and
 	// Scenes;
 	// Props will be given locations/owners and Actors will be given locations.
