@@ -16,11 +16,13 @@ public class Actor extends PlotThing {
 
 	private Scene location;
 	private HashSet<Prop> props;
+	private boolean alive;
 
 	public Actor(String name) {
 		super(name);
 		location = null;
 		props = new HashSet<Prop>();
+		alive = true;
 	}
 
 	public Scene getLocation() {
@@ -53,6 +55,14 @@ public class Actor extends PlotThing {
 
 	public void removeProp(Prop prop) {
 		props.remove(prop);
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 
 }
