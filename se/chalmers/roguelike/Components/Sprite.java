@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -25,6 +26,7 @@ public class Sprite implements IComponent {
 	private int size; // both width and height, in pixels, of individual sprites
 	private int spriteX, spriteY; // the (tile) coordinates for current sprite
 	private boolean visible;
+	private static HashMap<String,Texture> loadTextures = new HashMap<String,Texture>();
 	
 	/**
 	 * A constructor where the starting sprite always is the upper-
@@ -78,21 +80,23 @@ public class Sprite implements IComponent {
 	 * @return the loaded texture
 	 */
 	private Texture loadTexture(String fileName) {
-		Texture texture = null;
-		
-		try {
-			texture = TextureLoader.getTexture("PNG", 
-					new FileInputStream(new File("./resources/" + fileName + ".png")));
-		} catch (FileNotFoundException e) {
-			System.out.println("The file does not exist");
-			e.printStackTrace();
-			// borde stänga ner displayen och stänga av programmet också
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			// borde stänga ner displayen och stänga av programmet också
+		// Texture texture = null;
+		Texture texture = loadTextures.get(fileName);
+		if(texture == null){
+			try {
+				texture = TextureLoader.getTexture("PNG", 
+						new FileInputStream(new File("./resources/" + fileName + ".png")));
+				loadTextures.put(fileName,texture);
+			} catch (FileNotFoundException e) {
+				System.out.println("The file does not exist");
+				e.printStackTrace();
+				// borde stänga ner displayen och stänga av programmet också
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				// borde stänga ner displayen och stänga av programmet också
+			}
 		}
-		
 		return texture;
 	}
 	
