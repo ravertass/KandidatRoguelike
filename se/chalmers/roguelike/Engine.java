@@ -196,7 +196,6 @@ public class Engine {
 			if(gameState == GameState.DUNGEON) {
 				renderingSys.update(dungeon);
 				renderingSys.update();
-//				inputSys.update();
 				inputManager.update();
 				combatsystem.update(dungeon);
 				moveSys.update(dungeon);
