@@ -12,7 +12,7 @@ import java.util.HashSet;
  * 
  * @author fabian
  */
-public class Actor extends PlotThing {
+public class Actor extends PlotThing implements IPlotBody {
 
 	private Scene location;
 	private HashSet<Prop> props;
@@ -63,6 +63,12 @@ public class Actor extends PlotThing {
 
 	public void setAlive(boolean alive) {
 		this.alive = alive;
+		if (alive == false) {
+			removeFromLocation();
+			for (Prop prop : props) {
+				prop.removeFromActor();
+			}
+		}
 	}
 
 }

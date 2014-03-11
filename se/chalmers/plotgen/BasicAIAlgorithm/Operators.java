@@ -2,6 +2,7 @@ package se.chalmers.plotgen.BasicAIAlgorithm;
 
 import java.util.ArrayList;
 
+import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
@@ -13,37 +14,38 @@ import se.chalmers.plotgen.PlotData.Scene;
  */
 public class Operators {
 
-	public static Operator killOperator(Actor self, Actor victim, Scene location) {
+	public static Operator killOperator(Actor self, Actor victim) {
 
+		// Set conditions that must be true
 		ArrayList<ICondition> beTrue = new ArrayList<ICondition>();
 		beTrue.add(new LivesCondition(self));
 		beTrue.add(new LivesCondition(victim));
-		beTrue.add(new IsVisitingCondition(self, location));
-		beTrue.add(new IsVisitingCondition(victim, location));
+		beTrue.add(new SamePlaceCondition(self, victim));
 
+		// Set conditions that must be false
 		ArrayList<ICondition> beFalse = new ArrayList<ICondition>();
 
+		// Set conditions that will be set true
 		ArrayList<ICondition> setTrue = new ArrayList<ICondition>();
 		for (Prop prop : victim.getProps()) {
-			setTrue.add(new IsPlacedAtCondition(prop, location));
+			setTrue.add(new IsAtLocationCondition(prop, victim.getLocation()));
 		}
 
+		// Set conditions that will be set false
 		ArrayList<ICondition> setFalse = new ArrayList<ICondition>();
 		setFalse.add(new LivesCondition(victim));
-		setFalse.add(new IsVisitingCondition(victim, location));
-		for (Prop prop : victim.getProps()) {
-			setFalse.add(new BelongsToCondition(prop, victim));
-		}
+		
+		// Add the corresponding action to the operator
+		Action action = new Action(Action.ActionType.KILL, self, victim);
 
-		return new Operator(beTrue, beFalse, setTrue, setFalse);
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
 	}
 
-	public static Operator takeOperator(Actor self, Prop prop, Scene location) {
+	public static Operator takeOperator(Actor self, Prop prop) {
 
 		ArrayList<ICondition> beTrue = new ArrayList<ICondition>();
 		beTrue.add(new LivesCondition(self));
-		beTrue.add(new IsVisitingCondition(self, location));
-		beTrue.add(new IsPlacedAtCondition(prop, location));
+		beTrue.add(new SamePlaceCondition(self, prop));
 
 		ArrayList<ICondition> beFalse = new ArrayList<ICondition>();
 
@@ -51,37 +53,38 @@ public class Operators {
 		setTrue.add(new BelongsToCondition(prop, self));
 
 		ArrayList<ICondition> setFalse = new ArrayList<ICondition>();
-		setFalse.add(new IsPlacedAtCondition(prop, location));
+		
+		// Add the corresponding action to the operator
+		Action action = new Action(Action.ActionType.TAKE, self, prop);
 
-		return new Operator(beTrue, beFalse, setTrue, setFalse);
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
 	}
 
-	public static Operator visitOperator(Actor self, Scene startScene,
-			Scene targetScene) {
+	public static Operator visitOperator(Actor self, Scene targetLocation) {
 
 		ArrayList<ICondition> beTrue = new ArrayList<ICondition>();
 		beTrue.add(new LivesCondition(self));
-		beTrue.add(new IsVisitingCondition(self, startScene));
 
 		ArrayList<ICondition> beFalse = new ArrayList<ICondition>();
 
 		ArrayList<ICondition> setTrue = new ArrayList<ICondition>();
-		setTrue.add(new IsVisitingCondition(self, targetScene));
+		setTrue.add(new IsAtLocationCondition(self, targetLocation));
 
 		ArrayList<ICondition> setFalse = new ArrayList<ICondition>();
-		setFalse.add(new IsVisitingCondition(self, startScene));
+		
+		// Add the corresponding action to the operator
+		//TODO: Action action = new Action(Action.ActionType.KILL, self, victim);
+		Action action = null;
 
-		return new Operator(beTrue, beFalse, setTrue, setFalse);
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
 	}
 
-	public static Operator giveOperator(Actor self, Actor recipient, Prop prop,
-			Scene location) {
+	public static Operator giveOperator(Actor self, Actor recipient, Prop prop) {
 
 		ArrayList<ICondition> beTrue = new ArrayList<ICondition>();
 		beTrue.add(new LivesCondition(self));
 		beTrue.add(new LivesCondition(recipient));
-		beTrue.add(new IsVisitingCondition(self, location));
-		beTrue.add(new IsVisitingCondition(recipient, location));
+		beTrue.add(new SamePlaceCondition(self, recipient));
 		beTrue.add(new BelongsToCondition(prop, self));
 
 		ArrayList<ICondition> beFalse = new ArrayList<ICondition>();
@@ -90,8 +93,10 @@ public class Operators {
 		setTrue.add(new BelongsToCondition(prop, recipient));
 
 		ArrayList<ICondition> setFalse = new ArrayList<ICondition>();
-		setFalse.add(new BelongsToCondition(prop, self));
 
-		return new Operator(beTrue, beFalse, setTrue, setFalse);
+		// Add the corresponding action to the operator
+		Action action = new Action(Action.ActionType.GIVE, self, recipient, prop);
+		
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
 	}
 }

@@ -17,4 +17,20 @@ public class Agent {
 	public Actor getSelf() {
 		return self;
 	}
+
+	public ArrayList<ICondition> getTrueGoals() {
+		return trueGoals;
+	}
+
+	public void setTrueGoals(ArrayList<ICondition> trueGoals) {
+		this.trueGoals = trueGoals;
+	}
+
+	public ArrayList<ICondition> getFalseGoals() {
+		return falseGoals;
+	}
+
+	public void setFalseGoals(ArrayList<ICondition> falseGoals) {
+		this.falseGoals = falseGoals;
+	}
 }

@@ -33,6 +33,8 @@ public class Action {
 	private Prop objectProp = null;
 
 	/**
+	 * To be used for GIVE
+	 * 
 	 * @param type
 	 *            The type of action, as defiend by the ActionType enum
 	 * @param subject
