@@ -1,5 +1,9 @@
 package se.chalmers.roguelike.World;
 
+import java.util.ArrayList;
+
+import se.chalmers.roguelike.Engine;
+import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.Dice;
 
@@ -16,7 +20,8 @@ public class Dungeon {
 	private int worldWidth;
 	private int worldHeight;
 	private Tile[][] tiles;
-	
+	private ArrayList<Entity> entities;
+	private Engine engine; // I dont like this solution, discuss and make better
 	/**
 	 * Creates a new world object
 	 * 
@@ -24,23 +29,27 @@ public class Dungeon {
 	 * @param worldHeight the height of the world
 	 * @param tiles the array of tiles the world should have
 	 */
-	public Dungeon(int worldWidth, int worldHeight, Tile[][] tiles){
+	public Dungeon(Engine engine, int worldWidth, int worldHeight, Tile[][] tiles){
+		this.engine = engine;
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
+		entities = new ArrayList<Entity>();
 	}
 	
 	/**
 	 * Currently generates a new world, will probably be removed in the future
 	 * when a real level generator exists
 	 */
-	public Dungeon(){
+	public Dungeon(Engine engine){ 
+		
+		this.engine = engine;
 		
 		// Debug world
 		worldWidth = 50;
 		worldHeight = 50;
 		tiles = new Tile[worldHeight][worldWidth];
-		
+		entities = new ArrayList<Entity>();
 		
 		// Debug hardcoded world
 		
@@ -109,5 +118,21 @@ public class Dungeon {
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
+	}
+	public void addEntity(int x, int y, Entity entity){
+		tiles[y][x].addEntity(entity); // add some kind of check to see that it doesnt go out of bounds
+		entities.add(entity);
+
+		System.out.println("ADDED ENTITY     ODASDJASLDKJALSDFKJALKSJFALSDKJF");
+	}
+	public void removeEntity(int x, int y, Entity entity){
+		tiles[y][x].removeEntity(entity); // add some kind of check to see that it doesnt go out of bounds
+		entities.remove(entity);
+		System.out.println("REMOVED ENTITY     ODASDJASLDKJALSDFKJALKSJFALSDKJF");
+	}
+	public void unregister(){
+		for(Entity e : entities){
+			engine.removeEntity(e);
+		}
 	}
 }

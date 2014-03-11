@@ -50,7 +50,7 @@ public class Engine {
 	private ArrayList<Entity> entities; // useless?
 	private EntityCreator entityCreator;
 	
-	private Dungeon dungeon;
+	public static Dungeon dungeon; // remove static, just for testing unloading atm
 	
 	// Systems:
 	private RenderingSystem renderingSys;
@@ -224,7 +224,7 @@ public class Engine {
 	 */
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
-		dungeon = new Dungeon();
+		dungeon = new Dungeon(this); // remove engine?
 		dungeon.setWorld(50,50,new Generator().toTiles());
 		inputManager = new InputManager();
 		//inputSys = new InputSystem();

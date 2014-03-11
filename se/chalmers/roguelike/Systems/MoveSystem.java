@@ -100,9 +100,11 @@ public class MoveSystem implements ISystem{
 		int oldy = pos.getY();
 		if(world.isWalkable(newx, newy)){
 //			System.out.println(e + "MOVES");
-			world.getTile(oldx, oldy).removeEntity(e);
+//			world.getTile(oldx, oldy).removeEntity(e);
+			world.removeEntity(oldx, oldy, e);
 			pos.set(newx,newy);
-			world.getTile(newx, newy).addEntity(e);
+//			world.getTile(newx, newy).addEntity(e);
+			world.addEntity(newx, newy, e);
 			
 		}
 		turns.decreaseTurnsLeft();

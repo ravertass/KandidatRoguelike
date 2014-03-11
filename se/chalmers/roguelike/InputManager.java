@@ -97,7 +97,10 @@ public class InputManager implements Subject {
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_F1)){
 				Engine.debug = !Engine.debug; 
-			} 
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_F2)){
+				Engine.dungeon.unregister(); 
+			}
 		}
 		while (Mouse.next()) {
 			if (Mouse.getEventButtonState()) {
