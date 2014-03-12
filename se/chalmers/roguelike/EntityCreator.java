@@ -9,6 +9,7 @@ import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
@@ -95,13 +96,14 @@ public class EntityCreator {
 		engine.addEntity(highlight);
 		return highlight;
 	}
-	public Entity createStar(int x, int y){
-		return createStar(x, y, "Star");
+	public Entity createStar(int x, int y, long seed){
+		return createStar(x, y, seed, "Star");
 	}
-	public Entity createStar(int x, int y, String starname){
+	public Entity createStar(int x, int y, long seed, String starname){
 		Entity star = new Entity(starname);
 		star.add(new Sprite("star"));
 		star.add(new Position(x,y));
+		star.add(new Seed(seed));
 		engine.addEntity(star);
 		System.out.println("New star added");
 		return star;
