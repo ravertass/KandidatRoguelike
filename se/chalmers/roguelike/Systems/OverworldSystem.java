@@ -61,31 +61,28 @@ public class OverworldSystem implements ISystem, Observer{
 			int mouseX = Mouse.getX();
 			int mouseY = Mouse.getY();
 			for(Rectangle star : starRectangles){
-				if(star.contains(mouseX,mouseY)){
-					System.out.println("Star clicked!");
-					String coords = star.x+","+star.y;
-					boolean startWorld = false;
-					if(stars.get(coords) == activeStar){
-						// This means the star was clicked twice, and the world will load, change when a menu is implemented
-						startWorld = true;
-					}
-					activeStar = stars.get(coords);
-					long seed=activeStar.getComponent(Seed.class).getSeed();
-					System.out.println("New active star: "+activeStar+" ... x: "+star.x);
-					System.out.println("Stars seed: "+seed);
-					System.out.println("Click again to start it");
-					if(startWorld){
-						Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class).getDungeon();
-						if(starDungeon == null){
-							System.out.println("No dungeon found! Generating one.");
-							starDungeon = new Dungeon(engine);
-							starDungeon.setWorld(50,50,new Generator(seed).toTiles());
-							activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
-						//	Engine.dungeon = newWorld;
-						} 
-						unregister();
-						engine.loadDungeon(starDungeon,Engine.GameState.DUNGEON);
-					}
+				// if(star.contains(mouseX,mouseY)){
+				if(!star.contains(mouseX,mouseY)) continue;
+				
+				String coords = star.x+","+star.y;
+				boolean startWorld = false;
+				if(stars.get(coords) == activeStar){
+					// This means the star was clicked twice, and the world will load, change when a menu is implemented
+					startWorld = true;
+				}
+				activeStar = stars.get(coords);
+				if(startWorld){
+					Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class).getDungeon();
+					if(starDungeon == null){
+						System.out.println("No dungeon found! Generating one.");
+						long seed=activeStar.getComponent(Seed.class).getSeed();
+						starDungeon = new Dungeon(engine);
+						starDungeon.setWorld(50,50,new Generator(seed).toTiles());
+						activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
+					} 
+					activeStar = null;
+					unregister();
+					engine.loadDungeon(starDungeon,Engine.GameState.DUNGEON);
 				}
 			}
 		}

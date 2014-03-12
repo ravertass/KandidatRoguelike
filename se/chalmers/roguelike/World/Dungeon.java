@@ -1,6 +1,7 @@
 package se.chalmers.roguelike.World;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
@@ -21,6 +22,7 @@ public class Dungeon {
 	private int worldHeight;
 	private Tile[][] tiles;
 	private ArrayList<Entity> entities;
+	private ArrayList<Entity> backup = new ArrayList<Entity>();  
 	private Engine engine; // I dont like this solution, discuss and make better
 	/**
 	 * Creates a new world object
@@ -120,29 +122,54 @@ public class Dungeon {
 		this.tiles = tiles;
 	}
 	public void addEntity(int x, int y, Entity entity){
-		tiles[y][x].addEntity(entity); // add some kind of check to see that it doesnt go out of bounds
+		if(x<0 || y<0 || x > worldWidth || y > worldHeight || tiles[y][x] == null){
+			return; // out of bounds check
+		}
+		tiles[y][x].addEntity(entity);
 		entities.add(entity);
 	}
 	public void removeEntity(int x, int y, Entity entity){
-		tiles[y][x].removeEntity(entity); // add some kind of check to see that it doesnt go out of bounds
+		if(x<0 || y<0 || x > worldWidth || y > worldHeight || tiles[y][x] == null){
+			return; // out of bounds check
+		}
+		tiles[y][x].removeEntity(entity);
 		entities.remove(entity);
 	}
 	public void unregister(){
-		ArrayList<Entity> backup = new ArrayList<Entity>();
-		for(Entity e : entities){
-			backup.add(e);
-			engine.removeEntity(e);
-			System.out.println("REMOVING ENTITY");
-		}
-		entities = backup; // This is done because when it removes it from the engine
-		// it will also remove it from the dungeon. This way we keep a backup
 
-		// Possible this will bug with player, TODO CHECK
+		/*
+		 * This is probably the worst code I've written in a while. Why does it look 
+		 * like this? To avoid concurrency issues, otherwise if you just iterate over
+		 * the list, it will change the list since removeEntity will in the end remove
+		 * it from the list you're iterating over. Stupid goddamn thing.
+		 * 
+		 * I'll rewrite it to not be crap some day I guess.
+		 */
+		int player = -1;
+		for(int i=0;i<entities.size();i++){
+			Entity e = entities.get(i);
+			if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){ 
+				player = i;
+			}
+			backup.add(e);
+		}
+
+		for(Entity e : backup){
+			engine.removeEntity(e);
+		}
+		if(player != -1){
+			backup.remove(player);
+		}
+		entities.clear(); // clears the active entities, to avoid concurrent exceptions
 	}
 	public void register(){
-		for(Entity e : entities){
+		System.out.println("Foobar");
+		for(Entity e : backup){
 			System.out.println("RESTORING");
 			engine.addEntity(e);
 		}
+		
+		// All entities has been added, backup can be cleared
+		backup.clear();
 	}
 }

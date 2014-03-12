@@ -9,6 +9,7 @@ import se.chalmers.roguelike.World.Generator;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.TurnsLeft;
 
 public class Engine {
@@ -46,6 +47,7 @@ public class Engine {
 	public static final int playerInputSysReq = CompPlayer;
 	public static final int combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
 	public static final int levelingSystemReq = CompAttribute;
+	public static final int dungeonReq = CompSprite | CompPosition;
 	
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
@@ -182,6 +184,15 @@ public class Engine {
 				levelingSys.addEntity(entity);
 			}
 		}
+		if((compKey & dungeonReq) == dungeonReq) {
+			// Bit of a special case, since this requires coordinates:
+			Position pos = entity.getComponent(Position.class);
+			if(remove) {
+				dungeon.removeEntity(pos.getX(), pos.getY(), entity);
+			} else {
+				dungeon.addEntity(pos.getX(), pos.getY(), entity);
+			}
+		}
 		
 		
 	}
@@ -274,13 +285,17 @@ public class Engine {
 		// TODO: Loading screen stuff
 		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
 			this.dungeon = dungeon;
+
+			player.getComponent(Position.class).set(1, 1); // This respawns the player 1,1 of each map
 			this.dungeon.register();
+			addEntity(player);
 			gameState = newState;
 		}
 	}
 	public void loadOverworld(){
 		if(gameState == GameState.DUNGEON && dungeon != null){
 			dungeon.unregister();
+			System.out.println("Unregister done");
 		}
 		overworldSys.register();
 		gameState = GameState.OVERWORLD;
