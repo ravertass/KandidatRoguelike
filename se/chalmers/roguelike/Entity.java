@@ -45,6 +45,10 @@ public class Entity {
 			componentKey |= Engine.CompHighlight;
 		} else if(compClass == Player.class){
 			componentKey |= Engine.CompPlayer;
+		} else if(compClass == Seed.class){
+			componentKey |= Engine.CompSeed;
+		} else if(compClass == DungeonComponent.class){
+			componentKey |= Engine.CompDungeon;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}

@@ -32,6 +32,8 @@ public class Engine {
 	public static final int CompPlayer = 1 << 9;
 	public static final int CompWeapon = 1 << 10;
 	public static final int CompFieldOfView = 1 << 11;
+	public static final int CompSeed = 1 << 12;
+	public static final int CompDungeon= 1 << 13;
 	
 	
 	// Constants: System requirements:
@@ -230,7 +232,7 @@ public class Engine {
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
 		dungeon = new Dungeon(this); // remove engine?
-		dungeon.setWorld(50,50,new Generator().toTiles());
+		// dungeon.setWorld(50,50,new Generator().toTiles());
 		inputManager = new InputManager();
 		//inputSys = new InputSystem();
 		moveSys = new MoveSystem(); // remember to update pointer for new worlds
