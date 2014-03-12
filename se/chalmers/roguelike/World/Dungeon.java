@@ -122,13 +122,10 @@ public class Dungeon {
 	public void addEntity(int x, int y, Entity entity){
 		tiles[y][x].addEntity(entity); // add some kind of check to see that it doesnt go out of bounds
 		entities.add(entity);
-
-		System.out.println("ADDED ENTITY     ODASDJASLDKJALSDFKJALKSJFALSDKJF");
 	}
 	public void removeEntity(int x, int y, Entity entity){
 		tiles[y][x].removeEntity(entity); // add some kind of check to see that it doesnt go out of bounds
 		entities.remove(entity);
-		System.out.println("REMOVED ENTITY     ODASDJASLDKJALSDFKJALKSJFALSDKJF");
 	}
 	public void unregister(){
 		for(Entity e : entities){
