@@ -33,4 +33,15 @@ public class Agent {
 	public void setFalseGoals(ArrayList<ICondition> falseGoals) {
 		this.falseGoals = falseGoals;
 	}
+	
+	public boolean goalsMet() {
+		boolean bool = true;
+		for (ICondition cond : trueGoals) {
+			bool &= cond.get();
+		}
+		for (ICondition cond : falseGoals) {
+			bool &= cond.get();
+		}
+		return bool;
+	}
 }

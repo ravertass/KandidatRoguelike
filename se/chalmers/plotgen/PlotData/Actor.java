@@ -1,5 +1,6 @@
 package se.chalmers.plotgen.PlotData;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -65,7 +66,11 @@ public class Actor extends PlotThing implements IPlotBody {
 		this.alive = alive;
 		if (alive == false) {
 			removeFromLocation();
+			ArrayList<Prop> propsToRemove = new ArrayList<Prop>();
 			for (Prop prop : props) {
+				propsToRemove.add(prop);
+			}
+			for (Prop prop : propsToRemove) {
 				prop.removeFromActor();
 			}
 		}

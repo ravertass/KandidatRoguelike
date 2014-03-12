@@ -7,12 +7,12 @@ public class SamePlaceCondition implements ICondition {
 
 	private Actor actor;
 	private IPlotBody plotBody;
-	
+
 	public SamePlaceCondition(Actor actor, IPlotBody plotBody) {
 		this.actor = actor;
 		this.plotBody = plotBody;
 	}
-	
+
 	@Override
 	public boolean get() {
 		return (actor.getLocation() == plotBody.getLocation());
@@ -29,6 +29,15 @@ public class SamePlaceCondition implements ICondition {
 		} else {
 			actor.setLocation(null);
 		}
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof SamePlaceCondition) {
+			return (actor == (((SamePlaceCondition) object).actor) & 
+					plotBody == (((SamePlaceCondition) object).plotBody));
+		}
+		return false;
 	}
 
 }

@@ -43,15 +43,19 @@ public class Operators {
 
 	public static Operator takeOperator(Actor self, Prop prop) {
 
+		// Set conditions that must be true
 		ArrayList<ICondition> beTrue = new ArrayList<ICondition>();
 		beTrue.add(new LivesCondition(self));
 		beTrue.add(new SamePlaceCondition(self, prop));
 
+		// Set conditions that must be false
 		ArrayList<ICondition> beFalse = new ArrayList<ICondition>();
 
+		// Set conditions that will be set true
 		ArrayList<ICondition> setTrue = new ArrayList<ICondition>();
 		setTrue.add(new BelongsToCondition(prop, self));
 
+		// Set conditions that will be set false
 		ArrayList<ICondition> setFalse = new ArrayList<ICondition>();
 		
 		// Add the corresponding action to the operator
@@ -59,39 +63,72 @@ public class Operators {
 
 		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
 	}
+	
+	public static Operator meetOperator(Actor self, Actor actor) {
 
-	public static Operator visitOperator(Actor self, Scene targetLocation) {
-
+		// Set conditions that must be true
 		ArrayList<ICondition> beTrue = new ArrayList<ICondition>();
 		beTrue.add(new LivesCondition(self));
+		beTrue.add(new LivesCondition(actor));
 
+		// Set conditions that must be false
 		ArrayList<ICondition> beFalse = new ArrayList<ICondition>();
+		beFalse.add(new SamePlaceCondition(self, actor));
 
+		// Set conditions that will be set true
 		ArrayList<ICondition> setTrue = new ArrayList<ICondition>();
-		setTrue.add(new IsAtLocationCondition(self, targetLocation));
+		setTrue.add(new SamePlaceCondition(self, actor));
 
+		// Set conditions that will be set false
 		ArrayList<ICondition> setFalse = new ArrayList<ICondition>();
 		
 		// Add the corresponding action to the operator
-		//TODO: Action action = new Action(Action.ActionType.KILL, self, victim);
-		Action action = null;
+		Action action = new Action(Action.ActionType.MEET, self, actor);
+
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
+	}
+
+
+	public static Operator visitOperator(Actor self, Scene targetLocation) {
+
+		// Set conditions that must be true
+		ArrayList<ICondition> beTrue = new ArrayList<ICondition>();
+		beTrue.add(new LivesCondition(self));
+
+		// Set conditions that must be false
+		ArrayList<ICondition> beFalse = new ArrayList<ICondition>();
+		beFalse.add(new IsAtLocationCondition(self, targetLocation));
+
+		// Set conditions that will be set true
+		ArrayList<ICondition> setTrue = new ArrayList<ICondition>();
+		setTrue.add(new IsAtLocationCondition(self, targetLocation));
+
+		// Set conditions that will be set false
+		ArrayList<ICondition> setFalse = new ArrayList<ICondition>();
+		
+		// Add the corresponding action to the operator
+		Action action = new Action(Action.ActionType.VISIT, self, targetLocation);
 
 		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
 	}
 
 	public static Operator giveOperator(Actor self, Actor recipient, Prop prop) {
 
+		// Set conditions that must be true
 		ArrayList<ICondition> beTrue = new ArrayList<ICondition>();
 		beTrue.add(new LivesCondition(self));
 		beTrue.add(new LivesCondition(recipient));
 		beTrue.add(new SamePlaceCondition(self, recipient));
 		beTrue.add(new BelongsToCondition(prop, self));
 
+		// Set conditions that must be false
 		ArrayList<ICondition> beFalse = new ArrayList<ICondition>();
 
+		// Set conditions that will be set true
 		ArrayList<ICondition> setTrue = new ArrayList<ICondition>();
 		setTrue.add(new BelongsToCondition(prop, recipient));
 
+		// Set conditions that will be set false
 		ArrayList<ICondition> setFalse = new ArrayList<ICondition>();
 
 		// Add the corresponding action to the operator
