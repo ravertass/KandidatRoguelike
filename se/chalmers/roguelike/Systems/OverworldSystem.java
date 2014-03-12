@@ -75,14 +75,16 @@ public class OverworldSystem implements ISystem, Observer{
 					System.out.println("Stars seed: "+seed);
 					System.out.println("Click again to start it");
 					if(startWorld){
-						if(activeStar.getComponent(DungeonComponent.class) == null){
+						Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class).getDungeon();
+						if(starDungeon == null){
 							System.out.println("No dungeon found! Generating one.");
-							Dungeon newWorld = new Dungeon(engine);
-							newWorld.setWorld(50,50,new Generator(seed).toTiles());
-							Engine.dungeon = newWorld;
-						}
+							starDungeon = new Dungeon(engine);
+							starDungeon.setWorld(50,50,new Generator(seed).toTiles());
+							activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
+						//	Engine.dungeon = newWorld;
+						} 
 						unregister();
-						Engine.gameState = Engine.GameState.DUNGEON;
+						engine.loadDungeon(starDungeon,Engine.GameState.DUNGEON);
 					}
 				}
 			}
@@ -93,6 +95,13 @@ public class OverworldSystem implements ISystem, Observer{
 		// Unregisters all the stars
 		for(Entity star : stars.values()){
 			engine.removeEntity(star);
+		}
+	}
+	
+	public void register(){
+		// Unregisters all the stars
+		for(Entity star : stars.values()){
+			engine.addEntity(star);
 		}
 	}
 

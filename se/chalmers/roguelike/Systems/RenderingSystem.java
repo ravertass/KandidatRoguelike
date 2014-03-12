@@ -141,6 +141,7 @@ public class RenderingSystem implements ISystem {
 					draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 			}
 		} else if(Engine.gameState == Engine.GameState.OVERWORLD) {
+			glClear(GL_COLOR_BUFFER_BIT); // clearas the window
 			for(Entity entity : entitiesToDraw) {
 				drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 			}

@@ -128,8 +128,21 @@ public class Dungeon {
 		entities.remove(entity);
 	}
 	public void unregister(){
+		ArrayList<Entity> backup = new ArrayList<Entity>();
 		for(Entity e : entities){
+			backup.add(e);
 			engine.removeEntity(e);
+			System.out.println("REMOVING ENTITY");
+		}
+		entities = backup; // This is done because when it removes it from the engine
+		// it will also remove it from the dungeon. This way we keep a backup
+
+		// Possible this will bug with player, TODO CHECK
+	}
+	public void register(){
+		for(Entity e : entities){
+			System.out.println("RESTORING");
+			engine.addEntity(e);
 		}
 	}
 }

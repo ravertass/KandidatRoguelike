@@ -52,7 +52,7 @@ public class Engine {
 	private ArrayList<Entity> entities; // useless?
 	public EntityCreator entityCreator;
 	
-	public static Dungeon dungeon; // remove static, just for testing unloading atm
+	private Dungeon dungeon; // remove static, just for testing unloading atm
 	
 	// Systems:
 	private RenderingSystem renderingSys;
@@ -233,7 +233,7 @@ public class Engine {
 		renderingSys = new RenderingSystem();
 		dungeon = new Dungeon(this); // remove engine?
 		// dungeon.setWorld(50,50,new Generator().toTiles());
-		inputManager = new InputManager();
+		inputManager = new InputManager(this); // This feels stupid that it should have engine component, maybe change once debug stuff is over for the load manager
 		//inputSys = new InputSystem();
 		moveSys = new MoveSystem(); // remember to update pointer for new worlds
 		mobSpriteSys = new MobSpriteSystem();
@@ -268,5 +268,21 @@ public class Engine {
 	 */
 	public static void main(String[] args) {
 		new Engine().run();
+	}
+	
+	public void loadDungeon(Dungeon dungeon, GameState newState){
+		// TODO: Loading screen stuff
+		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
+			this.dungeon = dungeon;
+			this.dungeon.register();
+			gameState = newState;
+		}
+	}
+	public void loadOverworld(){
+		if(gameState == GameState.DUNGEON && dungeon != null){
+			dungeon.unregister();
+		}
+		overworldSys.register();
+		gameState = GameState.OVERWORLD;
 	}
 }

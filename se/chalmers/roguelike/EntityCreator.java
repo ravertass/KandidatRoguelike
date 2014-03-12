@@ -4,6 +4,7 @@ import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Direction;
+import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.Input;
@@ -104,6 +105,7 @@ public class EntityCreator {
 		star.add(new Sprite("star"));
 		star.add(new Position(x,y));
 		star.add(new Seed(seed));
+		star.add(new DungeonComponent());
 		engine.addEntity(star);
 		System.out.println("New star added");
 		return star;

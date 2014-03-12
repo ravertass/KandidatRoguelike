@@ -11,6 +11,8 @@ import se.chalmers.roguelike.util.Subject;
 public class InputManager implements Subject {
 
 	private ArrayList<Observer> observers;
+	private Engine engine;
+
 	/**
 	 * This is where you delcare all the different events that the keyboard and mouse can cause. 
 	 * @author twister
@@ -25,10 +27,13 @@ public class InputManager implements Subject {
 		// here
 	}
 
-	public InputManager() {
+//	public InputManager() {
+//		observers = new ArrayList<Observer>();
+//	}
+	public InputManager(Engine engine){
+		this.engine = engine;
 		observers = new ArrayList<Observer>();
 	}
-
 	@Override
 	public void addObserver(Observer o) {
 		observers.add(o);
@@ -99,7 +104,8 @@ public class InputManager implements Subject {
 				Engine.debug = !Engine.debug; 
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_F2)){
-				Engine.dungeon.unregister();
+				//Engine.dungeon.unregister();
+				engine.loadOverworld();
 				// Engine.gameState = Engine.GameState.DUNGEON;
 			}
 		}
