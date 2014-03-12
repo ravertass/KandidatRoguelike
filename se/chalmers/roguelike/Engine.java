@@ -48,7 +48,7 @@ public class Engine {
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
 	private ArrayList<Entity> entities; // useless?
-	private EntityCreator entityCreator;
+	public EntityCreator entityCreator;
 	
 	public static Dungeon dungeon; // remove static, just for testing unloading atm
 	
@@ -64,11 +64,12 @@ public class Engine {
 	private PlayerInputSystem playerInputSys;
 	private CombatSystem combatsystem;
 	private LevelingSystem levelingSys;
+	private OverworldSystem overworldSys;
 	
-	private enum GameState {
+	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
 	}
-	private GameState gameState;
+	public static GameState gameState; // or private?
 	
 	/**
 	 * Sets up the engine and it's variables.
@@ -77,7 +78,8 @@ public class Engine {
 		System.out.println("Starting new engine.");
 		entities = new ArrayList<Entity>();
 		entityCreator = new EntityCreator(this);
-		gameState = GameState.DUNGEON;
+		//gameState = GameState.DUNGEON;
+		gameState = GameState.OVERWORLD;
 		spawnSystems();
 		registerInputSystems();
 		setCamera();
@@ -212,6 +214,9 @@ public class Engine {
 			} else if(gameState == GameState.OVERWORLD) {
 				//TODO
 				//add system  that is used in the overworld
+				renderingSys.update();
+				inputManager.update();
+				overworldSys.update();
 			} else if(gameState == GameState.MAIN_MENU) {
 				//TODO
 				MainMenu.getInstance().show(renderingSys);
@@ -237,7 +242,7 @@ public class Engine {
 		combatsystem = new CombatSystem(this);
 		levelingSys = new LevelingSystem();
 		
-		
+		overworldSys = new OverworldSystem(this);
 	}
 	
 	/**
@@ -253,6 +258,7 @@ public class Engine {
 	private void registerInputSystems() {
 		inputManager.addObserver(playerInputSys);
 		inputManager.addObserver(highlightSys);
+		inputManager.addObserver(overworldSys);
 	}
 	
 	/**

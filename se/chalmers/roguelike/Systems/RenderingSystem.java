@@ -38,6 +38,7 @@ import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Engine.GameState;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
@@ -122,22 +123,27 @@ public class RenderingSystem implements ISystem {
 	}
 	
 	public void update() {
-
-		// Draws healthbars for all entities that stand on a lit tile.
-		for (Entity e : entitiesToDraw) {
-			if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
-				Position epos = e.getComponent(Position.class);
-				if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
-					drawHealthbar(e);
+		if(Engine.gameState == Engine.GameState.DUNGEON){
+			// Draws healthbars for all entities that stand on a lit tile.
+			for (Entity e : entitiesToDraw) {
+				if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
+					Position epos = e.getComponent(Position.class);
+					if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
+						drawHealthbar(e);
+				}
 			}
-		}
-		// Draw all entities in system if they stand on a lit tile
-		for(Entity entity : entitiesToDraw) {
-			Position epos = entity.getComponent(Position.class);
-			if((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
-				draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
-			else if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
-				draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+			// Draw all entities in system if they stand on a lit tile
+			for(Entity entity : entitiesToDraw) {
+				Position epos = entity.getComponent(Position.class);
+				if((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
+					draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+				else if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
+					draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+			}
+		} else if(Engine.gameState == Engine.GameState.OVERWORLD) {
+			for(Entity entity : entitiesToDraw) {
+				drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+			}
 		}
 		
 		//drawHudBackgorund();
@@ -288,6 +294,43 @@ public class RenderingSystem implements ISystem {
 				glColor3f(1.0f, 1.0f, 1.0f);
 			glEnd();
 		}
+	}
+	
+	/**
+	 * Method to draw an the overworld
+	 * @param entity The entity to be drawn
+	 */
+	private void drawOverworld(Sprite sprite, Position position) {
+
+		
+		Texture texture = sprite.getTexture();
+		int size = Engine.spriteSize;//sprite.getSize(); // Times two, makes sprites twice as large
+
+		int x = position.getX();
+		int y = position.getY();
+		
+		// Get the coordinates of the current sprite
+		// in the spritesheet in a form that OpenGL likes,
+		// which is a float between 0 and 1
+		float spriteULX = sprite.getUpperLeftX();
+		float spriteULY = sprite.getUpperLeftY();
+		float spriteLRX = sprite.getLowerRightX();
+		float spriteLRY = sprite.getLowerRightY();
+		
+		// We determine if the entity is within the camera's
+		// view; if so, we draw it
+		texture.bind();
+		glBegin(GL_QUADS);
+			glTexCoord2f(spriteULX, spriteLRY);
+			glVertex2d(x, y);
+			glTexCoord2f(spriteLRX, spriteLRY);
+			glVertex2d(x + size, y);
+			glTexCoord2f(spriteLRX, spriteULY);
+			glVertex2d(x + size, y + size);
+			glTexCoord2f(spriteULX, spriteULY);
+			glVertex2d(x, y + size);
+		glEnd();
+
 	}
 	
 	public void exit() {

@@ -95,5 +95,16 @@ public class EntityCreator {
 		engine.addEntity(highlight);
 		return highlight;
 	}
+	public Entity createStar(int x, int y){
+		return createStar(x, y, "Star");
+	}
+	public Entity createStar(int x, int y, String starname){
+		Entity star = new Entity(starname);
+		star.add(new Sprite("star"));
+		star.add(new Position(x,y));
+		engine.addEntity(star);
+		System.out.println("New star added");
+		return star;
+	}
 
 }
