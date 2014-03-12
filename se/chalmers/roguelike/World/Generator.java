@@ -26,6 +26,11 @@ public class Generator {
 		run();
 	}
 	
+	public Generator(long seed){
+		rand = new Random(seed);
+		run();
+	}
+	
 	private void run(){
 		char[][] grid = new char[width][height]; // change to tile later, char atm so we can print it
 		for(int x=0;x<width;x++){
