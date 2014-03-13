@@ -11,6 +11,7 @@ import org.newdawn.slick.geom.Triangulator;
 
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.Triangle;
 
 public class ModifiedGenerator {
@@ -68,10 +69,19 @@ public class ModifiedGenerator {
 		//Triangulate!
 		triangulator.triangulate();
 		System.out.println("Number of triangles: "+triangulator.getTriangleCount());
+		
 		//Create a list of triangles from our triangulator
+		ArrayList<Edge> edges = new ArrayList<Edge>();
 		for (int i = 0; i < triangulator.getTriangleCount(); i++) {
-			// TODO
-			System.out.println(new Triangle(triangulator.getTrianglePoint(i, 0), triangulator.getTrianglePoint(i, 1), triangulator.getTrianglePoint(i, 2)));
+			Edge edge1 = new Edge(triangulator.getTrianglePoint(i, 0), triangulator.getTrianglePoint(i, 1));
+			Edge edge2 = new Edge(triangulator.getTrianglePoint(i, 1), triangulator.getTrianglePoint(i, 2));
+			Edge edge3 = new Edge(triangulator.getTrianglePoint(i, 2), triangulator.getTrianglePoint(i, 0));
+			if(!edges.contains(edge1))
+				edges.add(edge1);
+			if(!edges.contains(edge2))
+				edges.add(edge2);
+			if(!edges.contains(edge3))
+				edges.add(edge3);
 		}
 		
 		print(grid);
