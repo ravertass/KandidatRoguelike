@@ -1,5 +1,6 @@
 package se.chalmers.roguelike.World;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;
@@ -39,7 +40,6 @@ public class ModifiedGenerator {
 		rooms = placeRooms();
 		separateRooms();
 		grid = initWorldGrid();
-		
 		
 		// atm so we can print it
 		for (int x = 0; x < width; x++) {
@@ -133,6 +133,12 @@ public class ModifiedGenerator {
 				}
 			}
 		}
+
+		//To see where we set nodes
+		ArrayList<Point> nodes = generateNodes();
+		for (Point point : nodes) {
+			worldGrid[point.y][point.x] = 'o';
+		}
 		print(worldGrid);
 	}
 	
@@ -198,6 +204,17 @@ public class ModifiedGenerator {
 		}
 		return tiles;
 
+	}
+	
+	public ArrayList<Point> generateNodes(){
+		ArrayList<Point> nodes = new ArrayList<Point>();
+		for (Rectangle room : largeRooms) {
+			int x = room.x + 1 + rand.nextInt(room.width-2);
+			int y = room.y + (1 + rand.nextInt(room.height-2));
+			Point node = new Point(x, y);
+			nodes.add(node);
+		}
+		return nodes;
 	}
 	
 	public void print(char[][] worldGrid) {
