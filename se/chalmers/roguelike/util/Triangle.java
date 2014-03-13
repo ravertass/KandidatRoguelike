@@ -67,4 +67,17 @@ public class Triangle {
 	public Position getPos3() {
 		return new Position(x3, y3);
 	}
+	
+	static public Triangle getSuperTriangle(int height, int width, int xPos, int yPos){
+		int x1, y1, x2, y2, x3, y3;
+		int bottomBase = (int) (height/Math.sin(60)*Math.sin(30));
+		x1 = xPos - bottomBase;
+		y1 = xPos;
+		x2 = width/2;
+		y2 = (int) (Math.sqrt(width^2 - (width/2)^2));
+		x3 = xPos + width + bottomBase;
+		y3 = xPos;
+		return new Triangle(x1, y1, x2, y2, x3, y3);
+	}
+	
 }

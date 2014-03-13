@@ -8,6 +8,7 @@ import java.util.concurrent.RecursiveTask;
 import org.w3c.dom.css.Rect;
 
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.util.Triangle;
 
 public class ModifiedGenerator {
 
@@ -197,10 +198,6 @@ public class ModifiedGenerator {
 		}
 		return tiles;
 
-	}
-
-	public Triangle superTriangle(){
-		return null;
 	}
 	
 	public void print(char[][] worldGrid) {
