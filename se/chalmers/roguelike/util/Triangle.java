@@ -49,7 +49,7 @@ public class Triangle {
 		int ux = ((x1p2+y1p2)*(y2-y3) + (x2p2 + y2p2)*(y3-y1)+(x3p2 + y3p2)*(y1-y2))/d;
 		int uy = ((x1p2+y1p2)*(x3-x2) + (x2p2 + y2p2)*(x1-x3)+(x3p2 + y3p2)*(x2-x1))/d;
 		
-		int r = (int) Math.sqrt(Math.pow((uy-y1),2) +Math.pow((x1-ux),2));
+		int r = (int) Math.sqrt(Math.pow((Math.abs(uy-y1)),2) +Math.pow((Math.abs(x1-ux)),2));
 		return new Circle(ux, uy, r);
 	}
 
