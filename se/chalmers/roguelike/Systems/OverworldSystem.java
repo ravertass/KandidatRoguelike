@@ -29,13 +29,16 @@ public class OverworldSystem implements ISystem, Observer{
 	private Entity activeStar;
 	private HashMap<String,Entity> stars;
 	final Position noClick = new Position(-1, -1);
-	private Rectangle playRect;
-	private Entity playButton;
+	private Rectangle playRect, menuRect;
+	private Entity playButton, menuButton;
 	public OverworldSystem(Engine engine) {
 		this.engine = engine;
 		activeStar = null;
 		stars = new HashMap<String,Entity>();
 		starRectangles = new ArrayList<Rectangle>();
+		playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "button_play_gray"); 
+		menuButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200-32, "button_menu"); 
+		menuRect = new Rectangle(Engine.screenWidth-80,200-32,80,32);
 		setupStars();
 	}
 	@Override
@@ -70,6 +73,8 @@ public class OverworldSystem implements ISystem, Observer{
 			if(playRect != null && playRect.contains(mouseX,mouseY)){
 				System.out.println("PLAY PRESSED!");
 				loadDungeon();
+			} else if (menuRect.contains(mouseX,mouseY)){
+				System.out.println("Someone stole the flippin menu");
 			}
 		}
 	}
@@ -95,12 +100,9 @@ public class OverworldSystem implements ISystem, Observer{
 	 */
 	private void starClicked(Rectangle star){
 		if(activeStar == null){
-			playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "play_button"); 
-			System.out.println("ULX: "+playButton.getComponent(Sprite.class).getUpperLeftX());
-			System.out.println("ULY: "+playButton.getComponent(Sprite.class).getUpperLeftY());
-			System.out.println("LRX: "+playButton.getComponent(Sprite.class).getLowerRightX());
-			System.out.println("LRY: "+playButton.getComponent(Sprite.class).getLowerRightY());
-			playRect = new Rectangle(Engine.screenWidth-80,200,80,80);
+			engine.removeEntity(playButton);
+			playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "button_play"); 
+			playRect = new Rectangle(Engine.screenWidth-80,200,80,32);
 		} else {
 			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates current star
 		}
