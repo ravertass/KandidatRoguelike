@@ -105,5 +105,29 @@ public class Triangle {
 	public String toString() {
 		return("("+ x1 +","+ y1 +")("+ x2 +","+ y2 +")("+ x3 +","+ y3 +")");
 	}
-
+	
+	public boolean stemsFrom (Triangle tri) {
+		if ((this.x1 == tri.x1) && (this.y1 == tri.y1))
+			return true;
+		if ((this.x1 == tri.x2) && (this.y1 == tri.y2))
+			return true;
+		if ((this.x1 == tri.x3) && (this.y1 == tri.y3))
+			return true;
+		
+		if ((this.x2 == tri.x1) && (this.y2 == tri.y1))
+			return true;
+		if ((this.x2 == tri.x2) && (this.y2 == tri.y2))
+			return true;
+		if ((this.x2 == tri.x3) && (this.y2 == tri.y3))
+			return true;
+		
+		if ((this.x3 == tri.x1) && (this.y3 == tri.y1))
+			return true;
+		if ((this.x3 == tri.x2) && (this.y3 == tri.y2))
+			return true;
+		if ((this.x3 == tri.x3) && (this.y3 == tri.y3))
+			return true;
+		
+		return false;
+	}
 }
