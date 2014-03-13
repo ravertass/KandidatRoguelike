@@ -38,8 +38,12 @@ public class Triangle {
 	}
 
 	public Circle circumCircle() {
-		// TODO
-		return null;
+		int d = 2*(x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2));
+		int ux = ((x1^2+y1^2)*(y2-y3) + (x2^2 + y2^2)*(y3-y1)+(x3^2 + y3^2)*(y1-y2))/d;
+		int uy = ((x1^2+y1^2)*(x3-x2) + (x2^2 + y2^2)*(x1-x3)+(x3^2 + y3^2)*(x2-x1))/d;
+		
+		int r = (int) Math.sqrt((uy-y1)^2 +(x1-ux)^2);
+		return new Circle(ux, uy, r);
 	}
 
 	public int getX1() {
