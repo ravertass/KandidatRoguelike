@@ -3,13 +3,11 @@ package se.chalmers.roguelike.World;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
-import java.util.concurrent.RecursiveTask;
 
-import org.w3c.dom.css.Rect;
-
+import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.util.Triangle;
 
 public class ModifiedGenerator {
 
@@ -135,10 +133,13 @@ public class ModifiedGenerator {
 		}
 
 		//To see where we set nodes
-		ArrayList<Point> nodes = generateNodes();
-		for (Point point : nodes) {
-			worldGrid[point.y][point.x] = 'o';
+		ArrayList<Position> nodes = generateNodes();
+		for (Position point : nodes) {
+			worldGrid[point.getY()+ Math.abs(yMinDisplacement)][point.getX()+ Math.abs(xMinDisplacement)] = 'o';
 		}
+		System.out.println(nodes);
+		Collections.sort(nodes);
+		System.out.println(nodes);
 		print(worldGrid);
 	}
 	
@@ -206,12 +207,12 @@ public class ModifiedGenerator {
 
 	}
 	
-	public ArrayList<Point> generateNodes(){
-		ArrayList<Point> nodes = new ArrayList<Point>();
+	public ArrayList<Position> generateNodes(){
+		ArrayList<Position> nodes = new ArrayList<Position>();
 		for (Rectangle room : largeRooms) {
 			int x = room.x + 1 + rand.nextInt(room.width-2);
-			int y = room.y + (1 + rand.nextInt(room.height-2));
-			Point node = new Point(x, y);
+			int y = room.y + 1 + rand.nextInt(room.height-2);
+			Position node = new Position(x, y);
 			nodes.add(node);
 		}
 		return nodes;
