@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import org.newdawn.slick.geom.BasicTriangulator;
+import org.newdawn.slick.geom.Triangulator;
+
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.util.Triangle;
 
 public class ModifiedGenerator {
 
@@ -15,7 +19,7 @@ public class ModifiedGenerator {
 	private int width = 80;
 	private int height = 80;
 	private int xMinDisplacement = 0, yMinDisplacement = 0;
-//	private char[][] worldGrid;
+	// private char[][] worldGrid;
 	private ArrayList<Rectangle> rooms;
 	private ArrayList<Rectangle> largeRooms = new ArrayList<Rectangle>();
 	Random rand; // replace with new Random(seed); later, already tried and
@@ -46,6 +50,31 @@ public class ModifiedGenerator {
 			}
 		}
 		drawRooms(grid);
+
+		//To see where we set nodes
+		ArrayList<Position> nodes = generateNodes();
+		for (Position point : nodes) {
+			grid[point.getY()+ Math.abs(yMinDisplacement)][point.getX()+ Math.abs(xMinDisplacement)] = 'o';
+		}
+		//Sort the list of nodes (sorts by X-value, low to high)
+		Collections.sort(nodes);
+		
+		//Creates a triangulator //Try other triangulators,	NeatTriangulator, MannTriangulator, OverTriangulator
+		BasicTriangulator triangulator = new BasicTriangulator();
+		//Add all the nodes to the triangulator
+		for (Position position : nodes) {
+			triangulator.addPolyPoint(position.getX(), position.getY());
+		}
+		//Triangulate!
+		triangulator.triangulate();
+		System.out.println("Number of triangles: "+triangulator.getTriangleCount());
+		//Create a list of triangles from our triangulator
+		for (int i = 0; i < triangulator.getTriangleCount(); i++) {
+			// TODO
+			System.out.println(new Triangle(triangulator.getTrianglePoint(i, 0), triangulator.getTrianglePoint(i, 1), triangulator.getTrianglePoint(i, 2)));
+		}
+		
+		print(grid);
 	}
 
 	/**
@@ -64,12 +93,14 @@ public class ModifiedGenerator {
 			room = generateRoom();
 			room.setLocation(x, y);
 			graph.add(room);
-			if(room.width >= 8 && room.height >= 8){
+			if (room.width >= 8 && room.height >= 8) {
 				largeRooms.add(room);
 			}
 		}
-		//Stats for how the room size is distributed
-		System.out.println("Amount of large rooms: " + largeRooms.size() + "\nAmount of small rooms: " + (amountOfRooms-largeRooms.size()));
+		// Stats for how the room size is distributed
+		System.out.println("Amount of large rooms: " + largeRooms.size()
+				+ "\nAmount of small rooms: "
+				+ (amountOfRooms - largeRooms.size()));
 		return graph;
 	}
 
@@ -80,11 +111,12 @@ public class ModifiedGenerator {
 			intersectingRooms = false;
 			for (Rectangle rectangle : rooms) {
 				for (Rectangle colliding : rooms) {
-					if (rectangle != colliding && rectangle.intersects(colliding)) {
+					if (rectangle != colliding
+							&& rectangle.intersects(colliding)) {
 						intersectingRooms = true;
-						
+
 						int random = rand.nextInt(2);
-						if(random == 0){
+						if (random == 0) {
 							if (rectangle.getX() >= colliding.getX()) {
 								colliding.x--;
 							} else {
@@ -106,15 +138,15 @@ public class ModifiedGenerator {
 	}
 
 	private void drawRooms(char[][] worldGrid) {
-	
-		//Clear the array
+
+		// Clear the array
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				worldGrid[y][x] = ' ';
 			}
 		}
-		
-		//DRAW
+
+		// DRAW
 		for (Rectangle drawRoom : rooms) {
 			// Line the sides as walls:
 			// new code:
@@ -124,39 +156,33 @@ public class ModifiedGenerator {
 				for (int x = (int) drawRoom.getX(); x < roomWidth; x++) {
 					if (y == (int) drawRoom.getY() || y == roomHeight - 1
 							|| x == (int) drawRoom.getX() || x == roomWidth - 1) {
-						worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] = 'X'; // HARDCODED +10
+						worldGrid[y + Math.abs(yMinDisplacement)][x
+								+ Math.abs(xMinDisplacement)] = 'X'; // HARDCODED
+																		// +10
 					} else {
-						worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] = '.'; // HARDCODED +10
+						worldGrid[y + Math.abs(yMinDisplacement)][x
+								+ Math.abs(xMinDisplacement)] = '.'; // HARDCODED
+																		// +10
 					}
 				}
 			}
 		}
-
-		//To see where we set nodes
-		ArrayList<Position> nodes = generateNodes();
-		for (Position point : nodes) {
-			worldGrid[point.getY()+ Math.abs(yMinDisplacement)][point.getX()+ Math.abs(xMinDisplacement)] = 'o';
-		}
-		System.out.println(nodes);
-		Collections.sort(nodes);
-		System.out.println(nodes);
-		print(worldGrid);
 	}
-	
-	private char[][] initWorldGrid(){
+
+	private char[][] initWorldGrid() {
 		char[][] worldGrid;
 		int yMaxDisplacement = 0;
 		int xMaxDisplacement = 0;
-		//Move the indices for the array to prevent OutOfBounds
+		// Move the indices for the array to prevent OutOfBounds
 		for (Rectangle room : rooms) {
-			if(room.getX() < xMinDisplacement)
+			if (room.getX() < xMinDisplacement)
 				xMinDisplacement = (int) room.getX();
-			if(room.getY() < yMinDisplacement)
+			if (room.getY() < yMinDisplacement)
 				yMinDisplacement = (int) room.getY();
-			if(room.getX()+room.width > xMaxDisplacement)
-				xMaxDisplacement = (int) room.getX()+room.width;
-			if(room.getY()+room.height > yMaxDisplacement)
-				yMaxDisplacement = (int) room.getY()+room.height;
+			if (room.getX() + room.width > xMaxDisplacement)
+				xMaxDisplacement = (int) room.getX() + room.width;
+			if (room.getY() + room.height > yMaxDisplacement)
+				yMaxDisplacement = (int) room.getY() + room.height;
 		}
 		yMaxDisplacement += Math.abs(yMinDisplacement);
 		xMaxDisplacement += Math.abs(xMinDisplacement);
@@ -206,20 +232,21 @@ public class ModifiedGenerator {
 		return tiles;
 
 	}
-	
-	public ArrayList<Position> generateNodes(){
+
+	public ArrayList<Position> generateNodes() {
 		ArrayList<Position> nodes = new ArrayList<Position>();
 		for (Rectangle room : largeRooms) {
-			int x = room.x + 1 + rand.nextInt(room.width-2);
-			int y = room.y + 1 + rand.nextInt(room.height-2);
+			int x = room.x + 1 + rand.nextInt(room.width - 2);
+			int y = room.y + 1 + rand.nextInt(room.height - 2);
 			Position node = new Position(x, y);
 			nodes.add(node);
 		}
 		return nodes;
 	}
-	
+
 	public void print(char[][] worldGrid) {
-		System.out.println("_____________________________________________________________");
+		System.out
+				.println("_____________________________________________________________");
 		for (int y = 0; y < height; y++) {
 			System.out.println(worldGrid[y]);
 		}

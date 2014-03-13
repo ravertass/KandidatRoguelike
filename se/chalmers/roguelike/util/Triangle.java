@@ -21,13 +21,23 @@ public class Triangle {
 		this.x3 = x3;
 		this.y3 = y3;
 	}
-	
+
+	public Triangle(float[] trianglePoint1, float[] trianglePoint2,
+			float[] trianglePoint3) {
+		this.x1 = (int) trianglePoint1[0];
+		this.y1 = (int) trianglePoint1[1];
+		this.x2 = (int) trianglePoint2[0];
+		this.y2 = (int) trianglePoint2[1];
+		this.x3 = (int) trianglePoint3[0];
+		this.y3 = (int) trianglePoint3[1];
+	}
+
 	public boolean contains(int x, int y) {
 		// TODO
 		return false;
 	}
-	
-	public Circle circumCircle(){
+
+	public Circle circumCircle() {
 		// TODO
 		return null;
 	}
@@ -55,29 +65,34 @@ public class Triangle {
 	public int getY3() {
 		return y3;
 	}
-	
+
 	public Position getPos1() {
 		return new Position(x1, y1);
 	}
-	
+
 	public Position getPos2() {
 		return new Position(x2, y2);
 	}
-	
+
 	public Position getPos3() {
 		return new Position(x3, y3);
 	}
-	
-	static public Triangle getSuperTriangle(int height, int width, int xPos, int yPos){
+
+	static public Triangle getSuperTriangle(int height, int width, int xPos,
+			int yPos) {
 		int x1, y1, x2, y2, x3, y3;
-		int bottomBase = (int) (height/Math.sin(60)*Math.sin(30));
+		int bottomBase = (int) (height / Math.sin(60) * Math.sin(30));
 		x1 = xPos - bottomBase;
 		y1 = xPos;
-		x2 = width/2;
-		y2 = (int) (Math.sqrt(width^2 - (width/2)^2));
+		x2 = width / 2;
+		y2 = (int) (Math.sqrt(width ^ 2 - (width / 2) ^ 2));
 		x3 = xPos + width + bottomBase;
 		y3 = xPos;
 		return new Triangle(x1, y1, x2, y2, x3, y3);
 	}
 	
+	public String toString() {
+		return("("+ x1 +","+ y1 +")("+ x2 +","+ y2 +")("+ x3 +","+ y3 +")");
+	}
+
 }
