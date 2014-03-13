@@ -45,6 +45,7 @@ import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
 import se.chalmers.roguelike.util.Pair;
 import se.chalmers.roguelike.util.ShadowCaster;
+import se.chalmers.roguelike.util.TrueTypeFont;
 import se.chalmers.roguelike.util.Util;
 
 /**
@@ -59,6 +60,7 @@ public class RenderingSystem implements ISystem {
 	private Camera camera;
 	private Entity player;
 	private FontRenderer fontRenderer;
+	private TrueTypeFont ttfRenderer;
 	
 	private int[][] lightMap;
 	
@@ -69,7 +71,6 @@ public class RenderingSystem implements ISystem {
 		// Magic tricks done by lwjgl
 		setupDisplay();
 		setupOpenGL();
-		
 		try {
 			fontRenderer = new FontRenderer(
 					new UnicodeFont("/resources/fonts/circula-medium.otf", 28, false, true), Color.white);
@@ -116,7 +117,9 @@ public class RenderingSystem implements ISystem {
 					draw(tile.getSprite(),drawPos);
 
 				} else if(tile != null && tile.hasBeenSeen()) {
-					drawOutShadowed(tile.getSprite(), drawPos);
+					glColor3f(0.5f, 0.5f, 0.5f);
+					draw(tile.getSprite(), drawPos);
+					glColor3f(1.0f, 1.0f, 1.0f);
 				}
 			}
 		}
@@ -211,7 +214,7 @@ public class RenderingSystem implements ISystem {
 		
 		Texture texture = sprite.getTexture();
 		int size = Engine.spriteSize;//sprite.getSize(); // Times two, makes sprites twice as large
-		
+		//int size = sprite.getSize();
 		// Get the camera's position
 		Position camPos = camera.getPosition();
 		int camX = camPos.getX();
@@ -305,7 +308,7 @@ public class RenderingSystem implements ISystem {
 
 		
 		Texture texture = sprite.getTexture();
-		int size = Engine.spriteSize;//sprite.getSize(); // Times two, makes sprites twice as large
+		int size = sprite.getSize(); // Times two, makes sprites twice as large
 
 		int x = position.getX();
 		int y = position.getY();

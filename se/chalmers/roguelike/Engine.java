@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import se.chalmers.plotgen.NameGen.NameGenerator;
 import se.chalmers.roguelike.Systems.*;
 import se.chalmers.roguelike.World.Dungeon;
-import se.chalmers.roguelike.World.Generator;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
@@ -15,7 +14,7 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 public class Engine {
 	
 	//Global stuff
-	public static int spriteSize = 16;
+	public static int spriteSize = 32;
 	public static int screenHeight = 768;
 	public static int screenWidth = 1024;
 	// Debug flag:
@@ -287,14 +286,17 @@ public class Engine {
 			this.dungeon = dungeon;
 
 			player.getComponent(Position.class).set(1, 1); // This respawns the player 1,1 of each map
-			this.dungeon.register();
+
 			addEntity(player);
+			this.dungeon.register();
 			gameState = newState;
 		}
 	}
 	public void loadOverworld(){
+
 		if(gameState == GameState.DUNGEON && dungeon != null){
 			dungeon.unregister();
+			removeEntity(player); // TODO: Remove, this is due to some bug
 			System.out.println("Unregister done");
 		}
 		overworldSys.register();

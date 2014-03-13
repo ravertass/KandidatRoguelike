@@ -107,8 +107,14 @@ public class EntityCreator {
 		star.add(new Seed(seed));
 		star.add(new DungeonComponent());
 		engine.addEntity(star);
-		System.out.println("New star added");
 		return star;
 	}
-
+	public Entity createButton(int x, int y, String spriteName){
+		Entity button = new Entity("button");
+		button.add(new Sprite(spriteName,80)); // The 80 thing might screw it up
+		button.add(new Position(x,y));
+		engine.addEntity(button);
+		System.out.println("New button added");
+		return button;
+	}
 }
