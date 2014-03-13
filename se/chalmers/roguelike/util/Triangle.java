@@ -89,7 +89,7 @@ public class Triangle {
 		x1 = xPos - bottomBase;
 		y1 = xPos;
 		x2 = width / 2;
-		y2 = (int) (Math.sqrt(width ^ 2 - (width / 2) ^ 2));
+		y2 = (int) (Math.sqrt(Math.pow(width, 2) - Math.pow((width / 2), 2))) + height;
 		x3 = xPos + width + bottomBase;
 		y3 = xPos;
 		return new Triangle(x1, y1, x2, y2, x3, y3);
