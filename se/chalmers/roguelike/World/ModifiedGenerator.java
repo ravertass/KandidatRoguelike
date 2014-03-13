@@ -103,7 +103,7 @@ public class ModifiedGenerator {
 			}
 			iterations++;
 		}
-		System.out.println(iterations);
+		System.out.println("Amount of iterations: " + iterations);
 	}
 
 	private void drawRooms(char[][] worldGrid) {
@@ -155,6 +155,7 @@ public class ModifiedGenerator {
 		worldGrid = new char[yMaxDisplacement][xMaxDisplacement];
 		height = yMaxDisplacement;
 		width = xMaxDisplacement;
+		System.out.println("Size of the world: " + width + "x" + height);
 		return worldGrid;
 	}
 
@@ -198,6 +199,10 @@ public class ModifiedGenerator {
 
 	}
 
+	public Triangle superTriangle(){
+		return null;
+	}
+	
 	public void print(char[][] worldGrid) {
 		System.out.println("_____________________________________________________________");
 		for (int y = 0; y < height; y++) {
