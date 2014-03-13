@@ -38,12 +38,11 @@ public class ModifiedGenerator {
 
 	private void run() {
 		char[][] grid;
-		
-		
+
 		rooms = placeRooms();
 		separateRooms();
 		grid = initWorldGrid();
-		
+
 		// atm so we can print it
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -51,40 +50,49 @@ public class ModifiedGenerator {
 			}
 		}
 		drawRooms(grid);
+		triangulateRooms(grid);
 
-		//To see where we set nodes
+		print(grid);
+	}
+
+	private void triangulateRooms(char[][] grid) {
+		// To see where we set nodes
 		ArrayList<Position> nodes = generateNodes();
 		for (Position point : nodes) {
-			grid[point.getY()+ Math.abs(yMinDisplacement)][point.getX()+ Math.abs(xMinDisplacement)] = 'o';
+			grid[point.getY() + Math.abs(yMinDisplacement)][point.getX()
+					+ Math.abs(xMinDisplacement)] = 'o';
 		}
-		//Sort the list of nodes (sorts by X-value, low to high)
+		// Sort the list of nodes (sorts by X-value, low to high)
 		Collections.sort(nodes);
-		
-		//Creates a triangulator //Try other triangulators,	NeatTriangulator, MannTriangulator, OverTriangulator
+
+		// Creates a triangulator //Try other triangulators, NeatTriangulator,
+		// MannTriangulator, OverTriangulator
 		BasicTriangulator triangulator = new BasicTriangulator();
-		//Add all the nodes to the triangulator
+		// Add all the nodes to the triangulator
 		for (Position position : nodes) {
 			triangulator.addPolyPoint(position.getX(), position.getY());
 		}
-		//Triangulate!
+		// Triangulate!
 		triangulator.triangulate();
-		System.out.println("Number of triangles: "+triangulator.getTriangleCount());
-		
-		//Create a list of triangles from our triangulator
+		System.out.println("Number of triangles: "
+				+ triangulator.getTriangleCount());
+
+		// Create a list of triangles from our triangulator
 		ArrayList<Edge> edges = new ArrayList<Edge>();
 		for (int i = 0; i < triangulator.getTriangleCount(); i++) {
-			Edge edge1 = new Edge(triangulator.getTrianglePoint(i, 0), triangulator.getTrianglePoint(i, 1));
-			Edge edge2 = new Edge(triangulator.getTrianglePoint(i, 1), triangulator.getTrianglePoint(i, 2));
-			Edge edge3 = new Edge(triangulator.getTrianglePoint(i, 2), triangulator.getTrianglePoint(i, 0));
-			if(!edges.contains(edge1))
+			Edge edge1 = new Edge(triangulator.getTrianglePoint(i, 0),
+					triangulator.getTrianglePoint(i, 1));
+			Edge edge2 = new Edge(triangulator.getTrianglePoint(i, 1),
+					triangulator.getTrianglePoint(i, 2));
+			Edge edge3 = new Edge(triangulator.getTrianglePoint(i, 2),
+					triangulator.getTrianglePoint(i, 0));
+			if (!edges.contains(edge1))
 				edges.add(edge1);
-			if(!edges.contains(edge2))
+			if (!edges.contains(edge2))
 				edges.add(edge2);
-			if(!edges.contains(edge3))
+			if (!edges.contains(edge3))
 				edges.add(edge3);
 		}
-		
-		print(grid);
 	}
 
 	/**
