@@ -17,6 +17,14 @@ public class LivesCondition implements ICondition {
 
 	@Override
 	public void set(boolean bool) {
-		actor.setAlive(bool);		
+		actor.setAlive(bool);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof LivesCondition) {
+			return (actor == (((LivesCondition) object).actor));
+		}
+		return false;
 	}
 }

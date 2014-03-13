@@ -2,25 +2,32 @@ package se.chalmers.plotgen.BasicAIAlgorithm;
 
 import java.util.ArrayList;
 
+import se.chalmers.plotgen.PlotData.Action;
+
 public class Operator {
 
-	// I have a hard time choosing between ArrayList or HashSet for these...
+	// I had a hard time choosing between ArrayList or HashSet for these...
 	
 	// All the conditions that must be true before the operator is used
-	ArrayList<ICondition> beTrue;
+	private ArrayList<ICondition> beTrue;
 	// All the conditions that must be false before the operator is used
-	ArrayList<ICondition> beFalse;
+	private ArrayList<ICondition> beFalse;
 	// All the conditions that will be set true when the operator is used
-	ArrayList<ICondition> setTrue;
+	private ArrayList<ICondition> setTrue;
 	// All the conditions that will be set true when the operator is used
-	ArrayList<ICondition> setFalse;
+	private ArrayList<ICondition> setFalse;
+	
+	// I guess it seems less elegant, but the operators need to have an action
+	// coupled with it
+	private Action action;
 	
 	public Operator(ArrayList<ICondition> beTrue, ArrayList<ICondition> beFalse,
-			ArrayList<ICondition> setTrue, ArrayList<ICondition> setFalse) {
+			ArrayList<ICondition> setTrue, ArrayList<ICondition> setFalse, Action action) {
 		this.beTrue = beTrue;
 		this.beFalse = beFalse;
 		this.setTrue = setTrue;
 		this.setFalse = setFalse;
+		this.action = action;
 	}
 	
 	public ArrayList<ICondition> getBeTrue() {
@@ -37,5 +44,9 @@ public class Operator {
 	
 	public ArrayList<ICondition> getSetFalse() {
 		return setFalse;
+	}
+	
+	public Action getAction() {
+		return action;
 	}
 }

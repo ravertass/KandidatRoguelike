@@ -44,7 +44,7 @@ public class PlotGenerator {
 		plotGraph.addRootVertex(startVertex);
 		
 		// The hero departs from home to visit the sage
-		Action depart = new Action(Action.ActionType.VISIT, actors.get(0),
+		Action depart = new Action(Action.ActionType.MEET, actors.get(0),
 				actors.get(1));
 		PlotEdge departEdge = new PlotEdge(depart);
 		PlotVertex departVertex = new PlotVertex("Our hero " + actors.get(0)
@@ -62,7 +62,7 @@ public class PlotGenerator {
 		plotGraph.addVertex(departVertex, giftVertex, giftEdge);
 		
 		// The hero visits the evil boss
-		Action boss = new Action(Action.ActionType.VISIT, actors.get(0),
+		Action boss = new Action(Action.ActionType.MEET, actors.get(0),
 				actors.get(2));
 		PlotEdge bossEdge = new PlotEdge(boss);
 		PlotVertex bossVertex = new PlotVertex(actors.get(0) + 

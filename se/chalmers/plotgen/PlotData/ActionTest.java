@@ -19,7 +19,7 @@ public class ActionTest {
 		Action take2 = new Action(Action.ActionType.TAKE, leif, banana);
 		System.out.println(take2);
 		
-		Action visit = new Action(Action.ActionType.VISIT, leif, twister);
+		Action visit = new Action(Action.ActionType.MEET, leif, twister);
 		System.out.println(visit);
 		
 		Action give1 = new Action(Action.ActionType.GIVE, leif, twister, banana);
