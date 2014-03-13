@@ -38,11 +38,18 @@ public class Triangle {
 	}
 
 	public Circle circumCircle() {
-		int d = 2*(x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2));
-		int ux = ((x1^2+y1^2)*(y2-y3) + (x2^2 + y2^2)*(y3-y1)+(x3^2 + y3^2)*(y1-y2))/d;
-		int uy = ((x1^2+y1^2)*(x3-x2) + (x2^2 + y2^2)*(x1-x3)+(x3^2 + y3^2)*(x2-x1))/d;
+		int x1p2 = (int)Math.pow(x1, 2);
+		int y1p2 = (int)Math.pow(y1, 2);
+		int x2p2 = (int)Math.pow(x2, 2);
+		int y2p2 = (int)Math.pow(y2, 2);
+		int x3p2 = (int)Math.pow(x3, 2);
+		int y3p2 = (int)Math.pow(y3, 2);
 		
-		int r = (int) Math.sqrt((uy-y1)^2 +(x1-ux)^2);
+		int d = 2*(x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2));
+		int ux = ((x1p2+y1p2)*(y2-y3) + (x2p2 + y2p2)*(y3-y1)+(x3p2 + y3p2)*(y1-y2))/d;
+		int uy = ((x1p2+y1p2)*(x3-x2) + (x2p2 + y2p2)*(x1-x3)+(x3p2 + y3p2)*(x2-x1))/d;
+		
+		int r = (int) Math.sqrt(Math.pow((uy-y1),2) +Math.pow((x1-ux),2));
 		return new Circle(ux, uy, r);
 	}
 
