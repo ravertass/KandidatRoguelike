@@ -9,7 +9,6 @@ import java.util.HashMap;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import se.chalmers.roguelike.Engine;
 
 /**
  * 

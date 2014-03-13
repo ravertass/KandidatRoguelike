@@ -227,6 +227,7 @@ public class Engine {
 			} else if(gameState == GameState.OVERWORLD) {
 				//TODO
 				//add system  that is used in the overworld
+				renderingSys.drawOWbackground();
 				renderingSys.update();
 				inputManager.update();
 				overworldSys.update();

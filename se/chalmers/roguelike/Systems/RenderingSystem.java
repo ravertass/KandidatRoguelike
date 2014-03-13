@@ -23,6 +23,10 @@ import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.lwjgl.LWJGLException;
@@ -32,6 +36,7 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
@@ -39,15 +44,11 @@ import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.Engine.GameState;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
-import se.chalmers.roguelike.util.Pair;
 import se.chalmers.roguelike.util.ShadowCaster;
-import se.chalmers.roguelike.util.TrueTypeFont;
-import se.chalmers.roguelike.util.Util;
 
 /**
  * This is the system that draws everything to be drawn.
@@ -61,7 +62,7 @@ public class RenderingSystem implements ISystem {
 	private Camera camera;
 	private Entity player;
 	private FontRenderer fontRenderer;
-	private TrueTypeFont ttfRenderer;
+	Texture owBackground = null;
 	
 	private int[][] lightMap;
 	
@@ -145,7 +146,7 @@ public class RenderingSystem implements ISystem {
 					draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 			}
 		} else if(Engine.gameState == Engine.GameState.OVERWORLD) {
-			glClear(GL_COLOR_BUFFER_BIT); // clearas the window
+//			glClear(GL_COLOR_BUFFER_BIT); // clearas the window
 			for(Entity entity : entitiesToDraw) {
 				SelectedFlag flag = entity.getComponent(SelectedFlag.class);
 				if(flag != null && flag.getFlag()){
@@ -343,6 +344,47 @@ public class RenderingSystem implements ISystem {
 			glVertex2d(x, y + sizeY);
 		glEnd();
 
+	}
+
+	public void drawOWbackground(){
+		glClear(GL_COLOR_BUFFER_BIT); // clearas the window
+		
+		/* 
+		 * This part is just to test it out, figure out a better way of loading 
+		 * the texture and where to store it (outside of ECS?) and remove later
+		 */
+		if(owBackground == null){
+			try {
+				owBackground = TextureLoader.getTexture("PNG", 
+						new FileInputStream(new File("./resources/" + "background_ow" + ".png")));
+			} catch (FileNotFoundException e) {
+				System.out.println("The file does not exist");
+				e.printStackTrace();
+				// borde stänga ner displayen och stänga av programmet också
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				// borde stänga ner displayen och stänga av programmet också
+			}
+		}
+		int sizeX = Engine.screenWidth; 
+		int sizeY = Engine.screenHeight;
+
+		float spriteULX = 0.0f;
+		float spriteULY = 0.0f;
+		float spriteLRX = ((float) (sizeX)) / owBackground.getTextureWidth();
+		float spriteLRY = ((float) (sizeY)) / owBackground.getTextureHeight();
+		owBackground.bind();
+		glBegin(GL_QUADS);
+			glTexCoord2f(spriteULX, spriteLRY);
+			glVertex2d(0, 0);
+			glTexCoord2f(spriteLRX, spriteLRY);
+			glVertex2d(sizeX, 0);
+			glTexCoord2f(spriteLRX, spriteULY);
+			glVertex2d(sizeX, sizeY);
+			glTexCoord2f(spriteULX, spriteULY);
+			glVertex2d(0, sizeY);
+		glEnd();
 	}
 	
 	public void exit() {
