@@ -19,8 +19,8 @@ public class Edge implements Comparable<Edge> {
 
 	public Edge(float[] trianglePoint1, float[] trianglePoint2) {
 		this.x1 = (int) trianglePoint1[0];
-		this.y1 = (int) trianglePoint2[1];
-		this.x2 = (int) trianglePoint1[0];
+		this.y1 = (int) trianglePoint1[1];
+		this.x2 = (int) trianglePoint2[0];
 		this.y2 = (int) trianglePoint2[1];
 	}
 	
@@ -61,5 +61,10 @@ public class Edge implements Comparable<Edge> {
 			return -1;
 		else 
 			return 1;
+	}
+	
+	@Override
+	public String toString() {
+		return ("("+x1+","+y1+")("+x2+","+y2+")");
 	}
 }
