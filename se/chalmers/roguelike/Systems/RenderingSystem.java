@@ -37,6 +37,7 @@ import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Engine.GameState;
 import se.chalmers.roguelike.World.Dungeon;
@@ -146,7 +147,14 @@ public class RenderingSystem implements ISystem {
 		} else if(Engine.gameState == Engine.GameState.OVERWORLD) {
 			glClear(GL_COLOR_BUFFER_BIT); // clearas the window
 			for(Entity entity : entitiesToDraw) {
-				drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+				SelectedFlag flag = entity.getComponent(SelectedFlag.class);
+				if(flag != null && flag.getFlag()){
+					glColor3f(1.0f, 0.0f, 0.0f);
+					drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+					glColor3f(1.0f, 1.0f, 1.0f);
+				} else {
+					drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+				}
 			}
 		}
 		

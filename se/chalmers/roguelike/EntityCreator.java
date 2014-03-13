@@ -11,6 +11,7 @@ import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
+import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
@@ -105,6 +106,7 @@ public class EntityCreator {
 		star.add(new Sprite("star"));
 		star.add(new Position(x,y));
 		star.add(new Seed(seed));
+		star.add(new SelectedFlag(false));
 		star.add(new DungeonComponent());
 		engine.addEntity(star);
 		return star;

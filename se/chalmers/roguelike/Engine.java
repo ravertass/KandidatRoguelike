@@ -34,6 +34,7 @@ public class Engine {
 	public static final int CompFieldOfView = 1 << 11;
 	public static final int CompSeed = 1 << 12;
 	public static final int CompDungeon= 1 << 13;
+	public static final int CompSelectedFlag = 1 << 14;
 	
 	
 	// Constants: System requirements:

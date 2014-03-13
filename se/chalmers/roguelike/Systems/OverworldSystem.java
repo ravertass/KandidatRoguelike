@@ -13,6 +13,7 @@ import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
+import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Generator;
 import se.chalmers.roguelike.util.Observer;
@@ -95,9 +96,12 @@ public class OverworldSystem implements ISystem, Observer{
 		if(activeStar == null){
 			playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "temp_button"); 
 			playRect = new Rectangle(Engine.screenWidth-80,200,80,80);
+		} else {
+			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates current star
 		}
 		String coords = star.x+","+star.y;
 		activeStar = stars.get(coords);
+		activeStar.getComponent(SelectedFlag.class).setFlag(true); 
 	}
 	
 	/**
