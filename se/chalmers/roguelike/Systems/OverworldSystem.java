@@ -14,6 +14,7 @@ import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
+import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Generator;
 import se.chalmers.roguelike.util.Observer;
@@ -94,7 +95,11 @@ public class OverworldSystem implements ISystem, Observer{
 	 */
 	private void starClicked(Rectangle star){
 		if(activeStar == null){
-			playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "temp_button"); 
+			playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "play_button"); 
+			System.out.println("ULX: "+playButton.getComponent(Sprite.class).getUpperLeftX());
+			System.out.println("ULY: "+playButton.getComponent(Sprite.class).getUpperLeftY());
+			System.out.println("LRX: "+playButton.getComponent(Sprite.class).getLowerRightX());
+			System.out.println("LRY: "+playButton.getComponent(Sprite.class).getLowerRightY());
 			playRect = new Rectangle(Engine.screenWidth-80,200,80,80);
 		} else {
 			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates current star

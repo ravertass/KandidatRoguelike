@@ -316,8 +316,8 @@ public class RenderingSystem implements ISystem {
 
 		
 		Texture texture = sprite.getTexture();
-		int size = sprite.getSize(); // Times two, makes sprites twice as large
-
+		int sizeX = sprite.getWidth(); 
+		int sizeY = sprite.getHeight();
 		int x = position.getX();
 		int y = position.getY();
 		
@@ -336,11 +336,11 @@ public class RenderingSystem implements ISystem {
 			glTexCoord2f(spriteULX, spriteLRY);
 			glVertex2d(x, y);
 			glTexCoord2f(spriteLRX, spriteLRY);
-			glVertex2d(x + size, y);
+			glVertex2d(x + sizeX, y);
 			glTexCoord2f(spriteLRX, spriteULY);
-			glVertex2d(x + size, y + size);
+			glVertex2d(x + sizeX, y + sizeY);
 			glTexCoord2f(spriteULX, spriteULY);
-			glVertex2d(x, y + size);
+			glVertex2d(x, y + sizeY);
 		glEnd();
 
 	}

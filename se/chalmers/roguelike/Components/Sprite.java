@@ -23,7 +23,7 @@ public class Sprite implements IComponent {
 	private static int STANDARD_SIZE = 16; // The size used in DC mode
 	
 	private Texture spritesheet;
-	private int size; // both width and height, in pixels, of individual sprites
+	private int sizeX, sizeY; // both width and height, in pixels, of individual sprites
 	private int spriteX, spriteY; // the (tile) coordinates for current sprite
 	private boolean visible;
 	private static HashMap<String,Texture> loadTextures = new HashMap<String,Texture>();
@@ -42,6 +42,8 @@ public class Sprite implements IComponent {
 	}
 	
 	/**
+	 * Sprite constructor used for square textures
+	 * 
 	 * @param fileName The name of the image file. We're assuming
 	 * that all images are PNGs and that they're all in the /resources/
 	 * directory. Example: For 'resources/guy.png', fileName is 'guy'.
@@ -54,7 +56,8 @@ public class Sprite implements IComponent {
 	 */
 	public Sprite(String fileName, int spriteSize, int spriteX, int spriteY) {
 		spritesheet = loadTexture(fileName);
-		this.size = spriteSize;
+		this.sizeX = spriteSize;
+		this.sizeY = spriteSize;
 		this.spriteX = spriteX;
 		this.spriteY = spriteY;
 		visible = true;
@@ -73,6 +76,25 @@ public class Sprite implements IComponent {
 	public Sprite(String fileName, int spriteSize) {
 		this(fileName, spriteSize, 0, 0);
 	}
+	
+	
+	/**
+	 * Constructor used for non-square sprites.
+	 * @param fileName The name of the image file. We're assuming
+	 * that all images are PNGs and that they're all in the /resources/
+	 * directory. Example: For 'resources/guy.png', fileName is 'guy'.
+	 * @param spriteWidth the width of the sprite 
+	 * @param spriteHeight the height of the sprite
+	 */
+	public Sprite(String fileName, int spriteWidth, int spriteHeight) {
+		spritesheet = loadTexture(fileName);
+		this.sizeX = spriteWidth;
+		this.sizeY = spriteHeight;
+		spriteX = 0;
+		spriteY = 0;
+		visible = true;
+	}
+	
 	
 	/**
 	 * Loads a texture, raises an error if it goes wrong.
@@ -105,11 +127,12 @@ public class Sprite implements IComponent {
 	}
 	
 	/**
+	 * @deprecated Use getWidth and getHeight instead
 	 * @return the size, which is both the width and the height 
 	 * of the individual sprites in pixels
 	 */
 	public int getSize() {
-		return size;
+		return sizeX;
 	}
 	
 	/**
@@ -117,7 +140,7 @@ public class Sprite implements IComponent {
 	 * which is a float between 0 and 1
 	 */
 	public float getUpperLeftX() {
-		float x = ((float) spriteX * size) / spritesheet.getTextureWidth(); 
+		float x = ((float) spriteX * sizeX) / spritesheet.getTextureWidth(); 
 		return x;
 	}
 
@@ -126,7 +149,7 @@ public class Sprite implements IComponent {
 	 * which is a float between 0 and 1
 	 */
 	public float getUpperLeftY() {
-		float y = ((float) spriteY * size) / spritesheet.getTextureHeight(); 
+		float y = ((float) spriteY * sizeY) / spritesheet.getTextureHeight(); 
 		return y;
 	}
 	
@@ -135,7 +158,7 @@ public class Sprite implements IComponent {
 	 * which is a float between 0 and 1
 	 */
 	public float getLowerRightX() {
-		float x = ((float) (spriteX * size) + (size)) / spritesheet.getTextureWidth(); 
+		float x = ((float) (spriteX * sizeX) + (sizeX)) / spritesheet.getTextureWidth(); 
 		return x;
 	}
 	
@@ -144,7 +167,7 @@ public class Sprite implements IComponent {
 	 * which is a float between 0 and 1
 	 */
 	public float getLowerRightY() {
-		float y = ((float) (spriteY * size) + (size)) / spritesheet.getTextureHeight(); 
+		float y = ((float) (spriteY * sizeY) + (sizeY)) / spritesheet.getTextureHeight(); 
 		return y;
 	}
 	/**
@@ -178,5 +201,21 @@ public class Sprite implements IComponent {
 	 */
 	public void setVisibility(boolean visible) {
 		this.visible = visible;
+	}
+	
+	/**
+	 * Returns the height of the sprite
+	 * @return the height of the sprite
+	 */
+	public int getHeight(){
+		return sizeY;
+	}
+	
+	/**
+	 * Returns the width of the sprite
+	 * @return the width of the sprite
+	 */
+	public int getWidth(){
+		return sizeX;
 	}
 }
