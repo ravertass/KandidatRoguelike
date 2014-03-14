@@ -23,6 +23,7 @@ import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,6 +41,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.SelectedFlag;
@@ -49,6 +51,7 @@ import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
 import se.chalmers.roguelike.util.ShadowCaster;
+import se.chalmers.roguelike.util.TrueTypeFont;
 
 /**
  * This is the system that draws everything to be drawn.
@@ -70,7 +73,7 @@ public class RenderingSystem implements ISystem {
 	
 	private final int DISPLAY_WIDTH = Engine.screenWidth;
 	private final int DISPLAY_HEIGHT = Engine.screenHeight;
-	
+	TrueTypeFont font;
 	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
 		setupDisplay();
@@ -85,6 +88,10 @@ public class RenderingSystem implements ISystem {
 		
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
+
+		// Font
+		Font awtFont = new Font("Times New Roman", Font.BOLD, 14);
+		font = new TrueTypeFont(awtFont, false);
 	}
 	
 	
@@ -151,15 +158,29 @@ public class RenderingSystem implements ISystem {
 //			glClear(GL_COLOR_BUFFER_BIT); // clearas the window
 			drawOWbackground();
 			drawMenuOW();
+			Entity activeStar = null;
 			for(Entity entity : entitiesToDraw) {
 				SelectedFlag flag = entity.getComponent(SelectedFlag.class);
 				if(flag != null && flag.getFlag()){
+					activeStar = entity;
 					glColor3f(1.0f, 0.0f, 0.0f);
 					drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
 				} else {
 					drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 				}
+			}
+			/*
+			 * For some reason if we try to draw the text in the above loop, it will
+			 * mess up the textures for all the stars that are after  the one that is
+			 * select. That is, if you select star 3, then 1-3 will render fine, while
+			 * star >3 will be broken. This is why I'm doing it here instead after the 
+			 * loop.
+			 */
+			if(activeStar != null){
+				String visited = activeStar.getComponent(DungeonComponent.class).getDungeon() == null ? "no" : "yes";
+				font.drawString(Engine.screenWidth-120, 300, "Selected star: "+activeStar.toString());
+				font.drawString(Engine.screenWidth-120, 300, "\nVisited before: "+visited);
 			}
 		}
 		
