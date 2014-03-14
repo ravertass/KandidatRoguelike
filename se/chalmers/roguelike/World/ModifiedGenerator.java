@@ -10,9 +10,11 @@ import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.Triangle;
+import se.chalmers.roguelike.util.Util;
 
 public class ModifiedGenerator {
 
+	
 	private final int amountOfRooms = 100;
 	private int width = 80;
 	private int height = 80;
@@ -46,7 +48,7 @@ public class ModifiedGenerator {
 				grid[y][x] = ' ';
 			}
 		}
-		drawRooms(grid);
+		
 		ArrayList<Edge> edges = triangulateRooms(grid);
 		
 		//Kruskal on the edges
@@ -61,9 +63,10 @@ public class ModifiedGenerator {
 		}
 		
 		// create corridors from the edges
-		//createCorridors(minimumSpanning);
+		//createCorridors(minimumSpanning);	
+		drawCorridors(grid, minimumSpanning);
+		drawRooms(grid);
 		
-		// TODO
 		print(grid);
 	}
 
@@ -81,7 +84,7 @@ public class ModifiedGenerator {
 		DelauneyTriangulator dTriangulator = new DelauneyTriangulator(Triangle.getSuperTriangle2(height, width, 0, 0));
 		return dTriangulator.triangulate(nodes);
 	}
-
+	
 	/**
 	 * 
 	 * 
@@ -145,35 +148,90 @@ public class ModifiedGenerator {
 	private void drawRooms(char[][] worldGrid) {
 
 		// Clear the array
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				worldGrid[y][x] = ' ';
-			}
-		}
+//		for (int x = 0; x < width; x++) {
+//			for (int y = 0; y < height; y++) {
+//				worldGrid[y][x] = ' ';
+//			}
+//		}
 
 		// DRAW
-		for (Rectangle drawRoom : rooms) {
+		for (Rectangle drawRoom : largeRooms) {
 			// Line the sides as walls:
 			// new code:
 			int roomHeight = (int) drawRoom.getY() + (int) drawRoom.getHeight();
 			int roomWidth = (int) drawRoom.getX() + (int) drawRoom.getWidth();
 			for (int y = (int) drawRoom.getY(); y < roomHeight; y++) {
 				for (int x = (int) drawRoom.getX(); x < roomWidth; x++) {
-					if (y == (int) drawRoom.getY() || y == roomHeight - 1
-							|| x == (int) drawRoom.getX() || x == roomWidth - 1) {
-						worldGrid[y + Math.abs(yMinDisplacement)][x
-								+ Math.abs(xMinDisplacement)] = 'X'; // HARDCODED
-																		// +10
+					if (y == (int) drawRoom.getY() || y == roomHeight - 1 || x == (int) drawRoom.getX() || x == roomWidth - 1) {
+						if(worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] != '.')
+							worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] = 'X'; // HARDCODED
 					} else {
-						worldGrid[y + Math.abs(yMinDisplacement)][x
-								+ Math.abs(xMinDisplacement)] = '.'; // HARDCODED
-																		// +10
+						if(worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] != 'o')
+							worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] = '.'; // HARDCODED
 					}
 				}
 			}
 		}
 	}
 
+	private void drawCorridors(char[][] grid, ArrayList<Edge> minimumSpanning) {
+		for (Edge edge : minimumSpanning) {
+			ArrayList<Position> line = calculateCorridor(edge);
+			line.remove(0);
+			line.remove(line.size()-1);
+			for (Position position : line) {
+				
+				int x = position.getX() + Math.abs(xMinDisplacement);
+				int y = position.getY() + Math.abs(yMinDisplacement);
+				grid[y][x] = '.';
+				for (Rectangle rectangle : rooms) {
+					if (rectangle.contains(position.getX(), position.getY()) && (!largeRooms.contains(rectangle))) {
+						largeRooms.add(rectangle);
+					}
+				}
+				
+				if (grid[y+1][x] == ' ') 
+					grid[y+1][x] = 'X';
+				if (grid[y+1][x+1] == ' ') 
+					grid[y+1][x+1] = 'X';
+				if (grid[y-1][x] == ' ') 
+					grid[y-1][x] = 'X';
+				if (grid[y-1][x+1] == ' ') 
+					grid[y-1][x+1] = 'X';
+				if (grid[y][x+1] == ' ') 
+					grid[y][x+1] = 'X';
+				if (grid[y+1][x-1] == ' ') 
+					grid[y+1][x-1] = 'X';
+				if (grid[y][x-1] == ' ') 
+					grid[y][x-1] = 'X';
+				if (grid[y-1][x-1] == ' ') 
+					grid[y-1][x-1] = 'X';
+				
+			
+			}
+			
+		}
+	}
+	
+	private ArrayList<Position> calculateCorridor (Edge edge) {
+		ArrayList<Position> corridor = new ArrayList<Position>();
+		int x1 = edge.getX1();
+		int y1 = edge.getY1();
+		int x2 = edge.getX2();
+		int y2 = edge.getY2();
+		int dx = Math.abs(x2 - x1);
+		int dy = Math.abs(y2 - y1);
+		int x_inc = (x2 > x1) ? 1 : -1;
+		int y_inc = (y2 > y1) ? 1 : -1;
+		for (int i = 0; i <=dx; i++){
+			corridor.add(new Position(x1 + i*x_inc, y1));
+		}
+		for (int i = 0; i <=dy; i++){
+			corridor.add(new Position(x1 + dx*x_inc, y1 + i*y_inc));
+		}
+		return corridor;
+	}
+	
 	private char[][] initWorldGrid() {
 		char[][] worldGrid;
 		int yMaxDisplacement = 0;
