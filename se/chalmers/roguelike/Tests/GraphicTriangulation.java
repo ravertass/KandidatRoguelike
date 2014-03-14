@@ -27,7 +27,7 @@ public class GraphicTriangulation {
 	private boolean buttonPressed = false;
 	private ArrayList<Rectangle> blocks = new ArrayList<Rectangle>();
 	private DelauneyTriangulator dTri;
-	private Set<Edge> edges1 = new HashSet<Edge>();
+	private ArrayList<Edge> edges1 = new ArrayList<Edge>();
 	
 	/**
 	 * @return the system time
@@ -64,7 +64,7 @@ public class GraphicTriangulation {
 		height = 600;
 		
 		//delauney
-		Triangle superTri = Triangle.getSuperTriangle2(height, width, 0, 0);
+		Triangle superTri = Triangle.getSuperTriangle(height, width, 0, 0);
 		dTri = new DelauneyTriangulator(superTri);
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
@@ -95,17 +95,16 @@ public class GraphicTriangulation {
 														// press to go trough
 			buttonPressed = true;
 			int y = Display.getHeight() - Mouse.getY();
-			System.out.println("frig off mr lahey, X: " + Mouse.getX() + " Y: "
-					+ y);
+	//		System.out.println("frig off mr lahey, X: " + Mouse.getX() + " Y: "	+ y);
 			// blocks.add(int i)
 			
-			Rectangle newBlock = new Rectangle(Mouse.getX(), y, 25, 25);
+			Rectangle newBlock = new Rectangle(Mouse.getX(), y, 3, 3);
 			blocks.add(newBlock);
 			
 			//Delauney stuff
 			ArrayList<Position> nodes = new ArrayList<Position>();
 			for (Rectangle block : blocks) {
-				nodes.add(new Position(block.x, block.y));
+				nodes.add(new Position(block.x + 1, block.y + 1));
 			}
 			edges1 = dTri.triangulate(nodes);
 			
