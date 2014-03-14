@@ -11,6 +11,7 @@ import org.newdawn.slick.geom.Triangulator;
 
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.Triangle;
 
@@ -50,12 +51,15 @@ public class ModifiedGenerator {
 			}
 		}
 		drawRooms(grid);
-		triangulateRooms(grid);
-
+		ArrayList<Edge> edges = triangulateRooms(grid);
+		// TODO
+		//Kruskal on the edges
+		// add 20% of the edges back
+		// create corridors from the edges
 		print(grid);
 	}
 
-	private void triangulateRooms(char[][] grid) {
+	private ArrayList<Edge> triangulateRooms(char[][] grid) {
 		// To see where we set nodes
 		ArrayList<Position> nodes = generateNodes();
 		for (Position point : nodes) {
@@ -64,35 +68,10 @@ public class ModifiedGenerator {
 		}
 		// Sort the list of nodes (sorts by X-value, low to high)
 		Collections.sort(nodes);
-
-		// Creates a triangulator //Try other triangulators, NeatTriangulator,
-		// MannTriangulator, OverTriangulator
-		BasicTriangulator triangulator = new BasicTriangulator();
-		// Add all the nodes to the triangulator
-		for (Position position : nodes) {
-			triangulator.addPolyPoint(position.getX(), position.getY());
-		}
-		// Triangulate!
-		triangulator.triangulate();
-		System.out.println("Number of triangles: "
-				+ triangulator.getTriangleCount());
-
-		// Create a list of triangles from our triangulator
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		for (int i = 0; i < triangulator.getTriangleCount(); i++) {
-			Edge edge1 = new Edge(triangulator.getTrianglePoint(i, 0),
-					triangulator.getTrianglePoint(i, 1));
-			Edge edge2 = new Edge(triangulator.getTrianglePoint(i, 1),
-					triangulator.getTrianglePoint(i, 2));
-			Edge edge3 = new Edge(triangulator.getTrianglePoint(i, 2),
-					triangulator.getTrianglePoint(i, 0));
-			if (!edges.contains(edge1))
-				edges.add(edge1);
-			if (!edges.contains(edge2))
-				edges.add(edge2);
-			if (!edges.contains(edge3))
-				edges.add(edge3);
-		}
+		
+		
+		DelauneyTriangulator dTriangulator = new DelauneyTriangulator(Triangle.getSuperTriangle2(height, width, 0, 0));
+		return dTriangulator.triangulate(nodes);
 	}
 
 	/**
