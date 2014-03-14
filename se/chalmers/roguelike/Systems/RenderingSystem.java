@@ -62,7 +62,9 @@ public class RenderingSystem implements ISystem {
 	private Camera camera;
 	private Entity player;
 	private FontRenderer fontRenderer;
+	// TODO: Move these two away from here
 	Texture owBackground = null;
+	Texture owMenu = null; 
 	
 	private int[][] lightMap;
 	
@@ -147,6 +149,8 @@ public class RenderingSystem implements ISystem {
 			}
 		} else if(Engine.gameState == Engine.GameState.OVERWORLD) {
 //			glClear(GL_COLOR_BUFFER_BIT); // clearas the window
+			drawOWbackground();
+			drawMenuOW();
 			for(Entity entity : entitiesToDraw) {
 				SelectedFlag flag = entity.getComponent(SelectedFlag.class);
 				if(flag != null && flag.getFlag()){
@@ -246,17 +250,8 @@ public class RenderingSystem implements ISystem {
 		// view; if so, we draw it
 		if (x >= 0 && x < camera.getWidth() * size &&
 				y >= 0 && y < camera.getHeight() * size) {
-			texture.bind();
-			glBegin(GL_QUADS);
-				glTexCoord2f(spriteULX, spriteLRY);
-				glVertex2d(x, y);
-				glTexCoord2f(spriteLRX, spriteLRY);
-				glVertex2d(x + size, y);
-				glTexCoord2f(spriteLRX, spriteULY);
-				glVertex2d(x + size, y + size);
-				glTexCoord2f(spriteULX, spriteULY);
-				glVertex2d(x, y + size);
-			glEnd();
+			drawQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
+			
 		}
 	}
 	/**
@@ -330,23 +325,11 @@ public class RenderingSystem implements ISystem {
 		float spriteLRX = sprite.getLowerRightX();
 		float spriteLRY = sprite.getLowerRightY();
 		
-		// We determine if the entity is within the camera's
-		// view; if so, we draw it
-		texture.bind();
-		glBegin(GL_QUADS);
-			glTexCoord2f(spriteULX, spriteLRY);
-			glVertex2d(x, y);
-			glTexCoord2f(spriteLRX, spriteLRY);
-			glVertex2d(x + sizeX, y);
-			glTexCoord2f(spriteLRX, spriteULY);
-			glVertex2d(x + sizeX, y + sizeY);
-			glTexCoord2f(spriteULX, spriteULY);
-			glVertex2d(x, y + sizeY);
-		glEnd();
+		drawQuad(texture, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
 
 	}
 
-	public void drawOWbackground(){
+	private void drawOWbackground(){
 		glClear(GL_COLOR_BUFFER_BIT); // clearas the window
 		
 		/* 
@@ -374,16 +357,53 @@ public class RenderingSystem implements ISystem {
 		float spriteULY = 0.0f;
 		float spriteLRX = ((float) (sizeX)) / owBackground.getTextureWidth();
 		float spriteLRY = ((float) (sizeY)) / owBackground.getTextureHeight();
-		owBackground.bind();
+		drawQuad(owBackground, 0, 0, Engine.screenWidth, Engine.screenHeight, spriteULX, spriteULY, spriteLRX, spriteLRY);
+	}
+	
+	private void drawMenuOW(){
+		
+		/* 
+		 * This part is just to test it out, figure out a better way of loading 
+		 * the texture and where to store it (outside of ECS?) and remove later
+		 */
+		if(owMenu == null){
+			try {
+				owMenu = TextureLoader.getTexture("PNG", 
+						new FileInputStream(new File("./resources/" + "menu_background_ow" + ".png")));
+			} catch (FileNotFoundException e) {
+				System.out.println("The file does not exist");
+				e.printStackTrace();
+				// borde stänga ner displayen och stänga av programmet också
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				// borde stänga ner displayen och stänga av programmet också
+			}
+		}
+		int x = Engine.screenWidth-128;
+		int y = 0;
+		int sizeX = 128;
+		int sizeY = Engine.screenHeight;
+
+		float spriteULX = 0.0f;
+		float spriteULY = 0.0f;
+		float spriteLRX = ((float) (sizeX)) / owMenu.getTextureWidth();
+		float spriteLRY = ((float) (sizeY)) / owMenu.getTextureHeight();
+		drawQuad(owMenu, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
+	}
+	
+	private void drawQuad(Texture texture, int x, int y, int sizeX, int sizeY, 
+			float spriteULX, float spriteULY, float spriteLRX, float spriteLRY){
+		texture.bind();
 		glBegin(GL_QUADS);
 			glTexCoord2f(spriteULX, spriteLRY);
-			glVertex2d(0, 0);
+			glVertex2d(x, y);
 			glTexCoord2f(spriteLRX, spriteLRY);
-			glVertex2d(sizeX, 0);
+			glVertex2d(x + sizeX, y);
 			glTexCoord2f(spriteLRX, spriteULY);
-			glVertex2d(sizeX, sizeY);
+			glVertex2d(x + sizeX, y + sizeY);
 			glTexCoord2f(spriteULX, spriteULY);
-			glVertex2d(0, sizeY);
+			glVertex2d(x, y + sizeY);
 		glEnd();
 	}
 	
