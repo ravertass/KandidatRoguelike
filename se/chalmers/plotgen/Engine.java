@@ -1,6 +1,7 @@
 package se.chalmers.plotgen;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Set;
 
 import se.chalmers.plotgen.NameGen.NameGenerator;
@@ -28,12 +29,6 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
 
 public class Engine {
 
-	// TODO: Satte antalet plot-grejer (Scenes, Actors, Props)
-	// till 3 som standard, för testning (hårdkodade algoritmen för plotgen
-	// utgår
-	// ifrån siffran 3)
-	private static final int noOfPlotThings = 3;
-
 	private NameGenerator nameGen;
 
 	private ArrayList<Actor> actors;
@@ -46,15 +41,19 @@ public class Engine {
 	 * 
 	 * @param seed
 	 */
-	private void run(int seed) {
-		nameGen = new NameGenerator(3); // TODO: Satte order på nameGen till 3
+	private void run(long seed) {
+		nameGen = new NameGenerator(4); // TODO: Satte order på nameGen till 3
 										// som standard, för testning
 
-		generateScenes(seed);
-		generateActors(seed);
-		generateProps(seed);
+		Random random = new Random(seed);
+		
+		generateScenes(random);
+		generateActors(random);
+		generateProps(random);
 
-		generatePlot(seed);
+		generatePlot(random);
+		
+		System.out.println(plotGraph);
 	}
 
 	public ArrayList<Scene> getScenes() {
@@ -81,13 +80,16 @@ public class Engine {
 	/**
 	 * TODO: Will randomize new actors. Will use the name generator for names.
 	 * 
-	 * @param seed
+	 * @param random
 	 * @return
 	 */
-	private void generateActors(int seed) {
+	private void generateActors(Random random) {
 		actors = new ArrayList<Actor>();
 
-		for (int i = 0; i < noOfPlotThings; i++) {
+		// This way, we will get 3-5 actors
+		int noOfActors = random.nextInt(3) + 3;
+		
+		for (int i = 0; i < noOfActors; i++) {
 			Actor actor = new Actor(nameGen.generateName());
 			actors.add(actor);
 		}
@@ -97,13 +99,16 @@ public class Engine {
 	 * TODO Will randomize new props. Will use the name generator, to an extent,
 	 * for names.
 	 * 
-	 * @param seed
+	 * @param random
 	 * @return
 	 */
-	private void generateProps(int seed) {
+	private void generateProps(Random random) {
 		props = new ArrayList<Prop>();
 
-		for (int i = 0; i < noOfPlotThings; i++) {
+		// This way, we will get 5-10 props
+		int noOfProps = random.nextInt(6) + 5;
+		
+		for (int i = 0; i < noOfProps; i++) {
 			Prop prop = new Prop(nameGen.generateName());
 			props.add(prop);
 		}
@@ -113,13 +118,16 @@ public class Engine {
 	 * TODO Will randomize new props. Will use the name generator, to an extent,
 	 * for names.
 	 * 
-	 * @param seed
+	 * @param random
 	 * @return
 	 */
-	private void generateScenes(int seed) {
+	private void generateScenes(Random random) {
 		scenes = new ArrayList<Scene>();
 
-		for (int i = 0; i < noOfPlotThings; i++) {
+		// This way, we will get 5-10 scenes
+		int noOfScenes = random.nextInt(6) + 5;
+		
+		for (int i = 0; i < noOfScenes; i++) {
 			Scene scene = new Scene(nameGen.generateName());
 			scenes.add(scene);
 		}
@@ -128,13 +136,13 @@ public class Engine {
 	/**
 	 * TODO: Randomizes a plot. This is where the action is!
 	 * 
-	 * @param seed
+	 * @param random
 	 * @param actors
 	 * @param props
 	 * @return
 	 */
-	private void generatePlot(int seed) {
-		plotGraph = PlotGenerator.hardCodedAlgorithm(scenes, actors, props);
+	private void generatePlot(Random random) {
+		plotGraph = PlotGenerator.basicAIAlgorithm(scenes, actors, props, random);
 	}
 
 	/**
@@ -176,18 +184,18 @@ public class Engine {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int seed;
+		long seed;
 
 		if (args.length > 0) {
 			seed = Integer.parseInt(args[0]);
 		} else {
-			seed = 0; // TODO: Randomize seed
+			seed = new Random().nextLong();
 		}
 
 		new Engine(seed);
 	}
 
-	public Engine(int seed) {
+	public Engine(long seed) {
 		run(seed);
 	}
 }

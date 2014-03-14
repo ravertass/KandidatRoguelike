@@ -40,4 +40,8 @@ public class SamePlaceCondition implements ICondition {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "SamePlaceCondition " + actor + " " + plotBody + " " + get();
+	}
 }

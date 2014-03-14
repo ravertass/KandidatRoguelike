@@ -37,4 +37,9 @@ public class BelongsToCondition implements ICondition {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "BelongsToCondition " + actor + " " + prop + " " + get();
+	}
 }

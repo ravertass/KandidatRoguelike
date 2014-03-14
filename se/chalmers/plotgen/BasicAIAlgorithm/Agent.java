@@ -34,13 +34,16 @@ public class Agent {
 		this.falseGoals = falseGoals;
 	}
 	
+	// TODO stupid way to implement this
+	// use early returns instead
+	// or just use the checkConditions in BasicAIAlg
 	public boolean goalsMet() {
 		boolean bool = true;
 		for (ICondition cond : trueGoals) {
 			bool &= cond.get();
 		}
 		for (ICondition cond : falseGoals) {
-			bool &= cond.get();
+			bool &= !cond.get();
 		}
 		return bool;
 	}

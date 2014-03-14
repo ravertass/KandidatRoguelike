@@ -38,4 +38,8 @@ public class IsAtLocationCondition implements ICondition {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "SamePlaceCondition " + plotBody + " " + scene + " " + get();
+	}
 }

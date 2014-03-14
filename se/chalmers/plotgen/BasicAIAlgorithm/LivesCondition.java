@@ -27,4 +27,9 @@ public class LivesCondition implements ICondition {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "LivesCondition " + actor + " " + get();
+	}
 }

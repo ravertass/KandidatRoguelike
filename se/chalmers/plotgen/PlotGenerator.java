@@ -1,6 +1,7 @@
 package se.chalmers.plotgen;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import se.chalmers.plotgen.BasicAIAlgorithm.BasicAIAlgorithm;
 import se.chalmers.plotgen.PlotData.Action;
@@ -14,9 +15,9 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
 public class PlotGenerator {
 
 	public static PlotGraph basicAIAlgorithm(ArrayList<Scene> scenes,
-	ArrayList<Actor> actors, ArrayList<Prop> props) {
+	ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
 		
-		return BasicAIAlgorithm.algorithm(scenes, actors, props);
+		return BasicAIAlgorithm.algorithm(scenes, actors, props, random);
 	}
 	
 	// Notice that this should also alter the state of the Props, Actors and

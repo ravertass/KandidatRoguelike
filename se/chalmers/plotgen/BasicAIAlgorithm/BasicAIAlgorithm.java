@@ -2,6 +2,7 @@ package se.chalmers.plotgen.BasicAIAlgorithm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Random;
 
 import se.chalmers.plotgen.PlotData.Actor;
@@ -24,17 +25,28 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
 // - Kolla så att klassen som kan pränta ut grafer är fristående från andra test [check]
 // - Implementera en equals-metod för conditions [check]
 // - Gör tvåaktörstestet [check]
-// - Se till att conditions kan printas, kanske?
-// - Skapa karaktärers mål på ett vettigt vis [fungerar ej!]
-// - Se till att algoritmen fungerar med generell indata
-// - Gör så att de noder som genereras är lite vettigare
-// - Fundera på hur död ska gå till
+// - Se till att conditions kan printas, kanske? [check]
+// - Skapa karaktärers mål på ett vettigt vis [check]
+// - Skapa en metod som placerar ut actors och props med [check]
+// - Se till att algoritmen fungerar med generell indata [check-ish] (verkar fungera, ej övertestat)
+// - Skapa stöd för seeds [check-ish]
+// - Refaktorera, plocka ut metoder som kan vara användbara även för en AdvanceAIAlgorithm
+// - Gör så att huvudpersonen inte kan dö
+// - Gör så att de noder som genereras är lite vettigare (enkel lösning: gör så de baseras på allas handlingar)
+// - Bevisa att olösbara problem kan uppstå
 // - Lös olösbara problem? (typ kasta ut dem och starta om)
+// - Skriv ordentligt om algoritmen
+// - Gör seriösa tester på algoritmen, med olika antal SAPs osv.
+// - Lös problemet där huvudpersonen önskar en person död, men inte dödar personen själv
 
 public class BasicAIAlgorithm {
 
 	public static PlotGraph algorithm(ArrayList<Scene> scenes,
-			ArrayList<Actor> actors, ArrayList<Prop> props) {
+			ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
+
+		// Put actors on scenes and props on scenes and actors
+		placePlotBodies(scenes, actors, props, random);
+
 		PlotGraph plotGraph = new PlotGraph();
 		// Add the first vertex
 		PlotVertex rootVertex = new PlotVertex("This is a story");
@@ -47,7 +59,7 @@ public class BasicAIAlgorithm {
 		// is the main character
 		Agent mainAgent = agents.get(agents.size() - 1);
 		// Create all agents' goals
-		setAgentGoals(agents, scenes, actors, props);
+		setAgentGoals(agents, scenes, actors, props, random);
 		// Create all operators
 		HashMap<Agent, ArrayList<Operator>> operators = createOperators(agents,
 				scenes, actors, props);
@@ -67,7 +79,8 @@ public class BasicAIAlgorithm {
 			}
 
 			// Choose operators
-			HashMap<Agent, Operator> chosenOps = chooseOpsAlg(agents, operators);
+			HashMap<Agent, Operator> chosenOps = chooseOpsAlg(agents,
+					operators, random);
 
 			for (Agent agent : agents) {
 				Operator op = chosenOps.get(agent);
@@ -101,10 +114,61 @@ public class BasicAIAlgorithm {
 		return plotGraph;
 	}
 
+	private static void placePlotBodies(ArrayList<Scene> scenes,
+			ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
+		LinkedList<Actor> actorsQueue = new LinkedList<Actor>();
+		actorsQueue.addAll(actors);
+		LinkedList<Prop> propsQueue = new LinkedList<Prop>();
+		propsQueue.addAll(props);
+
+		int i = 0;
+
+		while (!actorsQueue.isEmpty() | !propsQueue.isEmpty()) {
+			Scene scene = scenes.get(i);
+			// See if we should add an actor to this scene
+			if (random.nextInt(scenes.size()) == 0) {
+				Actor actor = actorsQueue.poll();
+				if (actor != null) {
+					actor.setLocation(scene);
+					// See if we should add a prop to this actor
+					if (random.nextInt(2) == 0) {
+						Prop prop = propsQueue.poll();
+						if (prop != null) {
+							prop.setOwner(actor);
+						}
+					}
+				}
+			}
+
+			// See if we should add a prop to this scene
+			if (random.nextInt(scenes.size()) == 0) {
+				Prop prop = propsQueue.poll();
+				if (prop != null) {
+					prop.setLocation(scene);
+				}
+			}
+
+			// Determine the index of the next scene
+			// We loop through the same scenes again and again until we're done
+			i = (i + 1) % scenes.size();
+		}
+
+		/*
+		 * TODO Test output System.out.println("Scenes:"); for (Scene scene :
+		 * scenes) { System.out.println(scene); } System.out.println("Actors:");
+		 * for (Actor actor : actors) { System.out.println(actor + ": " +
+		 * actor.getLocation()); } System.out.println("Props:"); for (Prop prop
+		 * : props) { System.out.println(prop + ": " + prop.getLocation());
+		 * System.out.println(prop + ": " + prop.getOwner()); }
+		 * System.out.println("----");
+		 */
+	}
+
 	// This is the algorithm that determines which operators the agents
 	// will try this iteration
 	private static HashMap<Agent, Operator> chooseOpsAlg(
-			ArrayList<Agent> agents, HashMap<Agent, ArrayList<Operator>> ops) {
+			ArrayList<Agent> agents, HashMap<Agent, ArrayList<Operator>> ops,
+			Random random) {
 
 		HashMap<Agent, Operator> chosenOps = new HashMap<Agent, Operator>();
 
@@ -143,7 +207,8 @@ public class BasicAIAlgorithm {
 
 			Operator chosenOp;
 			if (bestOps.size() > 0) {
-				chosenOp = bestOps.get(new Random().nextInt(bestOps.size()));
+				chosenOp = bestOps
+						.get(random.nextInt(bestOps.size()));
 			} else {
 				// TODO: Should the program ever be able to go here?
 				chosenOp = null;
@@ -203,32 +268,24 @@ public class BasicAIAlgorithm {
 		return agents;
 	}
 
-	// TODO: I don't really know yet how to in a smart way generate the agents'
-	// goals.
 	private static void setAgentGoals(ArrayList<Agent> agents,
 			ArrayList<Scene> scenes, ArrayList<Actor> actors,
-			ArrayList<Prop> props) {
+			ArrayList<Prop> props, Random random) {
 		for (Agent agent : agents) {
-			// TODO: Slumpa fram ett mål
-			// Two basic types of goal:
-			// BelongsToCondition(random-prop*, self) *that doesn't belong to
-			// self
-			// !Lives(random-actor*) *not self
 
 			ICondition goal;
 			ArrayList<ICondition> trueGoals = new ArrayList<ICondition>();
 			ArrayList<ICondition> falseGoals = new ArrayList<ICondition>();
 
 			// Flip a coin to see which condition will be the goal
-			int conditionCoinFlip = new Random().nextInt(2);
-			System.out.println(conditionCoinFlip);
+			int conditionCoinFlip = random.nextInt(2);
 			if (conditionCoinFlip == 0) {
 				Prop propToGet = null;
 				// See so the randomized prop to get doesn't belong to the agent
 				// itself
 				boolean notBelongToSelf = true;
 				while (notBelongToSelf) {
-					propToGet = props.get(new Random().nextInt(props.size()));
+					propToGet = props.get(random.nextInt(props.size()));
 					if (propToGet.getOwner() == agent.getSelf()) {
 						notBelongToSelf = true;
 					} else {
@@ -236,14 +293,15 @@ public class BasicAIAlgorithm {
 					}
 				}
 				goal = new BelongsToCondition(propToGet, agent.getSelf());
+				// TODO Test output
+				System.out.println(agent.getSelf() + ": " + goal);
 				trueGoals.add(goal);
 			} else {
 				Actor actorToKill = null;
 				// See so the randomized actor to kill isn't the agent itself
 				boolean notSelf = true;
 				while (notSelf) {
-					actorToKill = actors
-							.get(new Random().nextInt(actors.size()));
+					actorToKill = actors.get(random.nextInt(actors.size()));
 					if (actorToKill == agent.getSelf()) {
 						notSelf = true;
 					} else {
@@ -251,6 +309,8 @@ public class BasicAIAlgorithm {
 					}
 				}
 				goal = new LivesCondition(actorToKill);
+				// TODO Test output
+				System.out.println(goal);
 				falseGoals.add(goal);
 			}
 
