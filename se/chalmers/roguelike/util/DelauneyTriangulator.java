@@ -9,6 +9,7 @@ import se.chalmers.roguelike.Components.Position;
 public class DelauneyTriangulator {
 	
 	private ArrayList<Triangle> triangles;
+	private Triangle superTriangle;
 	
 	/**
 	 * Needs a super triangle to be able to triangulate
@@ -17,6 +18,7 @@ public class DelauneyTriangulator {
 	 */
 	public DelauneyTriangulator(Triangle superTriangle){
 		triangles = new ArrayList<Triangle>();
+		this.superTriangle = superTriangle;
 		triangles.add(superTriangle);
 	}
 
@@ -29,16 +31,17 @@ public class DelauneyTriangulator {
 	 * 
 	 * @param nodes
 	 */
-	public ArrayList<Triangle> triangulate(ArrayList<Position> nodes){
+	public Set<Edge> triangulate(ArrayList<Position> nodes){
 		
 		//iterate all nodes
+		System.out.println(nodes);
 		for (Position node : nodes) {
 			ArrayList<Edge> edges = new ArrayList<Edge>();
 			Set<Edge> preventDuplicateEdges = new HashSet<Edge>();
-			
+			ArrayList<Triangle> trianglesToRemove = new ArrayList<Triangle>();
 			for (Triangle triangle : triangles) {
 				if (triangle.circumCircle().contains(node.getX(), node.getY())){
-					triangles.remove(triangle); //faster with indexed for-loop?
+					trianglesToRemove.add(triangle);
 					Edge edge1 = new Edge(triangle.getX1(), triangle.getY1(), triangle.getX2(), triangle.getY2());
 					Edge edge2 = new Edge(triangle.getX2(), triangle.getY2(), triangle.getX3(), triangle.getY3());
 					Edge edge3 = new Edge(triangle.getX3(), triangle.getY3(), triangle.getX1(), triangle.getY1());
@@ -61,11 +64,41 @@ public class DelauneyTriangulator {
 						edges.remove(edge3);
 				}
 			}
-		//create new triangles	
-		for (Edge edge : edges) {
-			triangles.add(new Triangle(node.getX(), node.getY(), edge.getX1(), edge.getY1(), edge.getX2(), edge.getY2()));
+			for (Triangle triangle : trianglesToRemove) {
+				triangles.remove(triangle);
+			}
+			//create new triangles	
+			for (Edge edge : edges) {
+				triangles.add(new Triangle(node.getX(), node.getY(), edge.getX1(), edge.getY1(), edge.getX2(), edge.getY2()));
 		}
 		}
+		//removeSuperTriangleStems();
+		return toEdges();
+	}
+
+	private Set<Edge> toEdges() {
+		Set<Edge> edges = new HashSet<Edge>();
+		for (Triangle triangle : triangles) {
+			edges.add(new Edge(triangle.getX1(), triangle.getY1(), triangle.getX2(), triangle.getY2()));
+			edges.add(new Edge(triangle.getX2(), triangle.getY2(), triangle.getX3(), triangle.getY3()));
+			edges.add(new Edge(triangle.getX3(), triangle.getY3(), triangle.getX1(), triangle.getY1()));
+		}
+		return edges;
+	}
+
+	private void removeSuperTriangleStems() {
+		ArrayList<Triangle> trianglesToRemove = new ArrayList<Triangle>();
+		triangles.remove(superTriangle);
+		for (Triangle triangle : triangles) {
+			if (triangle.stemsFrom(superTriangle))
+				trianglesToRemove.add(triangle);
+		}
+		for (Triangle triangle : trianglesToRemove) {
+			triangles.remove(triangle);
+		}
+	}
+	
+	public ArrayList<Triangle> getTriangles(){
 		return triangles;
 	}
 	

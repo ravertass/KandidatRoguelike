@@ -38,19 +38,19 @@ public class Triangle {
 	}
 
 	public Circle circumCircle() {
-		int x1p2 = (int)Math.pow(x1, 2);
-		int y1p2 = (int)Math.pow(y1, 2);
-		int x2p2 = (int)Math.pow(x2, 2);
-		int y2p2 = (int)Math.pow(y2, 2);
-		int x3p2 = (int)Math.pow(x3, 2);
-		int y3p2 = (int)Math.pow(y3, 2);
+		double x1p2 = (int)Math.pow(x1, 2);
+		double y1p2 = (int)Math.pow(y1, 2);
+		double x2p2 = (int)Math.pow(x2, 2);
+		double y2p2 = (int)Math.pow(y2, 2);
+		double x3p2 = (int)Math.pow(x3, 2);
+		double y3p2 = (int)Math.pow(y3, 2);
 		
-		int d = 2*(x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2));
-		int ux = ((x1p2+y1p2)*(y2-y3) + (x2p2 + y2p2)*(y3-y1)+(x3p2 + y3p2)*(y1-y2))/d;
-		int uy = ((x1p2+y1p2)*(x3-x2) + (x2p2 + y2p2)*(x1-x3)+(x3p2 + y3p2)*(x2-x1))/d;
+		double d = 2*(x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2));
+		double ux = ((x1p2+y1p2)*(y2-y3) + (x2p2 + y2p2)*(y3-y1)+(x3p2 + y3p2)*(y1-y2))/d;
+		double uy = ((x1p2+y1p2)*(x3-x2) + (x2p2 + y2p2)*(x1-x3)+(x3p2 + y3p2)*(x2-x1))/d;
 		
-		int r = (int) Math.sqrt(Math.pow((Math.abs(uy-y1)),2) +Math.pow((Math.abs(x1-ux)),2));
-		return new Circle(ux, uy, r);
+		double r = Math.sqrt(Math.pow((Math.abs(uy-y1)),2) +Math.pow((Math.abs(x1-ux)),2));
+		return new Circle((float) ux,(float) uy,(float) r);
 	}
 
 	public int getX1() {
@@ -99,6 +99,19 @@ public class Triangle {
 		y2 = (int) (Math.sqrt(Math.pow(width, 2) - Math.pow((width / 2), 2))) + height;
 		x3 = xPos + width + bottomBase;
 		y3 = xPos;
+		return new Triangle(x1, y1, x2, y2, x3, y3);
+	}
+	
+	static public Triangle getSuperTriangle2(int height, int width, int xPos,
+			int yPos) {
+		int x1, y1, x2, y2, x3, y3;
+		int bottomBase = (int) (height / Math.sin(60) * Math.sin(30));
+		x1 = xPos - bottomBase;
+		y1 = height;
+		x2 = width / 2;
+		y2 = (int) -(Math.sqrt(Math.pow(width, 2) - Math.pow((width / 2), 2))); //+ height; Our test component has 0,0 in upper left corner
+		x3 = xPos + width + bottomBase;
+		y3 = height;
 		return new Triangle(x1, y1, x2, y2, x3, y3);
 	}
 	
