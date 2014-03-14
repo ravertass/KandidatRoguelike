@@ -1,7 +1,5 @@
 package se.chalmers.roguelike.util;
 
-import se.chalmers.roguelike.Components.Position;
-
 public class Edge implements Comparable<Edge> {
 
 	int x1;
@@ -36,6 +34,10 @@ public class Edge implements Comparable<Edge> {
 	public int getY2(){
 		return y2;
 	}
+
+	public double getWeight(){
+		return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+	}
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -57,7 +59,7 @@ public class Edge implements Comparable<Edge> {
 			return 0;
 		else if ((this.x1 == edge.x2) && (this.y1 == edge.y2) && (this.x2 == edge.x1) && (this.y2 == edge.y1))
 			return 0;
-		else if (this.x1 < edge.x1)
+		else if (getWeight() < edge.getWeight())
 			return -1;
 		else 
 			return 1;

@@ -19,6 +19,7 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.World.ModifiedGenerator;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
+import se.chalmers.roguelike.util.KruskalMST;
 import se.chalmers.roguelike.util.Triangle;
 
 public class GraphicTriangulation {
@@ -107,6 +108,9 @@ public class GraphicTriangulation {
 				nodes.add(new Position(block.x + 1, block.y + 1));
 			}
 			edges1 = dTri.triangulate(nodes);
+			System.out.println("Edges after triangulation: " + edges1.size());
+			edges1 = new KruskalMST().createMST(edges1);
+			System.out.println("Edges after MST: " + edges1.size());
 			
 		} else if (!Mouse.isButtonDown(0)) {
 			buttonPressed = false;
