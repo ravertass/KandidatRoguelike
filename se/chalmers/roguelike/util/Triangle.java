@@ -38,12 +38,12 @@ public class Triangle {
 	}
 
 	public Circle circumCircle() {
-		double x1p2 = (int)Math.pow(x1, 2);
-		double y1p2 = (int)Math.pow(y1, 2);
-		double x2p2 = (int)Math.pow(x2, 2);
-		double y2p2 = (int)Math.pow(y2, 2);
-		double x3p2 = (int)Math.pow(x3, 2);
-		double y3p2 = (int)Math.pow(y3, 2);
+		double x1p2 = Math.pow(x1, 2);
+		double y1p2 = Math.pow(y1, 2);
+		double x2p2 = Math.pow(x2, 2);
+		double y2p2 = Math.pow(y2, 2);
+		double x3p2 = Math.pow(x3, 2);
+		double y3p2 = Math.pow(y3, 2);
 		
 		double d = 2*(x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2));
 		double ux = ((x1p2+y1p2)*(y2-y3) + (x2p2 + y2p2)*(y3-y1)+(x3p2 + y3p2)*(y1-y2))/d;
