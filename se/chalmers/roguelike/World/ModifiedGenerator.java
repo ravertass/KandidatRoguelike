@@ -1,13 +1,9 @@
 package se.chalmers.roguelike.World;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
-import org.newdawn.slick.geom.BasicTriangulator;
-import org.newdawn.slick.geom.Triangulator;
 
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
@@ -52,10 +48,22 @@ public class ModifiedGenerator {
 		}
 		drawRooms(grid);
 		ArrayList<Edge> edges = triangulateRooms(grid);
-		// TODO
+		
 		//Kruskal on the edges
+		// TODO
+		ArrayList<Edge> minimumSpanning = new ArrayList<Edge>(); //= Kruskal(edges);
+	
 		// add 20% of the edges back
+		for (Edge edge : edges) {
+			if (!minimumSpanning.contains(edge))
+				if(rand.nextInt(5) == 0)
+					minimumSpanning.add(edge);
+		}
+		
 		// create corridors from the edges
+		//createCorridors(minimumSpanning);
+		
+		// TODO
 		print(grid);
 	}
 
