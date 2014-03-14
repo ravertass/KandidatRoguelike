@@ -132,7 +132,7 @@ public class OverworldSystem implements ISystem, Observer{
 	 * overworld system.
 	 */
 	public void register(){
-		// Unregisters all the stars
+		// Register all the stars
 		for(Entity star : stars.values()){
 			engine.addEntity(star);
 		}
