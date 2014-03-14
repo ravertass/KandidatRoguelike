@@ -131,25 +131,23 @@ public class GraphicTriangulation {
 
 	public void renderTriangulation(){
 		
-		Triangle tri1 = new Triangle(-1944, 600, 400, -692, 2744, 600);
+/*		Triangle tri1 = new Triangle(-1944, 600, 400, -692, 2744, 600);
 		Triangle tri2 = new Triangle(400, -692, 2744, 600, -1944, 600);
 		Triangle tri3 = new Triangle(2744, 600, -1944, 600, 400, -692);
 		
-//		Circle cir1 = tri1.circumCircle();
-//		System.out.println("Circlecenter of triangle " + tri1 + " is: (" + cir1.getCenterX() +", " + cir1.getCenterY() + ") with radius " + cir1.getRadius());
-//		Circle cir2 = tri2.circumCircle();
-//		System.out.println("Circlecenter of triangle " + tri2 + " is: (" + cir2.getCenterX() +", " + cir2.getCenterY() + ") with radius " + cir2.getRadius());
-//		Circle cir3 = tri3.circumCircle();
-//		System.out.println("Circlecenter of triangle " + tri3 + " is: (" + cir3.getCenterX() +", " + cir3.getCenterY() + ") with radius " + cir3.getRadius());
-//		
+		Circle cir1 = tri1.circumCircle();
+		System.out.println("Circlecenter of triangle " + tri1 + " is: (" + cir1.getCenterX() +", " + cir1.getCenterY() + ") with radius " + cir1.getRadius());
+		Circle cir2 = tri2.circumCircle();
+		System.out.println("Circlecenter of triangle " + tri2 + " is: (" + cir2.getCenterX() +", " + cir2.getCenterY() + ") with radius " + cir2.getRadius());
+		Circle cir3 = tri3.circumCircle();
+		System.out.println("Circlecenter of triangle " + tri3 + " is: (" + cir3.getCenterX() +", " + cir3.getCenterY() + ") with radius " + cir3.getRadius());
+*/		
 		//For testing circumcircling
-		ArrayList<Triangle> triangles = dTri.getTriangles();
-		for (Triangle tri : triangles) {
-			Circle circle = tri.circumCircle();
-			//System.out.println("Circlecenter of triangle " + tri + " is: (" + circle.getCenterX() +", " + circle.getCenterY() + ")");
-			DrawCircle(circle.getCenterX(), circle.getCenterY(), circle.getRadius(), 300);
-//			System.out.println(circle.getRadius());
-		}
+//		ArrayList<Triangle> triangles = dTri.getTriangles();
+//		for (Triangle tri : triangles) {
+//			Circle circle = tri.circumCircle();
+//			DrawCircle(circle.getCenterX(), circle.getCenterY(), circle.getRadius(), 300);
+//		}
 		
 		GL11.glPushMatrix();
 		for (Edge edge : edges1) {
