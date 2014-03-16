@@ -164,10 +164,10 @@ public class RenderingSystem implements ISystem {
 				if(flag != null && flag.getFlag()){
 					activeStar = entity;
 					glColor3f(1.0f, 0.0f, 0.0f);
-					drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
 				} else {
-					drawOverworld(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 				}
 			}
 			/*
@@ -185,7 +185,7 @@ public class RenderingSystem implements ISystem {
 		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
-				drawOverworld(e.getComponent(Sprite.class),e.getComponent(Position.class));
+				drawNonTile(e.getComponent(Sprite.class),e.getComponent(Position.class));
 			}
 		}
 		
@@ -280,61 +280,12 @@ public class RenderingSystem implements ISystem {
 			
 		}
 	}
-	/**
-	 * Method for drawing outshadowed entities in the gameworld.
-	 * @param sprite
-	 * @param position
-	 */
-	private void drawOutShadowed(Sprite sprite, Position position) {
-		if(!sprite.getVisibility())
-			return;
-		
-		Texture texture = sprite.getTexture();
-		int size = Engine.spriteSize; // Times two, makes sprites twice as large
-		
-		// Get the camera's position
-		Position camPos = camera.getPosition();
-		int camX = camPos.getX();
-		int camY = camPos.getY();
-		// Subtract the coordinates with the camera's coordinates,
-		// then multiply that with the SPRITE_SIZE, so that we get 
-		// the pixel coordinates, not the tile coordinates.
-		int x = (position.getX() - camX) * size;
-		int y = (position.getY() - camY) * size;
-		
-		// Get the coordinates of the current sprite
-		// in the spritesheet in a form that OpenGL likes,
-		// which is a float between 0 and 1
-		float spriteULX = sprite.getUpperLeftX();
-		float spriteULY = sprite.getUpperLeftY();
-		float spriteLRX = sprite.getLowerRightX();
-		float spriteLRY = sprite.getLowerRightY();
-		
-		// We determine if the entity is within the camera's
-		// view; if so, we draw it
-		if (x >= 0 && x < camera.getWidth() * size &&
-				y >= 0 && y < camera.getHeight() * size) {
-			texture.bind();
-			glBegin(GL_QUADS);
-				glColor3f(0.5f, 0.5f, 0.5f);
-				glTexCoord2f(spriteULX, spriteLRY);
-				glVertex2d(x, y);
-				glTexCoord2f(spriteLRX, spriteLRY);
-				glVertex2d(x + size, y);
-				glTexCoord2f(spriteLRX, spriteULY);
-				glVertex2d(x + size, y + size);
-				glTexCoord2f(spriteULX, spriteULY);
-				glVertex2d(x, y + size);
-				glColor3f(1.0f, 1.0f, 1.0f);
-			glEnd();
-		}
-	}
 	
 	/**
 	 * Method to draw an the overworld
 	 * @param entity The entity to be drawn
 	 */
-	private void drawOverworld(Sprite sprite, Position position) {
+	private void drawNonTile(Sprite sprite, Position position) {
 
 		
 		Texture texture = sprite.getTexture();

@@ -217,4 +217,11 @@ public class Sprite implements IComponent {
 	public int getWidth(){
 		return sizeX;
 	}
+	/**
+	 * Sets a new texture for the sprite from a fileName, make sure the new one has the same dimensions.
+	 * @param fileName
+	 */
+	public void setSpritesheet(String fileName) {
+		spritesheet = loadTexture(fileName);
+	}
 }
