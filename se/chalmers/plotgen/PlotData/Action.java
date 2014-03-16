@@ -15,7 +15,8 @@ public class Action {
 	public enum ActionType {
 		KILL, // [Actor] [KILLS] [actor]
 		TAKE, // [Actor] [TAKES] [prop]
-		VISIT, // [Actor] [VISITS] [actor]
+		MEET, // [Actor] [MEETS] [actor]
+		VISIT, // [Actor] [VISITS] [scene]
 		GIVE // [Actor] [GIVES] [prop] (to) [actor]
 	}
 
@@ -31,6 +32,8 @@ public class Action {
 	private Actor objectActor = null;
 	// The objectProp determines what thing the action is done to
 	private Prop objectProp = null;
+	// The objectScene determines what location the action is done to
+	private Scene objectScene = null;
 
 	/**
 	 * @param type
@@ -43,7 +46,7 @@ public class Action {
 	 *            The prop the action is done to
 	 */
 	public Action(ActionType type, Actor subject, Actor objectActor,
-			Prop objectProp) {
+			Prop objectProp, Scene objectScene) {
 
 		this.type = type;
 		this.subject = subject;
@@ -56,8 +59,12 @@ public class Action {
 			this.objectProp = objectProp;
 		}
 
-		if (type == ActionType.VISIT) {
+		if (type == ActionType.MEET) {
 			this.objectActor = objectActor;
+		}
+		
+		if (type == ActionType.VISIT) {
+			this.objectScene = objectScene;
 		}
 
 		if (type == ActionType.GIVE) {
@@ -67,14 +74,14 @@ public class Action {
 	}
 
 	/**
-	 * To be used for KILL and VISIT
+	 * To be used for KILL and MEET
 	 * 
 	 * @param type
 	 * @param subject
 	 * @param objectActor
 	 */
 	public Action(ActionType type, Actor subject, Actor objectActor) {
-		this(type, subject, objectActor, null);
+		this(type, subject, objectActor, null, null);
 	}
 
 	/**
@@ -85,7 +92,30 @@ public class Action {
 	 * @param objectProp
 	 */
 	public Action(ActionType type, Actor subject, Prop objectProp) {
-		this(type, subject, null, objectProp);
+		this(type, subject, null, objectProp, null);
+	}
+	
+	/**
+	 * To be used for VISIT
+	 * 
+	 * @param type
+	 * @param subject
+	 * @param objectScene
+	 */
+	public Action(ActionType type, Actor subject, Scene objectScene) {
+		this(type, subject, null, null, objectScene);
+	}
+	
+	/**
+	 * To be used for GIVE
+	 * 
+	 * @param type
+	 * @param subject
+	 * @param objectActor
+	 * @param objectProp
+	 */
+	public Action(ActionType type, Actor subject, Actor objectActor, Prop objectProp) {
+		this(type, subject, objectActor, objectProp, null);
 	}
 
 	/**
@@ -104,8 +134,12 @@ public class Action {
 			returnString = subject + " takes " + objectProp;
 		}
 
+		if (type == ActionType.MEET) {
+			returnString = subject + " meets " + objectActor;
+		}
+		
 		if (type == ActionType.VISIT) {
-			returnString = subject + " visits " + objectActor;
+			returnString = subject + " visits " + objectScene;
 		}
 
 		if (type == ActionType.GIVE) {

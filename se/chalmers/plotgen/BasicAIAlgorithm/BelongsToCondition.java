@@ -7,12 +7,12 @@ public class BelongsToCondition implements ICondition {
 
 	private Prop prop;
 	private Actor actor;
-	
+
 	public BelongsToCondition(Prop prop, Actor actor) {
 		this.prop = prop;
 		this.actor = actor;
 	}
-	
+
 	@Override
 	public boolean get() {
 		return (prop.getOwner() == actor);
@@ -24,9 +24,22 @@ public class BelongsToCondition implements ICondition {
 			prop.setOwner(actor);
 		} else {
 			prop.setOwner(null); // TODO: Ska det göras såhär? Kanske
-								// istället, gör ingenting? Då det
-								// antagligen sköts ändå
+									// istället, gör ingenting? Då det
+									// antagligen sköts ändå
 		}
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof BelongsToCondition) {
+			return (prop == (((BelongsToCondition) object).prop) & 
+					actor == (((BelongsToCondition) object).actor));
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return "BelongsToCondition " + actor + " " + prop + " " + get();
+	}
 }

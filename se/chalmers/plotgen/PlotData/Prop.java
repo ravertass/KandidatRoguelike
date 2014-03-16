@@ -10,7 +10,7 @@ package se.chalmers.plotgen.PlotData;
  * 
  * @author fabian
  */
-public class Prop extends PlotThing {
+public class Prop extends PlotThing implements IPlotBody {
 
 	private Scene location;
 	private Actor owner;
@@ -64,7 +64,7 @@ public class Prop extends PlotThing {
 		}
 	}
 
-	private void removeFromActor() {
+	public void removeFromActor() {
 		owner.removeProp(this);
 		owner = null;
 	}

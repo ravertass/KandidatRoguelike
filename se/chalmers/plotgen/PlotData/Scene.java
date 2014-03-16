@@ -8,6 +8,8 @@ import java.util.HashSet;
  * A scene may hold multiple actors and multiple props.
  * 
  * Generally, you add scenes to actors and props, not vice versa.
+ * actor.setLocation(scene)
+ * prop.setLocation(scene)
  * 
  * @author fabian
  */

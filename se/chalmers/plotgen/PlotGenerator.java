@@ -1,6 +1,7 @@
 package se.chalmers.plotgen;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import se.chalmers.plotgen.BasicAIAlgorithm.BasicAIAlgorithm;
 import se.chalmers.plotgen.PlotData.Action;
@@ -14,9 +15,9 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
 public class PlotGenerator {
 
 	public static PlotGraph basicAIAlgorithm(ArrayList<Scene> scenes,
-	ArrayList<Actor> actors, ArrayList<Prop> props) {
+	ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
 		
-		return BasicAIAlgorithm.algorithm(scenes, actors, props);
+		return BasicAIAlgorithm.algorithm(scenes, actors, props, random);
 	}
 	
 	// Notice that this should also alter the state of the Props, Actors and
@@ -44,7 +45,7 @@ public class PlotGenerator {
 		plotGraph.addRootVertex(startVertex);
 		
 		// The hero departs from home to visit the sage
-		Action depart = new Action(Action.ActionType.VISIT, actors.get(0),
+		Action depart = new Action(Action.ActionType.MEET, actors.get(0),
 				actors.get(1));
 		PlotEdge departEdge = new PlotEdge(depart);
 		PlotVertex departVertex = new PlotVertex("Our hero " + actors.get(0)
@@ -62,7 +63,7 @@ public class PlotGenerator {
 		plotGraph.addVertex(departVertex, giftVertex, giftEdge);
 		
 		// The hero visits the evil boss
-		Action boss = new Action(Action.ActionType.VISIT, actors.get(0),
+		Action boss = new Action(Action.ActionType.MEET, actors.get(0),
 				actors.get(2));
 		PlotEdge bossEdge = new PlotEdge(boss);
 		PlotVertex bossVertex = new PlotVertex(actors.get(0) + 
