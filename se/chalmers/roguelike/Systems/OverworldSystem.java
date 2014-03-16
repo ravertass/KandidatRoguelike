@@ -124,6 +124,7 @@ public class OverworldSystem implements ISystem, Observer{
 			engine.removeEntity(star);
 		}
 		engine.removeEntity(playButton);
+		engine.removeEntity(menuButton);
 //		playButton = null;
 	}
 	
@@ -138,6 +139,9 @@ public class OverworldSystem implements ISystem, Observer{
 		}
 		if(playButton != null){
 			engine.addEntity(playButton);
+		}
+		if(menuButton != null){
+			engine.addEntity(menuButton);
 		}
 	}
 
