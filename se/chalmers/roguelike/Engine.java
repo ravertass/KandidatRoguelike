@@ -69,6 +69,7 @@ public class Engine {
 	private CombatSystem combatsystem;
 	private LevelingSystem levelingSys;
 	private OverworldSystem overworldSys;
+	private MainMenuSystem mainmenuSys;
 	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -83,7 +84,7 @@ public class Engine {
 		entities = new ArrayList<Entity>();
 		entityCreator = new EntityCreator(this);
 		//gameState = GameState.DUNGEON;
-		gameState = GameState.OVERWORLD;
+		gameState = GameState.MAIN_MENU;
 		spawnSystems();
 		registerInputSystems();
 		setCamera();
@@ -232,8 +233,10 @@ public class Engine {
 				inputManager.update();
 				overworldSys.update();
 			} else if(gameState == GameState.MAIN_MENU) {
-				//TODO
-				MainMenu.getInstance().show(renderingSys);
+				renderingSys.update();
+				inputManager.update();
+				mainmenuSys.update();
+				
 			}
 		}
 	}
@@ -257,6 +260,7 @@ public class Engine {
 		levelingSys = new LevelingSystem();
 		
 		overworldSys = new OverworldSystem(this);
+		mainmenuSys = new MainMenuSystem(this);
 	}
 	
 	/**
@@ -273,6 +277,7 @@ public class Engine {
 		inputManager.addObserver(playerInputSys);
 		inputManager.addObserver(highlightSys);
 		inputManager.addObserver(overworldSys);
+		inputManager.addObserver(mainmenuSys);
 	}
 	
 	/**
@@ -299,9 +304,24 @@ public class Engine {
 		if(gameState == GameState.DUNGEON && dungeon != null){
 			dungeon.unregister();
 			removeEntity(player); // TODO: Remove, this is due to some bug
-			System.out.println("Unregister done");
+			System.out.println("Unregister of dungeon done");
+		} else if(gameState == GameState.MAIN_MENU) {
+			mainmenuSys.unregister();
+			System.out.println("Unregister of mainmenu done");
 		}
 		overworldSys.register();
 		gameState = GameState.OVERWORLD;
+	}
+	public void loadMainMenu() {
+		if(gameState == GameState.DUNGEON && dungeon != null){
+			dungeon.unregister();
+			removeEntity(player); // TODO: Remove, this is due to some bug
+			System.out.println("Unregister of dungeon done");
+		} else if (gameState == GameState.OVERWORLD) {
+			overworldSys.unregister();
+			System.out.println("Unregister of overworld done");
+		}
+		mainmenuSys.register();
+		gameState = GameState.MAIN_MENU;
 	}
 }

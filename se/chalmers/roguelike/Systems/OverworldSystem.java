@@ -36,10 +36,11 @@ public class OverworldSystem implements ISystem, Observer{
 		activeStar = null;
 		stars = new HashMap<String,Entity>();
 		starRectangles = new ArrayList<Rectangle>();
-		playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "button_play_gray"); 
-		menuButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200-32, "button_menu"); 
+		playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "button_play_gray", 80, 32); 
+		menuButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200-32, "button_menu", 80, 32); 
 		menuRect = new Rectangle(Engine.screenWidth-80,200-32,80,32);
 		setupStars();
+		this.unregister();
 	}
 	@Override
 	public void update() {
@@ -74,7 +75,7 @@ public class OverworldSystem implements ISystem, Observer{
 				System.out.println("PLAY PRESSED!");
 				loadDungeon();
 			} else if (menuRect.contains(mouseX,mouseY)){
-				System.out.println("Someone stole the flippin menu");
+				engine.loadMainMenu();
 			}
 		}
 	}
@@ -101,7 +102,7 @@ public class OverworldSystem implements ISystem, Observer{
 	private void starClicked(Rectangle star){
 		if(activeStar == null){
 			engine.removeEntity(playButton);
-			playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "button_play"); 
+			playButton = engine.entityCreator.createButton(Engine.screenWidth-80, 200, "button_play", 80, 32); 
 			playRect = new Rectangle(Engine.screenWidth-80,200,80,32);
 		} else {
 			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates current star

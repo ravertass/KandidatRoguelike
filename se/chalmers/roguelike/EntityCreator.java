@@ -111,9 +111,9 @@ public class EntityCreator {
 		engine.addEntity(star);
 		return star;
 	}
-	public Entity createButton(int x, int y, String spriteName){
+	public Entity createButton(int x, int y, String spriteName, int width, int height){
 		Entity button = new Entity("button");
-		button.add(new Sprite(spriteName,80, 32)); // The 80 thing might screw it up
+		button.add(new Sprite(spriteName,width, height)); // The 80 thing might screw it up
 		button.add(new Position(x,y));
 		engine.addEntity(button);
 		System.out.println("New button added");

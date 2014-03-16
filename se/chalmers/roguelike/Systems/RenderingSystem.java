@@ -156,7 +156,7 @@ public class RenderingSystem implements ISystem {
 			}
 		} else if(Engine.gameState == Engine.GameState.OVERWORLD) {
 //			glClear(GL_COLOR_BUFFER_BIT); // clearas the window
-			drawOWbackground();
+			drawBackground();
 			drawMenuOW();
 			Entity activeStar = null;
 			for(Entity entity : entitiesToDraw) {
@@ -181,6 +181,11 @@ public class RenderingSystem implements ISystem {
 				String visited = activeStar.getComponent(DungeonComponent.class).getDungeon() == null ? "no" : "yes";
 				font.drawString(Engine.screenWidth-120, 300, "Selected star: "+activeStar.toString());
 				font.drawString(Engine.screenWidth-120, 300, "\nVisited before: "+visited);
+			}
+		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
+			drawBackground();
+			for (Entity e : entitiesToDraw) {
+				drawOverworld(e.getComponent(Sprite.class),e.getComponent(Position.class));
 			}
 		}
 		
@@ -350,7 +355,7 @@ public class RenderingSystem implements ISystem {
 
 	}
 
-	private void drawOWbackground(){
+	private void drawBackground(){
 		glClear(GL_COLOR_BUFFER_BIT); // clearas the window
 		
 		/* 
