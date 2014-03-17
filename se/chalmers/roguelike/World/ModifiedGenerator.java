@@ -278,6 +278,26 @@ public class ModifiedGenerator {
 	// In the future, do all in tiles directly instead of translating
 	public Tile[][] toTiles(char[][] worldGrid) {
 		
+		ArrayList<String> walls = new ArrayList<String>();
+		walls.add("brick");
+		walls.add("wall2");
+		
+		String wall = walls.get(rand.nextInt(walls.size()));
+		
+		ArrayList<String> floors = new ArrayList<String>();
+		floors.add("sand");
+		floors.add("snow");
+		floors.add("snowy_stone");
+		floors.add("stone");
+		floors.add("stone2");
+		floors.add("wood_floor");
+		floors.add("floor_tiled_whiteandblack");
+		floors.add("floor2");
+		floors.add("grass");
+		floors.add("grass_djungle");
+		
+		String floor = floors.get(rand.nextInt(floors.size()));
+		
 		Tile[][] tiles = new Tile[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -286,9 +306,9 @@ public class ModifiedGenerator {
 					if (x == 18 && y == 18) {
 						System.out.println("Bugging tile: " + worldGrid[y][x]);
 					}
-					tiles[y][x] = new Tile(new Sprite("brick"), false, true);
+					tiles[y][x] = new Tile(new Sprite(wall), false, true);
 				} else if (worldGrid[y][x] == '.') {
-					tiles[y][x] = new Tile(new Sprite("sand"), true, false);
+					tiles[y][x] = new Tile(new Sprite(floor), true, false);
 				}
 			}
 		}
