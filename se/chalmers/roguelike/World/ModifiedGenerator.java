@@ -26,10 +26,9 @@ public class ModifiedGenerator {
 	Random rand; // replace with new Random(seed); later, already tried and
 					// works
 
-	public ModifiedGenerator() {
+	public ModifiedGenerator(long seed) {
 
 		Random seedRand = new Random();
-		long seed = seedRand.nextLong();
 		// long seed = 3182815830558287750L;
 		System.out.println("Using seed: " + seed);
 		rand = new Random(seed);
@@ -319,7 +318,7 @@ public class ModifiedGenerator {
 		}
 	}
 
-	public static void main(String[] args) {
-		new ModifiedGenerator();
-	}
+//	public static void main(String[] args) {
+//		new ModifiedGenerator();
+//	}
 }
