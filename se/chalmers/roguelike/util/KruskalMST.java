@@ -1,9 +1,9 @@
 package se.chalmers.roguelike.util;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import se.chalmers.roguelike.Components.Position;
 
@@ -19,27 +19,15 @@ public class KruskalMST {
 	
 	public ArrayList<Edge> createMST(ArrayList<Edge> edges){
 		Collections.sort(edges);
+		System.out.println(edges);
 
-		//Create a list of all nodes
-		ArrayList<Position> nodes = new ArrayList<Position>();
-		for (Edge edge : edges) {
-			Position pos1 = new Position(edge.getX1(), edge.getY1());
-			Position pos2 = new Position(edge.getX2(), edge.getY2());
-			if (!nodes.contains(pos1))
-				nodes.add(pos1);
-			if (!nodes.contains(pos2))
-				nodes.add(pos2);
-		}
 		while (!(edges.isEmpty())) {
 			Edge currentEdge = edges.remove(0);
-			Position pos1 = new Position(currentEdge.getX1(), currentEdge.getY1());
-			Position pos2 = new Position(currentEdge.getX2(), currentEdge.getY2());
 			if(!createsCyclic(currentEdge)){
 				path.add(currentEdge);
 				totalWeight += currentEdge.getWeight();
-				nodes.remove(pos1);
-				nodes.remove(pos2);
 			}
+			System.out.println(path);
 		}
 		return path;
 	}
@@ -80,12 +68,13 @@ public class KruskalMST {
 				ArrayList<Edge> edges = nodes.remove(start);
 				ArrayList<Boolean> bools = new ArrayList<Boolean>();
 				for (Edge edge : edges) {
+					Position currentStart = start;
 					Position pos1 = new Position(edge.getX1(), edge.getY1());
-					if(start.equals(pos1))
-						start = new Position(edge.getX2(), edge.getY2());
+					if(currentStart.equals(pos1))
+						currentStart = new Position(edge.getX2(), edge.getY2());
 					else
-						start = pos1;
-					bools.add(canGetToEnd(start, end, nodes));
+						currentStart = pos1;
+					bools.add(canGetToEnd(currentStart, end, nodes));
 				}
 				return bools.contains(new Boolean(true));
 			}
@@ -97,4 +86,17 @@ public class KruskalMST {
 		return totalWeight;
 	}
 
+	public static void main(String[] args){
+		KruskalMST krus = new KruskalMST();
+		ArrayList<Edge> example = new ArrayList<Edge>();
+		example.add(new Edge(0,0,3,3));
+		example.add(new Edge(1,2,3,3));
+		example.add(new Edge(8,8,3,3));
+		example.add(new Edge(8,8,1,2));
+		example.add(new Edge(0,0,0,2));		
+		example.add(new Edge(0,2,8,8));
+		
+		System.out.println(krus.createMST(example));
+	}
+	
 }
