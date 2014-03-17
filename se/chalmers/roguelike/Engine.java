@@ -293,8 +293,7 @@ public class Engine {
 		// TODO: Loading screen stuff
 		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
 			this.dungeon = dungeon;
-
-			player.getComponent(Position.class).set(44, 44); // This respawns the player 1,1 of each map
+			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
 
 			addEntity(player);
 			this.dungeon.register();
