@@ -1,5 +1,7 @@
 package se.chalmers.plotgen;
 
+import java.util.Random;
+
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
@@ -8,7 +10,7 @@ import se.chalmers.plotgen.PlotGraph.PlotEdge;
 public class PlotTest {
 
 	public static void main(String[] args) {
-		Engine plotEngine = new Engine(0);
+		Engine plotEngine = new Engine(new Random().nextLong());
 		
 		System.out.println("Actors:");
 		for (Actor actor : plotEngine.getActors()) {

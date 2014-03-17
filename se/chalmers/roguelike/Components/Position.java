@@ -5,7 +5,7 @@ package se.chalmers.roguelike.Components;
  * The tile position of en entity in the World.
  *
  */
-public class Position implements IComponent {
+public class Position implements IComponent, Comparable<Position>{
 	private int x, y;
 	
 	public Position(int x, int y) {
@@ -61,6 +61,16 @@ public class Position implements IComponent {
 		if (y != other.y)
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Position o) {
+		if (this.x == o.getX())
+			return 0;
+		else if (this.x > o.getX())
+			return 1;
+		else 
+			return -1;
 	}
 	
 

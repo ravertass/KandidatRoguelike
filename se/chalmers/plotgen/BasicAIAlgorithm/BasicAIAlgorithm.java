@@ -13,24 +13,10 @@ import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
 
 // TODO:
-// - Skapa överklassen PlotBody till Prop och Actor [check]
-// - Skapa SamePlaceCondition [check]
-// - Ändra i operatorernas conditions [check]
-// - Gör så att en död actor blir av med plats osv. [check]
-// - Implementera createOperators() [check]
-// - Implementera chooseOpsAlg() [check]
-// - Implementera meetOperator, samt döp om VISIT-actionen till meet [check]
-// - Lägg in en action i Operator [check]
-// - Skriv färdigt algoritmen nedan: Gör så att grafer kan genereras [check]
-// - Kolla så att klassen som kan pränta ut grafer är fristående från andra test [check]
-// - Implementera en equals-metod för conditions [check]
-// - Gör tvåaktörstestet [check]
-// - Se till att conditions kan printas, kanske? [check]
-// - Skapa karaktärers mål på ett vettigt vis [check]
-// - Skapa en metod som placerar ut actors och props med [check]
 // - Se till att algoritmen fungerar med generell indata [check-ish] (verkar fungera, ej övertestat)
-// - Skapa stöd för seeds [check-ish]
-// - Refaktorera, plocka ut metoder som kan vara användbara även för en AdvanceAIAlgorithm
+// - Gör så att PlotTest fungerar (eller gör en bedömning om det bör fungera eller ej)
+// - Refaktorera, plocka ut metoder som kan vara användbara även för en AdvancedAIAlgorithm
+// - Se till att NameGen tar en seed, kanske?
 // - Gör så att huvudpersonen inte kan dö
 // - Gör så att de noder som genereras är lite vettigare (enkel lösning: gör så de baseras på allas handlingar)
 // - Bevisa att olösbara problem kan uppstå
@@ -38,10 +24,11 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
 // - Skriv ordentligt om algoritmen
 // - Gör seriösa tester på algoritmen, med olika antal SAPs osv.
 // - Lös problemet där huvudpersonen önskar en person död, men inte dödar personen själv
+// - Se till så att även operatorer där huvudpersonen är objekt översätts till kanter i grafen
 
 public class BasicAIAlgorithm {
 
-	public static PlotGraph algorithm(ArrayList<Scene> scenes,
+	public static PlotGraph createPlot(ArrayList<Scene> scenes,
 			ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
 
 		// Put actors on scenes and props on scenes and actors
@@ -114,8 +101,21 @@ public class BasicAIAlgorithm {
 		return plotGraph;
 	}
 
+	/**
+	 * This method places the actors on scenes and the props on scenes and with
+	 * actors. This is done in a stochastic way, using the given random
+	 * instance.
+	 * 
+	 * @param scenes
+	 * @param actors
+	 * @param props
+	 * @param random
+	 */
 	private static void placePlotBodies(ArrayList<Scene> scenes,
 			ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
+
+		// To be able to remove them when they're placed, the actors and
+		// props are placed in queues, implemented as LinkedLists
 		LinkedList<Actor> actorsQueue = new LinkedList<Actor>();
 		actorsQueue.addAll(actors);
 		LinkedList<Prop> propsQueue = new LinkedList<Prop>();
@@ -123,14 +123,19 @@ public class BasicAIAlgorithm {
 
 		int i = 0;
 
+		// Until we're done with both the actors and the props
 		while (!actorsQueue.isEmpty() | !propsQueue.isEmpty()) {
 			Scene scene = scenes.get(i);
 			// See if we should add an actor to this scene
+			// TODO: Kinda magic number, the chance of being put at
+			// a scene is 1 / scenes.size()
 			if (random.nextInt(scenes.size()) == 0) {
 				Actor actor = actorsQueue.poll();
 				if (actor != null) {
 					actor.setLocation(scene);
 					// See if we should add a prop to this actor
+					// TODO: Kinda magic number, the chance of being
+					// put with an actor is 1/2
 					if (random.nextInt(2) == 0) {
 						Prop prop = propsQueue.poll();
 						if (prop != null) {
@@ -142,6 +147,8 @@ public class BasicAIAlgorithm {
 
 			// See if we should add a prop to this scene
 			if (random.nextInt(scenes.size()) == 0) {
+				// TODO: Kinda magic number, the chance of being put at
+				// a scene is 1 / scenes.size()
 				Prop prop = propsQueue.poll();
 				if (prop != null) {
 					prop.setLocation(scene);
@@ -174,32 +181,33 @@ public class BasicAIAlgorithm {
 
 		for (Agent agent : agents) {
 			ArrayList<Operator> bestOps = new ArrayList<Operator>();
-			int bestNoOfConds = 0;
+			int bestOpValue = 0;
 
 			for (Operator op : ops.get(agent)) {
-				int i = -1;
+				int valueOfOp = -1;
 				if (checkConditions(op.getBeTrue(), op.getBeFalse())) {
-					i = 0;
+					valueOfOp = 0;
 					for (ICondition cond : op.getSetTrue()) {
 						if (agent.getTrueGoals().contains(cond)) {
-							i++;
+							valueOfOp++;
 						}
 					}
 					for (ICondition cond : op.getSetFalse()) {
 						if (agent.getFalseGoals().contains(cond)) {
-							i++;
+							valueOfOp++;
 						}
 					}
 
-					// If this operator is better than all eariler operators,
+					// If this operator is better than all earlier operators,
 					// all earlier operators will be thrown out
-					if (i > bestNoOfConds) {
-						bestNoOfConds = i;
-						bestOps.removeAll(bestOps);
+					if (valueOfOp > bestOpValue) {
+						bestOpValue = valueOfOp;
+						// Remove all previously chosen ops
+						bestOps = new ArrayList<Operator>();
 					}
 					// If the operator is among the best operators, it will be
 					// added
-					if (i == bestNoOfConds) {
+					if (valueOfOp == bestOpValue) {
 						bestOps.add(op);
 					}
 				}
@@ -207,8 +215,7 @@ public class BasicAIAlgorithm {
 
 			Operator chosenOp;
 			if (bestOps.size() > 0) {
-				chosenOp = bestOps
-						.get(random.nextInt(bestOps.size()));
+				chosenOp = bestOps.get(random.nextInt(bestOps.size()));
 			} else {
 				// TODO: Should the program ever be able to go here?
 				chosenOp = null;
@@ -231,6 +238,7 @@ public class BasicAIAlgorithm {
 			Actor self = agent.getSelf();
 
 			for (Actor actor : actors) {
+				// We don't want the agent to be doing things to herself
 				if (actor == self) {
 					continue;
 				}
@@ -268,6 +276,7 @@ public class BasicAIAlgorithm {
 		return agents;
 	}
 
+	// Stochastically sets goals for all the agents
 	private static void setAgentGoals(ArrayList<Agent> agents,
 			ArrayList<Scene> scenes, ArrayList<Actor> actors,
 			ArrayList<Prop> props, Random random) {
@@ -278,6 +287,9 @@ public class BasicAIAlgorithm {
 			ArrayList<ICondition> falseGoals = new ArrayList<ICondition>();
 
 			// Flip a coin to see which condition will be the goal
+			// TODO: Kind of a magic number, here we say that the chance to get
+			// a killing goal is 1/2 and the chance to get an item retrieval
+			// goal is 1/2
 			int conditionCoinFlip = random.nextInt(2);
 			if (conditionCoinFlip == 0) {
 				Prop propToGet = null;
@@ -310,7 +322,7 @@ public class BasicAIAlgorithm {
 				}
 				goal = new LivesCondition(actorToKill);
 				// TODO Test output
-				System.out.println(goal);
+				System.out.println(agent.getSelf() + ": " + goal);
 				falseGoals.add(goal);
 			}
 

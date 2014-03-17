@@ -34,7 +34,7 @@ public class EntityCreator {
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
 		player.add(new Sprite("mobs/mob_knight"));
-		player.add(new Position(1, 1));
+		player.add(new Position(44, 44));
 		player.add(new Direction());
 		player.add(new Player());
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
@@ -48,7 +48,7 @@ public class EntityCreator {
 		enemy.add(new TurnsLeft(1));
 		enemy.add(new Input());
 		enemy.add(new Sprite("mobs/mob_devilmarine"));
-		enemy.add(new Position(2, 1));
+		enemy.add(new Position(45, 44));
 		enemy.add(new Direction());
 		enemy.add(new AI());
 		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.SPACE_ROGUE, Attribute.SpaceRace.SPACE_ALIEN, 1, 50));

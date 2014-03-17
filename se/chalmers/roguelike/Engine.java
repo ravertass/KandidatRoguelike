@@ -1,6 +1,7 @@
 package se.chalmers.roguelike;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import se.chalmers.plotgen.NameGen.NameGenerator;
 import se.chalmers.roguelike.Systems.*;
@@ -203,7 +204,8 @@ public class Engine {
 	 */
 	public void run(){
 		entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_HUMAN);
-		NameGenerator ng = new NameGenerator(2);
+		//TODO använd en till spelet given seed
+		NameGenerator ng = new NameGenerator(2, new Random().nextLong());
 		for (int i = 0; i <4; i++)
 			entityCreator.createEnemy(ng.generateName());
 		entityCreator.createHighlight();
@@ -291,8 +293,7 @@ public class Engine {
 		// TODO: Loading screen stuff
 		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
 			this.dungeon = dungeon;
-
-			player.getComponent(Position.class).set(1, 1); // This respawns the player 1,1 of each map
+			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
 
 			addEntity(player);
 			this.dungeon.register();

@@ -17,6 +17,8 @@ import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Generator;
+import se.chalmers.roguelike.World.ModifiedGenerator;
+import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Observer;
 
 /**
@@ -88,7 +90,11 @@ public class OverworldSystem implements ISystem, Observer{
 			System.out.println("No dungeon found! Generating one.");
 			long seed=activeStar.getComponent(Seed.class).getSeed();
 			starDungeon = new Dungeon(engine);
-			starDungeon.setWorld(50,50,new Generator(seed).toTiles());
+			
+			ModifiedGenerator generator = new ModifiedGenerator(seed);
+			Tile[][] tiles = generator.toTiles();
+			Position startpos = generator.getStartPos();
+			starDungeon.setWorld(tiles[0].length,tiles.length, tiles, startpos);
 			activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
 		} 
 		

@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.Dice;
 
@@ -20,6 +21,7 @@ public class Dungeon {
 	
 	private int worldWidth;
 	private int worldHeight;
+	private Position startpos;
 	private Tile[][] tiles;
 	private ArrayList<Entity> entities;
 	private ArrayList<Entity> backup = new ArrayList<Entity>();  
@@ -31,11 +33,12 @@ public class Dungeon {
 	 * @param worldHeight the height of the world
 	 * @param tiles the array of tiles the world should have
 	 */
-	public Dungeon(Engine engine, int worldWidth, int worldHeight, Tile[][] tiles){
+	public Dungeon(Engine engine, int worldWidth, int worldHeight, Tile[][] tiles, Position startpos){
 		this.engine = engine;
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
+		this.setStartpos(startpos);
 		entities = new ArrayList<Entity>();
 	}
 	
@@ -92,7 +95,7 @@ public class Dungeon {
 	 * @return returns the tile if it exists, otherwise null
 	 */
 	public Tile getTile(int x, int y){
-		if(x < 0 || x >= worldHeight || y < 0 || y >= worldHeight){
+		if(x < 0 || x >= worldWidth || y < 0 || y >= worldHeight){
 			return null;
 		}
 		return tiles[y][x];
@@ -116,10 +119,11 @@ public class Dungeon {
 	 * @param worldHeight the height of the new world, must match the array
 	 * @param tiles a 2d-array of all the tiles for the world
 	 */
-	public void setWorld(int worldWidth, int worldHeight, Tile[][] tiles){
+	public void setWorld(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos){
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
+		this.setStartpos(startpos);
 	}
 	public void addEntity(int x, int y, Entity entity){
 		if(x<0 || y<0 || x > worldWidth || y > worldHeight || tiles[y][x] == null){
@@ -171,5 +175,13 @@ public class Dungeon {
 		
 		// All entities has been added, backup can be cleared
 		backup.clear();
+	}
+
+	public Position getStartpos() {
+		return startpos;
+	}
+
+	public void setStartpos(Position startpos) {
+		this.startpos = startpos;
 	}
 }
