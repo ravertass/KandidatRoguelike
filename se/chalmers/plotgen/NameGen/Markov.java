@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Markov {
@@ -199,11 +200,11 @@ public class Markov {
 	 * 
 	 * @return a Markov chain presented as a String
 	 */
-	public String generateName() {
+	public String generateName(Random randomizer) {
 
 		MarkovInstance start = zeroOrderMarkovTable.get("START");
 		ArrayList<String> list = start.toProbabilities();
-		int random = (int) (Math.random() * list.size());
+		int random = randomizer.nextInt(list.size());
 		String genName = list.get(random);
 		
 		String twoLetter = initNextChar(genName, firstOrderMarkovTable);
@@ -211,24 +212,24 @@ public class Markov {
 			return firstToUpperCase(twoLetter);
 		
 		if (ORDER == 1)
-			return firstToUpperCase(genName + createName(twoLetter.substring(1), firstOrderMarkovTable));
+			return firstToUpperCase(genName + createName(twoLetter.substring(1), firstOrderMarkovTable, randomizer));
 
 		if (ORDER == 2)
-			return firstToUpperCase(createName(twoLetter, secondOrderMarkovTable));
+			return firstToUpperCase(createName(twoLetter, secondOrderMarkovTable, randomizer));
 		
 		String threeLetter = initNextChar(twoLetter, secondOrderMarkovTable);
 		if (threeLetter.equals(twoLetter))
 			return firstToUpperCase(threeLetter);
 
 		if (ORDER == 3)
-			return firstToUpperCase(createName(threeLetter, thirdOrderMarkovTable));
+			return firstToUpperCase(createName(threeLetter, thirdOrderMarkovTable, randomizer));
 
 		String fourLetter = initNextChar(threeLetter, thirdOrderMarkovTable);
 		if (fourLetter.equals(threeLetter))
 			return firstToUpperCase(fourLetter);
 
 		if (ORDER == 4)
-			return firstToUpperCase(createName(fourLetter, fourthOrderMarkovTable));
+			return firstToUpperCase(createName(fourLetter, fourthOrderMarkovTable, randomizer));
 		
 		return "ERROR";
 	}
@@ -241,7 +242,7 @@ public class Markov {
 	 * @return a name
 	 */
 	private String createName(String sequence,
-			HashMap<String, MarkovInstance> hmap) {
+			HashMap<String, MarkovInstance> hmap, Random randomizer) {
 		StringBuilder name = new StringBuilder();
 		name.append(sequence);
 		String sub;
@@ -251,7 +252,7 @@ public class Markov {
 
 			MarkovInstance nextInst = hmap.get(sub);
 			ArrayList<String> prob = nextInst.toProbabilities();
-			int random = (int) (Math.random() * prob.size());
+			int random = randomizer.nextInt(prob.size());
 			String nextChar = prob.get(random);
 			if (nextChar.equals(end)) {
 				break;

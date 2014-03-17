@@ -1,5 +1,7 @@
 package se.chalmers.roguelike.Tests;
 
+import java.util.Random;
+
 import se.chalmers.plotgen.NameGen.NameGenerator;
 
 
@@ -8,7 +10,7 @@ public class NameGenTest {
 	
 	//To test you need to add \\bin after the . in the filepath in NameGenerator
 	public static void main(String[] args) {
-		NameGenerator name = new NameGenerator(1);
+		NameGenerator name = new NameGenerator(1, new Random().nextLong());
 		int i = 0;
 		int maxOne = 0;
 		int maxFour = 0;

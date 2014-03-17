@@ -22,6 +22,7 @@ public class BasicAITest {
 	// A sword in NC
 	// Also, Deltaparken
 	// Sonic both wants the sword and to be in Deltaparken
+	@SuppressWarnings("unused")
 	private static void oneActorTest() {
 		// Create the SAPs
 		Actor sonic = new Actor("Sonic");
@@ -45,7 +46,7 @@ public class BasicAITest {
 		sword.setLocation(nc);
 
 		// Now, we generate a plot graph using the BasicAIAlgorithm
-		PlotGraph plotGraph = BasicAIAlgorithm.algorithm(scenes, actors, props,
+		PlotGraph plotGraph = BasicAIAlgorithm.createPlot(scenes, actors, props,
 				new Random());
 
 		// Print out the plot graph!
@@ -105,7 +106,7 @@ public class BasicAITest {
 		poo.setOwner(bowser);
 
 		// Now, we generate a plot graph using the BasicAIAlgorithm
-		PlotGraph plotGraph = BasicAIAlgorithm.algorithm(scenes, actors, props,
+		PlotGraph plotGraph = BasicAIAlgorithm.createPlot(scenes, actors, props,
 				new Random());
 
 		// Print out the plot graph!

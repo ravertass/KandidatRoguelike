@@ -42,8 +42,8 @@ public class Engine {
 	 * @param seed
 	 */
 	private void run(long seed) {
-		nameGen = new NameGenerator(4); // TODO: Satte order på nameGen till 3
-										// som standard, för testning
+		nameGen = new NameGenerator(4, seed); // TODO: Satte order på nameGen till 3
+											// som standard, för testning
 
 		Random random = new Random(seed);
 		
