@@ -89,12 +89,9 @@ public class OverworldSystem implements ISystem, Observer{
 		if(starDungeon == null){
 			System.out.println("No dungeon found! Generating one.");
 			long seed=activeStar.getComponent(Seed.class).getSeed();
-			starDungeon = new Dungeon(engine);
 			
 			ModifiedGenerator generator = new ModifiedGenerator(seed);
-			Tile[][] tiles = generator.toTiles();
-			Position startpos = generator.getStartPos();
-			starDungeon.setWorld(tiles[0].length,tiles.length, tiles, startpos);
+			starDungeon = generator.toDungeon(engine);
 			activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
 		} 
 		

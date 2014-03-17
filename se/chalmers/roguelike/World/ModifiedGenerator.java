@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
@@ -314,6 +315,14 @@ public class ModifiedGenerator {
 		}
 		return tiles;
 
+	}
+	
+	public Dungeon toDungeon(Engine engine) {
+		Dungeon dungeon = new Dungeon(engine);
+		Tile[][] tiles = toTiles();
+		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos());
+		
+		return dungeon;
 	}
 	public Tile[][] toTiles() {
 		return toTiles(worldGrid);
