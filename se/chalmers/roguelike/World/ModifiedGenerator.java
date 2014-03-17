@@ -317,7 +317,12 @@ public class ModifiedGenerator {
 			System.out.println(worldGrid[y]);
 		}
 	}
-
+	
+	public Position getStartPos() {
+		int x = largeRooms.get(0).x + 1 + Math.abs(xMinDisplacement);
+		int y = largeRooms.get(0).y + 1 + Math.abs(yMinDisplacement);
+		return new Position(x,y);
+	}
 //	public static void main(String[] args) {
 //		new ModifiedGenerator();
 //	}

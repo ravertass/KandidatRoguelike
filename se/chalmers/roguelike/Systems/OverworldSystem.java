@@ -93,8 +93,8 @@ public class OverworldSystem implements ISystem, Observer{
 			
 			ModifiedGenerator generator = new ModifiedGenerator(seed);
 			Tile[][] tiles = generator.toTiles();
-			starDungeon.setWorld(tiles[0].length,tiles.length, tiles);
-			
+			Position startpos = generator.getStartPos();
+			starDungeon.setWorld(tiles[0].length,tiles.length, tiles, startpos);
 			activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
 		} 
 		
