@@ -92,7 +92,7 @@ public class Dungeon {
 	 * @return returns the tile if it exists, otherwise null
 	 */
 	public Tile getTile(int x, int y){
-		if(x < 0 || x >= worldHeight || y < 0 || y >= worldHeight){
+		if(x < 0 || x >= worldWidth || y < 0 || y >= worldHeight){
 			return null;
 		}
 		return tiles[y][x];

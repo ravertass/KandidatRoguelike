@@ -17,7 +17,11 @@ public class KruskalMST {
 		totalWeight = 0;
 	}
 	
-	public ArrayList<Edge> createMST(ArrayList<Edge> edges){
+	public ArrayList<Edge> createMST(ArrayList<Edge> edges_in){
+		ArrayList<Edge> edges = new ArrayList<>();
+		for (Edge edge : edges_in) {
+			edges.add(edge);
+		}
 		Collections.sort(edges);
 		System.out.println(edges);
 

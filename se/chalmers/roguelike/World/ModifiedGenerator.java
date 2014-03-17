@@ -3,14 +3,15 @@ package se.chalmers.roguelike.World;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Random;
 
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
+import se.chalmers.roguelike.util.KruskalMST;
 import se.chalmers.roguelike.util.Triangle;
-import se.chalmers.roguelike.util.Util;
 
 public class ModifiedGenerator {
 
@@ -19,7 +20,7 @@ public class ModifiedGenerator {
 	private int width = 80;
 	private int height = 80;
 	private int xMinDisplacement = 0, yMinDisplacement = 0;
-	// private char[][] worldGrid;
+	private char[][] worldGrid;
 	private ArrayList<Rectangle> rooms;
 	private ArrayList<Rectangle> largeRooms = new ArrayList<Rectangle>();
 	Random rand; // replace with new Random(seed); later, already tried and
@@ -52,9 +53,8 @@ public class ModifiedGenerator {
 		ArrayList<Edge> edges = triangulateRooms(grid);
 		
 		//Kruskal on the edges
-		// TODO
-		ArrayList<Edge> minimumSpanning = new ArrayList<Edge>(); //= Kruskal(edges);
-	
+		ArrayList<Edge> minimumSpanning = new KruskalMST().createMST(edges); //= Kruskal(edges);
+		
 		// add 20% of the edges back
 		for (Edge edge : edges) {
 			if (!minimumSpanning.contains(edge))
@@ -66,17 +66,17 @@ public class ModifiedGenerator {
 		//createCorridors(minimumSpanning);	
 		drawCorridors(grid, minimumSpanning);
 		drawRooms(grid);
-		
 		print(grid);
+		worldGrid = grid;
 	}
 
 	private ArrayList<Edge> triangulateRooms(char[][] grid) {
 		// To see where we set nodes
 		ArrayList<Position> nodes = generateNodes();
-		for (Position point : nodes) {
-			grid[point.getY() + Math.abs(yMinDisplacement)][point.getX()
-					+ Math.abs(xMinDisplacement)] = 'o';
-		}
+//		for (Position point : nodes) {
+//			grid[point.getY() + Math.abs(yMinDisplacement)][point.getX()
+//					+ Math.abs(xMinDisplacement)] = 'o';
+//		}
 		// Sort the list of nodes (sorts by X-value, low to high)
 		Collections.sort(nodes);
 		
@@ -278,6 +278,7 @@ public class ModifiedGenerator {
 	 */
 	// In the future, do all in tiles directly instead of translating
 	public Tile[][] toTiles(char[][] worldGrid) {
+		
 		Tile[][] tiles = new Tile[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -294,6 +295,9 @@ public class ModifiedGenerator {
 		}
 		return tiles;
 
+	}
+	public Tile[][] toTiles() {
+		return toTiles(worldGrid);
 	}
 
 	public ArrayList<Position> generateNodes() {
