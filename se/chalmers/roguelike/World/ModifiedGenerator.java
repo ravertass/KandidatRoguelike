@@ -65,7 +65,7 @@ public class ModifiedGenerator {
 		//createCorridors(minimumSpanning);	
 		drawCorridors(grid, minimumSpanning);
 		drawRooms(grid);
-		print(grid);
+//		print(grid);
 		worldGrid = grid;
 	}
 
