@@ -92,6 +92,7 @@ public class RenderingSystem implements ISystem {
 		// Font
 		Font awtFont = new Font("Times New Roman", Font.BOLD, 14);
 		font = new TrueTypeFont(awtFont, false);
+		
 	}
 	
 	
@@ -140,6 +141,10 @@ public class RenderingSystem implements ISystem {
 		if(Engine.gameState == Engine.GameState.DUNGEON){
 			// Draws healthbars for all entities that stand on a lit tile.
 			for (Entity e : entitiesToDraw) {
+				if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
+					// System.out.println("PLAYER!");
+					
+				}
 				if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
 					Position epos = e.getComponent(Position.class);
 					if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
@@ -164,6 +169,7 @@ public class RenderingSystem implements ISystem {
 				if(flag != null && flag.getFlag()){
 					activeStar = entity;
 					glColor3f(1.0f, 0.0f, 0.0f);
+//					font.drawString(300, 300, "buggy line");
 					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
 				} else {
@@ -371,7 +377,9 @@ public class RenderingSystem implements ISystem {
 	
 	private void drawQuad(Texture texture, int x, int y, int sizeX, int sizeY, 
 			float spriteULX, float spriteULY, float spriteLRX, float spriteLRY){
+		
 		texture.bind();
+		glEnable(GL_BLEND); // remove? this should make sure that textures are enabled
 		glBegin(GL_QUADS);
 			glTexCoord2f(spriteULX, spriteLRY);
 			glVertex2d(x, y);
