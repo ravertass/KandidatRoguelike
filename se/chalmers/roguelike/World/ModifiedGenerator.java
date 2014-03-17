@@ -51,14 +51,13 @@ public class ModifiedGenerator {
 		}
 		
 		ArrayList<Edge> edges = triangulateRooms(grid);
-		ArrayList<Edge> edges2 = triangulateRooms(grid);
+		
 		//Kruskal on the edges
 		ArrayList<Edge> minimumSpanning = new KruskalMST().createMST(edges); //= Kruskal(edges);
-		
 		// add 20% of the edges back
-		for (Edge edge : edges2) {
+		for (Edge edge : edges) {
 			if (!minimumSpanning.contains(edge))
-				if(rand.nextInt(5) == 0)
+				if(rand.nextInt(4) == 0)
 					minimumSpanning.add(edge);
 		}
 		
