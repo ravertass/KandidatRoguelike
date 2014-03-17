@@ -1,8 +1,6 @@
 package se.chalmers.roguelike.util;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import se.chalmers.roguelike.Components.Position;
 
@@ -73,14 +71,16 @@ public class DelauneyTriangulator {
 				triangles.add(new Triangle(node.getX(), node.getY(), edge.getX1(), edge.getY1(), edge.getX2(), edge.getY2()));
 		}
 		}
-//		System.out.println("Triangles before stemsFromSuper: " + triangles.size());
 		removeSuperTriangleStems();
-//		System.out.println("Triangles after stemsFromSuper: " + triangles.size());
 
 		System.out.println("Amount of nodes: " + nodes.size() + "\nAmount of triangles: " + triangles.size());
 		return toEdges();
 	}
 
+	/**
+	 * Create and return a list of edges from the triangles created by the triangulate method.
+	 * @return
+	 */
 	private ArrayList<Edge> toEdges() {
 		ArrayList<Edge> edges = new ArrayList<Edge>();
 		for (Triangle triangle : triangles) {
@@ -94,10 +94,12 @@ public class DelauneyTriangulator {
 			if (!edges.contains(edge3))
 				edges.add(edge3);
 		}
-		System.out.println("Edges: " + edges.size());
 		return edges;
 	}
 
+	/**
+	 * Remove all triangles that stems from the supertriangle created at the beginning.
+	 */
 	private void removeSuperTriangleStems() {
 		ArrayList<Triangle> trianglesToRemove = new ArrayList<Triangle>();
 		triangles.remove(superTriangle);
@@ -110,6 +112,10 @@ public class DelauneyTriangulator {
 		}
 	}
 	
+	/**
+	 * Gives the triangle list.
+	 * @return
+	 */
 	public ArrayList<Triangle> getTriangles(){
 		return triangles;
 	}
