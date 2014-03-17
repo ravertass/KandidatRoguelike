@@ -185,7 +185,7 @@ public class Engine {
 				levelingSys.addEntity(entity);
 			}
 		}
-		if((compKey & dungeonReq) == dungeonReq) {
+		if((compKey & dungeonReq) == dungeonReq && (compKey & CompHighlight) != CompHighlight) {
 			// Bit of a special case, since this requires coordinates:
 			Position pos = entity.getComponent(Position.class);
 			if(remove) {
