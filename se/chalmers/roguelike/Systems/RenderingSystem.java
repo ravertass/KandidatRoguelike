@@ -41,6 +41,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
@@ -117,20 +118,27 @@ public class RenderingSystem implements ISystem {
 		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());
 
+		// These for-loops are more effective, but doesn't show the whole map for the minimap:
+//		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
+//			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
 		
-		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
-			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
+		for(int x = 0; x < dungeon.getWorldWidth(); x++) {
+			for(int y = 0; y < dungeon.getWorldHeight(); y++) {
 				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
-				if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
-					if(!Engine.debug)
-						tile.setHasBeenSeen(true);
-					draw(tile.getSprite(),drawPos);
-
-				} else if(tile != null && tile.hasBeenSeen()) {
-					glColor3f(0.5f, 0.5f, 0.5f);
-					draw(tile.getSprite(), drawPos);
-					glColor3f(1.0f, 1.0f, 1.0f);
+				if(x < pos.getX() + cwidth && y < pos.getY() + cheight){
+					if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
+						if(!Engine.debug)
+							tile.setHasBeenSeen(true);
+						draw(tile.getSprite(),drawPos);
+					} else if(tile != null && tile.hasBeenSeen()) {
+						glColor3f(0.5f, 0.5f, 0.5f);
+						draw(tile.getSprite(), drawPos);
+						glColor3f(1.0f, 1.0f, 1.0f);
+					}
+				}
+				if(tile != null && tile.hasBeenSeen()){
+					drawMinimap(tile.getSprite(), drawPos);
 				}
 			}
 		}
@@ -140,6 +148,10 @@ public class RenderingSystem implements ISystem {
 		if(Engine.gameState == Engine.GameState.DUNGEON){
 			// Draws healthbars for all entities that stand on a lit tile.
 			for (Entity e : entitiesToDraw) {
+				if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
+					// System.out.println("PLAYER!");
+					drawHud(e);
+				}
 				if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
 					Position epos = e.getComponent(Position.class);
 					if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
@@ -164,6 +176,7 @@ public class RenderingSystem implements ISystem {
 				if(flag != null && flag.getFlag()){
 					activeStar = entity;
 					glColor3f(1.0f, 0.0f, 0.0f);
+//					font.drawString(300, 300, "buggy line");
 					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
 				} else {
@@ -276,7 +289,7 @@ public class RenderingSystem implements ISystem {
 		// view; if so, we draw it
 		if (x >= 0 && x < camera.getWidth() * size &&
 				y >= 0 && y < camera.getHeight() * size) {
-			drawQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
+			drawTexturedQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
 			
 		}
 	}
@@ -302,7 +315,7 @@ public class RenderingSystem implements ISystem {
 		float spriteLRX = sprite.getLowerRightX();
 		float spriteLRY = sprite.getLowerRightY();
 		
-		drawQuad(texture, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
+		drawTexturedQuad(texture, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
 
 	}
 
@@ -334,7 +347,7 @@ public class RenderingSystem implements ISystem {
 		float spriteULY = 0.0f;
 		float spriteLRX = ((float) (sizeX)) / owBackground.getTextureWidth();
 		float spriteLRY = ((float) (sizeY)) / owBackground.getTextureHeight();
-		drawQuad(owBackground, 0, 0, Engine.screenWidth, Engine.screenHeight, spriteULX, spriteULY, spriteLRX, spriteLRY);
+		drawTexturedQuad(owBackground, 0, 0, Engine.screenWidth, Engine.screenHeight, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
 	
 	private void drawMenuOW(){
@@ -366,22 +379,66 @@ public class RenderingSystem implements ISystem {
 		float spriteULY = 0.0f;
 		float spriteLRX = ((float) (sizeX)) / owMenu.getTextureWidth();
 		float spriteLRY = ((float) (sizeY)) / owMenu.getTextureHeight();
-		drawQuad(owMenu, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
+		drawTexturedQuad(owMenu, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
-	
-	private void drawQuad(Texture texture, int x, int y, int sizeX, int sizeY, 
+	private void drawMinimap(Sprite sprite, Position position) {
+		if(!sprite.getVisibility())
+			return;
+		// TODO: Fix so that the values -200 etcs arent just hardcoded but can easily
+		// be changed, and fixed so the minimap doesn't cover anything else and that it
+		// only shows a radius of the players
+		Texture texture = sprite.getTexture();
+		int size = 2; //Engine.spriteSize;//sprite.getSize(); // Times two, makes sprites twice as large
+
+		int x = position.getX() * size + (Engine.screenWidth-200);
+		int y = position.getY() * size + (Engine.screenHeight-200);
+		
+//		int x = (position.getX() - camX) * size;
+//		int y = (position.getY() - camY) * size;
+		
+		// Get the coordinates of the current sprite
+		// in the spritesheet in a form that OpenGL likes,
+		// which is a float between 0 and 1
+		float spriteULX = sprite.getUpperLeftX();
+		float spriteULY = sprite.getUpperLeftY();
+		float spriteLRX = sprite.getLowerRightX();
+		float spriteLRY = sprite.getLowerRightY();
+		
+		
+		System.out.println("x: "+y);
+		drawTexturedQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
+//		font.drawString(x, y, "foobar");
+	}
+	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, 
 			float spriteULX, float spriteULY, float spriteLRX, float spriteLRY){
+		
 		texture.bind();
+		glEnable(GL_BLEND); // remove? this should make sure that textures are enabled
 		glBegin(GL_QUADS);
 			glTexCoord2f(spriteULX, spriteLRY);
 			glVertex2d(x, y);
 			glTexCoord2f(spriteLRX, spriteLRY);
-			glVertex2d(x + sizeX, y);
+			glVertex2d(x + width, y);
 			glTexCoord2f(spriteLRX, spriteULY);
-			glVertex2d(x + sizeX, y + sizeY);
+			glVertex2d(x + width, y + height);
 			glTexCoord2f(spriteULX, spriteULY);
-			glVertex2d(x, y + sizeY);
+			glVertex2d(x, y + height);
 		glEnd();
+	}
+	
+	private void drawUntexturedQuad(int x, int y, int width, int height){
+		glDisable(GL11.GL_TEXTURE_2D);
+		glBegin(GL_QUADS);
+//			GL11.glVertex2i(x,y+height);
+//			GL11.glVertex2i(x+width,y+height);
+//			GL11.glVertex2i(x+width,y+height);
+//			GL11.glVertex2i(x,y+height);
+			glVertex2d(x, y);
+			glVertex2d(x + width, y);
+			glVertex2d(x + width, y + height);
+			glVertex2d(x, y + height);
+		glEnd();
+		glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
 	public void exit() {
@@ -451,13 +508,6 @@ public class RenderingSystem implements ISystem {
 		this.camera = c;
 	}
 	
-	private void drawHudBackground() {
-		
-//		glBegin(GL_QUADS);
-//			glVertex2f(x, y);
-//		glEnd();
-		
-	}
 	/**
 	 * draws healthbars for all entities that have health
 	 * @param e
@@ -477,36 +527,30 @@ public class RenderingSystem implements ISystem {
 		double healthbarLength = healthPercentage * Engine.spriteSize; //calculates how much of the green should be drawn over the red
 		
 		int hblength = (int)healthbarLength;
-		glDisable(GL11.GL_TEXTURE_2D);
 		//draw the red part of the healthbar
 		glColor3f(1.0f, 0.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * Engine.spriteSize &&
 				y >= 0 && y < camera.getHeight() * Engine.spriteSize) {
-			glBegin(GL_QUADS);
-				GL11.glVertex2i(x,y+Engine.spriteSize);
-				GL11.glVertex2i(x+Engine.spriteSize,y+Engine.spriteSize);
-				GL11.glVertex2i(x+Engine.spriteSize,y+Engine.spriteSize+Engine.spriteSize/8);
-				GL11.glVertex2i(x,y+Engine.spriteSize+Engine.spriteSize/8);
-			glEnd();
+			drawUntexturedQuad(x, y+Engine.spriteSize, Engine.spriteSize, Engine.spriteSize/8);
 		}
 		
 		//draw the green part of the healthbar ontop of the red
 		glColor3f(0.0f, 1.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * Engine.spriteSize &&
 				y >= 0 && y < camera.getHeight() * Engine.spriteSize) {
-			glBegin(GL_QUADS);
-				GL11.glVertex2i(x,y+Engine.spriteSize);
-				GL11.glVertex2i(x+hblength,y+Engine.spriteSize);
-				GL11.glVertex2i(x+hblength,y+Engine.spriteSize+Engine.spriteSize/8);
-				GL11.glVertex2i(x,y+Engine.spriteSize+Engine.spriteSize/8);
-			glEnd();
+			drawUntexturedQuad(x, y+Engine.spriteSize, hblength, Engine.spriteSize/8);
 				
 		}
 		glColor3f(1.0f,1.0f,1.0f);
-		glEnable(GL11.GL_TEXTURE_2D);
 	}
 
-	
+	private void drawHud(Entity e){
+		// e will always be the player here
+		Attribute attributes = e.getComponent(Attribute.class);
+		String info = "Player: "+attributes.getName()+"\nLevel "+attributes.getLevel()+
+				"\nXP: "+attributes.experience()+"\nStrength: "+attributes.strength();
+		font.drawString(Engine.screenWidth-200, Engine.screenHeight-200, info);
+	}
 }
 
 
