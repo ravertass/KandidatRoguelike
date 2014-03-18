@@ -3,7 +3,6 @@ package se.chalmers.roguelike.World;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Random;
 
 import se.chalmers.roguelike.Engine;
@@ -14,20 +13,21 @@ import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.KruskalMST;
 import se.chalmers.roguelike.util.Triangle;
 
-public class ModifiedGenerator {
+public class LevelGenerator {
 
 	
 	private final int amountOfRooms = 100;
 	private int width = 80;
 	private int height = 80;
 	private int xMinDisplacement = 0, yMinDisplacement = 0;
+	private int largeEnoughRoom = 8;
 	private char[][] worldGrid;
 	private ArrayList<Rectangle> rooms;
 	private ArrayList<Rectangle> largeRooms = new ArrayList<Rectangle>();
 	Random rand; // replace with new Random(seed); later, already tried and
 					// works
 
-	public ModifiedGenerator(long seed) {
+	public LevelGenerator(long seed) {
 
 		Random seedRand = new Random();
 		// long seed = 3182815830558287750L;
@@ -100,7 +100,7 @@ public class ModifiedGenerator {
 			room = generateRoom();
 			room.setLocation(x, y);
 			graph.add(room);
-			if (room.width >= 8 && room.height >= 8) {
+			if (room.width >= largeEnoughRoom && room.height >= largeEnoughRoom) {
 				largeRooms.add(room);
 			}
 		}
