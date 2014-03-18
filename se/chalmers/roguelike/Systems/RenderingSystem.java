@@ -93,6 +93,7 @@ public class RenderingSystem implements ISystem {
 		// Font
 		Font awtFont = new Font("Times New Roman", Font.BOLD, 14);
 		font = new TrueTypeFont(awtFont, false);
+		
 	}
 	
 	
@@ -149,7 +150,6 @@ public class RenderingSystem implements ISystem {
 			// Draws healthbars for all entities that stand on a lit tile.
 			for (Entity e : entitiesToDraw) {
 				if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
-					// System.out.println("PLAYER!");
 					drawHud(e);
 				}
 				if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
