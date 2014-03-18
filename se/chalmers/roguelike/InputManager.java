@@ -1,6 +1,7 @@
 package se.chalmers.roguelike;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -12,6 +13,11 @@ public class InputManager implements Subject {
 
 	private ArrayList<Observer> observers;
 	private Engine engine;
+	
+	private long startTime;
+	private int pressedKey;
+	
+	private HashMap<Integer, InputAction> keyToAction;
 
 	/**
 	 * This is where you delcare all the different events that the keyboard and mouse can cause. 
@@ -31,8 +37,11 @@ public class InputManager implements Subject {
 //		observers = new ArrayList<Observer>();
 //	}
 	public InputManager(Engine engine){
+		keyToAction = new HashMap<Integer, InputAction>();
 		this.engine = engine;
 		observers = new ArrayList<Observer>();
+		setupKeyToAction();
+		startTime = System.currentTimeMillis();
 	}
 	@Override
 	public void addObserver(Observer o) {
@@ -53,60 +62,39 @@ public class InputManager implements Subject {
 		for (Observer o : observers) {
 			o.notify(e);
 		}
+		startTime = System.currentTimeMillis();
 
 	}
 	/**
 	 * This is where the keyboard and mouse are checked for input and the appropriate event is sent to subscribers.
 	 */
 	public void update() {
-		while (Keyboard.next()) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-				System.exit(0); //Should be passed on to engine?
-			}
-
-			if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
-					&& Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-				notifyObservers(InputAction.SET_FULLSCREEN);
-			}
-			if (Keyboard.getEventKeyState()) {
-				int key = Keyboard.getEventKey();
-				if (key == Keyboard.KEY_W || key == Keyboard.KEY_NUMPAD8) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.GO_NORTH);
-				} else if (key == Keyboard.KEY_A || key == Keyboard.KEY_NUMPAD4) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.GO_WEST);
-				} else if (key == Keyboard.KEY_S || key == Keyboard.KEY_NUMPAD2) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.GO_SOUTH);
-				} else if (key == Keyboard.KEY_D || key == Keyboard.KEY_NUMPAD6) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.GO_EAST);
-				} else if (key == Keyboard.KEY_Q || key == Keyboard.KEY_NUMPAD7) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.GO_NORTHWEST);
-				} else if (key == Keyboard.KEY_E || key == Keyboard.KEY_NUMPAD9) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.GO_NORTHEAST);
-				} else if (key == Keyboard.KEY_Z || key == Keyboard.KEY_NUMPAD1) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.GO_SOUTHWEST);
-				} else if (key == Keyboard.KEY_C || key == Keyboard.KEY_NUMPAD3) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.GO_SOUTHEAST);
-				} else if (key == Keyboard.KEY_NUMPAD5) {
-					System.out.println("-----PLAYERDOESSOMETHING-----");
-					notifyObservers(InputAction.DO_NOTHING);
+		if(Keyboard.isKeyDown(pressedKey) && System.currentTimeMillis() - startTime > 180L) {
+			notifyObservers(keyToAction.get(pressedKey));
+		} else {
+			while (Keyboard.next()) {
+				if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					System.exit(0); //Should be passed on to engine?
 				}
-				
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_F1)){
-				Engine.debug = !Engine.debug; 
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_F2)){
-				//Engine.dungeon.unregister();
-				engine.loadOverworld();
-				// Engine.gameState = Engine.GameState.DUNGEON;
+	
+				if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
+						&& Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+					notifyObservers(InputAction.SET_FULLSCREEN);
+				}
+				if (Keyboard.getEventKeyState()) {
+					int key = Keyboard.getEventKey();
+					pressedKey = key;
+					notifyObservers(keyToAction.get(key));
+					
+				}
+				if (Keyboard.isKeyDown(Keyboard.KEY_F1)){
+					Engine.debug = !Engine.debug; 
+				}
+				if (Keyboard.isKeyDown(Keyboard.KEY_F2)){
+					//Engine.dungeon.unregister();
+					engine.loadOverworld();
+					// Engine.gameState = Engine.GameState.DUNGEON;
+				}
 			}
 		}
 		while (Mouse.next()) {
@@ -118,7 +106,37 @@ public class InputManager implements Subject {
 			}
 
 		}
+		
+		
 
 	}
+	
+	/**
+	 * This will setup the hashmap that contains the key mapped to the action.
+	 */
+	private void setupKeyToAction() {
+		keyToAction.put(Keyboard.KEY_W, InputAction.GO_NORTH);
+		keyToAction.put(Keyboard.KEY_NUMPAD8, InputAction.GO_NORTH);
+		keyToAction.put(Keyboard.KEY_A, InputAction.GO_WEST);
+		keyToAction.put(Keyboard.KEY_NUMPAD4, InputAction.GO_WEST);
+		keyToAction.put(Keyboard.KEY_D, InputAction.GO_EAST);
+		keyToAction.put(Keyboard.KEY_NUMPAD6, InputAction.GO_EAST);
+		keyToAction.put(Keyboard.KEY_S, InputAction.GO_SOUTH);
+		keyToAction.put(Keyboard.KEY_NUMPAD2, InputAction.GO_SOUTH);
+		keyToAction.put(Keyboard.KEY_Q, InputAction.GO_NORTHWEST);
+		keyToAction.put(Keyboard.KEY_NUMPAD7, InputAction.GO_NORTHWEST);
+		keyToAction.put(Keyboard.KEY_E, InputAction.GO_NORTHEAST);
+		keyToAction.put(Keyboard.KEY_NUMPAD9, InputAction.GO_NORTHEAST);
+		keyToAction.put(Keyboard.KEY_Z, InputAction.GO_SOUTHWEST);
+		keyToAction.put(Keyboard.KEY_NUMPAD1, InputAction.GO_SOUTHWEST);
+		keyToAction.put(Keyboard.KEY_C, InputAction.GO_SOUTHEAST);
+		keyToAction.put(Keyboard.KEY_NUMPAD3, InputAction.GO_SOUTHEAST);
+		keyToAction.put(Keyboard.KEY_W, InputAction.GO_NORTH);
+		keyToAction.put(Keyboard.KEY_W, InputAction.GO_NORTH);
+		keyToAction.put(Keyboard.KEY_NUMPAD5, InputAction.DO_NOTHING);
+		
+	}
+	
+	
 
 }
