@@ -37,8 +37,11 @@ public class Operators {
 		
 		// Add the corresponding action to the operator
 		Action action = new Action(Action.ActionType.KILL, self, victim);
+		
+		// The weight for killing actions
+		int weight = 1;
 
-		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
 
 	public static Operator takeOperator(Actor self, Prop prop) {
@@ -60,8 +63,11 @@ public class Operators {
 		
 		// Add the corresponding action to the operator
 		Action action = new Action(Action.ActionType.TAKE, self, prop);
+		
+		// The weight for taking actions
+		int weight = 5;
 
-		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
 	
 	public static Operator meetOperator(Actor self, Actor actor) {
@@ -84,8 +90,11 @@ public class Operators {
 		
 		// Add the corresponding action to the operator
 		Action action = new Action(Action.ActionType.MEET, self, actor);
+		
+		// The weight for meeting actions
+		int weight = 10;
 
-		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
 
 
@@ -108,8 +117,11 @@ public class Operators {
 		
 		// Add the corresponding action to the operator
 		Action action = new Action(Action.ActionType.VISIT, self, targetLocation);
+		
+		// The weight for visiting actions
+		int weight = 5;
 
-		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
 
 	public static Operator giveOperator(Actor self, Actor recipient, Prop prop) {
@@ -134,6 +146,9 @@ public class Operators {
 		// Add the corresponding action to the operator
 		Action action = new Action(Action.ActionType.GIVE, self, recipient, prop);
 		
-		return new Operator(beTrue, beFalse, setTrue, setFalse, action);
+		// The weight for giving actions
+		int weight = 5;
+		
+		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
 }

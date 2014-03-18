@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
+import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
@@ -16,7 +17,6 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
 // - Se till att algoritmen fungerar med generell indata [check-ish] (verkar fungera, ej övertestat)
 // - Gör så att PlotTest fungerar (eller gör en bedömning om det bör fungera eller ej)
 // - Refaktorera, plocka ut metoder som kan vara användbara även för en AdvancedAIAlgorithm
-// - Se till att NameGen tar en seed, kanske?
 // - Gör så att huvudpersonen inte kan dö
 // - Gör så att de noder som genereras är lite vettigare (enkel lösning: gör så de baseras på allas handlingar)
 // - Bevisa att olösbara problem kan uppstå
@@ -28,11 +28,31 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
 
 public class BasicAIAlgorithm {
 
-	public static PlotGraph createPlot(ArrayList<Scene> scenes,
-			ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
+	private ArrayList<Scene> scenes;
+	private ArrayList<Actor> actors;
+	private ArrayList<Prop> props;
+	
+	private ArrayList<Agent> agents;
+	private Agent mainAgent;
+	private HashMap<Agent, ArrayList<Operator>> operators;
+	
+	private Random random;
+
+	private PlotGraph plotGraph;
+
+	public BasicAIAlgorithm(ArrayList<Scene> scenes, ArrayList<Actor> actors,
+			ArrayList<Prop> props, Random random) {
+		this.scenes = scenes;
+		this.actors = actors;
+		this.props = props;
+		this.random = random;
+		plotGraph = createPlot();
+	}
+
+	private PlotGraph createPlot() {
 
 		// Put actors on scenes and props on scenes and actors
-		placePlotBodies(scenes, actors, props, random);
+		placePlotBodies();
 
 		PlotGraph plotGraph = new PlotGraph();
 		// Add the first vertex
@@ -41,17 +61,16 @@ public class BasicAIAlgorithm {
 		PlotVertex lastVertex = rootVertex;
 
 		// Create all agents
-		ArrayList<Agent> agents = createAgents(actors);
+		createAgents();
 		// It's a bit arbitrary, but we decide that the last agent in the list
 		// is the main character
-		Agent mainAgent = agents.get(agents.size() - 1);
+		mainAgent = agents.get(agents.size() - 1);
 		// Create all agents' goals
-		setAgentGoals(agents, scenes, actors, props, random);
+		setAgentGoals();
 		// Create all operators
-		HashMap<Agent, ArrayList<Operator>> operators = createOperators(agents,
-				scenes, actors, props);
+		createOperators();
 
-		// While no agent's goal is met
+		// While the main agent's goals aren't met and the main agent lives
 		while (!mainAgent.goalsMet() & mainAgent.getSelf().isAlive()) {
 
 			// Check if agents are alive; if one is not, remove the agent
@@ -66,39 +85,68 @@ public class BasicAIAlgorithm {
 			}
 
 			// Choose operators
-			HashMap<Agent, Operator> chosenOps = chooseOpsAlg(agents,
-					operators, random);
+			HashMap<Agent, Operator> chosenOps = chooseOpsAlg();
 
 			for (Agent agent : agents) {
 				Operator op = chosenOps.get(agent);
+				
+				if (op == null) {
+					continue;
+				}
 				// If the conditions are still met (since another actor can
 				// have done something this iteration that makes the chosen
 				// operator undoable)
-				if (checkConditions(op.getBeTrue(), op.getBeFalse())) {
-					// Perform all the operations
-					for (ICondition cond : op.getSetTrue()) {
-						cond.set(true);
-					}
-					for (ICondition cond : op.getSetFalse()) {
-						cond.set(false);
-					}
 
-					if (agent == mainAgent) {
-						// Add an edge and a vertex to the plot graph
-						// corresponding to the
-						// main agent's operator
-						PlotVertex newVertex = new PlotVertex("");
-						PlotEdge newEdge = new PlotEdge(chosenOps
-								.get(mainAgent).getAction());
+				boolean opPerformed = performOp(op, agent);
 
-						plotGraph.addVertex(lastVertex, newVertex, newEdge);
-						lastVertex = newVertex;
-					}
+				// If the main character performed the op
+				if ((agent == mainAgent) & opPerformed) {
+					// Add an edge and a vertex to the plot graph
+					// corresponding to the
+					// main agent's operator
+					PlotVertex newVertex = new PlotVertex("");
+					PlotEdge newEdge = new PlotEdge(chosenOps.get(mainAgent)
+							.getAction());
+
+					plotGraph.addVertex(lastVertex, newVertex, newEdge);
+					lastVertex = newVertex;
+				}
+				
+				// If the op was done to the main character
+				if (op.getAction().getObjectActor() == mainAgent.getSelf() & opPerformed) {
+					// Add an edge and a vertex to the plot graph
+					// corresponding to the
+					// performed operator
+					PlotVertex newVertex = new PlotVertex("");
+					PlotEdge newEdge = new PlotEdge(chosenOps.get(agent)
+							.getAction());
+
+					plotGraph.addVertex(lastVertex, newVertex, newEdge);
+					lastVertex = newVertex;					
 				}
 			}
 		}
 
 		return plotGraph;
+	}
+
+	/** 
+	 * @param op
+	 * @param agent
+	 * @return if it succeeds to perform the op
+	 */
+	private boolean performOp(Operator op, Agent agent) {
+		if (checkConditions(op.getBeTrue(), op.getBeFalse())) {
+			for (ICondition cond : op.getSetTrue()) {
+				cond.set(true);
+			}
+			for (ICondition cond : op.getSetFalse()) {
+				cond.set(false);
+			}
+			return true;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -111,8 +159,7 @@ public class BasicAIAlgorithm {
 	 * @param props
 	 * @param random
 	 */
-	private static void placePlotBodies(ArrayList<Scene> scenes,
-			ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
+	private void placePlotBodies() {
 
 		// To be able to remove them when they're placed, the actors and
 		// props are placed in queues, implemented as LinkedLists
@@ -173,9 +220,7 @@ public class BasicAIAlgorithm {
 
 	// This is the algorithm that determines which operators the agents
 	// will try this iteration
-	private static HashMap<Agent, Operator> chooseOpsAlg(
-			ArrayList<Agent> agents, HashMap<Agent, ArrayList<Operator>> ops,
-			Random random) {
+	private HashMap<Agent, Operator> chooseOpsAlg() {
 
 		HashMap<Agent, Operator> chosenOps = new HashMap<Agent, Operator>();
 
@@ -183,7 +228,7 @@ public class BasicAIAlgorithm {
 			ArrayList<Operator> bestOps = new ArrayList<Operator>();
 			int bestOpValue = 0;
 
-			for (Operator op : ops.get(agent)) {
+			for (Operator op : operators.get(agent)) {
 				int valueOfOp = -1;
 				if (checkConditions(op.getBeTrue(), op.getBeFalse())) {
 					valueOfOp = 0;
@@ -215,7 +260,9 @@ public class BasicAIAlgorithm {
 
 			Operator chosenOp;
 			if (bestOps.size() > 0) {
-				chosenOp = bestOps.get(random.nextInt(bestOps.size()));
+				chosenOp = randomizeOp(bestOps);
+				// Old way to randomize:
+				//chosenOp = bestOps.get(random.nextInt(bestOps.size()));
 			} else {
 				// TODO: Should the program ever be able to go here?
 				chosenOp = null;
@@ -225,12 +272,59 @@ public class BasicAIAlgorithm {
 
 		return chosenOps;
 	}
+	
+	// Different ops should have different weights
+	// E.g. it should be less likely that an actor kills than that it moves
+	private Operator randomizeOp(ArrayList<Operator> ops) {
+		// Compute the total weight of the ops
+		// Add the ops to a list, according to its weight
+		// (yes, this is not an optimal way to do it, but it works and is easy)
+		int totalWeight = 0;
+		ArrayList<Operator> weightedOps = new ArrayList<Operator>();
+		for (Operator op : ops) {
+			totalWeight += op.getWeight();
+			for (int i = 0; i < op.getWeight(); i++) {
+				weightedOps.add(op);
+			}
+		}
+		//TODO This is so stupid
+		// By adding a number of nulls, it is very possible 
+		// that an agent determines to do no operation (by using null as operator)
+		// This also means that there will be no error when the only possible
+		// actions have 0 weight
+		int amountOfNulls = 10;
+		totalWeight += amountOfNulls;
+		for (int i = 0; i < amountOfNulls; i++) {
+			weightedOps.add(null);
+		}
+		
+		Operator randomOp = weightedOps.get(random.nextInt(totalWeight));
+		return randomOp;
+		/*
+		// Randomize a number, choose a random op based on the
+		// randomized number and the ops' weights
+		Operator randomOp = null;
+		int randomInt = random.nextInt(totalWeight);
+		System.out.println(randomInt);
+		// TODO This doesn't seem to work
+		for (Operator op : ops) {
+			randomDouble -= op.getWeight();
+			if (randomDouble <= 0.0d) {
+				randomOp = op;
+				System.out.println(randomOp.getAction());
+				System.out.println(randomDouble);
+				System.out.println(randomOp.getWeight());
+				System.out.println("---");
+				break;
+			}
+		}
+		
+		return randomOp;*/
+	}
 
 	// Defines all the operators for each agent
-	private static HashMap<Agent, ArrayList<Operator>> createOperators(
-			ArrayList<Agent> agents, ArrayList<Scene> scenes,
-			ArrayList<Actor> actors, ArrayList<Prop> props) {
-		HashMap<Agent, ArrayList<Operator>> operators = new HashMap<Agent, ArrayList<Operator>>();
+	private void createOperators() {
+		operators = new HashMap<Agent, ArrayList<Operator>>();
 
 		for (Agent agent : agents) {
 			ArrayList<Operator> agentsOperators = new ArrayList<Operator>();
@@ -242,7 +336,26 @@ public class BasicAIAlgorithm {
 				if (actor == self) {
 					continue;
 				}
-				agentsOperators.add(Operators.killOperator(self, actor));
+				
+				Operator killOp = Operators.killOperator(self, actor);
+				// Special case:
+				// Set the weight of the killOp to 0 if the object actor
+				// is the main character (that is, tha main character can't die)
+				if (actor == mainAgent.getSelf()) {
+					killOp.setWeight(0);
+				}
+				// Another special case:
+				// Only the mainAgent should be able to kill the
+				// character that the mainAgent wants to kill
+				if (actor != mainAgent.getSelf()) {
+					for (ICondition mainGoal : mainAgent.getTrueGoals()) {
+						if (killOp.getSetTrue().contains(mainGoal)) {
+							killOp.setWeight(0);
+						}
+					}
+				}
+				
+				agentsOperators.add(killOp);
 				agentsOperators.add(Operators.meetOperator(self, actor));
 
 				for (Prop prop : props) {
@@ -261,25 +374,19 @@ public class BasicAIAlgorithm {
 
 			operators.put(agent, agentsOperators);
 		}
-
-		return operators;
 	}
 
-	private static ArrayList<Agent> createAgents(ArrayList<Actor> actors) {
-		ArrayList<Agent> agents = new ArrayList<Agent>();
+	private void createAgents() {
+		agents = new ArrayList<Agent>();
 
 		for (Actor actor : actors) {
 			Agent agent = new Agent(actor);
 			agents.add(agent);
 		}
-
-		return agents;
 	}
 
 	// Stochastically sets goals for all the agents
-	private static void setAgentGoals(ArrayList<Agent> agents,
-			ArrayList<Scene> scenes, ArrayList<Actor> actors,
-			ArrayList<Prop> props, Random random) {
+	private void setAgentGoals() {
 		for (Agent agent : agents) {
 
 			ICondition goal;
@@ -331,7 +438,7 @@ public class BasicAIAlgorithm {
 		}
 	}
 
-	private static boolean checkConditions(ArrayList<ICondition> beTrue,
+	private boolean checkConditions(ArrayList<ICondition> beTrue,
 			ArrayList<ICondition> beFalse) {
 		for (ICondition condition : beTrue) {
 			if (!condition.get()) {
@@ -344,5 +451,9 @@ public class BasicAIAlgorithm {
 			}
 		}
 		return true;
+	}
+
+	public PlotGraph getPlotGraph() {
+		return plotGraph;
 	}
 }
