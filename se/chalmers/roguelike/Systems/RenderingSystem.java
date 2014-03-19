@@ -135,12 +135,14 @@ public class RenderingSystem implements ISystem {
 						glColor3f(1.0f, 1.0f, 1.0f);
 					}
 					if(tile != null && tile.hasBeenSeen()){
-						glColor3f(0.0f, 1.0f, 0.0f);
-						drawMinimap(tile.getSprite(), drawPos);
-						glColor3f(1.0f, 1.0f, 1.0f);
+						// Tiles within of the camera view that will be drawn on minimap
+						drawMinimap(tile.getSprite(), drawPos);						
 					}
 				} else if(tile != null && tile.hasBeenSeen()){
+					// Tiles outside of the camera view that will be drawn on minimap
+					glColor3f(0.5f, 0.5f, 0.5f);
 					drawMinimap(tile.getSprite(), drawPos);
+					glColor3f(1.0f, 1.0f, 1.0f);
 				}
 			}
 		}
@@ -177,7 +179,6 @@ public class RenderingSystem implements ISystem {
 				if(flag != null && flag.getFlag()){
 					activeStar = entity;
 					glColor3f(1.0f, 0.0f, 0.0f);
-//					font.drawString(300, 300, "buggy line");
 					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
 				} else {
