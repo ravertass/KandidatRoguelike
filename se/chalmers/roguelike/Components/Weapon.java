@@ -54,7 +54,7 @@ public class Weapon implements IComponent{
 		return numberOfDice;
 	}
 	public int getModifier(){
-		return 4;
+		return modifier;
 	}
 	public String getTargetingSystemString(){
 		if(targetingSystem == TargetingSystem.SINGLE_TARGET){
