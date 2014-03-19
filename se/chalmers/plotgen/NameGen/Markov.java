@@ -207,7 +207,7 @@ public class Markov {
 		int random = randomizer.nextInt(list.size());
 		String genName = list.get(random);
 		
-		String twoLetter = initNextChar(genName, firstOrderMarkovTable);
+		String twoLetter = initNextChar(genName, firstOrderMarkovTable, randomizer);
 		if (twoLetter.equals(genName))
 			return firstToUpperCase(twoLetter);
 		
@@ -217,14 +217,14 @@ public class Markov {
 		if (ORDER == 2)
 			return firstToUpperCase(createName(twoLetter, secondOrderMarkovTable, randomizer));
 		
-		String threeLetter = initNextChar(twoLetter, secondOrderMarkovTable);
+		String threeLetter = initNextChar(twoLetter, secondOrderMarkovTable, randomizer);
 		if (threeLetter.equals(twoLetter))
 			return firstToUpperCase(threeLetter);
 
 		if (ORDER == 3)
 			return firstToUpperCase(createName(threeLetter, thirdOrderMarkovTable, randomizer));
 
-		String fourLetter = initNextChar(threeLetter, thirdOrderMarkovTable);
+		String fourLetter = initNextChar(threeLetter, thirdOrderMarkovTable, randomizer);
 		if (fourLetter.equals(threeLetter))
 			return firstToUpperCase(fourLetter);
 
@@ -264,14 +264,14 @@ public class Markov {
 	}
 
 	private String initNextChar(String sequence,
-			HashMap<String, MarkovInstance> hmap) {
+			HashMap<String, MarkovInstance> hmap, Random randomizer) {
 		ArrayList<String> list = new ArrayList<String>();
 		MarkovInstance instance = hmap.get(sequence);
 		list = instance.toProbabilitiesWithout(end);
 		if (list.isEmpty()) {
 			return sequence;
 		}
-		int random = (int) (Math.random() * list.size());
+		int random = randomizer.nextInt(list.size());
 		return sequence + list.get(random);
 	}
 

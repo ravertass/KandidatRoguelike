@@ -11,8 +11,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import se.chalmers.roguelike.Components.Sprite;
-
 /**
  * This class creates buttons and draw them on the screen
  *

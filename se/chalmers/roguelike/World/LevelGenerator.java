@@ -19,24 +19,23 @@ import se.chalmers.roguelike.util.Triangle;
 
 public class LevelGenerator {
 
-	
+	//Variables that alter the creation of a dungeon
 	private final int amountOfRooms = 100;
 	private int width = 80;
 	private int height = 80;
-	private int xMinDisplacement = 0, yMinDisplacement = 0;
 	private int largeEnoughRoom = 8;
+	private int generatedRoomSize = 7;
+	
+	private int xMinDisplacement = 0, yMinDisplacement = 0;
 	private char[][] worldGrid;
 	private ArrayList<Rectangle> rooms;
 	private ArrayList<Rectangle> largeRooms = new ArrayList<Rectangle>();
-	Random rand; // replace with new Random(seed); later, already tried and
-					// works
+	Random rand;
+	
 	private long seed;
 	private ArrayList<Entity> enemies;
 
 	public LevelGenerator(long seed) {
-
-		Random seedRand = new Random();
-		// long seed = 3182815830558287750L;
 		System.out.println("Using seed: " + seed);
 		this.seed = seed;
 		rand = new Random(seed);
@@ -50,7 +49,7 @@ public class LevelGenerator {
 		separateRooms();
 		grid = initWorldGrid();
 
-		// atm so we can print it
+		//For printing purposes
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				grid[y][x] = ' ';
@@ -69,7 +68,6 @@ public class LevelGenerator {
 		}
 		
 		// create corridors from the edges
-		//createCorridors(minimumSpanning);	
 		drawCorridors(grid, minimumSpanning);
 		drawRooms(grid);
 		
@@ -110,7 +108,6 @@ public class LevelGenerator {
 //		}
 		// Sort the list of nodes (sorts by X-value, low to high)
 		Collections.sort(nodes);
-		
 		
 		DelauneyTriangulator dTriangulator = new DelauneyTriangulator(Triangle.getSuperTriangle2(height, width, 0, 0));
 		return dTriangulator.triangulate(nodes);
@@ -237,10 +234,7 @@ public class LevelGenerator {
 					grid[y][x-1] = 'X';
 				if (grid[y-1][x-1] == ' ') 
 					grid[y-1][x-1] = 'X';
-				
-			
 			}
-			
 		}
 	}
 	
@@ -288,15 +282,15 @@ public class LevelGenerator {
 	}
 
 	/**
-	 * Generates a room, keep in mind that the way the code is current written
-	 * (which will change) the room size will be decreates by two in both width
+	 * Generates a room, keep in mind that the way the code is currently written
+	 * the room size will be decreased by two in both width
 	 * and height so that it will have borders.
 	 * 
 	 * @return a Rectangle representing a room
 	 */
 	private Rectangle generateRoom() {
-		int height = 5 + rand.nextInt(7); // will be decreased by two
-		int width = 5 + rand.nextInt(7); // will be decreased by two when
+		int height = 5 + rand.nextInt(generatedRoomSize); // will be decreased by two
+		int width = 5 + rand.nextInt(generatedRoomSize); // will be decreased by two when
 											// rendered
 		Rectangle newRoom = new Rectangle(width, height);
 		return newRoom;
@@ -345,7 +339,6 @@ public class LevelGenerator {
 			}
 		}
 		return tiles;
-
 	}
 	
 	public Dungeon toDungeon(Engine engine) {
@@ -371,8 +364,7 @@ public class LevelGenerator {
 	}
 
 	public void print(char[][] worldGrid) {
-		System.out
-				.println("_____________________________________________________________");
+		System.out.println("____________________________________________________");
 		for (int y = 0; y < height; y++) {
 			System.out.println(worldGrid[y]);
 		}
