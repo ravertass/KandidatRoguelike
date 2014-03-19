@@ -297,7 +297,6 @@ public class Engine {
 			
 			ArrayList<Entity> enemies = dungeon.getEnemies();
 			for (Entity entity : enemies) {
-				System.out.println("anropar engine.addEntity " +entity);
 				addEntity(entity);
 			}
 			addEntity(player);
@@ -308,7 +307,11 @@ public class Engine {
 	public void loadOverworld(){
 
 		if(gameState == GameState.DUNGEON && dungeon != null){
+			ArrayList<Entity> enemies = dungeon.getEnemies();
 			dungeon.unregister();
+			for (Entity entity : enemies) {
+				removeEntity(entity);
+			}
 			removeEntity(player); // TODO: Remove, this is due to some bug
 			System.out.println("Unregister of dungeon done");
 		} else if(gameState == GameState.MAIN_MENU) {
@@ -320,7 +323,11 @@ public class Engine {
 	}
 	public void loadMainMenu() {
 		if(gameState == GameState.DUNGEON && dungeon != null){
+			ArrayList<Entity> enemies = dungeon.getEnemies();
 			dungeon.unregister();
+			for (Entity entity : enemies) {
+				removeEntity(entity);
+			}
 			removeEntity(player); // TODO: Remove, this is due to some bug
 			System.out.println("Unregister of dungeon done");
 		} else if (gameState == GameState.OVERWORLD) {
