@@ -388,27 +388,27 @@ public class RenderingSystem implements ISystem {
 	private void drawMinimap(Sprite sprite, Position position) {
 		if(!sprite.getVisibility())
 			return;
-		// TODO: Fix so that the values -200 etcs arent just hardcoded but can easily
-		// be changed, and fixed so the minimap doesn't cover anything else and that it
-		// only shows a radius of the players
+		// TODO: Move the variables to a better place and in general change the hardcoded stuff in the whole class
+		int minimapWidth = 200;
+		int minimapHeight = 200;
+		int minimapX = (Engine.screenWidth-minimapWidth);
+		int minimapY = Engine.screenHeight-minimapHeight;
 		Texture texture = sprite.getTexture();
-		int size = 2; //Engine.spriteSize;//sprite.getSize(); // Times two, makes sprites twice as large
-
-		int x = position.getX() * size + (Engine.screenWidth-200);
-		int y = position.getY() * size + (Engine.screenHeight-200);
-		
-//		int x = (position.getX() - camX) * size;
-//		int y = (position.getY() - camY) * size;
-		
-		// Get the coordinates of the current sprite
-		// in the spritesheet in a form that OpenGL likes,
-		// which is a float between 0 and 1
+		int size = 1;
+		int camX = camera.getPosition().getX();
+		int camY = camera.getPosition().getY();
+		//int x = (position.getX() - camX)* size + minimapX+(minimapWidth-(camera.getWidth()*Engine.spriteSize))/2;
+		//int y = (position.getY() - camY)* size + minimapY-(200-camera.getHeight()/2*size);
+		int x = (position.getX() - camX) * size+minimapX + minimapWidth/2-camera.getWidth()*size/(2);
+		int y = (position.getY() - camY) * size+minimapY + minimapHeight/2-camera.getHeight()*size/(2);
+		if(x < minimapX || y < minimapY){
+			return;
+		}
 		float spriteULX = sprite.getUpperLeftX();
 		float spriteULY = sprite.getUpperLeftY();
 		float spriteLRX = sprite.getLowerRightX();
 		float spriteLRY = sprite.getLowerRightY();
-		
-		
+
 		drawTexturedQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
 	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, 
@@ -431,10 +431,6 @@ public class RenderingSystem implements ISystem {
 	private void drawUntexturedQuad(int x, int y, int width, int height){
 		glDisable(GL11.GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
-//			GL11.glVertex2i(x,y+height);
-//			GL11.glVertex2i(x+width,y+height);
-//			GL11.glVertex2i(x+width,y+height);
-//			GL11.glVertex2i(x,y+height);
 			glVertex2d(x, y);
 			glVertex2d(x + width, y);
 			glVertex2d(x + width, y + height);
