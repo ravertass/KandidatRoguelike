@@ -47,4 +47,9 @@ public class Camera {
 	public int getHeight() {
 		return this.CAMERA_HEIGHT;
 	}
+	
+	public boolean contains(Position p){
+		return pos.getX() <= p.getX() && p.getX() <= pos.getX()+getWidth() &&
+				pos.getY() <= p.getY() && p.getY() <= pos.getY()+getHeight();
+	}
 }

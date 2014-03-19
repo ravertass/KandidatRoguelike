@@ -100,15 +100,13 @@ public class RenderingSystem implements ISystem {
 		// Sets the cameras position to the current position of the player
 		int cwidth = camera.getWidth();
 		int cheight = camera.getHeight();
-		Position playerPos = player.getComponent(Position.class);
 		
-		// It's a bit confusing that the camera is set here...
+		Position playerPos = player.getComponent(Position.class);
 		camera.setPosition(new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2));
 		
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		// This seems to be unnecessary
 		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
 		
 		ShadowCaster sc = new ShadowCaster();
@@ -126,7 +124,7 @@ public class RenderingSystem implements ISystem {
 			for(int y = 0; y < dungeon.getWorldHeight(); y++) {
 				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
-				if(x < pos.getX() + cwidth && y < pos.getY() + cheight){
+				if(camera.contains(drawPos)){
 					if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
 						if(!Engine.debug)
 							tile.setHasBeenSeen(true);
@@ -136,8 +134,12 @@ public class RenderingSystem implements ISystem {
 						draw(tile.getSprite(), drawPos);
 						glColor3f(1.0f, 1.0f, 1.0f);
 					}
-				}
-				if(tile != null && tile.hasBeenSeen()){
+					if(tile != null && tile.hasBeenSeen()){
+						glColor3f(0.0f, 1.0f, 0.0f);
+						drawMinimap(tile.getSprite(), drawPos);
+						glColor3f(1.0f, 1.0f, 1.0f);
+					}
+				} else if(tile != null && tile.hasBeenSeen()){
 					drawMinimap(tile.getSprite(), drawPos);
 				}
 			}
