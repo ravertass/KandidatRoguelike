@@ -47,6 +47,7 @@ import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
@@ -54,6 +55,9 @@ import se.chalmers.roguelike.util.FontRenderer;
 import se.chalmers.roguelike.util.ShadowCaster;
 import se.chalmers.roguelike.util.TrueTypeFont;
 
+
+
+import static org.lwjgl.util.glu.GLU.gluPerspective;
 /**
  * This is the system that draws everything to be drawn.
  * It knows of all entities with both position and sprites, and those are
@@ -220,6 +224,8 @@ public class RenderingSystem implements ISystem {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, DISPLAY_WIDTH, 0, DISPLAY_HEIGHT, 1, -1);
+
+//        gluPerspective((float) 30, 1024f / 768f, 0.001f, 100);
 		glMatrixMode(GL_MODELVIEW);
 //		glEnable(GL_TEXTURE_2D); 
 		// Enables the use of transparent PNGs
@@ -233,27 +239,28 @@ public class RenderingSystem implements ISystem {
 	 */
 	private void setupDisplay() {
 		try {
-//			DisplayMode displayMode = null;
-//	        DisplayMode[] modes = Display.getAvailableDisplayModes();
-//
-//	        for (int i = 0; i < modes.length; i++)
-//	        {
-//	            if (modes[i].getWidth() == DISPLAY_WIDTH
-//	            && modes[i].getHeight() == DISPLAY_HEIGHT
-//	            && modes[i].isFullscreenCapable())
-//	              {
-//	                   displayMode = modes[i];
-//	              }
-//	        }
-			Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH,DISPLAY_HEIGHT));
-			Display.setFullscreen(true);
+			DisplayMode displayMode = null;
+			DisplayMode[] modes = Display.getAvailableDisplayModes();
+
+			for (int i = 0; i < modes.length; i++) {
+				if (modes[i].getWidth() == DISPLAY_WIDTH
+						&& modes[i].getHeight() == DISPLAY_HEIGHT
+						&& modes[i].isFullscreenCapable()) {
+					displayMode = modes[i];
+				}
+			}
+			if (displayMode == null) {
+				displayMode = new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+			}
+			Display.setDisplayMode(displayMode);
+			Display.setFullscreen(false);
 			Display.setTitle("AstRogue");
 			Display.create();
-		} catch (LWJGLException e) {			
+		} catch (LWJGLException e) {
 			e.printStackTrace();
 			Display.destroy();
 			System.exit(1);
-		}	
+		}
 	}
 	
 	/**
@@ -405,9 +412,7 @@ public class RenderingSystem implements ISystem {
 		float spriteLRY = sprite.getLowerRightY();
 		
 		
-		System.out.println("x: "+y);
 		drawTexturedQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
-//		font.drawString(x, y, "foobar");
 	}
 	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, 
 			float spriteULX, float spriteULY, float spriteLRX, float spriteLRY){
@@ -459,51 +464,6 @@ public class RenderingSystem implements ISystem {
 	    entitiesToDraw.remove(entity);
     }
 	
-	public void drawMenu(String[] menuItems) {
-					
-			int x = 64;
-			int height = Display.getDisplayMode().getHeight();
-			int width = Display.getDisplayMode().getWidth();
-					
-					
-			//Stuff is upside down without this
-			glDisable(GL_LIGHTING);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glOrtho(0, width, height, 0, 1, -1);
-			
-			glMatrixMode(GL_MODELVIEW);
-			glPushMatrix();
-			glLoadIdentity();
-					
-			int y = height/2;
-		 			
-			for (String s : menuItems){
-				fontRenderer.draw(x, y, s);
-				y += 40;
-			}
-					
-			
-			/*
-			*	//create a button
-			*
-			*	Button button = new Button();
-			*	button.addButton(x, 40, "menu_button");
-			*	button.draw();
-			*		
-			*	//create a rectangle (black?)
-			*	glBegin(GL_QUADS);
-			*		glVertex2f(width/2, height/2);
-			*		glVertex2f(width/2+100, height/2);
-			*		glVertex2f(width/2+100, height/2+32);
-			*		glVertex2f(width/2, height/2+32);
-			*	glEnd();
-			*/
-			
-			Display.update();
-			Display.sync(60);
-		}
-	
 	public void setCamera(Camera c) {
 		this.camera = c;
 	}
@@ -545,11 +505,42 @@ public class RenderingSystem implements ISystem {
 	}
 
 	private void drawHud(Entity e){
+		int menuWidth = 200;
+		
 		// e will always be the player here
 		Attribute attributes = e.getComponent(Attribute.class);
-		String info = "Player: "+attributes.getName()+"\nLevel "+attributes.getLevel()+
-				"\nXP: "+attributes.experience()+"\nStrength: "+attributes.strength();
-		font.drawString(Engine.screenWidth-200, Engine.screenHeight-200, info);
+		Weapon weapon = e.getComponent(Weapon.class);
+		Health health = e.getComponent(Health.class); 
+		double hp = health.getHealth();
+		double hpPercentage = health.getHealthPercentage();
+		double maxHp = health.getMaxHealth();
+
+		String info = "Name: "+attributes.getName() +
+				"\nLevel "+attributes.getLevel()+
+				"\nXP: "+attributes.experience()+
+				"\nStrength: " + attributes.strength() + 
+				"\nEndurance: " + attributes.endurance() + 
+				"\nPerception: " + attributes.perception() +
+				"\nIntelligence: " + attributes.intelligence() + 
+				"\nCharisma: " + attributes.charisma() + 
+				"\nAgility: " + attributes.agility() +
+				"\n" +
+				"\nWeapon information: " +
+				"\nDamage: " + weapon.getNumberOfDice() +"D6"+
+				(weapon.getModifier() == 0 ? "" : "+"+weapon.getModifier()) +
+				"\nRange: " + weapon.getRange() +
+				"\nTargeting system: " + weapon.getTargetingSystemString(); 
+		
+		
+		
+		// draw hp bar
+		glColor3f(1.0f, 0.0f, 0.0f); // red part
+		drawUntexturedQuad(Engine.screenWidth-(menuWidth-10),Engine.screenHeight-menuWidth-20,(int)(menuWidth*0.9),17);
+		glColor3f(0.0f, 1.0f, 0.0f); // green part
+		drawUntexturedQuad(Engine.screenWidth-(menuWidth-10),Engine.screenHeight-menuWidth-20,(int)(menuWidth*0.9*hpPercentage),17);
+		glColor3f(1.0f,1.0f,1.0f);
+		font.drawString(Engine.screenWidth-menuWidth/2,Engine.screenHeight-menuWidth-22,(int)hp+"/"+(int)maxHp);
+		font.drawString(Engine.screenWidth-menuWidth, Engine.screenHeight-menuWidth-20-20, info); // -20 due to HP bar 
 	}
 }
 
