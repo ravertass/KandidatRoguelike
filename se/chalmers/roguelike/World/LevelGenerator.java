@@ -49,8 +49,8 @@ public class LevelGenerator {
 		this.seed = seed;
 		rand = new Random(seed);
 		amountOfRooms = baseAmountOfRooms;
-		largeEnoughRoom = maxRoomSize;
-		generatedRoomSize = enoughRoomSize;
+		generatedRoomSize = maxRoomSize;
+		largeEnoughRoom = enoughRoomSize;
 		this.corridorDensity = corridorDensity;
 		height = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
 		width = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
@@ -61,7 +61,7 @@ public class LevelGenerator {
 		System.out.println("Using seed: " + seed);
 		this.seed = seed;
 		rand = new Random(seed);	
-		amountOfRooms = 30 + rand.nextInt(50);
+		amountOfRooms = 10 + rand.nextInt(50);
 		generatedRoomSize = 3 + rand.nextInt(10);
 		largeEnoughRoom = 2 + rand.nextInt(generatedRoomSize-2);
 		corridorDensity = 5 + rand.nextInt(96);
@@ -354,6 +354,10 @@ public class LevelGenerator {
 		floors.add("grass");
 		floors.add("grass_djungle");
 		floors.add("noslipfloor");
+		floors.add("ice");
+		floors.add("brown_floor");
+		floors.add("light_brown_floor");
+		
 		
 		String floor = floors.get(rand.nextInt(floors.size()));
 		
