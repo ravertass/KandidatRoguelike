@@ -72,33 +72,33 @@ public class InputManager implements Subject {
 		if(Keyboard.isKeyDown(pressedKey) && System.currentTimeMillis() - startTime > 180L) {
 			if(keyToAction.containsKey(pressedKey))
 				notifyObservers(keyToAction.get(pressedKey));
-		} else {
-			while (Keyboard.next()) {
-				if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-					System.exit(0); //Should be passed on to engine?
-				}
-	
-				if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
-						&& Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-					notifyObservers(InputAction.SET_FULLSCREEN);
-				}
-				if (Keyboard.getEventKeyState()) {
-					int key = Keyboard.getEventKey();
-					pressedKey = key;
-					if(keyToAction.containsKey(key))
-						notifyObservers(keyToAction.get(key));
-					
-				}
-				if (Keyboard.isKeyDown(Keyboard.KEY_F1)){
-					Engine.debug = !Engine.debug; 
-				}
-				if (Keyboard.isKeyDown(Keyboard.KEY_F2)){
-					//Engine.dungeon.unregister();
-					engine.loadOverworld();
-					// Engine.gameState = Engine.GameState.DUNGEON;
-				}
+		}
+		while (Keyboard.next()) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+				System.exit(0); //Should be passed on to engine?
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_F1)){
+				Engine.debug = !Engine.debug; 
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_F2)){
+				//Engine.dungeon.unregister();
+				engine.loadOverworld();
+				// Engine.gameState = Engine.GameState.DUNGEON;
+			}
+
+			if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
+					&& Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+				notifyObservers(InputAction.SET_FULLSCREEN);
+			}
+			if (Keyboard.getEventKeyState()) {
+				int key = Keyboard.getEventKey();
+				pressedKey = key;
+				if(keyToAction.containsKey(key))
+					notifyObservers(keyToAction.get(key));
+				
 			}
 		}
+		
 		while (Mouse.next()) {
 			if (Mouse.getEventButtonState()) {
 				if(engine.debug){
