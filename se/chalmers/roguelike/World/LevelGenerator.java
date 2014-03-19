@@ -20,11 +20,12 @@ import se.chalmers.roguelike.util.Triangle;
 public class LevelGenerator {
 
 	//Variables that alter the creation of a dungeon
-	private final int amountOfRooms = 100;
-	private int width = 80;
-	private int height = 80;
-	private int largeEnoughRoom = 8;
-	private int generatedRoomSize = 7;
+	private int amountOfRooms;
+	private int width;
+	private int height;
+	private int largeEnoughRoom;
+	private int generatedRoomSize;
+	private int corridorDensity;
 	
 	private int xMinDisplacement = 0, yMinDisplacement = 0;
 	private char[][] worldGrid;
@@ -35,13 +36,40 @@ public class LevelGenerator {
 	private long seed;
 	private ArrayList<Entity> enemies;
 
-	public LevelGenerator(long seed) {
+	/**
+	 * 
+	 * @param seed					Will be used for a new Random
+	 * @param baseAmountOfRooms		amount of rooms to generate
+	 * @param maxRoomSize			The max size of a room, will be increased by two
+	 * @param enoughRoomSize 		The height and width a room should at least have, will be decreased by two (walls) 
+	 * @param corridorDensity		The percentage of edges that should be re-added after MST
+	 */
+	public LevelGenerator(long seed, int baseAmountOfRooms, int maxRoomSize, int enoughRoomSize, int corridorDensity) {
 		System.out.println("Using seed: " + seed);
 		this.seed = seed;
 		rand = new Random(seed);
+		amountOfRooms = baseAmountOfRooms;
+		largeEnoughRoom = maxRoomSize;
+		generatedRoomSize = enoughRoomSize;
+		this.corridorDensity = corridorDensity;
+		height = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
+		width = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
 		run();
 	}
 
+	public LevelGenerator(long seed) { 
+		System.out.println("Using seed: " + seed);
+		this.seed = seed;
+		rand = new Random(seed);	
+		amountOfRooms = 30 + rand.nextInt(50);
+		largeEnoughRoom = 3 + rand.nextInt(10);
+		generatedRoomSize = 2 + rand.nextInt(largeEnoughRoom-2);
+		corridorDensity = 5 + rand.nextInt(96);
+		height = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
+		width = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
+		run();
+	}
+	
 	private void run() {
 		char[][] grid;
 
@@ -63,7 +91,7 @@ public class LevelGenerator {
 		// add 20% of the edges back
 		for (Edge edge : edges) {
 			if (!minimumSpanning.contains(edge))
-				if(rand.nextInt(4) == 0)
+				if(rand.nextInt(100)+1 <= corridorDensity)
 					minimumSpanning.add(edge);
 		}
 		
@@ -95,7 +123,7 @@ public class LevelGenerator {
 		}
 		System.out.println("wololo");
 		System.out.println(enemies);
-//		print(grid);
+		print(grid);
 		worldGrid = grid;
 	}
 
@@ -375,7 +403,7 @@ public class LevelGenerator {
 		int y = largeRooms.get(0).y + 1 + Math.abs(yMinDisplacement);
 		return new Position(x,y);
 	}
-//	public static void main(String[] args) {
-//		new ModifiedGenerator();
-//	}
+	public static void main(String[] args) {
+		new LevelGenerator(123456789L, 100, 8, 7, 20);
+	}
 }
