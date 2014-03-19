@@ -24,6 +24,7 @@ public class Dungeon {
 	private Position startpos;
 	private Tile[][] tiles;
 	private ArrayList<Entity> entities;
+	private ArrayList<Entity> enemies;
 	private ArrayList<Entity> backup = new ArrayList<Entity>();  
 	private Engine engine; // I dont like this solution, discuss and make better
 	/**
@@ -33,12 +34,13 @@ public class Dungeon {
 	 * @param worldHeight the height of the world
 	 * @param tiles the array of tiles the world should have
 	 */
-	public Dungeon(Engine engine, int worldWidth, int worldHeight, Tile[][] tiles, Position startpos){
+	public Dungeon(Engine engine, int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> enemies ){
 		this.engine = engine;
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
 		this.setStartpos(startpos);
+		this.setEnemies(enemies);
 		entities = new ArrayList<Entity>();
 	}
 	
@@ -119,14 +121,15 @@ public class Dungeon {
 	 * @param worldHeight the height of the new world, must match the array
 	 * @param tiles a 2d-array of all the tiles for the world
 	 */
-	public void setWorld(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos){
+	public void setWorld(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> enemies){
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
+		this.setEnemies(enemies);
 		this.setStartpos(startpos);
 	}
 	public void addEntity(int x, int y, Entity entity){
-		if(x<0 || y<0 || x > worldWidth || y > worldHeight || tiles[y][x] == null){
+		if(x<0 || y<0 || x >= worldWidth || y >= worldHeight || tiles[y][x] == null){
 			return; // out of bounds check
 		}
 		tiles[y][x].addEntity(entity);
@@ -183,5 +186,13 @@ public class Dungeon {
 
 	public void setStartpos(Position startpos) {
 		this.startpos = startpos;
+	}
+
+	public ArrayList<Entity> getEnemies() {
+		return enemies;
+	}
+
+	public void setEnemies(ArrayList<Entity> enemies) {
+		this.enemies = enemies;
 	}
 }

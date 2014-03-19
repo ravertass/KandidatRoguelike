@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import se.chalmers.plotgen.NameGen.NameGenerator;
 import se.chalmers.roguelike.Engine;
-import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.EntityCreator;
+import se.chalmers.roguelike.Components.*;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
+import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.KruskalMST;
@@ -26,12 +30,15 @@ public class LevelGenerator {
 	private ArrayList<Rectangle> largeRooms = new ArrayList<Rectangle>();
 	Random rand; // replace with new Random(seed); later, already tried and
 					// works
+	private long seed;
+	private ArrayList<Entity> enemies;
 
 	public LevelGenerator(long seed) {
 
 		Random seedRand = new Random();
 		// long seed = 3182815830558287750L;
 		System.out.println("Using seed: " + seed);
+		this.seed = seed;
 		rand = new Random(seed);
 		run();
 	}
@@ -65,6 +72,31 @@ public class LevelGenerator {
 		//createCorridors(minimumSpanning);	
 		drawCorridors(grid, minimumSpanning);
 		drawRooms(grid);
+		
+		enemies = new ArrayList<Entity>();
+		NameGenerator ng = new NameGenerator(3, seed);
+		for (Rectangle room : largeRooms) {
+			if(rand.nextInt(4) == 0) {
+				ArrayList<IComponent> components = new ArrayList<IComponent>();
+				
+				String name = ng.generateName();
+				String sprite = "mobs/mob_blue";
+				components.add(new Health(10));
+				components.add(new TurnsLeft(1));
+				components.add(new Input());
+				components.add(new Sprite(sprite));
+				int x = room.x + 2 + Math.abs(xMinDisplacement);
+				int y = room.y + 2 + Math.abs(yMinDisplacement);
+				components.add(new Position(x,y));
+				components.add(new Direction());
+				components.add(new AI());
+				Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE, SpaceRace.SPACE_DWARF, 1, 50);
+				components.add(attribute);
+				enemies.add(EntityCreator.createEntity("(Enemy)" + name, components));
+			}
+		}
+		System.out.println("wololo");
+		System.out.println(enemies);
 //		print(grid);
 		worldGrid = grid;
 	}
@@ -319,7 +351,7 @@ public class LevelGenerator {
 	public Dungeon toDungeon(Engine engine) {
 		Dungeon dungeon = new Dungeon(engine);
 		Tile[][] tiles = toTiles();
-		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos());
+		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos(), enemies);
 		
 		return dungeon;
 	}

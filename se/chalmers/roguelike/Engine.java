@@ -203,12 +203,12 @@ public class Engine {
 	 * Worlds worst game loop.
 	 */
 	public void run(){
-		entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_HUMAN);
+		entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		//TODO använd en till spelet given seed
-		NameGenerator ng = new NameGenerator(2, new Random().nextLong());
-		for (int i = 0; i <4; i++)
-			entityCreator.createEnemy(ng.generateName());
-		entityCreator.createHighlight();
+//		NameGenerator ng = new NameGenerator(2, new Random().nextLong());
+//		for (int i = 0; i <4; i++)
+//			entityCreator.createEnemy(ng.generateName());
+//		entityCreator.createHighlight();
 		
 		while(true){
 			if(gameState == GameState.DUNGEON) {
@@ -294,7 +294,12 @@ public class Engine {
 		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
 			this.dungeon = dungeon;
 			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
-
+			
+			ArrayList<Entity> enemies = dungeon.getEnemies();
+			for (Entity entity : enemies) {
+				System.out.println("anropar engine.addEntity " +entity);
+				addEntity(entity);
+			}
 			addEntity(player);
 			this.dungeon.register();
 			gameState = newState;
