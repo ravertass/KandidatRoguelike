@@ -15,6 +15,7 @@ public class Weapon implements IComponent{
 	private int modifier;
 	
 	public enum TargetingSystem {
+		// if you add more, remember to change getTargetingSystemString()
 		SINGLE_TARGET, CONE, CIRCLE, NOVA, LINE, BOX
 	}
 	
@@ -48,5 +49,28 @@ public class Weapon implements IComponent{
 	public TargetingSystem getTargetingSystem() {
 		return this.targetingSystem;
 	}
-
+	
+	public int getNumberOfDice(){
+		return numberOfDice;
+	}
+	public int getModifier(){
+		return 4;
+	}
+	public String getTargetingSystemString(){
+		if(targetingSystem == TargetingSystem.SINGLE_TARGET){
+			return "Single target";
+		} else if(targetingSystem == TargetingSystem.CONE){
+			return "Cone";
+		} else if(targetingSystem == TargetingSystem.CIRCLE){
+			return "Circle";
+		} else if(targetingSystem == TargetingSystem.NOVA){
+			return "Nova";
+		} else if(targetingSystem == TargetingSystem.LINE){
+			return "LINE";
+		} else if(targetingSystem == TargetingSystem.BOX){
+			return "Box";
+		} else {
+			return "Unknown";
+		}
+	}
 }
