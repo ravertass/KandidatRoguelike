@@ -339,6 +339,7 @@ public class LevelGenerator {
 		walls.add("wall2");
 		walls.add("wallfan");
 		walls.add("wall_red");
+		walls.add("wall_blue");
 		String wall = walls.get(rand.nextInt(walls.size()));
 		
 		ArrayList<String> floors = new ArrayList<String>();
@@ -357,6 +358,7 @@ public class LevelGenerator {
 		floors.add("ice");
 		floors.add("brown_floor");
 		floors.add("light_brown_floor");
+		floors.add("floor_purple");
 		
 		
 		String floor = floors.get(rand.nextInt(floors.size()));
