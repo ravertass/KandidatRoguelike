@@ -70,7 +70,8 @@ public class InputManager implements Subject {
 	 */
 	public void update() {
 		if(Keyboard.isKeyDown(pressedKey) && System.currentTimeMillis() - startTime > 180L) {
-			notifyObservers(keyToAction.get(pressedKey));
+			if(keyToAction.containsKey(pressedKey))
+				notifyObservers(keyToAction.get(pressedKey));
 		} else {
 			while (Keyboard.next()) {
 				if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
@@ -84,7 +85,8 @@ public class InputManager implements Subject {
 				if (Keyboard.getEventKeyState()) {
 					int key = Keyboard.getEventKey();
 					pressedKey = key;
-					notifyObservers(keyToAction.get(key));
+					if(keyToAction.containsKey(key))
+						notifyObservers(keyToAction.get(key));
 					
 				}
 				if (Keyboard.isKeyDown(Keyboard.KEY_F1)){
