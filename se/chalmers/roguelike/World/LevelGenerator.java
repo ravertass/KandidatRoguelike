@@ -62,8 +62,8 @@ public class LevelGenerator {
 		this.seed = seed;
 		rand = new Random(seed);	
 		amountOfRooms = 30 + rand.nextInt(50);
-		largeEnoughRoom = 3 + rand.nextInt(10);
-		generatedRoomSize = 2 + rand.nextInt(largeEnoughRoom-2);
+		generatedRoomSize = 3 + rand.nextInt(10);
+		largeEnoughRoom = 2 + rand.nextInt(generatedRoomSize-2);
 		corridorDensity = 5 + rand.nextInt(96);
 		height = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
 		width = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
@@ -125,6 +125,8 @@ public class LevelGenerator {
 		System.out.println(enemies);
 		print(grid);
 		worldGrid = grid;
+		if(largeRooms.size() == 0)
+			run();
 	}
 
 	private ArrayList<Edge> triangulateRooms(char[][] grid) {
@@ -335,7 +337,8 @@ public class LevelGenerator {
 		ArrayList<String> walls = new ArrayList<String>();
 		walls.add("brick");
 		walls.add("wall2");
-		
+		walls.add("wallfan");
+		walls.add("wall_red");
 		String wall = walls.get(rand.nextInt(walls.size()));
 		
 		ArrayList<String> floors = new ArrayList<String>();
@@ -346,9 +349,11 @@ public class LevelGenerator {
 		floors.add("stone2");
 		floors.add("wood_floor");
 		floors.add("floor_tiled_whiteandblack");
+		floors.add("floor_tiled_diamond");
 		floors.add("floor2");
 		floors.add("grass");
 		floors.add("grass_djungle");
+		floors.add("noslipfloor");
 		
 		String floor = floors.get(rand.nextInt(floors.size()));
 		

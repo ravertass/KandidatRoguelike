@@ -223,6 +223,7 @@ public class Engine {
 				turnSystem.update();
 				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
 					aiSystem.update(dungeon);
+					System.out.println("------------NEW TURN------------");
 				}
 				
 			//} else if(gameState == GameState.MENU) {
