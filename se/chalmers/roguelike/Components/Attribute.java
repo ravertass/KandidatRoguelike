@@ -54,12 +54,12 @@ public class Attribute implements IComponent {
 			this.endurance += 4;
 			this.agility -= 4;
 		}
-		System.out.println(name +   ", Strength: " + strength + 
-									", Endurance: " + endurance + 
-									", Perception: " + perception +
-									", Intelligence: " + intelligence + 
-									", Charisma: " + charisma + 
-									", Agility: " + agility);
+//		System.out.println(name +   ", Strength: " + strength + 
+//									", Endurance: " + endurance + 
+//									", Perception: " + perception +
+//									", Intelligence: " + intelligence + 
+//									", Charisma: " + charisma + 
+//									", Agility: " + agility);
 	}
 
 	public int getMod(int statValue) {

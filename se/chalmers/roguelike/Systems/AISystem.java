@@ -107,7 +107,6 @@ public class AISystem implements ISystem {
 	 * @param e
 	 */
 	public void addEntity(Entity e){
-		System.out.println("Adding enemy");
 		entities.add(e);		
 	}
 	
