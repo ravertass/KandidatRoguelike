@@ -99,6 +99,15 @@ public class LevelGenerator {
 		drawCorridors(grid, minimumSpanning);
 		drawRooms(grid);
 		
+		generateEnemies();
+		
+		print(grid);
+		worldGrid = grid;
+		if(largeRooms.size() == 0)
+			run();
+	}
+
+	private void generateEnemies() {
 		enemies = new ArrayList<Entity>();
 		NameGenerator ng = new NameGenerator(3, seed);
 		for (Rectangle room : largeRooms) {
@@ -121,12 +130,8 @@ public class LevelGenerator {
 				enemies.add(EntityCreator.createEntity("(Enemy)" + name, components));
 			}
 		}
-		System.out.println("wololo");
 		System.out.println(enemies);
-		print(grid);
-		worldGrid = grid;
-		if(largeRooms.size() == 0)
-			run();
+		
 	}
 
 	private ArrayList<Edge> triangulateRooms(char[][] grid) {
