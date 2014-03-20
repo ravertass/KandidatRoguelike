@@ -199,7 +199,7 @@ public class LevelGenerator {
 	}
 	private void generateStairs(){
 		if (rand.nextInt(100)+1 <= stairProbability){
-			int stairsDownRoom = rand.nextInt(largeRooms.size() + 1);
+			int stairsDownRoom = rand.nextInt(largeRooms.size()) + 1;
 			Rectangle room = largeRooms.get(stairsDownRoom);
 			int x = room.x + 1 + Math.abs(xMinDisplacement) + rand.nextInt(room.width - 2);
 			int y = room.y + 1 + Math.abs(yMinDisplacement) + rand.nextInt(room.height - 2);
