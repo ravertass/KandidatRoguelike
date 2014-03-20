@@ -47,7 +47,8 @@ public class LevelGenerator {
 	
 	private long seed;
 	private ArrayList<Entity> enemies;
-
+	
+	private Dungeon dungeon;
 	/**
 	 * 
 	 * @param seed					Will be used for a new Random
@@ -147,10 +148,24 @@ public class LevelGenerator {
 		drawRooms(grid);
 		
 		generateEnemies();
-		generateStairs();
+//		generateStairs();
+		
+		
 		
 		print(grid);
 		worldGrid = grid;
+		
+		dungeon  = toDungeon();
+		//Generate nextLevel
+		if (rand.nextInt(100)+1 <= stairProbability){
+			LevelGenerator nextLevelGen = new LevelGenerator(seed, (int) (amountOfRooms*0.7), generatedRoomSize, largeEnoughRoom, corridorDensity, stairProbability-20, wall, floor);
+			Dungeon nextDungeonLevel = nextLevelGen.toDungeon();
+			dungeon.setNextDungeonLevel(nextDungeonLevel);
+			nextDungeonLevel.setPreviousDungeonLevel(dungeon);
+
+			System.out.println("Created Subdungeon");
+		}
+		
 		if(largeRooms.size() == 0)
 			run();
 	}
@@ -183,11 +198,7 @@ public class LevelGenerator {
 	}
 	private void generateStairs(){
 		// TODO
-//		if (rand.nextInt(100)+1 <= stairProbability){
-//		
-//			LevelGenerator nextLevelGen = new LevelGenerator(seed, (int) (amountOfRooms*0.9), generatedRoomSize, largeEnoughRoom, corridorDensity, stairProbability-20, wall, floor);
-//			Dungeon nextDungeonLevel = nextLevelGen.toDungeon();
-//		}
+
 		
 	}
 	private ArrayList<Edge> triangulateRooms(char[][] grid) {
@@ -417,6 +428,10 @@ public class LevelGenerator {
 		Tile[][] tiles = toTiles();
 		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos(), enemies);
 		
+		return dungeon;
+	}
+	
+	public Dungeon getDungeon(){
 		return dungeon;
 	}
 	

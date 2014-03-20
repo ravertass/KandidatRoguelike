@@ -88,7 +88,7 @@ public class OverworldSystem implements ISystem, Observer{
 			long seed=activeStar.getComponent(Seed.class).getSeed();
 			
 			LevelGenerator generator = new LevelGenerator(seed);
-			starDungeon = generator.toDungeon();
+			starDungeon = generator.getDungeon();
 			activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
 		} 
 		
