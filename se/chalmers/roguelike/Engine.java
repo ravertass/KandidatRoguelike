@@ -220,7 +220,6 @@ public class Engine {
 		
 		while(true){
 			if(gameState == GameState.DUNGEON) {
-				renderingSys.update(dungeon);
 				renderingSys.update();
 				inputManager.update();
 				combatsystem.update(dungeon);
@@ -310,11 +309,14 @@ public class Engine {
 			}
 			addEntity(player);
 			this.dungeon.register(this);
+			renderingSys.setDungeon(dungeon);
 			gameState = newState;
 		}
 	}
 	public void loadOverworld(){
-
+		if(gameState == GameState.OVERWORLD){
+			return;
+		}
 		if(gameState == GameState.DUNGEON && dungeon != null){
 			ArrayList<Entity> enemies = dungeon.getEnemies();
 			dungeon.unregister(this);
