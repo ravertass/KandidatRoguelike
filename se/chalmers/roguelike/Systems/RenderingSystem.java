@@ -65,6 +65,7 @@ public class RenderingSystem implements ISystem {
 	private Camera camera;
 	private Entity player;
 	private FontRenderer fontRenderer;
+	private Dungeon dungeon;
 	// TODO: Move these two away from here
 	Texture owBackground = null;
 	Texture owMenu = null; 
@@ -73,6 +74,12 @@ public class RenderingSystem implements ISystem {
 	
 	private final int DISPLAY_WIDTH = Engine.screenWidth;
 	private final int DISPLAY_HEIGHT = Engine.screenHeight;
+	
+	private final int menuWidth = 200;
+	private final int minimapWidth = menuWidth;
+	private final int minimapHeight = menuWidth;
+	
+	
 	TrueTypeFont font;
 	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
@@ -96,7 +103,7 @@ public class RenderingSystem implements ISystem {
 	}
 	
 	
-	public void update(Dungeon dungeon) { // stupid solution, make it nondependant on world
+	public void drawDungeon() { // stupid solution, make it nondependant on world
 		// Sets the cameras position to the current position of the player
 		int cwidth = camera.getWidth();
 		int cheight = camera.getHeight();
@@ -150,6 +157,7 @@ public class RenderingSystem implements ISystem {
 	
 	public void update() {
 		if(Engine.gameState == Engine.GameState.DUNGEON){
+			drawDungeon();
 			// Draws healthbars for all entities that stand on a lit tile.
 			for (Entity e : entitiesToDraw) {
 				if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
@@ -390,16 +398,14 @@ public class RenderingSystem implements ISystem {
 		if(!sprite.getVisibility())
 			return;
 		// TODO: Move the variables to a better place and in general change the hardcoded stuff in the whole class
-		int minimapWidth = 200;
-		int minimapHeight = 200;
+
 		int minimapX = (Engine.screenWidth-minimapWidth);
 		int minimapY = Engine.screenHeight-minimapHeight;
 		Texture texture = sprite.getTexture();
 		int size = 1;
 		int camX = camera.getPosition().getX();
 		int camY = camera.getPosition().getY();
-		//int x = (position.getX() - camX)* size + minimapX+(minimapWidth-(camera.getWidth()*Engine.spriteSize))/2;
-		//int y = (position.getY() - camY)* size + minimapY-(200-camera.getHeight()/2*size);
+		
 		int x = (position.getX() - camX) * size+minimapX + minimapWidth/2-camera.getWidth()*size/(2);
 		int y = (position.getY() - camY) * size+minimapY + minimapHeight/2-camera.getHeight()*size/(2);
 		if(x < minimapX || y < minimapY){
@@ -499,7 +505,6 @@ public class RenderingSystem implements ISystem {
 	}
 
 	private void drawHud(Entity e){
-		int menuWidth = 200;
 		
 		// e will always be the player here
 		Attribute attributes = e.getComponent(Attribute.class);
@@ -535,6 +540,14 @@ public class RenderingSystem implements ISystem {
 		glColor3f(1.0f,1.0f,1.0f);
 		font.drawString(Engine.screenWidth-menuWidth/2,Engine.screenHeight-menuWidth-22,(int)hp+"/"+(int)maxHp);
 		font.drawString(Engine.screenWidth-menuWidth, Engine.screenHeight-menuWidth-20-20, info); // -20 due to HP bar 
+	}
+	
+	/**
+	 * Updates the dungeon being rendered.
+	 * @param dungeon the current dungeon being used
+	 */
+	public void setDungeon(Dungeon dungeon){
+		this.dungeon = dungeon;
 	}
 }
 
