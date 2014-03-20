@@ -41,6 +41,7 @@ public class LevelGenerator {
 	Random rand;
 	
 	private int stairProbability;
+	private Position stairsDown = null;
 	
 	private String floor;
 	private String wall;
@@ -148,7 +149,7 @@ public class LevelGenerator {
 		drawRooms(grid);
 		
 		generateEnemies();
-//		generateStairs();
+		generateStairs();
 		
 		
 		
@@ -157,7 +158,7 @@ public class LevelGenerator {
 		
 		dungeon  = toDungeon();
 		//Generate nextLevel
-		if (rand.nextInt(100)+1 <= stairProbability){
+		if (stairsDown != null){
 			LevelGenerator nextLevelGen = new LevelGenerator(seed, (int) (amountOfRooms*0.7), generatedRoomSize, largeEnoughRoom, corridorDensity, stairProbability-20, wall, floor);
 			Dungeon nextDungeonLevel = nextLevelGen.toDungeon();
 			dungeon.setNextDungeonLevel(nextDungeonLevel);
@@ -197,10 +198,14 @@ public class LevelGenerator {
 		
 	}
 	private void generateStairs(){
-		// TODO
-
-		
+		if (rand.nextInt(100)+1 <= stairProbability){
+			int stairsDownRoom = rand.nextInt(largeRooms.size() + 1);
+			int x = largeRooms.get(stairsDownRoom).x + 1 + Math.abs(xMinDisplacement);
+			int y = largeRooms.get(stairsDownRoom).y + 1 + Math.abs(yMinDisplacement);
+			stairsDown = new Position(x, y);
+		}
 	}
+	
 	private ArrayList<Edge> triangulateRooms(char[][] grid) {
 		// To see where we set nodes
 		ArrayList<Position> nodes = generateNodes();
