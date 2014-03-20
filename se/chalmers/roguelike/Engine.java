@@ -303,10 +303,10 @@ public class Engine {
 			this.dungeon = dungeon;
 			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
 			
-			ArrayList<Entity> enemies = dungeon.getEnemies();
-			for (Entity entity : enemies) {
-				addEntity(entity);
-			}
+//			ArrayList<Entity> enemies = dungeon.getEnemies();
+//			for (Entity entity : enemies) {
+//				addEntity(entity);
+//			}
 			addEntity(player);
 			this.dungeon.register(this);
 			renderingSys.setDungeon(dungeon);
@@ -320,9 +320,9 @@ public class Engine {
 		if(gameState == GameState.DUNGEON && dungeon != null){
 			ArrayList<Entity> enemies = dungeon.getEnemies();
 			dungeon.unregister(this);
-			for (Entity entity : enemies) {
-				removeEntity(entity);
-			}
+//			for (Entity entity : enemies) {
+//				removeEntity(entity);
+//			}
 			removeEntity(player); // TODO: Remove, this is due to some bug
 			System.out.println("Unregister of dungeon done");
 		} else if(gameState == GameState.MAIN_MENU) {

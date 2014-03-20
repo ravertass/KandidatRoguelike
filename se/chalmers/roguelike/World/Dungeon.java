@@ -21,9 +21,9 @@ public class Dungeon {
 	private Position startpos;
 	private Tile[][] tiles;
 	private ArrayList<Entity> entities;
-	private ArrayList<Entity> enemies;
-	private ArrayList<Entity> backup = new ArrayList<Entity>();  
-	
+//	private ArrayList<Entity> enemies;
+//	private ArrayList<Entity> backup = new ArrayList<Entity>();  
+	private boolean currentlyRegistering = false;
 	private Dungeon previousDungeonLevel;
 	private Dungeon nextDungeonLevel;
 	/**
@@ -38,8 +38,9 @@ public class Dungeon {
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
 		this.setStartpos(startpos);
-		this.setEnemies(enemies);
+//		this.setEnemies(enemies);
 		entities = new ArrayList<Entity>();
+		entities.addAll(enemies);
 	}
 	
 	/**
@@ -54,24 +55,6 @@ public class Dungeon {
 		worldHeight = 50;
 		tiles = new Tile[worldHeight][worldWidth];
 		entities = new ArrayList<Entity>();
-		
-		// Debug hardcoded world
-		
-		// X and Y flipped
-//		for(int x=0;x<worldWidth;x++){
-//			for(int y=0;y<worldHeight;y++){
-//				if(Dice.roll(2, 6)>=8 && ((x != 10) || (y != 10))) {
-//					Sprite sprite = new Sprite("brick");
-//					tiles[x][y] = new Tile(sprite, false, true);
-//				} else if (x == 0 || y == 0 || x == worldWidth-1 || y == worldHeight-1) {
-//					Sprite sprite = new Sprite("brick");
-//					tiles[x][y] = new Tile(sprite, false, true);
-//				} else {
-//					Sprite sprite = new Sprite("sand");
-//					tiles[x][y] = new Tile(sprite, true, true);
-//				}
-//			}
-//		}
 	}
 	
 	/**
@@ -122,10 +105,14 @@ public class Dungeon {
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
-		this.setEnemies(enemies);
+		//this.setEnemies(enemies);
+		entities.addAll(enemies);
 		this.setStartpos(startpos);
 	}
 	public void addEntity(int x, int y, Entity entity){
+		if(currentlyRegistering){
+			return; // since we want to keep all the entities for the world when switching
+		}
 		if(x<0 || y<0 || x >= worldWidth || y >= worldHeight || tiles[y][x] == null){
 			return; // out of bounds check
 		}
@@ -133,6 +120,9 @@ public class Dungeon {
 		entities.add(entity);
 	}
 	public void removeEntity(int x, int y, Entity entity){
+		if(currentlyRegistering){
+			return; // since we want to keep all the entities for the world when switching
+		}
 		if(x<0 || y<0 || x > worldWidth || y > worldHeight || tiles[y][x] == null){
 			return; // out of bounds check
 		}
@@ -149,32 +139,29 @@ public class Dungeon {
 		 * 
 		 * I'll rewrite it to not be crap some day I guess.
 		 */
+		currentlyRegistering = true;
 		int player = -1;
 		for(int i=0;i<entities.size();i++){
 			Entity e = entities.get(i);
 			if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){ 
 				player = i;
 			}
-			backup.add(e);
-		}
-
-		for(Entity e : backup){
 			engine.removeEntity(e);
 		}
+		currentlyRegistering = false;
 		if(player != -1){
-			backup.remove(player); // makes sure the player is removed from the backup so he isn't added twice in a restore (once from engine, once in register())
+			entities.remove(player); // makes sure the player is removed from the backup so he isn't added twice in a restore (once from engine, once in register())
 		}
-		entities.clear(); // clears the active entities, to avoid concurrent exceptions
 	}
+	
 	public void register(Engine engine){
 		System.out.println("Foobar");
-		for(Entity e : backup){
+		currentlyRegistering = true;
+		for(Entity e : entities){
 			System.out.println("RESTORING");
 			engine.addEntity(e);
 		}
-		
-		// All entities has been added, backup can be cleared
-		backup.clear();
+		currentlyRegistering = false;
 	}
 
 	public Position getStartpos() {
@@ -185,18 +172,18 @@ public class Dungeon {
 		this.startpos = startpos;
 	}
 
-	public ArrayList<Entity> getEnemies() {
-		return enemies;
-	}
+//	public ArrayList<Entity> getEnemies() {
+//		return enemies;
+//	}
 
 	public void setEnemies(ArrayList<Entity> enemies) {
-		this.enemies = enemies;
+//		this.enemies = enemies;
+		entities.addAll(enemies);
 	}
 
 	public Dungeon getPreviousDungeonLevel() {
 		return previousDungeonLevel;
 	}
-
 	public void setPreviousDungeonLevel(Dungeon previousDungeonLevel) {
 		this.previousDungeonLevel = previousDungeonLevel;
 	}
