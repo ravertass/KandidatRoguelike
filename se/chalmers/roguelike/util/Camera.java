@@ -13,7 +13,7 @@ public class Camera {
 	
 //	private final int CAMERA_WIDTH = 64; // in tiles
 //	private final int CAMERA_HEIGHT = 48; // in tiles
-	private final int CAMERA_WIDTH = Engine.screenWidth/Engine.spriteSize; // in tiles
+	private final int CAMERA_WIDTH = (Engine.screenWidth-200)/Engine.spriteSize; // in tiles
 	private final int CAMERA_HEIGHT = Engine.screenHeight/Engine.spriteSize; // in tiles
 	
 	public Camera() {
@@ -46,5 +46,10 @@ public class Camera {
 	 */
 	public int getHeight() {
 		return this.CAMERA_HEIGHT;
+	}
+	
+	public boolean contains(Position p){
+		return pos.getX() <= p.getX() && p.getX() <= pos.getX()+getWidth() &&
+				pos.getY() <= p.getY() && p.getY() <= pos.getY()+getHeight();
 	}
 }

@@ -2,7 +2,6 @@ package se.chalmers.roguelike.Systems;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
@@ -18,7 +17,6 @@ import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 
@@ -41,11 +39,13 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
@@ -65,6 +65,7 @@ public class RenderingSystem implements ISystem {
 	private Camera camera;
 	private Entity player;
 	private FontRenderer fontRenderer;
+	private Dungeon dungeon;
 	// TODO: Move these two away from here
 	Texture owBackground = null;
 	Texture owMenu = null; 
@@ -73,6 +74,12 @@ public class RenderingSystem implements ISystem {
 	
 	private final int DISPLAY_WIDTH = Engine.screenWidth;
 	private final int DISPLAY_HEIGHT = Engine.screenHeight;
+	
+	private final int menuWidth = 200;
+	private final int minimapWidth = menuWidth;
+	private final int minimapHeight = menuWidth;
+	
+	
 	TrueTypeFont font;
 	public RenderingSystem() { // possibly remove world?
 		// Magic tricks done by lwjgl
@@ -92,22 +99,21 @@ public class RenderingSystem implements ISystem {
 		// Font
 		Font awtFont = new Font("Times New Roman", Font.BOLD, 14);
 		font = new TrueTypeFont(awtFont, false);
+		
 	}
 	
 	
-	public void update(Dungeon dungeon) { // stupid solution, make it nondependant on world
+	public void drawDungeon() { // stupid solution, make it nondependant on world
 		// Sets the cameras position to the current position of the player
 		int cwidth = camera.getWidth();
 		int cheight = camera.getHeight();
-		Position playerPos = player.getComponent(Position.class);
 		
-		// It's a bit confusing that the camera is set here...
+		Position playerPos = player.getComponent(Position.class);
 		camera.setPosition(new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2));
 		
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		// This seems to be unnecessary
 		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
 		
 		ShadowCaster sc = new ShadowCaster();
@@ -117,19 +123,32 @@ public class RenderingSystem implements ISystem {
 		// This code draws out the background sprites for all tiles in the camera's view
 		Position drawPos = new Position(pos.getX(), pos.getY());
 
+		// These for-loops are more effective, but doesn't show the whole map for the minimap:
+//		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
+//			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
 		
-		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
-			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
+		for(int x = 0; x < dungeon.getWorldWidth(); x++) {
+			for(int y = 0; y < dungeon.getWorldHeight(); y++) {
 				Tile tile = dungeon.getTile(x,y);
 				drawPos.set(x, y);
-				if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
-					if(!Engine.debug)
-						tile.setHasBeenSeen(true);
-					draw(tile.getSprite(),drawPos);
-
-				} else if(tile != null && tile.hasBeenSeen()) {
+				if(camera.contains(drawPos)){
+					if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
+						if(!Engine.debug)
+							tile.setHasBeenSeen(true);
+						draw(tile.getSprite(),drawPos);
+					} else if(tile != null && tile.hasBeenSeen()) {
+						glColor3f(0.5f, 0.5f, 0.5f);
+						draw(tile.getSprite(), drawPos);
+						glColor3f(1.0f, 1.0f, 1.0f);
+					}
+					if(tile != null && tile.hasBeenSeen()){
+						// Tiles within of the camera view that will be drawn on minimap
+						drawMinimap(tile.getSprite(), drawPos);						
+					}
+				} else if(tile != null && tile.hasBeenSeen()){
+					// Tiles outside of the camera view that will be drawn on minimap
 					glColor3f(0.5f, 0.5f, 0.5f);
-					draw(tile.getSprite(), drawPos);
+					drawMinimap(tile.getSprite(), drawPos);
 					glColor3f(1.0f, 1.0f, 1.0f);
 				}
 			}
@@ -138,8 +157,12 @@ public class RenderingSystem implements ISystem {
 	
 	public void update() {
 		if(Engine.gameState == Engine.GameState.DUNGEON){
+			drawDungeon();
 			// Draws healthbars for all entities that stand on a lit tile.
 			for (Entity e : entitiesToDraw) {
+				if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
+					drawHud(e);
+				}
 				if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
 					Position epos = e.getComponent(Position.class);
 					if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
@@ -207,6 +230,8 @@ public class RenderingSystem implements ISystem {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, DISPLAY_WIDTH, 0, DISPLAY_HEIGHT, 1, -1);
+
+//        gluPerspective((float) 30, 1024f / 768f, 0.001f, 100);
 		glMatrixMode(GL_MODELVIEW);
 //		glEnable(GL_TEXTURE_2D); 
 		// Enables the use of transparent PNGs
@@ -220,27 +245,28 @@ public class RenderingSystem implements ISystem {
 	 */
 	private void setupDisplay() {
 		try {
-//			DisplayMode displayMode = null;
-//	        DisplayMode[] modes = Display.getAvailableDisplayModes();
-//
-//	        for (int i = 0; i < modes.length; i++)
-//	        {
-//	            if (modes[i].getWidth() == DISPLAY_WIDTH
-//	            && modes[i].getHeight() == DISPLAY_HEIGHT
-//	            && modes[i].isFullscreenCapable())
-//	              {
-//	                   displayMode = modes[i];
-//	              }
-//	        }
-			Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH,DISPLAY_HEIGHT));
-			Display.setFullscreen(true);
+			DisplayMode displayMode = null;
+			DisplayMode[] modes = Display.getAvailableDisplayModes();
+
+			for (int i = 0; i < modes.length; i++) {
+				if (modes[i].getWidth() == DISPLAY_WIDTH
+						&& modes[i].getHeight() == DISPLAY_HEIGHT
+						&& modes[i].isFullscreenCapable()) {
+					displayMode = modes[i];
+				}
+			}
+			if (displayMode == null) {
+				displayMode = new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+			}
+			Display.setDisplayMode(displayMode);
+			Display.setFullscreen(false);
 			Display.setTitle("AstRogue");
 			Display.create();
-		} catch (LWJGLException e) {			
+		} catch (LWJGLException e) {
 			e.printStackTrace();
 			Display.destroy();
 			System.exit(1);
-		}	
+		}
 	}
 	
 	/**
@@ -276,7 +302,7 @@ public class RenderingSystem implements ISystem {
 		// view; if so, we draw it
 		if (x >= 0 && x < camera.getWidth() * size &&
 				y >= 0 && y < camera.getHeight() * size) {
-			drawQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
+			drawTexturedQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
 			
 		}
 	}
@@ -302,7 +328,7 @@ public class RenderingSystem implements ISystem {
 		float spriteLRX = sprite.getLowerRightX();
 		float spriteLRY = sprite.getLowerRightY();
 		
-		drawQuad(texture, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
+		drawTexturedQuad(texture, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
 
 	}
 
@@ -334,7 +360,7 @@ public class RenderingSystem implements ISystem {
 		float spriteULY = 0.0f;
 		float spriteLRX = ((float) (sizeX)) / owBackground.getTextureWidth();
 		float spriteLRY = ((float) (sizeY)) / owBackground.getTextureHeight();
-		drawQuad(owBackground, 0, 0, Engine.screenWidth, Engine.screenHeight, spriteULX, spriteULY, spriteLRX, spriteLRY);
+		drawTexturedQuad(owBackground, 0, 0, Engine.screenWidth, Engine.screenHeight, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
 	
 	private void drawMenuOW(){
@@ -366,22 +392,58 @@ public class RenderingSystem implements ISystem {
 		float spriteULY = 0.0f;
 		float spriteLRX = ((float) (sizeX)) / owMenu.getTextureWidth();
 		float spriteLRY = ((float) (sizeY)) / owMenu.getTextureHeight();
-		drawQuad(owMenu, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
+		drawTexturedQuad(owMenu, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
-	
-	private void drawQuad(Texture texture, int x, int y, int sizeX, int sizeY, 
+	private void drawMinimap(Sprite sprite, Position position) {
+		if(!sprite.getVisibility())
+			return;
+		// TODO: Move the variables to a better place and in general change the hardcoded stuff in the whole class
+
+		int minimapX = (Engine.screenWidth-minimapWidth);
+		int minimapY = Engine.screenHeight-minimapHeight;
+		Texture texture = sprite.getTexture();
+		int size = 1;
+		int camX = camera.getPosition().getX();
+		int camY = camera.getPosition().getY();
+		
+		int x = (position.getX() - camX) * size+minimapX + minimapWidth/2-camera.getWidth()*size/(2);
+		int y = (position.getY() - camY) * size+minimapY + minimapHeight/2-camera.getHeight()*size/(2);
+		if(x < minimapX || y < minimapY){
+			return;
+		}
+		float spriteULX = sprite.getUpperLeftX();
+		float spriteULY = sprite.getUpperLeftY();
+		float spriteLRX = sprite.getLowerRightX();
+		float spriteLRY = sprite.getLowerRightY();
+
+		drawTexturedQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
+	}
+	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, 
 			float spriteULX, float spriteULY, float spriteLRX, float spriteLRY){
+		
 		texture.bind();
+		glEnable(GL_BLEND); // remove? this should make sure that textures are enabled
 		glBegin(GL_QUADS);
 			glTexCoord2f(spriteULX, spriteLRY);
 			glVertex2d(x, y);
 			glTexCoord2f(spriteLRX, spriteLRY);
-			glVertex2d(x + sizeX, y);
+			glVertex2d(x + width, y);
 			glTexCoord2f(spriteLRX, spriteULY);
-			glVertex2d(x + sizeX, y + sizeY);
+			glVertex2d(x + width, y + height);
 			glTexCoord2f(spriteULX, spriteULY);
-			glVertex2d(x, y + sizeY);
+			glVertex2d(x, y + height);
 		glEnd();
+	}
+	
+	private void drawUntexturedQuad(int x, int y, int width, int height){
+		glDisable(GL11.GL_TEXTURE_2D);
+		glBegin(GL_QUADS);
+			glVertex2d(x, y);
+			glVertex2d(x + width, y);
+			glVertex2d(x + width, y + height);
+			glVertex2d(x, y + height);
+		glEnd();
+		glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
 	public void exit() {
@@ -402,62 +464,10 @@ public class RenderingSystem implements ISystem {
 	    entitiesToDraw.remove(entity);
     }
 	
-	public void drawMenu(String[] menuItems) {
-					
-			int x = 64;
-			int height = Display.getDisplayMode().getHeight();
-			int width = Display.getDisplayMode().getWidth();
-					
-					
-			//Stuff is upside down without this
-			glDisable(GL_LIGHTING);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glOrtho(0, width, height, 0, 1, -1);
-			
-			glMatrixMode(GL_MODELVIEW);
-			glPushMatrix();
-			glLoadIdentity();
-					
-			int y = height/2;
-		 			
-			for (String s : menuItems){
-				fontRenderer.draw(x, y, s);
-				y += 40;
-			}
-					
-			
-			/*
-			*	//create a button
-			*
-			*	Button button = new Button();
-			*	button.addButton(x, 40, "menu_button");
-			*	button.draw();
-			*		
-			*	//create a rectangle (black?)
-			*	glBegin(GL_QUADS);
-			*		glVertex2f(width/2, height/2);
-			*		glVertex2f(width/2+100, height/2);
-			*		glVertex2f(width/2+100, height/2+32);
-			*		glVertex2f(width/2, height/2+32);
-			*	glEnd();
-			*/
-			
-			Display.update();
-			Display.sync(60);
-		}
-	
 	public void setCamera(Camera c) {
 		this.camera = c;
 	}
 	
-	private void drawHudBackground() {
-		
-//		glBegin(GL_QUADS);
-//			glVertex2f(x, y);
-//		glEnd();
-		
-	}
 	/**
 	 * draws healthbars for all entities that have health
 	 * @param e
@@ -477,36 +487,68 @@ public class RenderingSystem implements ISystem {
 		double healthbarLength = healthPercentage * Engine.spriteSize; //calculates how much of the green should be drawn over the red
 		
 		int hblength = (int)healthbarLength;
-		glDisable(GL11.GL_TEXTURE_2D);
 		//draw the red part of the healthbar
 		glColor3f(1.0f, 0.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * Engine.spriteSize &&
 				y >= 0 && y < camera.getHeight() * Engine.spriteSize) {
-			glBegin(GL_QUADS);
-				GL11.glVertex2i(x,y+Engine.spriteSize);
-				GL11.glVertex2i(x+Engine.spriteSize,y+Engine.spriteSize);
-				GL11.glVertex2i(x+Engine.spriteSize,y+Engine.spriteSize+Engine.spriteSize/8);
-				GL11.glVertex2i(x,y+Engine.spriteSize+Engine.spriteSize/8);
-			glEnd();
+			drawUntexturedQuad(x, y+Engine.spriteSize, Engine.spriteSize, Engine.spriteSize/8);
 		}
 		
 		//draw the green part of the healthbar ontop of the red
 		glColor3f(0.0f, 1.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * Engine.spriteSize &&
 				y >= 0 && y < camera.getHeight() * Engine.spriteSize) {
-			glBegin(GL_QUADS);
-				GL11.glVertex2i(x,y+Engine.spriteSize);
-				GL11.glVertex2i(x+hblength,y+Engine.spriteSize);
-				GL11.glVertex2i(x+hblength,y+Engine.spriteSize+Engine.spriteSize/8);
-				GL11.glVertex2i(x,y+Engine.spriteSize+Engine.spriteSize/8);
-			glEnd();
+			drawUntexturedQuad(x, y+Engine.spriteSize, hblength, Engine.spriteSize/8);
 				
 		}
 		glColor3f(1.0f,1.0f,1.0f);
-		glEnable(GL11.GL_TEXTURE_2D);
 	}
 
+	private void drawHud(Entity e){
+		
+		// e will always be the player here
+		Attribute attributes = e.getComponent(Attribute.class);
+		Weapon weapon = e.getComponent(Weapon.class);
+		Health health = e.getComponent(Health.class); 
+		double hp = health.getHealth();
+		double hpPercentage = health.getHealthPercentage();
+		double maxHp = health.getMaxHealth();
+
+		String info = "Name: "+attributes.getName() +
+				"\nLevel "+attributes.getLevel()+
+				"\nXP: "+attributes.experience()+
+				"\nStrength: " + attributes.strength() + 
+				"\nEndurance: " + attributes.endurance() + 
+				"\nPerception: " + attributes.perception() +
+				"\nIntelligence: " + attributes.intelligence() + 
+				"\nCharisma: " + attributes.charisma() + 
+				"\nAgility: " + attributes.agility() +
+				"\n" +
+				"\nWeapon information: " +
+				"\nDamage: " + weapon.getNumberOfDice() +"D6"+
+				(weapon.getModifier() == 0 ? "" : "+"+weapon.getModifier()) +
+				"\nRange: " + weapon.getRange() +
+				"\nTargeting system: " + weapon.getTargetingSystemString(); 
+		
+		
+		
+		// draw hp bar
+		glColor3f(1.0f, 0.0f, 0.0f); // red part
+		drawUntexturedQuad(Engine.screenWidth-(menuWidth-10),Engine.screenHeight-menuWidth-20,(int)(menuWidth*0.9),17);
+		glColor3f(0.0f, 1.0f, 0.0f); // green part
+		drawUntexturedQuad(Engine.screenWidth-(menuWidth-10),Engine.screenHeight-menuWidth-20,(int)(menuWidth*0.9*hpPercentage),17);
+		glColor3f(1.0f,1.0f,1.0f);
+		font.drawString(Engine.screenWidth-menuWidth/2,Engine.screenHeight-menuWidth-22,(int)hp+"/"+(int)maxHp);
+		font.drawString(Engine.screenWidth-menuWidth, Engine.screenHeight-menuWidth-20-20, info); // -20 due to HP bar 
+	}
 	
+	/**
+	 * Updates the dungeon being rendered.
+	 * @param dungeon the current dungeon being used
+	 */
+	public void setDungeon(Dungeon dungeon){
+		this.dungeon = dungeon;
+	}
 }
 
 
