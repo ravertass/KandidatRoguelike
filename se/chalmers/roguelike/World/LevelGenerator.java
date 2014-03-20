@@ -6,12 +6,19 @@ import java.util.Collections;
 import java.util.Random;
 
 import se.chalmers.plotgen.NameGen.NameGenerator;
-import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.EntityCreator;
-import se.chalmers.roguelike.Components.*;
+import se.chalmers.roguelike.Components.AI;
+import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.Direction;
+import se.chalmers.roguelike.Components.Health;
+import se.chalmers.roguelike.Components.IComponent;
+import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.KruskalMST;
@@ -33,6 +40,11 @@ public class LevelGenerator {
 	private ArrayList<Rectangle> largeRooms = new ArrayList<Rectangle>();
 	Random rand;
 	
+	private int stairProbability;
+	
+	private String floor;
+	private String wall;
+	
 	private long seed;
 	private ArrayList<Entity> enemies;
 
@@ -44,7 +56,7 @@ public class LevelGenerator {
 	 * @param enoughRoomSize 		The height and width a room should at least have, will be decreased by two (walls) 
 	 * @param corridorDensity		The percentage of edges that should be re-added after MST
 	 */
-	public LevelGenerator(long seed, int baseAmountOfRooms, int maxRoomSize, int enoughRoomSize, int corridorDensity) {
+	public LevelGenerator(long seed, int baseAmountOfRooms, int maxRoomSize, int enoughRoomSize, int corridorDensity, int stairProbability, String wall, String floor) {
 		System.out.println("Using seed: " + seed);
 		this.seed = seed;
 		rand = new Random(seed);
@@ -52,6 +64,9 @@ public class LevelGenerator {
 		generatedRoomSize = maxRoomSize;
 		largeEnoughRoom = enoughRoomSize;
 		this.corridorDensity = corridorDensity;
+		this.stairProbability = stairProbability;
+		this.wall = wall;
+		this.floor = floor;
 		height = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
 		width = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
 		run();
@@ -67,9 +82,41 @@ public class LevelGenerator {
 		corridorDensity = 5 + rand.nextInt(96);
 		height = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
 		width = 1 + Math.abs(rand.nextInt(amountOfRooms)-20);
+		stairProbability = rand.nextInt(101);
+		generateSprites();
 		run();
 	}
 	
+	private void generateSprites(){
+		ArrayList<String> walls = new ArrayList<String>();
+		walls.add("brick");
+		walls.add("wall2");
+		walls.add("wallfan");
+		walls.add("wall_red");
+		walls.add("wall_blue");
+		wall = walls.get(rand.nextInt(walls.size()));
+		
+		ArrayList<String> floors = new ArrayList<String>();
+		floors.add("sand");
+		floors.add("snow");
+		floors.add("snowy_stone");
+		floors.add("stone");
+		floors.add("stone2");
+		floors.add("wood_floor");
+		floors.add("floor_tiled_whiteandblack");
+		floors.add("floor_tiled_diamond");
+		floors.add("floor2");
+		floors.add("grass");
+		floors.add("grass_djungle");
+		floors.add("noslipfloor");
+		floors.add("ice");
+		floors.add("brown_floor");
+		floors.add("light_brown_floor");
+		floors.add("floor_purple");
+		
+		
+		floor = floors.get(rand.nextInt(floors.size()));
+	}
 	private void run() {
 		char[][] grid;
 
@@ -100,6 +147,7 @@ public class LevelGenerator {
 		drawRooms(grid);
 		
 		generateEnemies();
+		generateStairs();
 		
 		print(grid);
 		worldGrid = grid;
@@ -133,7 +181,15 @@ public class LevelGenerator {
 		System.out.println(enemies);
 		
 	}
-
+	private void generateStairs(){
+		// TODO
+//		if (rand.nextInt(100)+1 <= stairProbability){
+//		
+//			LevelGenerator nextLevelGen = new LevelGenerator(seed, (int) (amountOfRooms*0.9), generatedRoomSize, largeEnoughRoom, corridorDensity, stairProbability-20, wall, floor);
+//			Dungeon nextDungeonLevel = nextLevelGen.toDungeon();
+//		}
+		
+	}
 	private ArrayList<Edge> triangulateRooms(char[][] grid) {
 		// To see where we set nodes
 		ArrayList<Position> nodes = generateNodes();
@@ -339,35 +395,6 @@ public class LevelGenerator {
 	// In the future, do all in tiles directly instead of translating
 	public Tile[][] toTiles(char[][] worldGrid) {
 		
-		ArrayList<String> walls = new ArrayList<String>();
-		walls.add("brick");
-		walls.add("wall2");
-		walls.add("wallfan");
-		walls.add("wall_red");
-		walls.add("wall_blue");
-		String wall = walls.get(rand.nextInt(walls.size()));
-		
-		ArrayList<String> floors = new ArrayList<String>();
-		floors.add("sand");
-		floors.add("snow");
-		floors.add("snowy_stone");
-		floors.add("stone");
-		floors.add("stone2");
-		floors.add("wood_floor");
-		floors.add("floor_tiled_whiteandblack");
-		floors.add("floor_tiled_diamond");
-		floors.add("floor2");
-		floors.add("grass");
-		floors.add("grass_djungle");
-		floors.add("noslipfloor");
-		floors.add("ice");
-		floors.add("brown_floor");
-		floors.add("light_brown_floor");
-		floors.add("floor_purple");
-		
-		
-		String floor = floors.get(rand.nextInt(floors.size()));
-		
 		Tile[][] tiles = new Tile[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -385,13 +412,14 @@ public class LevelGenerator {
 		return tiles;
 	}
 	
-	public Dungeon toDungeon(Engine engine) {
-		Dungeon dungeon = new Dungeon(engine);
+	public Dungeon toDungeon() {
+		Dungeon dungeon = new Dungeon();
 		Tile[][] tiles = toTiles();
 		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos(), enemies);
 		
 		return dungeon;
 	}
+	
 	public Tile[][] toTiles() {
 		return toTiles(worldGrid);
 	}
@@ -419,7 +447,9 @@ public class LevelGenerator {
 		int y = largeRooms.get(0).y + 1 + Math.abs(yMinDisplacement);
 		return new Position(x,y);
 	}
-	public static void main(String[] args) {
-		new LevelGenerator(123456789L, 100, 8, 7, 20);
-	}
+	
+//	public static void main(String[] args) {
+//		new LevelGenerator(123456789L, 100, 8, 7, 20);
+//	}
+
 }

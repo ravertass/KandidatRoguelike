@@ -1,16 +1,24 @@
 package se.chalmers.roguelike;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-import se.chalmers.plotgen.NameGen.NameGenerator;
-import se.chalmers.roguelike.Systems.*;
-import se.chalmers.roguelike.World.Dungeon;
-import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.Systems.AISystem;
+import se.chalmers.roguelike.Systems.CombatSystem;
+import se.chalmers.roguelike.Systems.HighlightSystem;
+import se.chalmers.roguelike.Systems.LevelingSystem;
+import se.chalmers.roguelike.Systems.MainMenuSystem;
+import se.chalmers.roguelike.Systems.MobSpriteSystem;
+import se.chalmers.roguelike.Systems.MoveSystem;
+import se.chalmers.roguelike.Systems.OverworldSystem;
+import se.chalmers.roguelike.Systems.PlayerInputSystem;
+import se.chalmers.roguelike.Systems.RenderingSystem;
+import se.chalmers.roguelike.Systems.TurnSystem;
+import se.chalmers.roguelike.World.Dungeon;
+import se.chalmers.roguelike.util.Camera;
 
 public class Engine {
 	
@@ -249,7 +257,7 @@ public class Engine {
 	 */
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
-		dungeon = new Dungeon(this); // remove engine?
+		dungeon = new Dungeon(); // remove engine?
 		// dungeon.setWorld(50,50,new Generator().toTiles());
 		inputManager = new InputManager(this); // This feels stupid that it should have engine component, maybe change once debug stuff is over for the load manager
 		//inputSys = new InputSystem();
@@ -301,7 +309,7 @@ public class Engine {
 				addEntity(entity);
 			}
 			addEntity(player);
-			this.dungeon.register();
+			this.dungeon.register(this);
 			gameState = newState;
 		}
 	}
@@ -309,7 +317,7 @@ public class Engine {
 
 		if(gameState == GameState.DUNGEON && dungeon != null){
 			ArrayList<Entity> enemies = dungeon.getEnemies();
-			dungeon.unregister();
+			dungeon.unregister(this);
 			for (Entity entity : enemies) {
 				removeEntity(entity);
 			}
@@ -325,7 +333,7 @@ public class Engine {
 	public void loadMainMenu() {
 		if(gameState == GameState.DUNGEON && dungeon != null){
 			ArrayList<Entity> enemies = dungeon.getEnemies();
-			dungeon.unregister();
+			dungeon.unregister(this);
 			for (Entity entity : enemies) {
 				removeEntity(entity);
 			}

@@ -1,13 +1,10 @@
 package se.chalmers.roguelike.World;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.util.Dice;
 
 /**
  * Dungeon is an class that holds the game world along with several helper 
@@ -26,7 +23,9 @@ public class Dungeon {
 	private ArrayList<Entity> entities;
 	private ArrayList<Entity> enemies;
 	private ArrayList<Entity> backup = new ArrayList<Entity>();  
-	private Engine engine; // I dont like this solution, discuss and make better
+	
+	private Dungeon previousDungeonLevel;
+	private Dungeon nextDungeonLevel;
 	/**
 	 * Creates a new world object
 	 * 
@@ -34,8 +33,7 @@ public class Dungeon {
 	 * @param worldHeight the height of the world
 	 * @param tiles the array of tiles the world should have
 	 */
-	public Dungeon(Engine engine, int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> enemies ){
-		this.engine = engine;
+	public Dungeon(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> enemies ){
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
@@ -48,9 +46,8 @@ public class Dungeon {
 	 * Currently generates a new world, will probably be removed in the future
 	 * when a real level generator exists
 	 */
-	public Dungeon(Engine engine){ 
+	public Dungeon(){ 
 		
-		this.engine = engine;
 		
 		// Debug world
 		worldWidth = 50;
@@ -142,7 +139,7 @@ public class Dungeon {
 		tiles[y][x].removeEntity(entity);
 		entities.remove(entity);
 	}
-	public void unregister(){
+	public void unregister(Engine engine){
 
 		/*
 		 * This is probably the worst code I've written in a while. Why does it look 
@@ -169,7 +166,7 @@ public class Dungeon {
 		}
 		entities.clear(); // clears the active entities, to avoid concurrent exceptions
 	}
-	public void register(){
+	public void register(Engine engine){
 		System.out.println("Foobar");
 		for(Entity e : backup){
 			System.out.println("RESTORING");
@@ -194,5 +191,21 @@ public class Dungeon {
 
 	public void setEnemies(ArrayList<Entity> enemies) {
 		this.enemies = enemies;
+	}
+
+	public Dungeon getPreviousDungeonLevel() {
+		return previousDungeonLevel;
+	}
+
+	public void setPreviousDungeonLevel(Dungeon previousDungeonLevel) {
+		this.previousDungeonLevel = previousDungeonLevel;
+	}
+
+	public Dungeon getNextDungeonLevel() {
+		return nextDungeonLevel;
+	}
+
+	public void setNextDungeonLevel(Dungeon nextDungeonLevel) {
+		this.nextDungeonLevel = nextDungeonLevel;
 	}
 }
