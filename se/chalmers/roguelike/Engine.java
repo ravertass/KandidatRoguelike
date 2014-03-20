@@ -205,14 +205,13 @@ public class Engine {
 	public void run(){
 		entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_HUMAN);
 		//TODO använd en till spelet given seed
-		NameGenerator ng = new NameGenerator(2, new Random().nextLong());
-		for (int i = 0; i <4; i++)
-			entityCreator.createEnemy(ng.generateName());
-		entityCreator.createHighlight();
+//		NameGenerator ng = new NameGenerator(2, new Random().nextLong());
+//		for (int i = 0; i <4; i++)
+//			entityCreator.createEnemy(ng.generateName());
+//		entityCreator.createHighlight();
 		
 		while(true){
 			if(gameState == GameState.DUNGEON) {
-				renderingSys.update(dungeon);
 				renderingSys.update();
 				inputManager.update();
 				combatsystem.update(dungeon);
@@ -296,12 +295,15 @@ public class Engine {
 			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
 
 			addEntity(player);
+			renderingSys.setDungeon(dungeon);
 			this.dungeon.register();
 			gameState = newState;
 		}
 	}
 	public void loadOverworld(){
-
+		if(gameState == GameState.OVERWORLD){
+			return;
+		}
 		if(gameState == GameState.DUNGEON && dungeon != null){
 			dungeon.unregister();
 			removeEntity(player); // TODO: Remove, this is due to some bug
