@@ -425,6 +425,12 @@ public class LevelGenerator {
 				}
 			}
 		}
+		
+		// TODO: instead of just change the sprite of the tile, add a stairEntity?
+		tiles[getStartPos().getY()][getStartPos().getX()].getSprite().setSpritesheet("mobs/mob_bear");
+		if(stairsDown !=null)
+			tiles[stairsDown.getY()][stairsDown.getX()].getSprite().setSpritesheet("mobs/mob_bear");
+		
 		return tiles;
 	}
 	
