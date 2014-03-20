@@ -318,7 +318,7 @@ public class Engine {
 			return;
 		}
 		if(gameState == GameState.DUNGEON && dungeon != null){
-			ArrayList<Entity> enemies = dungeon.getEnemies();
+//			ArrayList<Entity> enemies = dungeon.getEnemies();
 			dungeon.unregister(this);
 //			for (Entity entity : enemies) {
 //				removeEntity(entity);
@@ -334,11 +334,11 @@ public class Engine {
 	}
 	public void loadMainMenu() {
 		if(gameState == GameState.DUNGEON && dungeon != null){
-			ArrayList<Entity> enemies = dungeon.getEnemies();
+//			ArrayList<Entity> enemies = dungeon.getEnemies();
 			dungeon.unregister(this);
-			for (Entity entity : enemies) {
-				removeEntity(entity);
-			}
+//			for (Entity entity : enemies) {
+//				removeEntity(entity);
+//			}
 			removeEntity(player); // TODO: Remove, this is due to some bug
 			System.out.println("Unregister of dungeon done");
 		} else if (gameState == GameState.OVERWORLD) {
