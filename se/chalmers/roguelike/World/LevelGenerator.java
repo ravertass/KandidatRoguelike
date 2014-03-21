@@ -149,6 +149,7 @@ public class LevelGenerator {
 		drawRooms(grid);
 		
 		generateEnemies();
+		generateUnlockedDoors(grid);
 		generateStairs();
 		
 		
@@ -197,6 +198,50 @@ public class LevelGenerator {
 		System.out.println(enemies);
 		
 	}
+	
+	private void generateUnlockedDoors(char[][] worldGrid) {
+		//TODO
+		//TODO
+		ArrayList<Position> doorPositions = new ArrayList<Position>();
+		for (Rectangle room : largeRooms) {
+			int x = room.x + Math.abs(xMinDisplacement);
+			int y = room.y + Math.abs(yMinDisplacement);
+			System.out.println("RoomX:"+x+",RoomY:"+y);
+			if (rand.nextInt(100)+1 <= 101) {
+				
+				for(int i = x; i < x+room.width ;i++){
+					for(int j = y; j < y+room.height ;j++){
+						if((i == x)||(i == x+room.width-1)||(j == y)||(j == y+room.height-1)){
+							if(worldGrid[j][i] == '.'){
+								if(worldGrid[j][i-1] =='X' && worldGrid[j][i+1] =='X' && worldGrid[j-1][i] != '-' && worldGrid[j+1][i] != '-')
+									worldGrid[j][i] = '-';
+								else if(worldGrid[j-1][i] =='X' && worldGrid[j+1][i] =='X' && worldGrid[j][i-1] != '|' && worldGrid[j][i+1] != '|')
+									worldGrid[j][i] = '|';
+							}
+								
+						}
+					}
+				}
+//				for(int i=y; i < y+room.height; i++){
+//					if(worldGrid[i][x] == '.')
+//						worldGrid[i][x] = 'D';
+//				}
+//				for(int i=x; i < x+room.width; i++){
+//					if(worldGrid[y+room.height-1][i] == '.')
+//						worldGrid[y+room.height-1][i] = 'D';
+//				}
+//				for(int i=y+room.height; i > y; i--){
+//					if(worldGrid[i][x+room.width-1] == '.')
+//						worldGrid[i][x+room.width-1] = 'D';
+//				}
+//				for(int i=x+room.width; i > x; i--){
+//					if(worldGrid[y][i] == '.')
+//						worldGrid[y][i] = 'D';
+//				}
+			}
+		}
+	}
+	
 	private void generateStairs(){
 		if (rand.nextInt(100)+1 <= stairProbability){
 			int stairsDownRoom = rand.nextInt(largeRooms.size()) + 1;
@@ -423,6 +468,12 @@ public class LevelGenerator {
 					tiles[y][x] = new Tile(new Sprite(wall), false, true);
 				} else if (worldGrid[y][x] == '.') {
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
+				}
+				else if (worldGrid[y][x] == '-') {
+					tiles[y][x] = new Tile(new Sprite("door_horizontal"), true, true);
+				}
+				else if (worldGrid[y][x] == '|') {
+					tiles[y][x] = new Tile(new Sprite("door_vertical"), true, true);
 				}
 			}
 		}
