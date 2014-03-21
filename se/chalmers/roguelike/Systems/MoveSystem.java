@@ -2,8 +2,6 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
-import org.lwjgl.input.Keyboard;
-
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.Direction;
@@ -75,6 +73,8 @@ public class MoveSystem implements ISystem{
 						break;
 					case DO_NOTHING:
 						e.getComponent(TurnsLeft.class).decreaseTurnsLeft();
+						break;
+					default:
 						break;
 					
 				}

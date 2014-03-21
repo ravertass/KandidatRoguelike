@@ -101,7 +101,7 @@ public class InputManager implements Subject {
 		
 		while (Mouse.next()) {
 			if (Mouse.getEventButtonState()) {
-				if(engine.debug){
+				if(Engine.debug){
 					System.out.println("Mouse click at X: "+Mouse.getX()+" Y: "+Mouse.getY());
 				}
 				notifyObservers(InputAction.MOUSECLICK);

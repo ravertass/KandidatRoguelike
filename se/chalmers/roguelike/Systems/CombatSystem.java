@@ -1,7 +1,5 @@
 package se.chalmers.roguelike.Systems;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.util.ArrayList;
 
 import se.chalmers.roguelike.Engine;
@@ -16,7 +14,6 @@ import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Dice;
-import se.chalmers.roguelike.util.TrueTypeFont;
 import se.chalmers.roguelike.util.Util;
 
 /**

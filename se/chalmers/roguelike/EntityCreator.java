@@ -24,11 +24,9 @@ import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 public class EntityCreator {
 
 	private Engine engine;
-	private Input input; // should be the same for all entities
 
 	public EntityCreator(Engine engine) {
 		this.engine = engine;
-		this.input = new Input();
 	}
 
 	public Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
