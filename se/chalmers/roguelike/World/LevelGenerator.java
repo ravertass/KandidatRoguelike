@@ -42,6 +42,7 @@ public class LevelGenerator {
 	
 	private int stairProbability;
 	private Position stairsDown = null;
+	private ArrayList<Position> treasurePositions = new ArrayList<Position>();
 	
 	private String floor;
 	private String wall;
@@ -151,6 +152,7 @@ public class LevelGenerator {
 		generateEnemies();
 		generateUnlockedDoors(grid);
 		generateStairs();
+		generateTreasurePositions();
 		
 		
 		
@@ -242,6 +244,9 @@ public class LevelGenerator {
 		}
 	}
 	
+	/**
+	 * Tries to generate a stair with the success rate of stairProbability 
+	 */
 	private void generateStairs(){
 		if (rand.nextInt(100)+1 <= stairProbability){
 			int stairsDownRoom = rand.nextInt(largeRooms.size()) + 1;
@@ -249,6 +254,25 @@ public class LevelGenerator {
 			int x = room.x + 1 + Math.abs(xMinDisplacement) + rand.nextInt(room.width - 2);
 			int y = room.y + 1 + Math.abs(yMinDisplacement) + rand.nextInt(room.height - 2);
 			stairsDown = new Position(x, y);
+		}
+	}
+	
+	/**
+	 * Generates positions for treasures on 5% of the tiles in 20% of the rooms
+	 */
+	private void generateTreasurePositions(){
+		for (Rectangle room : largeRooms){
+			if (rand.nextInt(100)+1 <= 21){
+				for (int i = 1 ; i < room.width-1 ; i++){
+					for (int j = 1 ; j < room.height-1 ; j++){
+						if (rand.nextInt(100)+1 <= 6){
+							int x = i + room.x + Math.abs(xMinDisplacement);
+							int y = j + room.y + Math.abs(yMinDisplacement);
+							treasurePositions.add(new Position(x, y));
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -482,6 +506,10 @@ public class LevelGenerator {
 		tiles[getStartPos().getY()][getStartPos().getX()].getSprite().setSpritesheet("stairs_up");
 		if(stairsDown !=null)
 			tiles[stairsDown.getY()][stairsDown.getX()].getSprite().setSpritesheet("stairs_down");
+
+		for(Position treasure : treasurePositions){
+			tiles[treasure.getY()][treasure.getX()].getSprite().setSpritesheet("cash_small_amt");
+		}
 		
 		return tiles;
 	}
