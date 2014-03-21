@@ -2,6 +2,8 @@ package se.chalmers.roguelike;
 
 import java.util.ArrayList;
 
+import org.lwjgl.opengl.Display;
+
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Position;
@@ -218,7 +220,7 @@ public class Engine {
 //			entityCreator.createEnemy(ng.generateName());
 //		entityCreator.createHighlight();
 		
-		while(true){
+		while(!Display.isCloseRequested()){
 			if(gameState == GameState.DUNGEON) {
 				renderingSys.update();
 				inputManager.update();
@@ -249,6 +251,7 @@ public class Engine {
 				
 			}
 		}
+		Display.destroy();
 	}
 	
 	/**
