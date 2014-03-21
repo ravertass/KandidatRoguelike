@@ -48,8 +48,11 @@ public class CombatSystem implements ISystem {
 		dungeon = dungeon1;
 		// For each entity capable of attacking
 		for (Entity e : entities) {
-
 			Input input = e.getComponent(Input.class);
+			if(e.getComponent(TurnsLeft.class).getTurnsLeft() <= 0){
+				input.resetAttackCords();
+				break;
+			}
 			Position attackCords = input.getAttackCords();
 			// If the entity has an attackcordinate
 			if (attackCords.getX() != -1) {
