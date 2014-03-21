@@ -42,6 +42,7 @@ public class LevelGenerator {
 	
 	private int stairProbability;
 	private Position stairsDown = null;
+	private ArrayList<Position> treasurePositions = new ArrayList<Position>();
 	
 	private String floor;
 	private String wall;
@@ -149,7 +150,9 @@ public class LevelGenerator {
 		drawRooms(grid);
 		
 		generateEnemies();
+		generateUnlockedDoors(grid);
 		generateStairs();
+		generateTreasurePositions();
 		
 		
 		
@@ -197,6 +200,53 @@ public class LevelGenerator {
 		System.out.println(enemies);
 		
 	}
+	
+	private void generateUnlockedDoors(char[][] worldGrid) {
+		//TODO
+		//TODO
+		ArrayList<Position> doorPositions = new ArrayList<Position>();
+		for (Rectangle room : largeRooms) {
+			int x = room.x + Math.abs(xMinDisplacement);
+			int y = room.y + Math.abs(yMinDisplacement);
+			System.out.println("RoomX:"+x+",RoomY:"+y);
+			if (rand.nextInt(100)+1 <= 101) {
+				
+				for(int i = x; i < x+room.width ;i++){
+					for(int j = y; j < y+room.height ;j++){
+						if((i == x)||(i == x+room.width-1)||(j == y)||(j == y+room.height-1)){
+							if(worldGrid[j][i] == '.'){
+								if(worldGrid[j][i-1] =='X' && worldGrid[j][i+1] =='X' && worldGrid[j-1][i] != '-' && worldGrid[j+1][i] != '-')
+									worldGrid[j][i] = '-';
+								else if(worldGrid[j-1][i] =='X' && worldGrid[j+1][i] =='X' && worldGrid[j][i-1] != '|' && worldGrid[j][i+1] != '|')
+									worldGrid[j][i] = '|';
+							}
+								
+						}
+					}
+				}
+//				for(int i=y; i < y+room.height; i++){
+//					if(worldGrid[i][x] == '.')
+//						worldGrid[i][x] = 'D';
+//				}
+//				for(int i=x; i < x+room.width; i++){
+//					if(worldGrid[y+room.height-1][i] == '.')
+//						worldGrid[y+room.height-1][i] = 'D';
+//				}
+//				for(int i=y+room.height; i > y; i--){
+//					if(worldGrid[i][x+room.width-1] == '.')
+//						worldGrid[i][x+room.width-1] = 'D';
+//				}
+//				for(int i=x+room.width; i > x; i--){
+//					if(worldGrid[y][i] == '.')
+//						worldGrid[y][i] = 'D';
+//				}
+			}
+		}
+	}
+	
+	/**
+	 * Tries to generate a stair with the success rate of stairProbability 
+	 */
 	private void generateStairs(){
 		if (rand.nextInt(100)+1 <= stairProbability){
 			int stairsDownRoom = rand.nextInt(largeRooms.size()) + 1;
@@ -204,6 +254,25 @@ public class LevelGenerator {
 			int x = room.x + 1 + Math.abs(xMinDisplacement) + rand.nextInt(room.width - 2);
 			int y = room.y + 1 + Math.abs(yMinDisplacement) + rand.nextInt(room.height - 2);
 			stairsDown = new Position(x, y);
+		}
+	}
+	
+	/**
+	 * Generates positions for treasures on 5% of the tiles in 20% of the rooms
+	 */
+	private void generateTreasurePositions(){
+		for (Rectangle room : largeRooms){
+			if (rand.nextInt(100)+1 <= 21){
+				for (int i = 1 ; i < room.width-1 ; i++){
+					for (int j = 1 ; j < room.height-1 ; j++){
+						if (rand.nextInt(100)+1 <= 6){
+							int x = i + room.x + Math.abs(xMinDisplacement);
+							int y = j + room.y + Math.abs(yMinDisplacement);
+							treasurePositions.add(new Position(x, y));
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -424,6 +493,12 @@ public class LevelGenerator {
 				} else if (worldGrid[y][x] == '.') {
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
 				}
+				else if (worldGrid[y][x] == '-') {
+					tiles[y][x] = new Tile(new Sprite("door_horizontal"), true, true);
+				}
+				else if (worldGrid[y][x] == '|') {
+					tiles[y][x] = new Tile(new Sprite("door_vertical"), true, true);
+				}
 			}
 		}
 		
@@ -431,6 +506,10 @@ public class LevelGenerator {
 		tiles[getStartPos().getY()][getStartPos().getX()].getSprite().setSpritesheet("stairs_up");
 		if(stairsDown !=null)
 			tiles[stairsDown.getY()][stairsDown.getX()].getSprite().setSpritesheet("stairs_down");
+
+		for(Position treasure : treasurePositions){
+			tiles[treasure.getY()][treasure.getX()].getSprite().setSpritesheet("cash_small_amt");
+		}
 		
 		return tiles;
 	}
