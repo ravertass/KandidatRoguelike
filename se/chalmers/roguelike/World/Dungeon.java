@@ -151,7 +151,6 @@ public class Dungeon {
 		currentlyRegistering = false;
 		if(player != -1){
 			engine.removeEntity(entities.get(player));
-			entities.remove(player); // makes sure the player is removed from the backup so he isn't added twice in a restore (once from engine, once in register())
 		}
 	}
 	
