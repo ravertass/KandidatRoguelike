@@ -106,7 +106,7 @@ public class LevelGenerator {
 		floors.add("stone");
 		floors.add("stone2");
 		floors.add("wood_floor");
-		floors.add("floor_tiled_whiteandblack");
+		floors.add("floor_tiled_white");
 		floors.add("floor_tiled_diamond");
 		floors.add("floor2");
 		floors.add("grass");
@@ -116,6 +116,7 @@ public class LevelGenerator {
 		floors.add("brown_floor");
 		floors.add("light_brown_floor");
 		floors.add("floor_purple");
+		floors.add("floor_hexagon");
 		
 		
 		floor = floors.get(rand.nextInt(floors.size()));
@@ -204,17 +205,16 @@ public class LevelGenerator {
 	private void generateUnlockedDoors(char[][] worldGrid) {
 		//TODO
 		//TODO
-		ArrayList<Position> doorPositions = new ArrayList<Position>();
 		for (Rectangle room : largeRooms) {
 			int x = room.x + Math.abs(xMinDisplacement);
 			int y = room.y + Math.abs(yMinDisplacement);
 			System.out.println("RoomX:"+x+",RoomY:"+y);
-			if (rand.nextInt(100)+1 <= 101) {
+			if (rand.nextInt(100)+1 <= 80) {
 				
 				for(int i = x; i < x+room.width ;i++){
 					for(int j = y; j < y+room.height ;j++){
 						if((i == x)||(i == x+room.width-1)||(j == y)||(j == y+room.height-1)){
-							if(worldGrid[j][i] == '.'){
+							if(worldGrid[j][i] != 'X'){
 								if(worldGrid[j][i-1] =='X' && worldGrid[j][i+1] =='X' && worldGrid[j-1][i] != '-' && worldGrid[j+1][i] != '-')
 									worldGrid[j][i] = '-';
 								else if(worldGrid[j-1][i] =='X' && worldGrid[j+1][i] =='X' && worldGrid[j][i-1] != '|' && worldGrid[j][i+1] != '|')
@@ -368,7 +368,7 @@ public class LevelGenerator {
 			for (int y = (int) drawRoom.getY(); y < roomHeight; y++) {
 				for (int x = (int) drawRoom.getX(); x < roomWidth; x++) {
 					if (y == (int) drawRoom.getY() || y == roomHeight - 1 || x == (int) drawRoom.getX() || x == roomWidth - 1) {
-						if(worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] != '.')
+						if(worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] == ' ')
 							worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] = 'X'; // HARDCODED
 					} else {
 						if(worldGrid[y + Math.abs(yMinDisplacement)][x + Math.abs(xMinDisplacement)] != 'o')
@@ -388,7 +388,12 @@ public class LevelGenerator {
 				
 				int x = position.getX() + Math.abs(xMinDisplacement);
 				int y = position.getY() + Math.abs(yMinDisplacement);
+				
 				grid[y][x] = '.';
+				if (rand.nextInt(100)+1 <= 10){
+					grid[y][x] = 'T';
+				}
+//				
 				for (Rectangle rectangle : rooms) {
 					if (rectangle.contains(position.getX(), position.getY()) && (!largeRooms.contains(rectangle))) {
 						largeRooms.add(rectangle);
@@ -486,9 +491,6 @@ public class LevelGenerator {
 			for (int x = 0; x < width; x++) {
 
 				if (worldGrid[y][x] == 'X') {
-					if (x == 18 && y == 18) {
-						System.out.println("Bugging tile: " + worldGrid[y][x]);
-					}
 					tiles[y][x] = new Tile(new Sprite(wall), false, true);
 				} else if (worldGrid[y][x] == '.') {
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
@@ -498,6 +500,9 @@ public class LevelGenerator {
 				}
 				else if (worldGrid[y][x] == '|') {
 					tiles[y][x] = new Tile(new Sprite("door_vertical"), true, true);
+				}
+				else if (worldGrid[y][x] == 'T') {
+					tiles[y][x] = new Tile(new Sprite("mobs/mob_bear"), true, false);
 				}
 			}
 		}

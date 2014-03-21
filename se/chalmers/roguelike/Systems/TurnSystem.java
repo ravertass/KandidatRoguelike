@@ -16,7 +16,7 @@ public class TurnSystem implements ISystem {
 	@Override
 	public void update() {
 		for(Entity e : entities){
-			if(e.getComponent(TurnsLeft.class).getTurnsLeft() != 0){
+			if(e.getComponent(TurnsLeft.class).getTurnsLeft() > 0){
 				return; // means we found an entity that hasn't used up his turns
 			}
 		}

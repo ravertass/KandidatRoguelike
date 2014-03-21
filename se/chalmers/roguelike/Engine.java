@@ -228,7 +228,7 @@ public class Engine {
 				highlightSys.update(dungeon);
 				levelingSys.update();
 				turnSystem.update();
-				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
+				if(player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0){
 					aiSystem.update(dungeon);
 					System.out.println("------------NEW TURN------------");
 				}
