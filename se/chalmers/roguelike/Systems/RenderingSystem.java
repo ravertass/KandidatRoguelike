@@ -67,10 +67,12 @@ public class RenderingSystem implements ISystem {
 	private FontRenderer fontRenderer;
 	private Dungeon dungeon;
 	// TODO: Move these two away from here
-	Texture owBackground = null;
-	Texture owMenu = null; 
+	private Texture owBackground = null;
+	private Texture owMenu = null; 
 	
 	private int[][] lightMap;
+
+	private TrueTypeFont font;
 	
 	private final int DISPLAY_WIDTH = Engine.screenWidth;
 	private final int DISPLAY_HEIGHT = Engine.screenHeight;
@@ -79,9 +81,11 @@ public class RenderingSystem implements ISystem {
 	private final int minimapWidth = menuWidth;
 	private final int minimapHeight = menuWidth;
 	
-	
-	TrueTypeFont font;
-	public RenderingSystem() { // possibly remove world?
+	/**
+	 * Constructor for the rendering system. Sets up the necessary things for LWJGL 
+	 * to work properly.
+	 */
+	public RenderingSystem() { 
 		// Magic tricks done by lwjgl
 		setupDisplay();
 		setupOpenGL();
@@ -92,7 +96,7 @@ public class RenderingSystem implements ISystem {
 			e.printStackTrace();
 		}
 		fontRenderer.load();
-		
+
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
 
@@ -100,128 +104,25 @@ public class RenderingSystem implements ISystem {
 		Font awtFont = new Font("Times New Roman", Font.BOLD, 14);
 		font = new TrueTypeFont(awtFont, false);
 		
-	}
-	
-	
-	public void drawDungeon() { // stupid solution, make it nondependant on world
-		// Sets the cameras position to the current position of the player
-		int cwidth = camera.getWidth();
-		int cheight = camera.getHeight();
 		
-		Position playerPos = player.getComponent(Position.class);
-		camera.setPosition(new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2));
-		
-		// Clear the window
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
-		
-		ShadowCaster sc = new ShadowCaster();
-		
-		lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 25);
-		
-		// This code draws out the background sprites for all tiles in the camera's view
-		Position drawPos = new Position(pos.getX(), pos.getY());
-
-		// These for-loops are more effective, but doesn't show the whole map for the minimap:
-//		for(int x = pos.getX()-cwidth/2; x < pos.getX() + cwidth; x++) {
-//			for(int y = pos.getY()-cheight/2; y < pos.getY() + cheight; y++) {
-		
-		for(int x = 0; x < dungeon.getWorldWidth(); x++) {
-			for(int y = 0; y < dungeon.getWorldHeight(); y++) {
-				Tile tile = dungeon.getTile(x,y);
-				drawPos.set(x, y);
-				if(camera.contains(drawPos)){
-					if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
-						if(!Engine.debug)
-							tile.setHasBeenSeen(true);
-						draw(tile.getSprite(),drawPos);
-					} else if(tile != null && tile.hasBeenSeen()) {
-						glColor3f(0.5f, 0.5f, 0.5f);
-						draw(tile.getSprite(), drawPos);
-						glColor3f(1.0f, 1.0f, 1.0f);
-					}
-					if(tile != null && tile.hasBeenSeen()){
-						// Tiles within of the camera view that will be drawn on minimap
-						drawMinimap(tile.getSprite(), drawPos);						
-					}
-				} else if(tile != null && tile.hasBeenSeen()){
-					// Tiles outside of the camera view that will be drawn on minimap
-					glColor3f(0.5f, 0.5f, 0.5f);
-					drawMinimap(tile.getSprite(), drawPos);
-					glColor3f(1.0f, 1.0f, 1.0f);
-				}
-			}
-		}
-	}
-	
-	public void update() {
-		if(Engine.gameState == Engine.GameState.DUNGEON){
-			drawDungeon();
-			// Draws healthbars for all entities that stand on a lit tile.
-			for (Entity e : entitiesToDraw) {
-				if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
-					drawHud(e);
-				}
-				if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
-					Position epos = e.getComponent(Position.class);
-					if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
-						drawHealthbar(e);
-				}
-			}
-			// Draw all entities in system if they stand on a lit tile
-			for(Entity entity : entitiesToDraw) {
-				Position epos = entity.getComponent(Position.class);
-				if((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
-					draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
-				else if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
-					draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
-			}
-		} else if(Engine.gameState == Engine.GameState.OVERWORLD) {
-//			glClear(GL_COLOR_BUFFER_BIT); // clearas the window
-			drawBackground();
-			drawMenuOW();
-			Entity activeStar = null;
-			for(Entity entity : entitiesToDraw) {
-				SelectedFlag flag = entity.getComponent(SelectedFlag.class);
-				if(flag != null && flag.getFlag()){
-					activeStar = entity;
-					glColor3f(1.0f, 0.0f, 0.0f);
-					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
-					glColor3f(1.0f, 1.0f, 1.0f);
-				} else {
-					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
-				}
-			}
-			/*
-			 * For some reason if we try to draw the text in the above loop, it will
-			 * mess up the textures for all the stars that are after  the one that is
-			 * select. That is, if you select star 3, then 1-3 will render fine, while
-			 * star >3 will be broken. This is why I'm doing it here instead after the 
-			 * loop.
-			 */
-			if(activeStar != null){
-				String visited = activeStar.getComponent(DungeonComponent.class).getDungeon() == null ? "no" : "yes";
-				font.drawString(Engine.screenWidth-120, 300, "Selected star: "+activeStar.toString());
-				font.drawString(Engine.screenWidth-120, 300, "\nVisited before: "+visited);
-			}
-		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
-			drawBackground();
-			for (Entity e : entitiesToDraw) {
-				drawNonTile(e.getComponent(Sprite.class),e.getComponent(Position.class));
-			}
+		/* 
+		 * This part is just to test it out, figure out a better way of loading 
+		 * the texture and where to store it (outside of ECS?) and remove later
+		 */
+		try {
+			owBackground = TextureLoader.getTexture("PNG", 
+					new FileInputStream(new File("./resources/" + "background_ow" + ".png")));
+			owMenu = TextureLoader.getTexture("PNG", 
+					new FileInputStream(new File("./resources/" + "menu_background_ow" + ".png")));
+		} catch (FileNotFoundException e) {
+			System.out.println("The file does not exist");
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		//drawHudBackgorund();
-		
-		// Update and sync display
-		Display.update();
-		Display.sync(60);
 	}
-	
-
-
-
 	/**
 	 * This method sets up OpenGL. We're not quite sure of what it does.
 	 */
@@ -270,16 +171,135 @@ public class RenderingSystem implements ISystem {
 	}
 	
 	/**
+	 * Will draw the dungeon 
+	 */
+	private void drawDungeon() {
+		// Sets the cameras position to the current position of the player
+		int cwidth = camera.getWidth();
+		int cheight = camera.getHeight();
+		
+		Position playerPos = player.getComponent(Position.class);
+		camera.setPosition(new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2));
+		
+		// Clear the window
+		glClear(GL_COLOR_BUFFER_BIT);
+		
+		Position pos = new Position(playerPos.getX()-cwidth/2, playerPos.getY()-cheight/2);
+		
+		ShadowCaster sc = new ShadowCaster();
+		
+		lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 25);
+		
+		// This code draws out the background sprites for all tiles in the camera's view
+		Position drawPos = new Position(pos.getX(), pos.getY());
+
+		
+		for(int x = 0; x < dungeon.getWorldWidth(); x++) {
+			for(int y = 0; y < dungeon.getWorldHeight(); y++) {
+				Tile tile = dungeon.getTile(x,y);
+				drawPos.set(x, y);
+				if(camera.contains(drawPos)){
+					if(tile != null && (Engine.debug || lightMap[x][y] == 1)) {
+						if(!Engine.debug)
+							tile.setHasBeenSeen(true);
+						draw(tile.getSprite(),drawPos);
+					} else if(tile != null && tile.hasBeenSeen()) {
+						glColor3f(0.5f, 0.5f, 0.5f);
+						draw(tile.getSprite(), drawPos);
+						glColor3f(1.0f, 1.0f, 1.0f);
+					}
+					if(tile != null && tile.hasBeenSeen()){
+						// Tiles within of the camera view that will be drawn on minimap
+						drawMinimap(tile.getSprite(), drawPos);						
+					}
+				} else if(tile != null && tile.hasBeenSeen()){
+					// Tiles outside of the camera view that will be drawn on minimap
+					glColor3f(0.5f, 0.5f, 0.5f);
+					drawMinimap(tile.getSprite(), drawPos);
+					glColor3f(1.0f, 1.0f, 1.0f);
+				}
+			}
+		}
+	}
+	/**
+	 * update should be run of every itteration of the game loop.
+	 * 
+	 * Based on what the state the game engine is set to it will draw different things.
+	 */
+	public void update() {
+		if(Engine.gameState == Engine.GameState.DUNGEON){
+			drawDungeon();
+			// Draws healthbars for all entities that stand on a lit tile.
+			for (Entity e : entitiesToDraw) {
+				if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){
+					drawHud(e);
+				}
+				if((e.getComponentKey() & Engine.CompHealth) == Engine.CompHealth){
+					Position epos = e.getComponent(Position.class);
+					if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
+						drawHealthbar(e);
+				}
+			}
+			// Draw all entities in system if they stand on a lit tile
+			for(Entity entity : entitiesToDraw) {
+				Position epos = entity.getComponent(Position.class);
+				if((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
+					draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+				else if(Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
+					draw(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+			}
+		} else if(Engine.gameState == Engine.GameState.OVERWORLD) {
+			drawBackground();
+			drawMenuOW();
+			Entity activeStar = null;
+			for(Entity entity : entitiesToDraw) {
+				SelectedFlag flag = entity.getComponent(SelectedFlag.class);
+				if(flag != null && flag.getFlag()){
+					activeStar = entity;
+					glColor3f(1.0f, 0.0f, 0.0f);
+					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+					glColor3f(1.0f, 1.0f, 1.0f);
+				} else {
+					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+				}
+			}
+			/*
+			 * For some reason if we try to draw the text in the above loop, it will
+			 * mess up the textures for all the stars that are after  the one that is
+			 * select. That is, if you select star 3, then 1-3 will render fine, while
+			 * star >3 will be broken. This is why I'm doing it here instead after the 
+			 * loop.
+			 */
+			if(activeStar != null){
+				String visited = activeStar.getComponent(DungeonComponent.class).getDungeon() == null ? "no" : "yes";
+				font.drawString(Engine.screenWidth-120, 300, "Selected star: "+activeStar.toString());
+				font.drawString(Engine.screenWidth-120, 300, "\nVisited before: "+visited);
+			}
+		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
+			drawBackground();
+			for (Entity e : entitiesToDraw) {
+				drawNonTile(e.getComponent(Sprite.class),e.getComponent(Position.class));
+			}
+		}
+		
+		// Update and sync display
+		Display.update();
+		Display.sync(60);
+	}
+	
+
+	/**
 	 * Method to draw an entity to the game window.
-	 * @param entity The entity to be drawn
+	 * 
+	 * @param sprite The sprite that should be drawn on the screen
+	 * @param position The position where the sprite should be drawn
 	 */
 	private void draw(Sprite sprite, Position position) {
 		if(!sprite.getVisibility())
 			return;
 		
-		Texture texture = sprite.getTexture();
-		int size = Engine.spriteSize;//sprite.getSize(); // Times two, makes sprites twice as large
-		//int size = sprite.getSize();
+		int size = Engine.spriteSize;
+		
 		// Get the camera's position
 		Position camPos = camera.getPosition();
 		int camX = camPos.getX();
@@ -290,69 +310,36 @@ public class RenderingSystem implements ISystem {
 		int x = (position.getX() - camX) * size;
 		int y = (position.getY() - camY) * size;
 		
-		// Get the coordinates of the current sprite
-		// in the spritesheet in a form that OpenGL likes,
-		// which is a float between 0 and 1
-		float spriteULX = sprite.getUpperLeftX();
-		float spriteULY = sprite.getUpperLeftY();
-		float spriteLRX = sprite.getLowerRightX();
-		float spriteLRY = sprite.getLowerRightY();
-		
 		// We determine if the entity is within the camera's
 		// view; if so, we draw it
 		if (x >= 0 && x < camera.getWidth() * size &&
 				y >= 0 && y < camera.getHeight() * size) {
-			drawTexturedQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
-			
+			drawSprite(sprite, x, y, size, size);
 		}
 	}
 	
 	/**
-	 * Method to draw an the overworld
-	 * @param entity The entity to be drawn
+	 * Method to draw non-tile objects 
+	 * 
+	 * @param sprite The sprite that should be drawn on the screen
+	 * @param position The position where the sprite should be drawn
 	 */
 	private void drawNonTile(Sprite sprite, Position position) {
-
-		
-		Texture texture = sprite.getTexture();
 		int sizeX = sprite.getWidth(); 
 		int sizeY = sprite.getHeight();
 		int x = position.getX();
 		int y = position.getY();
 		
-		// Get the coordinates of the current sprite
-		// in the spritesheet in a form that OpenGL likes,
-		// which is a float between 0 and 1
-		float spriteULX = sprite.getUpperLeftX();
-		float spriteULY = sprite.getUpperLeftY();
-		float spriteLRX = sprite.getLowerRightX();
-		float spriteLRY = sprite.getLowerRightY();
-		
-		drawTexturedQuad(texture, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
-
+		drawSprite(sprite, x, y, sizeX, sizeY);
 	}
-
+	
+	/**
+	 * Will draw the background used in the overworld and menu
+	 */
 	private void drawBackground(){
-		glClear(GL_COLOR_BUFFER_BIT); // clearas the window
+		glClear(GL_COLOR_BUFFER_BIT);
 		
-		/* 
-		 * This part is just to test it out, figure out a better way of loading 
-		 * the texture and where to store it (outside of ECS?) and remove later
-		 */
-		if(owBackground == null){
-			try {
-				owBackground = TextureLoader.getTexture("PNG", 
-						new FileInputStream(new File("./resources/" + "background_ow" + ".png")));
-			} catch (FileNotFoundException e) {
-				System.out.println("The file does not exist");
-				e.printStackTrace();
-				// borde stänga ner displayen och stänga av programmet också
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				// borde stänga ner displayen och stänga av programmet också
-			}
-		}
+
 		int sizeX = Engine.screenWidth; 
 		int sizeY = Engine.screenHeight;
 
@@ -363,26 +350,11 @@ public class RenderingSystem implements ISystem {
 		drawTexturedQuad(owBackground, 0, 0, Engine.screenWidth, Engine.screenHeight, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
 	
+	/**
+	 * Draws the menu for the overworld
+	 */
 	private void drawMenuOW(){
-		
-		/* 
-		 * This part is just to test it out, figure out a better way of loading 
-		 * the texture and where to store it (outside of ECS?) and remove later
-		 */
-		if(owMenu == null){
-			try {
-				owMenu = TextureLoader.getTexture("PNG", 
-						new FileInputStream(new File("./resources/" + "menu_background_ow" + ".png")));
-			} catch (FileNotFoundException e) {
-				System.out.println("The file does not exist");
-				e.printStackTrace();
-				// borde stänga ner displayen och stänga av programmet också
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				// borde stänga ner displayen och stänga av programmet också
-			}
-		}
+	
 		int x = Engine.screenWidth-128;
 		int y = 0;
 		int sizeX = 128;
@@ -392,8 +364,17 @@ public class RenderingSystem implements ISystem {
 		float spriteULY = 0.0f;
 		float spriteLRX = ((float) (sizeX)) / owMenu.getTextureWidth();
 		float spriteLRY = ((float) (sizeY)) / owMenu.getTextureHeight();
+		// Make owMenu a sprite later?
 		drawTexturedQuad(owMenu, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
+	
+	/**
+	 * Draws the minimap
+	 * 
+	 * @param sprite the sprite of the tile you want to draw
+	 * @param position the position of the tile (will automatically be adjusted
+	 * to the minimap location
+	 */
 	private void drawMinimap(Sprite sprite, Position position) {
 		if(!sprite.getVisibility())
 			return;
@@ -401,7 +382,6 @@ public class RenderingSystem implements ISystem {
 
 		int minimapX = (Engine.screenWidth-minimapWidth);
 		int minimapY = Engine.screenHeight-minimapHeight;
-		Texture texture = sprite.getTexture();
 		int size = 1;
 		int camX = camera.getPosition().getX();
 		int camY = camera.getPosition().getY();
@@ -411,13 +391,41 @@ public class RenderingSystem implements ISystem {
 		if(x < minimapX || y < minimapY){
 			return;
 		}
+		drawSprite(sprite, x, y, size, size);
+	}
+	
+	/**
+	 * Draws a sprite on the screen
+	 * 
+	 * @param sprite the sprite that should be drawn
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
+	 */
+	private void drawSprite(Sprite sprite, int x, int y, int width, int height){
+		Texture texture = sprite.getTexture();
+		
 		float spriteULX = sprite.getUpperLeftX();
 		float spriteULY = sprite.getUpperLeftY();
 		float spriteLRX = sprite.getLowerRightX();
 		float spriteLRY = sprite.getLowerRightY();
-
-		drawTexturedQuad(texture, x, y, size, size, spriteULX, spriteULY, spriteLRX, spriteLRY);
+		
+		drawTexturedQuad(texture, x, y, width, height, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
+	
+	/**
+	 * Draws a textured quad on the screen
+	 * @param texture the texture the quad is using
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
+	 * @param spriteULX upper left X sprite value
+	 * @param spriteULY upper left Y sprite value
+	 * @param spriteLRX lower right X sprite value
+	 * @param spriteLRY lower right Y sprite value
+	 */
 	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, 
 			float spriteULX, float spriteULY, float spriteLRX, float spriteLRY){
 		
@@ -435,6 +443,13 @@ public class RenderingSystem implements ISystem {
 		glEnd();
 	}
 	
+	/**
+	 * Draws an untextured quad 
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
+	 */
 	private void drawUntexturedQuad(int x, int y, int width, int height){
 		glDisable(GL11.GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
@@ -446,12 +461,18 @@ public class RenderingSystem implements ISystem {
 		glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
+	/**
+	 * Exits the application and shuts down the display settings
+	 */
 	public void exit() {
 		Display.destroy();
 		System.exit(0);
 	}
 
-	@Override
+	/**
+	 * Adds an entity to the system
+	 * @param entity the entity that should be added
+	 */
 	public void addEntity(Entity entity) {
 		if((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
 			this.player = entity;
@@ -459,18 +480,25 @@ public class RenderingSystem implements ISystem {
 		entitiesToDraw.add(entity);
 	}
 	
-	@Override
+	/**
+	 * Removes an entity from the system
+	 * @param entity the entity that should be removed
+	 */
 	public void removeEntity(Entity entity) {
 	    entitiesToDraw.remove(entity);
     }
 	
+	/**
+	 * Sets the camera
+	 * @param c the camera
+	 */
 	public void setCamera(Camera c) {
 		this.camera = c;
 	}
 	
 	/**
 	 * draws healthbars for all entities that have health
-	 * @param e
+	 * @param e the entity that should have its healthbar drawn 
 	 */
 	private void drawHealthbar(Entity e) {
 		Position epos = e.getComponent(Position.class); // tilebased positions
@@ -503,7 +531,11 @@ public class RenderingSystem implements ISystem {
 		}
 		glColor3f(1.0f,1.0f,1.0f);
 	}
-
+	
+	/**
+	 * Draws the HUD
+	 * @param e the player entity that will have its information printed on the HUD
+	 */
 	private void drawHud(Entity e){
 		
 		// e will always be the player here
