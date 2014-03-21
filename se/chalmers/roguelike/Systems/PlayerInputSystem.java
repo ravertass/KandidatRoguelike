@@ -42,6 +42,8 @@ public class PlayerInputSystem implements ISystem, Observer {
 	 */
 	@Override
 	public void notify(Enum<?> i) {
+		if(player == null)
+			return;
 		player.getComponent(Input.class).setNextEvent((InputAction)i);
 		if(i.equals(InputAction.MOUSECLICK) && Mouse.isButtonDown(1) && Mouse.getEventButton() == 0) {
 			player.getComponent(Input.class).setAttackCords(new Position((Mouse.getX()/Engine.spriteSize)+camera.getPosition().getX(),(Mouse.getY()/Engine.spriteSize)+camera.getPosition().getY()));

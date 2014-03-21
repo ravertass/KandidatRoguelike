@@ -31,7 +31,7 @@ public class EntityCreator {
 		this.input = new Input();
 	}
 
-	public void createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
+	public Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
 		Entity player = new Entity("Player");
 		player.add(new Health(5));
 		player.add(new TurnsLeft(1));
@@ -42,7 +42,8 @@ public class EntityCreator {
 		player.add(new Player());
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
-		engine.addEntity(player);
+		//engine.addEntity(player);
+		return player;
 	}
 
 	public void createEnemy(String name) {

@@ -170,7 +170,7 @@ public class Engine {
 			}
 		}
 		if((compKey & CompPlayer) == CompPlayer) {
-			player = entity;
+			//player = entity;
 			playerInputSys.addEntity(player);
 		}
 		if((compKey & CompTurnsLeft) == CompTurnsLeft){
@@ -211,7 +211,7 @@ public class Engine {
 	 * Worlds worst game loop.
 	 */
 	public void run(){
-		entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
+		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		//TODO använd en till spelet given seed
 //		NameGenerator ng = new NameGenerator(2, new Random().nextLong());
 //		for (int i = 0; i <4; i++)
@@ -302,14 +302,9 @@ public class Engine {
 		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
 			this.dungeon = dungeon;
 			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
-			
-//			ArrayList<Entity> enemies = dungeon.getEnemies();
-//			for (Entity entity : enemies) {
-//				addEntity(entity);
-//			}
-			addEntity(player);
 			this.dungeon.register(this);
 			renderingSys.setDungeon(dungeon);
+			addEntity(player);
 			gameState = newState;
 		}
 	}
@@ -318,12 +313,7 @@ public class Engine {
 			return;
 		}
 		if(gameState == GameState.DUNGEON && dungeon != null){
-//			ArrayList<Entity> enemies = dungeon.getEnemies();
 			dungeon.unregister(this);
-//			for (Entity entity : enemies) {
-//				removeEntity(entity);
-//			}
-			removeEntity(player); // TODO: Remove, this is due to some bug
 			System.out.println("Unregister of dungeon done");
 		} else if(gameState == GameState.MAIN_MENU) {
 			mainmenuSys.unregister();
@@ -334,11 +324,7 @@ public class Engine {
 	}
 	public void loadMainMenu() {
 		if(gameState == GameState.DUNGEON && dungeon != null){
-//			ArrayList<Entity> enemies = dungeon.getEnemies();
 			dungeon.unregister(this);
-//			for (Entity entity : enemies) {
-//				removeEntity(entity);
-//			}
 			removeEntity(player); // TODO: Remove, this is due to some bug
 			System.out.println("Unregister of dungeon done");
 		} else if (gameState == GameState.OVERWORLD) {
