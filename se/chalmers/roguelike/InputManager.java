@@ -81,9 +81,7 @@ public class InputManager implements Subject {
 				Engine.debug = !Engine.debug; 
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_F2)){
-				//Engine.dungeon.unregister();
 				engine.loadOverworld();
-				// Engine.gameState = Engine.GameState.DUNGEON;
 			}
 
 			if (Keyboard.isKeyDown(Keyboard.KEY_LMETA)
