@@ -1,11 +1,15 @@
 package se.chalmers.roguelike.Tests;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_LINES;
+import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glVertex2d;
+import static org.lwjgl.opengl.GL11.glVertex2i;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -13,10 +17,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.geom.Circle;
 
 import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.World.ModifiedGenerator;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.KruskalMST;
@@ -195,14 +197,11 @@ public class GraphicTriangulation {
 			// glTexCoord2f(0, 0);
 			glVertex2d(block.getX(), block.getY()); // upper left
 			// glTexCoord2f(1, 0);
-			glVertex2d(block.getX() + block.getWidth(), block.getY()); // upper
-																				// right
+			glVertex2d(block.getX() + block.getWidth(), block.getY()); // upper right
 			// glTexCoord2f(1, 1);
-			glVertex2d(block.getX() + block.getWidth(), block.getY()
-					+ block.getHeight()); // bottom right
+			glVertex2d(block.getX() + block.getWidth(), block.getY() + block.getHeight()); // bottom right
 			// glTexCoord2f(0, 1);
-			glVertex2d(block.getX(), block.getY() + block.getHeight()); // bottom
-																					// left
+			glVertex2d(block.getX(), block.getY() + block.getHeight()); // bottom left
 			glEnd();
 		}
 		GL11.glPopMatrix();

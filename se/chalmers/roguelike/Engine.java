@@ -1,16 +1,26 @@
 package se.chalmers.roguelike;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-import se.chalmers.plotgen.NameGen.NameGenerator;
-import se.chalmers.roguelike.Systems.*;
-import se.chalmers.roguelike.World.Dungeon;
-import se.chalmers.roguelike.util.Camera;
+import org.lwjgl.opengl.Display;
+
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.Systems.AISystem;
+import se.chalmers.roguelike.Systems.CombatSystem;
+import se.chalmers.roguelike.Systems.HighlightSystem;
+import se.chalmers.roguelike.Systems.LevelingSystem;
+import se.chalmers.roguelike.Systems.MainMenuSystem;
+import se.chalmers.roguelike.Systems.MobSpriteSystem;
+import se.chalmers.roguelike.Systems.MoveSystem;
+import se.chalmers.roguelike.Systems.OverworldSystem;
+import se.chalmers.roguelike.Systems.PlayerInputSystem;
+import se.chalmers.roguelike.Systems.RenderingSystem;
+import se.chalmers.roguelike.Systems.TurnSystem;
+import se.chalmers.roguelike.World.Dungeon;
+import se.chalmers.roguelike.util.Camera;
 
 public class Engine {
 	
@@ -162,7 +172,7 @@ public class Engine {
 			}
 		}
 		if((compKey & CompPlayer) == CompPlayer) {
-			player = entity;
+			//player = entity;
 			playerInputSys.addEntity(player);
 		}
 		if((compKey & CompTurnsLeft) == CompTurnsLeft){
@@ -186,7 +196,7 @@ public class Engine {
 				levelingSys.addEntity(entity);
 			}
 		}
-		if((compKey & dungeonReq) == dungeonReq) {
+		if((compKey & dungeonReq) == dungeonReq && (compKey & CompHighlight) != CompHighlight) {
 			// Bit of a special case, since this requires coordinates:
 			Position pos = entity.getComponent(Position.class);
 			if(remove) {
@@ -203,16 +213,15 @@ public class Engine {
 	 * Worlds worst game loop.
 	 */
 	public void run(){
-		entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_HUMAN);
+		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		//TODO använd en till spelet given seed
-		NameGenerator ng = new NameGenerator(2, new Random().nextLong());
-		for (int i = 0; i <4; i++)
-			entityCreator.createEnemy(ng.generateName());
-		entityCreator.createHighlight();
+//		NameGenerator ng = new NameGenerator(2, new Random().nextLong());
+//		for (int i = 0; i <4; i++)
+//			entityCreator.createEnemy(ng.generateName());
+//		entityCreator.createHighlight();
 		
-		while(true){
+		while(!Display.isCloseRequested()){
 			if(gameState == GameState.DUNGEON) {
-				renderingSys.update(dungeon);
 				renderingSys.update();
 				inputManager.update();
 				combatsystem.update(dungeon);
@@ -221,8 +230,9 @@ public class Engine {
 				highlightSys.update(dungeon);
 				levelingSys.update();
 				turnSystem.update();
-				if(player.getComponent(TurnsLeft.class).getTurnsLeft() == 0){
+				if(player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0){
 					aiSystem.update(dungeon);
+					System.out.println("------------NEW TURN------------");
 				}
 				
 			//} else if(gameState == GameState.MENU) {
@@ -241,6 +251,7 @@ public class Engine {
 				
 			}
 		}
+		Display.destroy();
 	}
 	
 	/**
@@ -248,7 +259,7 @@ public class Engine {
 	 */
 	private void spawnSystems(){
 		renderingSys = new RenderingSystem();
-		dungeon = new Dungeon(this); // remove engine?
+		dungeon = new Dungeon(); // remove engine?
 		// dungeon.setWorld(50,50,new Generator().toTiles());
 		inputManager = new InputManager(this); // This feels stupid that it should have engine component, maybe change once debug stuff is over for the load manager
 		//inputSys = new InputSystem();
@@ -294,17 +305,18 @@ public class Engine {
 		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
 			this.dungeon = dungeon;
 			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
-
+			this.dungeon.register(this);
+			renderingSys.setDungeon(dungeon);
 			addEntity(player);
-			this.dungeon.register();
 			gameState = newState;
 		}
 	}
 	public void loadOverworld(){
-
+		if(gameState == GameState.OVERWORLD){
+			return;
+		}
 		if(gameState == GameState.DUNGEON && dungeon != null){
-			dungeon.unregister();
-			removeEntity(player); // TODO: Remove, this is due to some bug
+			dungeon.unregister(this);
 			System.out.println("Unregister of dungeon done");
 		} else if(gameState == GameState.MAIN_MENU) {
 			mainmenuSys.unregister();
@@ -315,7 +327,7 @@ public class Engine {
 	}
 	public void loadMainMenu() {
 		if(gameState == GameState.DUNGEON && dungeon != null){
-			dungeon.unregister();
+			dungeon.unregister(this);
 			removeEntity(player); // TODO: Remove, this is due to some bug
 			System.out.println("Unregister of dungeon done");
 		} else if (gameState == GameState.OVERWORLD) {

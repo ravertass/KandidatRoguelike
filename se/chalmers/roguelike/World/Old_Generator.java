@@ -7,14 +7,14 @@ import java.util.Random;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Components.Sprite;
 
-public class Generator {
+public class Old_Generator {
 	
 	
 	private int width=50;
 	private int height=50;
 	private char[][] worldGrid;
 	Random rand; // replace with new Random(seed); later, already tried and works
-	public Generator(){
+	public Old_Generator(){
 
 		Random seedRand = new Random();
 		long seed = seedRand.nextLong();
@@ -26,7 +26,7 @@ public class Generator {
 		run();
 	}
 	
-	public Generator(long seed){
+	public Old_Generator(long seed){
 		rand = new Random(seed);
 		run();
 	}
@@ -234,6 +234,6 @@ public class Generator {
 		}
 	}
 	public static void main(String[] args) {
-		new Generator().print();
+		new Old_Generator().print();
 	}
 }

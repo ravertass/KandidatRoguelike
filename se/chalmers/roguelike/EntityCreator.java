@@ -1,12 +1,16 @@
 package se.chalmers.roguelike;
 
+import java.util.ArrayList;
+
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
+import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Position;
@@ -15,20 +19,17 @@ import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
-import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 
 public class EntityCreator {
 
 	private Engine engine;
-	private Input input; // should be the same for all entities
 
 	public EntityCreator(Engine engine) {
 		this.engine = engine;
-		this.input = new Input();
 	}
 
-	public void createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
+	public Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
 		Entity player = new Entity("Player");
 		player.add(new Health(5));
 		player.add(new TurnsLeft(1));
@@ -39,7 +40,8 @@ public class EntityCreator {
 		player.add(new Player());
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
-		engine.addEntity(player);
+		//engine.addEntity(player);
+		return player;
 	}
 
 	public void createEnemy(String name) {
@@ -118,5 +120,13 @@ public class EntityCreator {
 		engine.addEntity(button);
 		System.out.println("New button added");
 		return button;
+	}
+	
+	public static Entity createEntity(String name, ArrayList<IComponent> components){
+		Entity entity = new Entity(name);
+		for (IComponent component : components) {
+			entity.add(component);
+		}
+		return entity;
 	}
 }

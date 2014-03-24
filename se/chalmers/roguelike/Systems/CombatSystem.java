@@ -1,7 +1,5 @@
 package se.chalmers.roguelike.Systems;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.util.ArrayList;
 
 import se.chalmers.roguelike.Engine;
@@ -16,7 +14,6 @@ import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Dice;
-import se.chalmers.roguelike.util.TrueTypeFont;
 import se.chalmers.roguelike.util.Util;
 
 /**
@@ -48,8 +45,11 @@ public class CombatSystem implements ISystem {
 		dungeon = dungeon1;
 		// For each entity capable of attacking
 		for (Entity e : entities) {
-
 			Input input = e.getComponent(Input.class);
+			if(e.getComponent(TurnsLeft.class).getTurnsLeft() <= 0){
+				input.resetAttackCords();
+				break;
+			}
 			Position attackCords = input.getAttackCords();
 			// If the entity has an attackcordinate
 			if (attackCords.getX() != -1) {

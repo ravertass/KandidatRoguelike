@@ -12,7 +12,7 @@ public class KruskalMST {
 	private ArrayList<Edge> path;
 	
 	public KruskalMST(){
-		path = new ArrayList<>();
+		path = new ArrayList<Edge>();
 		totalWeight = 0;
 	}
 	
@@ -23,7 +23,7 @@ public class KruskalMST {
 	 * @return
 	 */
 	public ArrayList<Edge> createMST(ArrayList<Edge> edges_in){
-		ArrayList<Edge> edges = new ArrayList<>();
+		ArrayList<Edge> edges = new ArrayList<Edge>();
 		for (Edge edge : edges_in) {
 			edges.add(edge);
 		}

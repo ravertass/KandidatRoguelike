@@ -1,13 +1,10 @@
 package se.chalmers.roguelike.World;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.util.Dice;
 
 /**
  * Dungeon is an class that holds the game world along with several helper 
@@ -24,8 +21,11 @@ public class Dungeon {
 	private Position startpos;
 	private Tile[][] tiles;
 	private ArrayList<Entity> entities;
-	private ArrayList<Entity> backup = new ArrayList<Entity>();  
-	private Engine engine; // I dont like this solution, discuss and make better
+//	private ArrayList<Entity> enemies;
+//	private ArrayList<Entity> backup = new ArrayList<Entity>();  
+	private boolean currentlyRegistering = false;
+	private Dungeon previousDungeonLevel;
+	private Dungeon nextDungeonLevel;
 	/**
 	 * Creates a new world object
 	 * 
@@ -33,46 +33,28 @@ public class Dungeon {
 	 * @param worldHeight the height of the world
 	 * @param tiles the array of tiles the world should have
 	 */
-	public Dungeon(Engine engine, int worldWidth, int worldHeight, Tile[][] tiles, Position startpos){
-		this.engine = engine;
+	public Dungeon(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> enemies ){
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
 		this.setStartpos(startpos);
+//		this.setEnemies(enemies);
 		entities = new ArrayList<Entity>();
+		entities.addAll(enemies);
 	}
 	
 	/**
 	 * Currently generates a new world, will probably be removed in the future
 	 * when a real level generator exists
 	 */
-	public Dungeon(Engine engine){ 
+	public Dungeon(){ 
 		
-		this.engine = engine;
 		
 		// Debug world
 		worldWidth = 50;
 		worldHeight = 50;
 		tiles = new Tile[worldHeight][worldWidth];
 		entities = new ArrayList<Entity>();
-		
-		// Debug hardcoded world
-		
-		// X and Y flipped
-//		for(int x=0;x<worldWidth;x++){
-//			for(int y=0;y<worldHeight;y++){
-//				if(Dice.roll(2, 6)>=8 && ((x != 10) || (y != 10))) {
-//					Sprite sprite = new Sprite("brick");
-//					tiles[x][y] = new Tile(sprite, false, true);
-//				} else if (x == 0 || y == 0 || x == worldWidth-1 || y == worldHeight-1) {
-//					Sprite sprite = new Sprite("brick");
-//					tiles[x][y] = new Tile(sprite, false, true);
-//				} else {
-//					Sprite sprite = new Sprite("sand");
-//					tiles[x][y] = new Tile(sprite, true, true);
-//				}
-//			}
-//		}
 	}
 	
 	/**
@@ -119,27 +101,35 @@ public class Dungeon {
 	 * @param worldHeight the height of the new world, must match the array
 	 * @param tiles a 2d-array of all the tiles for the world
 	 */
-	public void setWorld(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos){
+	public void setWorld(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> enemies){
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
+		//this.setEnemies(enemies);
+		entities.addAll(enemies);
 		this.setStartpos(startpos);
 	}
 	public void addEntity(int x, int y, Entity entity){
-		if(x<0 || y<0 || x > worldWidth || y > worldHeight || tiles[y][x] == null){
+		if(currentlyRegistering){
+			return; // since we want to keep all the entities for the world when switching
+		}
+		if(x<0 || y<0 || x >= worldWidth || y >= worldHeight || tiles[y][x] == null){
 			return; // out of bounds check
 		}
 		tiles[y][x].addEntity(entity);
 		entities.add(entity);
 	}
 	public void removeEntity(int x, int y, Entity entity){
+		if(currentlyRegistering){
+			return; // since we want to keep all the entities for the world when switching
+		}
 		if(x<0 || y<0 || x > worldWidth || y > worldHeight || tiles[y][x] == null){
 			return; // out of bounds check
 		}
 		tiles[y][x].removeEntity(entity);
 		entities.remove(entity);
 	}
-	public void unregister(){
+	public void unregister(Engine engine){
 
 		/*
 		 * This is probably the worst code I've written in a while. Why does it look 
@@ -149,32 +139,29 @@ public class Dungeon {
 		 * 
 		 * I'll rewrite it to not be crap some day I guess.
 		 */
+		currentlyRegistering = true;
 		int player = -1;
 		for(int i=0;i<entities.size();i++){
 			Entity e = entities.get(i);
 			if((e.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer){ 
 				player = i;
 			}
-			backup.add(e);
-		}
-
-		for(Entity e : backup){
 			engine.removeEntity(e);
 		}
+		currentlyRegistering = false;
 		if(player != -1){
-			backup.remove(player); // makes sure the player is removed from the backup so he isn't added twice in a restore (once from engine, once in register())
+			engine.removeEntity(entities.get(player));
 		}
-		entities.clear(); // clears the active entities, to avoid concurrent exceptions
 	}
-	public void register(){
+	
+	public void register(Engine engine){
 		System.out.println("Foobar");
-		for(Entity e : backup){
+		currentlyRegistering = true;
+		for(Entity e : entities){
 			System.out.println("RESTORING");
 			engine.addEntity(e);
 		}
-		
-		// All entities has been added, backup can be cleared
-		backup.clear();
+		currentlyRegistering = false;
 	}
 
 	public Position getStartpos() {
@@ -183,5 +170,29 @@ public class Dungeon {
 
 	public void setStartpos(Position startpos) {
 		this.startpos = startpos;
+	}
+
+//	public ArrayList<Entity> getEnemies() {
+//		return enemies;
+//	}
+
+	public void setEnemies(ArrayList<Entity> enemies) {
+//		this.enemies = enemies;
+		entities.addAll(enemies);
+	}
+
+	public Dungeon getPreviousDungeonLevel() {
+		return previousDungeonLevel;
+	}
+	public void setPreviousDungeonLevel(Dungeon previousDungeonLevel) {
+		this.previousDungeonLevel = previousDungeonLevel;
+	}
+
+	public Dungeon getNextDungeonLevel() {
+		return nextDungeonLevel;
+	}
+
+	public void setNextDungeonLevel(Dungeon nextDungeonLevel) {
+		this.nextDungeonLevel = nextDungeonLevel;
 	}
 }
