@@ -106,6 +106,14 @@ public class Action {
 		this(type, subject, null, null, objectScene);
 	}
 	
+	public Actor getObjectActor() {
+		return objectActor;
+	}
+	
+	public ActionType getActionType() {
+		return type;
+	}
+	
 	/**
 	 * To be used for GIVE
 	 * 

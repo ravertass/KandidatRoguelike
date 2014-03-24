@@ -17,7 +17,7 @@ public class PlotGenerator {
 	public static PlotGraph basicAIAlgorithm(ArrayList<Scene> scenes,
 	ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
 		
-		return BasicAIAlgorithm.createPlot(scenes, actors, props, random);
+		return new BasicAIAlgorithm(scenes, actors, props, random).getPlotGraph();
 	}
 	
 	// Notice that this should also alter the state of the Props, Actors and

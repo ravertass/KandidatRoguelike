@@ -27,7 +27,7 @@ import se.chalmers.plotgen.PlotGraph.PlotVertex;
  * @author fabian
  */
 
-public class Engine {
+public class PlotEngine {
 
 	private NameGenerator nameGen;
 
@@ -192,10 +192,10 @@ public class Engine {
 			seed = new Random().nextLong();
 		}
 
-		new Engine(seed);
+		new PlotEngine(seed);
 	}
 
-	public Engine(long seed) {
+	public PlotEngine(long seed) {
 		run(seed);
 	}
 }

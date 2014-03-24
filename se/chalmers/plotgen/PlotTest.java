@@ -10,7 +10,7 @@ import se.chalmers.plotgen.PlotGraph.PlotEdge;
 public class PlotTest {
 
 	public static void main(String[] args) {
-		Engine plotEngine = new Engine(new Random().nextLong());
+		PlotEngine plotEngine = new PlotEngine(new Random().nextLong());
 		
 		System.out.println("Actors:");
 		for (Actor actor : plotEngine.getActors()) {
