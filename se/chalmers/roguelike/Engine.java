@@ -46,6 +46,8 @@ public class Engine {
 	public static final int CompSeed = 1 << 12;
 	public static final int CompDungeon= 1 << 13;
 	public static final int CompSelectedFlag = 1 << 14;
+	public static final int CompGold = 1 << 15;
+	public static final int CompBlocksWalking = 1 << 16;
 	
 	
 	// Constants: System requirements:

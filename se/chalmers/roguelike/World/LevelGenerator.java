@@ -43,6 +43,7 @@ public class LevelGenerator {
 	private int stairProbability;
 	private Position stairsDown = null;
 	private ArrayList<Position> treasurePositions = new ArrayList<Position>();
+	private ArrayList<Entity> dungeonEntities = new ArrayList<Entity>();
 	
 	private String floor;
 	private String wall;
@@ -193,6 +194,7 @@ public class LevelGenerator {
 				components.add(new Position(x,y));
 				components.add(new Direction());
 				components.add(new AI());
+				components.add(EntityCreator.blocksWalking);
 				Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE, SpaceRace.SPACE_DWARF, 1, 50);
 				components.add(attribute);
 				enemies.add(EntityCreator.createEntity("(Enemy)" + name, components));
@@ -513,7 +515,9 @@ public class LevelGenerator {
 			tiles[stairsDown.getY()][stairsDown.getX()].getSprite().setSpritesheet("stairs_down");
 
 		for(Position treasure : treasurePositions){
-			tiles[treasure.getY()][treasure.getX()].getSprite().setSpritesheet("cash_small_amt");
+			//tiles[treasure.getY()][treasure.getX()].getSprite().setSpritesheet("cash_small_amt");
+			Entity gold = EntityCreator.createGold(treasure.getX(),treasure.getY(),100);
+			dungeonEntities.add(gold);
 		}
 		
 		return tiles;
@@ -523,7 +527,10 @@ public class LevelGenerator {
 		Dungeon dungeon = new Dungeon();
 		Tile[][] tiles = toTiles();
 		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos(), enemies);
-		
+		for(Entity e : dungeonEntities){
+			Position pos = e.getComponent(Position.class);
+			dungeon.addEntity(pos.getX(), pos.getY(), e);
+		}
 		return dungeon;
 	}
 	

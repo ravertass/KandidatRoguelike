@@ -6,8 +6,10 @@ import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.IComponent;
@@ -24,7 +26,8 @@ import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 public class EntityCreator {
 
 	private Engine engine;
-
+	public static IComponent blocksWalking = new BlocksWalking(); // made the component static so everything can use it
+	
 	public EntityCreator(Engine engine) {
 		this.engine = engine;
 	}
@@ -40,6 +43,7 @@ public class EntityCreator {
 		player.add(new Player());
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
+		player.add(blocksWalking);
 		//engine.addEntity(player);
 		return player;
 	}
@@ -54,6 +58,7 @@ public class EntityCreator {
 		enemy.add(new Direction());
 		enemy.add(new AI());
 		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.SPACE_ROGUE, Attribute.SpaceRace.SPACE_ALIEN, 1, 50));
+		enemy.add(blocksWalking);
 		engine.addEntity(enemy);
 	}
 
@@ -81,6 +86,7 @@ public class EntityCreator {
 		enemy.add(new Direction());
 		enemy.add(new AI());
 		enemy.add(attribute);
+		enemy.add(blocksWalking);
 		engine.addEntity(enemy);
 	}
 
@@ -120,6 +126,14 @@ public class EntityCreator {
 		engine.addEntity(button);
 		System.out.println("New button added");
 		return button;
+	}
+	
+	public static Entity createGold(int x, int y, int amount){
+		Entity gold = new Entity("gold");
+		gold.add(new Sprite("cash_small_amt"));
+		gold.add(new Position(x,y));
+		gold.add(new Gold(amount));
+		return gold;
 	}
 	
 	public static Entity createEntity(String name, ArrayList<IComponent> components){

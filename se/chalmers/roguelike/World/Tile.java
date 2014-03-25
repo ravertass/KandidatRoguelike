@@ -2,6 +2,7 @@ package se.chalmers.roguelike.World;
 
 import java.util.ArrayList;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Sprite;
@@ -13,6 +14,7 @@ public class Tile {
 	private boolean backgroundWalkable;
 	private boolean blocksLineOfSight;
 	private boolean hasBeenSeen;
+	private int itemsBlocking;
 
 	public Tile(Sprite backgroundSprite, boolean backgroundWalkable,
 			boolean blocksLineOfSight) {
@@ -21,6 +23,7 @@ public class Tile {
 		this.blocksLineOfSight = blocksLineOfSight;
 		entities = new ArrayList<Entity>();
 		this.hasBeenSeen = false;
+		itemsBlocking = 0;
 	}
 
 	/**
@@ -46,11 +49,12 @@ public class Tile {
 	}
 
 	public boolean isWalkable() {
-		// Detta kommer så småningom också att kolla om
-		// entiteterna i tilen är walkable
-		if (entities.size() != 0)
-			return false;
-		return backgroundWalkable;
+//		// Detta kommer så småningom också att kolla om
+//		// entiteterna i tilen är walkable
+//		if (entities.size() != 0)
+//			return false;
+//		return backgroundWalkable;
+		return backgroundWalkable && !(itemsBlocking > 0);
 	}
 
 	public void setWalkable(boolean walkable) {
@@ -66,10 +70,16 @@ public class Tile {
 	}
 
 	public void addEntity(Entity e) {
+		if(e.containsComponent(Engine.CompBlocksWalking)){
+			itemsBlocking++;
+		}
 		entities.add(e);
 	}
 
 	public void removeEntity(Entity e) {
+		if(e.containsComponent(Engine.CompBlocksWalking)){
+			itemsBlocking--;
+		}
 		entities.remove(e);
 	}
 
@@ -88,5 +98,7 @@ public class Tile {
 	public boolean hasBeenSeen() {
 		return this.hasBeenSeen;
 	}
-
+	public ArrayList<Entity> getEntities(){
+		return entities;
+	}
 }
