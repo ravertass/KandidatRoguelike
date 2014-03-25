@@ -11,6 +11,7 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Systems.AISystem;
 import se.chalmers.roguelike.Systems.CombatSystem;
 import se.chalmers.roguelike.Systems.HighlightSystem;
+import se.chalmers.roguelike.Systems.InteractionSystem;
 import se.chalmers.roguelike.Systems.LevelingSystem;
 import se.chalmers.roguelike.Systems.MainMenuSystem;
 import se.chalmers.roguelike.Systems.MobSpriteSystem;
@@ -83,6 +84,7 @@ public class Engine {
 	private LevelingSystem levelingSys;
 	private OverworldSystem overworldSys;
 	private MainMenuSystem mainmenuSys;
+	private InteractionSystem interactionSystem;
 	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -207,6 +209,13 @@ public class Engine {
 				dungeon.addEntity(pos.getX(), pos.getY(), entity);
 			}
 		}
+		if(entity.containsComponent(CompPlayer)){
+			if(remove){
+				interactionSystem.removeEntity(entity);
+			} else {
+				interactionSystem.addEntity(entity);
+			}
+		}
 		
 		
 	}
@@ -228,6 +237,7 @@ public class Engine {
 				inputManager.update();
 				combatsystem.update(dungeon);
 				moveSys.update(dungeon);
+				interactionSystem.update();
 				mobSpriteSys.update();
 				highlightSys.update(dungeon);
 				levelingSys.update();
@@ -276,6 +286,7 @@ public class Engine {
 		
 		overworldSys = new OverworldSystem(this);
 		mainmenuSys = new MainMenuSystem(this);
+		interactionSystem = new InteractionSystem(this);
 	}
 	
 	/**
@@ -309,6 +320,7 @@ public class Engine {
 			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
 			this.dungeon.register(this);
 			renderingSys.setDungeon(dungeon);
+			interactionSystem.setDungeon(dungeon);
 			addEntity(player);
 			gameState = newState;
 		}
