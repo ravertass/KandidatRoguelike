@@ -84,7 +84,7 @@ public class Engine {
 	private LevelingSystem levelingSys;
 	private OverworldSystem overworldSys;
 	private MainMenuSystem mainmenuSys;
-	private InteractionSystem interactionSystem;
+	private InteractionSystem interactionSys;
 	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -211,9 +211,9 @@ public class Engine {
 		}
 		if(entity.containsComponent(CompPlayer)){
 			if(remove){
-				interactionSystem.removeEntity(entity);
+				interactionSys.removeEntity(entity);
 			} else {
-				interactionSystem.addEntity(entity);
+				interactionSys.addEntity(entity);
 			}
 		}
 		
@@ -237,7 +237,7 @@ public class Engine {
 				inputManager.update();
 				combatsystem.update(dungeon);
 				moveSys.update(dungeon);
-				interactionSystem.update();
+				interactionSys.update();
 				mobSpriteSys.update();
 				highlightSys.update(dungeon);
 				levelingSys.update();
@@ -286,7 +286,7 @@ public class Engine {
 		
 		overworldSys = new OverworldSystem(this);
 		mainmenuSys = new MainMenuSystem(this);
-		interactionSystem = new InteractionSystem(this);
+		interactionSys = new InteractionSystem(this);
 	}
 	
 	/**
@@ -304,6 +304,7 @@ public class Engine {
 		inputManager.addObserver(highlightSys);
 		inputManager.addObserver(overworldSys);
 		inputManager.addObserver(mainmenuSys);
+		inputManager.addObserver(interactionSys);
 	}
 	
 	/**
@@ -315,15 +316,18 @@ public class Engine {
 	
 	public void loadDungeon(Dungeon dungeon, GameState newState){
 		// TODO: Loading screen stuff
-		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
-			this.dungeon = dungeon;
-			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
-			this.dungeon.register(this);
-			renderingSys.setDungeon(dungeon);
-			interactionSystem.setDungeon(dungeon);
-			addEntity(player);
-			gameState = newState;
+//		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
+		if(this.dungeon != null){
+			this.dungeon.unregister(this);
 		}
+		this.dungeon = dungeon;
+		player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
+		this.dungeon.register(this);
+		renderingSys.setDungeon(dungeon);
+		interactionSys.setDungeon(dungeon);
+		addEntity(player);
+		gameState = newState;
+//		}
 	}
 	public void loadOverworld(){
 		if(gameState == GameState.OVERWORLD){

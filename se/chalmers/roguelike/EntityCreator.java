@@ -22,6 +22,7 @@ import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
+import se.chalmers.roguelike.World.Dungeon;
 
 public class EntityCreator {
 
@@ -43,6 +44,7 @@ public class EntityCreator {
 		player.add(new Player());
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
+		player.add(new Gold(0));
 		player.add(blocksWalking);
 		//engine.addEntity(player);
 		return player;
@@ -134,6 +136,14 @@ public class EntityCreator {
 		gold.add(new Position(x,y));
 		gold.add(new Gold(amount));
 		return gold;
+	}
+	
+	public static Entity createStairs(int x, int y, String sprite, Dungeon dungeon){
+		Entity stairs = new Entity("stairs");
+		stairs.add(new Position(x,y));
+		stairs.add(new Sprite(sprite));
+		stairs.add(new DungeonComponent(dungeon));
+		return stairs;
 	}
 	
 	public static Entity createEntity(String name, ArrayList<IComponent> components){

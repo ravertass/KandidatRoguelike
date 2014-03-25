@@ -99,6 +99,11 @@ public class Tile {
 		return this.hasBeenSeen;
 	}
 	public ArrayList<Entity> getEntities(){
-		return entities;
+		// Creates a copy of the list so we dont modify the tiles list directly
+		ArrayList<Entity> newList = new ArrayList<Entity>();
+		for(Entity e : entities){
+			newList.add(e);
+		}
+		return newList;
 	}
 }

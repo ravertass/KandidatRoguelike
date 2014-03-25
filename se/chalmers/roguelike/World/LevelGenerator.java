@@ -160,7 +160,6 @@ public class LevelGenerator {
 		
 		print(grid);
 		worldGrid = grid;
-		
 		dungeon  = toDungeon();
 		//Generate nextLevel
 		if (stairsDown != null){
@@ -168,7 +167,12 @@ public class LevelGenerator {
 			Dungeon nextDungeonLevel = nextLevelGen.toDungeon();
 			dungeon.setNextDungeonLevel(nextDungeonLevel);
 			nextDungeonLevel.setPreviousDungeonLevel(dungeon);
-
+			if(nextDungeonLevel == null){
+				System.out.println("next == null");
+			}
+			Entity stair = EntityCreator.createStairs(stairsDown.getX(), stairsDown.getY(),
+					"stairs_down",nextDungeonLevel);
+			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
 			System.out.println("Created Subdungeon");
 		}
 		
@@ -250,8 +254,10 @@ public class LevelGenerator {
 	 * Tries to generate a stair with the success rate of stairProbability 
 	 */
 	private void generateStairs(){
+		System.out.println("generateStairs() running");
 		if (rand.nextInt(100)+1 <= stairProbability){
-			int stairsDownRoom = rand.nextInt(largeRooms.size()) + 1;
+			System.out.println("STAIR GENERATED");
+			int stairsDownRoom = rand.nextInt(largeRooms.size()-1) + 1;
 			Rectangle room = largeRooms.get(stairsDownRoom);
 			int x = room.x + 1 + Math.abs(xMinDisplacement) + rand.nextInt(room.width - 2);
 			int y = room.y + 1 + Math.abs(yMinDisplacement) + rand.nextInt(room.height - 2);
@@ -510,10 +516,12 @@ public class LevelGenerator {
 		}
 		
 		// TODO: instead of just change the sprite of the tile, add a stairEntity?
-		tiles[getStartPos().getY()][getStartPos().getX()].getSprite().setSpritesheet("stairs_up");
-		if(stairsDown !=null)
-			tiles[stairsDown.getY()][stairsDown.getX()].getSprite().setSpritesheet("stairs_down");
-
+//		tiles[getStartPos().getY()][getStartPos().getX()].getSprite().setSpritesheet("stairs_up");
+		// READD ^
+//		if(stairsDown !=null){
+			//tiles[stairsDown.getY()][stairsDown.getX()].getSprite().setSpritesheet("stairs_down");
+		
+//		}
 		for(Position treasure : treasurePositions){
 			//tiles[treasure.getY()][treasure.getX()].getSprite().setSpritesheet("cash_small_amt");
 			Entity gold = EntityCreator.createGold(treasure.getX(),treasure.getY(),100);
