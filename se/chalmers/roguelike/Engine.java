@@ -11,6 +11,7 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Systems.AISystem;
 import se.chalmers.roguelike.Systems.CombatSystem;
 import se.chalmers.roguelike.Systems.HighlightSystem;
+import se.chalmers.roguelike.Systems.InventorySystem;
 import se.chalmers.roguelike.Systems.LevelingSystem;
 import se.chalmers.roguelike.Systems.MainMenuSystem;
 import se.chalmers.roguelike.Systems.MobSpriteSystem;
@@ -63,6 +64,7 @@ public class Engine {
 	public static final int combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
 	public static final int levelingSystemReq = CompAttribute;
 	public static final int dungeonReq = CompSprite | CompPosition;
+	public static final int inventoryReq = CompInventory;
 	
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
@@ -85,6 +87,7 @@ public class Engine {
 	private LevelingSystem levelingSys;
 	private OverworldSystem overworldSys;
 	private MainMenuSystem mainmenuSys;
+	private InventorySystem inventorySys;
 	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -209,6 +212,13 @@ public class Engine {
 				dungeon.addEntity(pos.getX(), pos.getY(), entity);
 			}
 		}
+		if((compKey & inventoryReq) == inventoryReq) {
+			if(remove) {
+				inventorySys.removeEntity(entity);
+			} else {
+				inventorySys.addEntity(entity);
+			}
+		}
 		
 		
 	}
@@ -230,6 +240,7 @@ public class Engine {
 				inputManager.update();
 				combatsystem.update(dungeon);
 				moveSys.update(dungeon);
+				inventorySys.update(dungeon);
 				mobSpriteSys.update();
 				highlightSys.update(dungeon);
 				levelingSys.update();
@@ -278,6 +289,7 @@ public class Engine {
 		
 		overworldSys = new OverworldSystem(this);
 		mainmenuSys = new MainMenuSystem(this);
+		inventorySys = new InventorySystem();
 	}
 	
 	/**

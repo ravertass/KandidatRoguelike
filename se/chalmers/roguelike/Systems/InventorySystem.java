@@ -46,6 +46,7 @@ public class InventorySystem implements ISystem, Observer {
 				}
 			}
 			for(Entity e : toRemove) {
+				
 				playerTile.removeEntity(e); //removes the picked up items from the current tile
 			}
 		}
