@@ -88,5 +88,9 @@ public class Tile {
 	public boolean hasBeenSeen() {
 		return this.hasBeenSeen;
 	}
+	
+	public ArrayList<Entity> getEntities() {
+		return this.entities;
+	}
 
 }

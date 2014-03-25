@@ -14,8 +14,11 @@ import se.chalmers.roguelike.Entity;
 public class Inventory implements IComponent {
 
 	private ArrayList<Entity> items;
+	
+	private int maxSize;
 
 	public Inventory(ArrayList<Entity> a) {
+		maxSize = 16; // TODO magic number change laterz
 		items = a;
 	}
 
@@ -23,20 +26,27 @@ public class Inventory implements IComponent {
 		items = new ArrayList<Entity>();
 	}
 
-	private ArrayList<Entity> getItems() {
+	public ArrayList<Entity> getItems() {
 		return items;
 	}
 
-	private void setInventory(ArrayList<Entity> a) {
+	public void setInventory(ArrayList<Entity> a) {
 		this.items = a;
 	}
 
-	private void addItem(Entity e) {
+	public void addItem(Entity e) {
 		items.add(e);
 	}
 
-	private void deleteItem(Entity e) {
+	public void deleteItem(Entity e) {
 		items.remove(e);
+	}
+	/**
+	 * Boolean to return if the current inventory is full.
+	 * @return
+	 */
+	public boolean isFull() {
+		return items.size() >= maxSize;
 	}
 
 }
