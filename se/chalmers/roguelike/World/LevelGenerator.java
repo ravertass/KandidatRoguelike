@@ -183,7 +183,7 @@ public class LevelGenerator {
 				ArrayList<IComponent> components = new ArrayList<IComponent>();
 				
 				String name = ng.generateName();
-				String sprite = "mobs/mob_snake";
+				String sprite = "mobs/mob_slime";
 				components.add(new Health(10));
 				components.add(new TurnsLeft(1));
 				components.add(new Input());
