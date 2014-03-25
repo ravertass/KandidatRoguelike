@@ -14,4 +14,7 @@ public class Gold implements IComponent {
 	public int getGold(){
 		return amountOfGold;
 	}
+	public void setGold(int gold){
+		amountOfGold = gold;
+	}
 }
