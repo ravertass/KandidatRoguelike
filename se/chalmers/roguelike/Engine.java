@@ -47,6 +47,10 @@ public class Engine {
 	public static final int CompDungeon= 1 << 13;
 	public static final int CompSelectedFlag = 1 << 14;
 	
+
+	public static final int CompInventory = 1<<17;
+	public static final int CompPocketable = 1<<18;
+	
 	
 	// Constants: System requirements:
 	public static final int inputSysReq = CompInput;
