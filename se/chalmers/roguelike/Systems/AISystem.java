@@ -36,6 +36,7 @@ public class AISystem implements ISystem {
 			Entity target = ai.getTarget();
 			if (target != null){
 				track(target);
+				//TODO move towards or attack target
 			}
 			
 			Input input = e.getComponent(Input.class);
@@ -91,9 +92,7 @@ public class AISystem implements ISystem {
 					done = true;
 				} 
 			}
-			
 		}
-		
 	}
 
 	private void track(Entity target) {
