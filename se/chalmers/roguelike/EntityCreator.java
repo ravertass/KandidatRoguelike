@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
@@ -35,12 +36,17 @@ public class EntityCreator {
 		player.add(new Health(5));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
-		player.add(new Sprite("mobs/mob_knight"));
+//		player.add(new Sprite("mobs/mob_knight"));
+		player.add(new Sprite("gravestone"));
 		player.add(new Position(44, 44));
 		player.add(new Direction());
 		player.add(new Player());
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
+		ArrayList<Entity> a = new ArrayList<Entity>();
+		a.add(player);
+		a.add(player);
+		player.add(new Inventory(a));
 		//engine.addEntity(player);
 		return player;
 	}
@@ -55,6 +61,7 @@ public class EntityCreator {
 		enemy.add(new Direction());
 		enemy.add(new AI());
 		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.SPACE_ROGUE, Attribute.SpaceRace.SPACE_ALIEN, 1, 50));
+		enemy.add(new Inventory()); // here items that the enemy drops should be added
 		engine.addEntity(enemy);
 	}
 
