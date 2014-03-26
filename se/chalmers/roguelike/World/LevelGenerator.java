@@ -161,7 +161,6 @@ public class LevelGenerator {
 		print(grid);
 		worldGrid = grid;
 		dungeon  = toDungeon();
-		
 		//Generate nextLevel
 		if (stairsDown != null){
 			LevelGenerator nextLevelGen = new LevelGenerator(seed, (int) (amountOfRooms*0.7), generatedRoomSize, largeEnoughRoom, corridorDensity, stairProbability-20, wall, floor);
@@ -172,18 +171,25 @@ public class LevelGenerator {
 					"stairs_down",nextDungeonLevel);
 			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
 			System.out.println("Created Subdungeon");
+			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(),"stairs_up",nextDungeonLevel.getPreviousDungeonLevel());
+			nextDungeonLevel.addEntity(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(), stairUp);
+		} 
+		if(dungeon.getPreviousDungeonLevel() == null){
+			System.out.println("hej2");
+			int x = getStartPos().getX();
+			int y = getStartPos().getY();
+			Entity stairUp = EntityCreator.createStairs(x, y,"stairs_up",null);
+			dungeon.addEntity(x, y, stairUp);
 		}
 
-		int x = getStartPos().getX();
-		int y = getStartPos().getY();
-		System.out.println("stairs_up entity X: "+x+" Y: "+y);
-		if(dungeon.getPreviousDungeonLevel() == null){
-			System.out.println("dungeon.getPreviousDungeonLevel() == null");
-		} else {
-			System.out.println("NOT NULL");
-		}
-		Entity stairUp = EntityCreator.createStairs(x, y,"stairs_up",dungeon.getPreviousDungeonLevel());
-		dungeon.addEntity(x, y, stairUp);
+		
+//		System.out.println("stairs_up entity X: "+x+" Y: "+y);
+//		if(dungeon.getPreviousDungeonLevel() == null){
+//			System.out.println("dungeon.getPreviousDungeonLevel() == null");
+//		} else {
+//			System.out.println("NOT NULL");
+//		}
+		
 
 		if(largeRooms.size() == 0)
 			run();
