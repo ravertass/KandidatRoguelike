@@ -66,7 +66,6 @@ public class Util {
 		int sy = (y1 < y0) ? 1 : -1;
 
 		int err = dx - dy;
-
 		while (true) {
 			templine.add(new Position(x1, y1));
 		    if (x1 == x0 && y1 == y0) {
