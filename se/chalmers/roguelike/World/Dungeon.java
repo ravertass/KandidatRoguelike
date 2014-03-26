@@ -110,9 +110,6 @@ public class Dungeon {
 		if(x<0 || y<0 || x >= worldWidth || y >= worldHeight || tiles[y][x] == null){
 			return; // out of bounds check
 		}
-		if(entity.toString().equals("stairs_up")){
-			System.out.println("successfully registerd stair"+this);
-		}
 		tiles[y][x].addEntity(entity);
 		entities.add(entity);
 	}
@@ -143,13 +140,8 @@ public class Dungeon {
 	}
 	
 	public void register(Engine engine){
-		System.out.println("Foobar");
 		currentlyRegistering = true;
 		for(Entity e : entities){
-			System.out.println("RESTORING");
-			if(e.toString().equals("stairs_up")){
-				System.out.println("successfully restored stairs_up "+this);
-			}
 			engine.addEntity(e);
 		}
 		currentlyRegistering = false;
