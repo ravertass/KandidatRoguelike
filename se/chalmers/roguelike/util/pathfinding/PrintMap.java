@@ -12,7 +12,7 @@ import se.chalmers.roguelike.Components.Position;
  * 
  * @link http://code.google.com/p/a-star-java/
  * 
- *       new version is edited for use in this project
+ * New version is edited for use in this project
  *       
  * This class prints a graphic interpretation of AreaMaps with obstacles in it
  */
@@ -29,7 +29,7 @@ public class PrintMap {
 			}
 			System.out.print("|");
 
-			for (int x = 0; x < map.getMapWith(); x++) {
+			for (int x = 0; x < map.getMapWidth(); x++) {
 				node = map.getNode(x, y);
 
 				if (node.isObstacle) {
