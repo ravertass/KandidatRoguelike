@@ -43,6 +43,7 @@ import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Health;
+import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
@@ -260,6 +261,15 @@ public class RenderingSystem implements ISystem {
 					glColor3f(1.0f, 0.0f, 0.0f);
 					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
+				} else if(entity.getComponent(PopupText.class) != null) {
+					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+					ArrayList<String> popupText = entity.getComponent(PopupText.class).getText();
+					Position drawPos = new Position(entity.getComponent(Position.class).getX(), entity.getComponent(Position.class).getY()+300-font.getHeight());
+					for(String s : popupText) {
+						font.drawString(drawPos.getX(),drawPos.getY(),s);
+						drawPos.setY(drawPos.getY()-font.getHeight());
+
+					}
 				} else {
 					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
 				}
@@ -276,6 +286,7 @@ public class RenderingSystem implements ISystem {
 				font.drawString(Engine.screenWidth-120, 300, "Selected star: "+activeStar.toString());
 				font.drawString(Engine.screenWidth-120, 300, "\nVisited before: "+visited);
 			}
+			
 		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {

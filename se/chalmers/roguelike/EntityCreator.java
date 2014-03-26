@@ -15,6 +15,7 @@ import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Player;
+import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
@@ -152,5 +153,13 @@ public class EntityCreator {
 			entity.add(component);
 		}
 		return entity;
+	}
+	
+	public Entity createPopup(ArrayList<String> text, int x, int y, int width, int height) {
+		Entity popup = new Entity("popup");
+		popup.add(new Sprite("popupbackground", width, height));
+		popup.add(new Position(x,y));
+		popup.add(new PopupText(text));
+		return popup;
 	}
 }
