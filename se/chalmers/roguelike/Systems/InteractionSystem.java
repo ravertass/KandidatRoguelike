@@ -75,7 +75,12 @@ public class InteractionSystem implements ISystem, Observer {
 					if(dc.getDungeon() == null){
 						System.out.println("asdf");
 					}
-					engine.loadDungeon(dc.getDungeon(), Engine.GameState.DUNGEON);
+					Dungeon nextDungeon = dc.getDungeon();
+					if(nextDungeon != null){
+						engine.loadDungeon(nextDungeon, Engine.GameState.DUNGEON);
+					} else {
+						engine.loadOverworld();
+					}
 				}
 			}
 		}

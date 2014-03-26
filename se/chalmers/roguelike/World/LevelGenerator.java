@@ -161,21 +161,30 @@ public class LevelGenerator {
 		print(grid);
 		worldGrid = grid;
 		dungeon  = toDungeon();
+		
 		//Generate nextLevel
 		if (stairsDown != null){
 			LevelGenerator nextLevelGen = new LevelGenerator(seed, (int) (amountOfRooms*0.7), generatedRoomSize, largeEnoughRoom, corridorDensity, stairProbability-20, wall, floor);
-			Dungeon nextDungeonLevel = nextLevelGen.toDungeon();
+			Dungeon nextDungeonLevel = nextLevelGen.getDungeon(); // was toDungeon, would re-created the subdungeon
 			dungeon.setNextDungeonLevel(nextDungeonLevel);
 			nextDungeonLevel.setPreviousDungeonLevel(dungeon);
-			if(nextDungeonLevel == null){
-				System.out.println("next == null");
-			}
 			Entity stair = EntityCreator.createStairs(stairsDown.getX(), stairsDown.getY(),
 					"stairs_down",nextDungeonLevel);
 			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
 			System.out.println("Created Subdungeon");
 		}
-		
+
+		int x = getStartPos().getX();
+		int y = getStartPos().getY();
+		System.out.println("stairs_up entity X: "+x+" Y: "+y);
+		if(dungeon.getPreviousDungeonLevel() == null){
+			System.out.println("dungeon.getPreviousDungeonLevel() == null");
+		} else {
+			System.out.println("NOT NULL");
+		}
+		Entity stairUp = EntityCreator.createStairs(x, y,"stairs_up",dungeon.getPreviousDungeonLevel());
+		dungeon.addEntity(x, y, stairUp);
+
 		if(largeRooms.size() == 0)
 			run();
 	}
@@ -515,15 +524,7 @@ public class LevelGenerator {
 			}
 		}
 		
-		// TODO: instead of just change the sprite of the tile, add a stairEntity?
-//		tiles[getStartPos().getY()][getStartPos().getX()].getSprite().setSpritesheet("stairs_up");
-		// READD ^
-//		if(stairsDown !=null){
-			//tiles[stairsDown.getY()][stairsDown.getX()].getSprite().setSpritesheet("stairs_down");
-		
-//		}
 		for(Position treasure : treasurePositions){
-			//tiles[treasure.getY()][treasure.getX()].getSprite().setSpritesheet("cash_small_amt");
 			Entity gold = EntityCreator.createGold(treasure.getX(),treasure.getY(),100);
 			dungeonEntities.add(gold);
 		}
