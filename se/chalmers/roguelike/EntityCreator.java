@@ -36,8 +36,7 @@ public class EntityCreator {
 		player.add(new Health(5));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
-//		player.add(new Sprite("mobs/mob_knight"));
-		player.add(new Sprite("gravestone"));
+		player.add(new Sprite("mobs/mob_knight"));
 		player.add(new Position(44, 44));
 		player.add(new Direction());
 		player.add(new Player());
