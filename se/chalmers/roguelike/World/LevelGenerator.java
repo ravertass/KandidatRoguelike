@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.IComponent;
@@ -182,15 +183,6 @@ public class LevelGenerator {
 			dungeon.addEntity(x, y, stairUp);
 		}
 
-		
-//		System.out.println("stairs_up entity X: "+x+" Y: "+y);
-//		if(dungeon.getPreviousDungeonLevel() == null){
-//			System.out.println("dungeon.getPreviousDungeonLevel() == null");
-//		} else {
-//			System.out.println("NOT NULL");
-//		}
-		
-
 		if(largeRooms.size() == 0)
 			run();
 	}
@@ -213,7 +205,7 @@ public class LevelGenerator {
 				components.add(new Position(x,y));
 				components.add(new Direction());
 				components.add(new AI());
-				components.add(EntityCreator.blocksWalking);
+				components.add(new BlocksWalking(true));
 				Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE, SpaceRace.SPACE_DWARF, 1, 50);
 				components.add(attribute);
 				enemies.add(EntityCreator.createEntity("(Enemy)" + name, components));
@@ -519,10 +511,16 @@ public class LevelGenerator {
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
 				}
 				else if (worldGrid[y][x] == '-') {
-					tiles[y][x] = new Tile(new Sprite("door_horizontal"), true, true);
+//					tiles[y][x] = new Tile(new Sprite("door_horizontal"), true, true);
+					tiles[y][x] = new Tile(new Sprite(floor), true, false);
+					Entity door = EntityCreator.createDoor(x,y,"door_horizontal",false);
+					dungeonEntities.add(door);
 				}
 				else if (worldGrid[y][x] == '|') {
-					tiles[y][x] = new Tile(new Sprite("door_vertical"), true, true);
+					//tiles[y][x] = new Tile(new Sprite("door_vertical"), true, true);
+					tiles[y][x] = new Tile(new Sprite(floor), true, false);
+					Entity door = EntityCreator.createDoor(x,y,"door_vertical",false);
+					dungeonEntities.add(door);
 				}
 				else if (worldGrid[y][x] == 'T') {
 					tiles[y][x] = new Tile(new Sprite("mobs/mob_bear"), true, false);

@@ -50,6 +50,8 @@ public class Engine {
 	public static final int CompGold = 1 << 15;
 	public static final int CompBlocksWalking = 1 << 16;
 	
+	public static final int CompBlocksLineOfSight = 1 << 19; // simon has 17, 18, change to an itterator or something
+	
 	
 	// Constants: System requirements:
 	public static final int inputSysReq = CompInput;
