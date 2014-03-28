@@ -37,8 +37,13 @@ public class OverworldSystem implements ISystem, Observer {
 	public boolean popupActive;
 	private ArrayList<String> popupText;
 	private Entity popup;
+	
+	private PlotSystem plotSys;
 
-	public OverworldSystem(Engine engine) {
+	// Making OverworldSystem know of PlotSystem breaks the E-C pattern but fuck
+	// it, it's really stupid to do this any other way
+	public OverworldSystem(Engine engine, PlotSystem plotSys) {
+		this.plotSys = plotSys;
 		this.engine = engine;
 		activeStar = null;
 		popupActive = false;
@@ -49,8 +54,9 @@ public class OverworldSystem implements ISystem, Observer {
 		menuButton = engine.entityCreator.createButton(Engine.screenWidth - 80,
 				200 - 32, "button_menu", 80, 32);
 		menuRect = new Rectangle(Engine.screenWidth - 80, 200 - 32, 80, 32);
-		setupStars();
-		this.unregister();
+		// setupStars(); //TODO kommer troligt vara onödig då PlotSystem nu gör
+		// detta
+		unregister();
 	}
 
 	@Override
@@ -60,8 +66,10 @@ public class OverworldSystem implements ISystem, Observer {
 
 	@Override
 	public void addEntity(Entity entity) {
-		// TODO not necessary?
-
+		int x = entity.getComponent(Position.class).getX();
+		int y = entity.getComponent(Position.class).getY();
+		starRectangles.add(new Rectangle(x, y, 16, 16));// test case
+		stars.put((x + "," + y), entity);
 	}
 
 	@Override
@@ -141,6 +149,11 @@ public class OverworldSystem implements ISystem, Observer {
 		String coords = star.x + "," + star.y;
 		activeStar = stars.get(coords);
 		activeStar.getComponent(SelectedFlag.class).setFlag(true);
+		// TODO här får PlotSystem sägas till!
+		if (plotSys.visitAction(stars.get(coords))) {
+			//TODO den här måste av godtycklig anledning vara ganska lång...
+			createTextPopup(plotSys.getActiveString());
+		}
 	}
 
 	/**
@@ -184,7 +197,7 @@ public class OverworldSystem implements ISystem, Observer {
 	private void setupStars() {
 		int radius = 50;
 
-		Random rand = new Random(1234L); // Make seed depenendant later
+		Random rand = new Random(1234L); // Make seed dependent later
 
 		for (int i = 1; i < 360 * 3; i += 45) {
 			double rad = i * Math.PI / 180;
@@ -236,7 +249,16 @@ public class OverworldSystem implements ISystem, Observer {
 		TrueTypeFont ttf = new TrueTypeFont(font, false);
 		StringBuilder sb = new StringBuilder();
 		for (String word : s.split(" ")) {
-			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { //magic number //TODO why is this happening and why should it be so high?
+			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { // magic
+																	// number
+																	// //TODO
+																	// why is
+																	// this
+																	// happening
+																	// and why
+																	// should it
+																	// be so
+																	// high?
 				sequencedString.add(sb.toString());
 				sb = new StringBuilder();
 			}

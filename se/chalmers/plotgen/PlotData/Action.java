@@ -1,5 +1,6 @@
 package se.chalmers.plotgen.PlotData;
 
+import se.chalmers.plotgen.BasicAIAlgorithm.LivesCondition;
 
 /**
  * This class models an action in a game, e.g. [Leif] [KILLS] [Uffe]
@@ -62,7 +63,7 @@ public class Action {
 		if (type == ActionType.MEET) {
 			this.objectActor = objectActor;
 		}
-		
+
 		if (type == ActionType.VISIT) {
 			this.objectScene = objectScene;
 		}
@@ -94,7 +95,7 @@ public class Action {
 	public Action(ActionType type, Actor subject, Prop objectProp) {
 		this(type, subject, null, objectProp, null);
 	}
-	
+
 	/**
 	 * To be used for VISIT
 	 * 
@@ -105,15 +106,15 @@ public class Action {
 	public Action(ActionType type, Actor subject, Scene objectScene) {
 		this(type, subject, null, null, objectScene);
 	}
-	
+
 	public Actor getObjectActor() {
 		return objectActor;
 	}
-	
+
 	public ActionType getActionType() {
 		return type;
 	}
-	
+
 	/**
 	 * To be used for GIVE
 	 * 
@@ -122,7 +123,8 @@ public class Action {
 	 * @param objectActor
 	 * @param objectProp
 	 */
-	public Action(ActionType type, Actor subject, Actor objectActor, Prop objectProp) {
+	public Action(ActionType type, Actor subject, Actor objectActor,
+			Prop objectProp) {
 		this(type, subject, objectActor, objectProp, null);
 	}
 
@@ -145,7 +147,7 @@ public class Action {
 		if (type == ActionType.MEET) {
 			returnString = subject + " meets " + objectActor;
 		}
-		
+
 		if (type == ActionType.VISIT) {
 			returnString = subject + " visits " + objectScene;
 		}
@@ -156,5 +158,11 @@ public class Action {
 		}
 
 		return returnString;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		return ((this.toString().equals(object.toString())) 
+				& (object instanceof Action));
 	}
 }

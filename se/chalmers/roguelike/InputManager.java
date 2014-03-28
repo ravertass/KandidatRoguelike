@@ -20,7 +20,7 @@ public class InputManager implements Subject {
 	private HashMap<Integer, InputAction> keyToAction;
 
 	/**
-	 * This is where you delcare all the different events that the keyboard and mouse can cause. 
+	 * This is where you declare all the different events that the keyboard and mouse can cause. 
 	 * @author twister
 	 *
 	 */

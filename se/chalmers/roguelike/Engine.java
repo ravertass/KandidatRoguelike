@@ -1,9 +1,11 @@
 package se.chalmers.roguelike;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.lwjgl.opengl.Display;
 
+import se.chalmers.plotgen.PlotEngine;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Position;
@@ -18,6 +20,7 @@ import se.chalmers.roguelike.Systems.MobSpriteSystem;
 import se.chalmers.roguelike.Systems.MoveSystem;
 import se.chalmers.roguelike.Systems.OverworldSystem;
 import se.chalmers.roguelike.Systems.PlayerInputSystem;
+import se.chalmers.roguelike.Systems.PlotSystem;
 import se.chalmers.roguelike.Systems.RenderingSystem;
 import se.chalmers.roguelike.Systems.TurnSystem;
 import se.chalmers.roguelike.World.Dungeon;
@@ -62,6 +65,7 @@ public class Engine {
 	public static final int combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
 	public static final int levelingSystemReq = CompAttribute;
 	public static final int dungeonReq = CompSprite | CompPosition;
+	public static final int overworldReq = CompDungeon | CompSelectedFlag | CompPosition;
 	
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
@@ -85,6 +89,8 @@ public class Engine {
 	private OverworldSystem overworldSys;
 	private MainMenuSystem mainmenuSys;
 	private InteractionSystem interactionSys;
+	private PlotSystem plotSys;
+	private PlotEngine plotEngine;
 	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -100,6 +106,7 @@ public class Engine {
 		entityCreator = new EntityCreator(this);
 		//gameState = GameState.DUNGEON;
 		gameState = GameState.MAIN_MENU;
+		plotEngine = new PlotEngine(new Random().nextLong()); // make dependent on seed
 		spawnSystems();
 		registerInputSystems();
 		setCamera();
@@ -209,6 +216,13 @@ public class Engine {
 				dungeon.addEntity(pos.getX(), pos.getY(), entity);
 			}
 		}
+		if ((compKey & overworldReq) == overworldReq) {
+			if (remove) {
+				overworldSys.removeEntity(entity);
+			} else {
+				overworldSys.addEntity(entity);
+			}
+		}
 		if(entity.containsComponent(CompPlayer)){
 			if(remove){
 				interactionSys.removeEntity(entity);
@@ -253,6 +267,7 @@ public class Engine {
 				//TODO
 				//add system  that is used in the overworld
 //				renderingSys.drawOWbackground();
+				plotSys.update();
 				renderingSys.update();
 				inputManager.update();
 				overworldSys.update();
@@ -284,7 +299,8 @@ public class Engine {
 		combatsystem = new CombatSystem(this);
 		levelingSys = new LevelingSystem();
 		
-		overworldSys = new OverworldSystem(this);
+		plotSys = new PlotSystem(this, plotEngine);
+		overworldSys = new OverworldSystem(this, plotSys);
 		mainmenuSys = new MainMenuSystem(this);
 		interactionSys = new InteractionSystem(this);
 	}
