@@ -32,25 +32,26 @@ public class Engine {
 	// Debug flag:
 	public static boolean debug = true; 
 	// Constants: Components
-	public static final int CompAttribute = 1 << 0;
-	public static final int CompHealth = 1 << 1;
-	public static final int CompInput = 1 << 2;
-	public static final int CompPosition = 1 << 3;
-	public static final int CompSprite = 1 << 4;
-	public static final int CompTurnsLeft = 1 << 5;
-	public static final int CompDirection = 1 << 6;
-	public static final int CompAI = 1 << 7;
-	public static final int CompHighlight = 1 << 8;
-	public static final int CompPlayer = 1 << 9;
-	public static final int CompWeapon = 1 << 10;
-	public static final int CompFieldOfView = 1 << 11;
-	public static final int CompSeed = 1 << 12;
-	public static final int CompDungeon= 1 << 13;
-	public static final int CompSelectedFlag = 1 << 14;
-	public static final int CompGold = 1 << 15;
-	public static final int CompBlocksWalking = 1 << 16;
+	private static int componentID = 0;
+	public static final int CompAttribute = 1 << componentID++;
+	public static final int CompHealth = 1 << componentID++;
+	public static final int CompInput = 1 << componentID++;
+	public static final int CompPosition = 1 << componentID++;
+	public static final int CompSprite = 1 << componentID++;
+	public static final int CompTurnsLeft = 1 << componentID++;
+	public static final int CompDirection = 1 << componentID++;
+	public static final int CompAI = 1 << componentID++;
+	public static final int CompHighlight = 1 << componentID++;
+	public static final int CompPlayer = 1 << componentID++;
+	public static final int CompWeapon = 1 << componentID++;
+	public static final int CompFieldOfView = 1 << componentID++;
+	public static final int CompSeed = 1 << componentID++;
+	public static final int CompDungeon= 1 << componentID++;
+	public static final int CompSelectedFlag = 1 << componentID++;
+	public static final int CompGold = 1 << componentID++;
+	public static final int CompBlocksWalking = 1 << componentID++;
 	
-	public static final int CompBlocksLineOfSight = 1 << 19; // simon has 17, 18, change to an itterator or something
+	public static final int CompBlocksLineOfSight = 1 << componentID++; // simon has 17, 18, change to an itterator or something
 	
 	
 	// Constants: System requirements:
@@ -134,7 +135,7 @@ public class Engine {
 	 * @param remove if true the entity should be removed from systems, if false it will be added
 	 */
 	private void addOrRemoveEntity(Entity entity, boolean remove){		
-		int compKey = entity.getComponentKey(); 
+		long compKey = entity.getComponentKey(); 
 //		if((compKey & inputSysReq) == inputSysReq) {
 //			if(remove){
 //				inputSys.removeEntity(entity);

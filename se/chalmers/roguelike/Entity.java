@@ -11,7 +11,7 @@ import se.chalmers.roguelike.Components.Attribute;
 public class Entity {
 
 	HashMap<Class<?>, IComponent> components;
-	private int componentKey;
+	private long componentKey;
 	private String name;
 	
 	public Entity(String name){
@@ -61,7 +61,7 @@ public class Entity {
 //		System.out.println("New compkey: "+componentKey); // debug
 	}
 	
-	public int getComponentKey(){
+	public long getComponentKey(){
 		return componentKey;
 	}
 	
