@@ -12,6 +12,8 @@ import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.FieldOfView;
+import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.IComponent;
@@ -19,6 +21,7 @@ import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.KruskalMST;
@@ -193,6 +196,8 @@ public class LevelGenerator {
 				components.add(new Position(x,y));
 				components.add(new Direction());
 				components.add(new AI());
+				components.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); //hardcoded equals bad
+				components.add(new FieldOfView(8)); //hardcoded equals bad
 				Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE, SpaceRace.SPACE_DWARF, 1, 50);
 				components.add(attribute);
 				enemies.add(EntityCreator.createEntity("(Enemy)" + name, components));
