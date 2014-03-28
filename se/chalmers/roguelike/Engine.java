@@ -319,6 +319,9 @@ public class Engine {
 	public void loadDungeon(Dungeon dungeon, GameState newState){
 		// TODO: Loading screen stuff
 //		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
+		if(gameState == GameState.OVERWORLD){
+			overworldSys.unregister();
+		}
 		if(this.dungeon != null){
 			this.dungeon.unregister(this);
 		}
