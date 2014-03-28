@@ -6,6 +6,7 @@ import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.BlocksLineOfSight;
 import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.DungeonComponent;
@@ -28,7 +29,7 @@ import se.chalmers.roguelike.World.Dungeon;
 public class EntityCreator {
 
 	private Engine engine;
-	public static IComponent blocksWalking = new BlocksWalking(); // made the component static so everything can use it
+	//public static IComponent blocksWalking = new BlocksWalking(); // made the component static so everything can use it
 	
 	public EntityCreator(Engine engine) {
 		this.engine = engine;
@@ -46,7 +47,7 @@ public class EntityCreator {
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
 		player.add(new Gold(0));
-		player.add(blocksWalking);
+		player.add(new BlocksWalking(true));
 		//engine.addEntity(player);
 		return player;
 	}
@@ -61,7 +62,7 @@ public class EntityCreator {
 		enemy.add(new Direction());
 		enemy.add(new AI());
 		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.SPACE_ROGUE, Attribute.SpaceRace.SPACE_ALIEN, 1, 50));
-		enemy.add(blocksWalking);
+		enemy.add(new BlocksWalking(true));
 		engine.addEntity(enemy);
 	}
 
@@ -89,7 +90,7 @@ public class EntityCreator {
 		enemy.add(new Direction());
 		enemy.add(new AI());
 		enemy.add(attribute);
-		enemy.add(blocksWalking);
+		enemy.add(new BlocksWalking(true));
 		engine.addEntity(enemy);
 	}
 
@@ -145,6 +146,16 @@ public class EntityCreator {
 		stairs.add(new Sprite(sprite));
 		stairs.add(new DungeonComponent(dungeon));
 		return stairs;
+	}
+	
+	
+	public static Entity createDoor(int x, int y, String sprite, boolean open){
+		Entity door = new Entity("door");
+		door.add(new Position(x,y));
+		door.add(new Sprite(sprite));
+		door.add(new BlocksLineOfSight(!open));
+		door.add(new BlocksWalking(!open));
+		return door;
 	}
 	
 	public static Entity createEntity(String name, ArrayList<IComponent> components){
