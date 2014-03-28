@@ -66,7 +66,8 @@ public class InteractionSystem implements ISystem, Observer {
 
 	@Override
 	public void notify(Enum<?> i) {
-		if(i.equals(InputAction.INTERACTION)){
+		if(Engine.gameState == Engine.GameState.DUNGEON && player != null && i.equals(InputAction.INTERACTION)){
+			System.out.println("INTERACTION DEBUG");
 			Position pos = player.getComponent(Position.class);
 			Tile tile = dungeon.getTile(pos.getX(), pos.getY());
 			ArrayList<Entity> entities = tile.getEntities();
