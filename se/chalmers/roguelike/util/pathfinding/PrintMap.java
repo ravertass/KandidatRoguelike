@@ -20,6 +20,10 @@ public class PrintMap {
 
 	public PrintMap(AreaMap map, ArrayList<Position> shortestPath) {
 		Node node;
+		if (shortestPath == null){
+			System.err.println("No path was found; either the path is non-existent or it is temporarily blocked.");
+			return;
+		}
 		for (int y = 0; y < map.getMapHeight(); y++) {
 
 			if (y == 0) {
@@ -38,8 +42,7 @@ public class PrintMap {
 					System.out.print("s");
 				} else if (node.isGoal) {
 					System.out.print("g");
-				} else if (shortestPath.contains(new Position(node.getX(), node
-						.getY()))) {
+				} else if (shortestPath.contains(new Position(node.getX(), node.getY()))) {
 					System.out.print("¤");
 				} else {
 					System.out.print(" ");

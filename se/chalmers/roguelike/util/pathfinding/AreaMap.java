@@ -34,7 +34,7 @@ public class AreaMap {
 	 * Class constructor specifying the Width and Height of a otherwise empty
 	 * map (no start and goal location or obstacles).
 	 * 
-	 * @param mapWith
+	 * @param mapWidth
 	 * @param mapHeight
 	 */
 	public AreaMap(int mapWidth, int mapHeight) {
@@ -64,7 +64,7 @@ public class AreaMap {
 	}
 
 	/**
-	 * Sets up the Nodes of the map with the With and Height specified in the
+	 * Sets up the Nodes of the map with the Width and Height specified in the
 	 * constructor or set methods.
 	 */
 	private void createMap() {
@@ -172,7 +172,7 @@ public class AreaMap {
 
 	/**
 	 * Removes all the map information about start location, goal location and
-	 * obstacles. Then remakes the map with the original With and Height.
+	 * obstacles. Then remakes the map with the original Width and Height.
 	 */
 	public void clear() {
 		startLocationX = 0;
