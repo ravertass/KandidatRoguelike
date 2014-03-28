@@ -8,7 +8,12 @@ import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
+import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.util.pathfinding.AStar;
+import se.chalmers.roguelike.util.pathfinding.AreaMap;
+import se.chalmers.roguelike.util.pathfinding.DiagonalHeuristic;
 
 public class AISystem implements ISystem {
 
@@ -35,8 +40,54 @@ public class AISystem implements ISystem {
 			ai = e.getComponent(AI.class);
 			Entity target = ai.getTarget();
 			if (target != null){
-				track(target);
-				//TODO move towards or attack target
+				Position startPos = e.getComponent(Position.class);
+				Position targetPos = target.getComponent(Position.class);
+				Input input = e.getComponent(Input.class);
+				Tile[][] worldTiles = world.getWorld();
+				int[][] obstacleMap = createObstacleMap(worldTiles);
+				AreaMap map = new AreaMap(world.getWorldWidth(), world.getWorldHeight(), obstacleMap);
+				
+				ArrayList<Position> path = track(startPos, targetPos, map);
+				//what to do if path is null e.g path is blocked?
+				if(path == null){
+					System.out.println(e + " DOES NOTHING");
+					input.setNextEvent(InputAction.DO_NOTHING);
+				} else if (path.size() <= e.getComponent(Weapon.class).getRange()){
+					//Attackerar man nu?
+					input.setAttackCords(targetPos);
+					break;
+				} else{
+					int startX = startPos.getX();
+					int startY = startPos.getY();
+					int nextX = path.get(0).getX();
+					int nextY = path.get(0).getY();
+					
+					if(nextX == startX - 1 && nextY == startY + 1){
+						System.out.println(e + " GOES NORTHWEST");
+						input.setNextEvent(InputAction.GO_NORTHWEST);
+					} else if(nextX == startX && nextY == startY + 1){
+						System.out.println(e + " GOES NORTH");
+						input.setNextEvent(InputAction.GO_NORTH);
+					} else if(nextX == startX + 1 && nextY == startY + 1){
+						System.out.println(e+" GOES NORTHEAST");
+						input.setNextEvent(InputAction.GO_NORTHEAST);
+					} else if(nextX == startX - 1 && nextY == startY){
+						System.out.println(e+" GOES WEST");
+						input.setNextEvent(InputAction.GO_WEST);
+					} else if(nextX == startX && nextY == startY - 1){
+						System.out.println(e + " GOES SOUTH");
+						input.setNextEvent(InputAction.GO_SOUTH);
+					} else if(nextX == startX + 1 && nextY == startY){
+						System.out.println(e+" GOES EAST");
+						input.setNextEvent(InputAction.GO_EAST);
+					} else if(nextX == startX - 1 && nextY == startY - 1){
+						System.out.println(e + " GOES SOUTHWEST");
+						input.setNextEvent(InputAction.GO_SOUTHWEST);
+					} else if(nextX == startX + 1 && nextY == startY - 1){
+						System.out.println(e + " GOES SOUTHEAST");
+						input.setNextEvent(InputAction.GO_SOUTHEAST);
+					} 
+				}
 			}
 			
 			Input input = e.getComponent(Input.class);
@@ -95,9 +146,26 @@ public class AISystem implements ISystem {
 		}
 	}
 
-	private void track(Entity target) {
-		// TODO Auto-generated method stub
-		// implement some algorithm that tries to get to the position of 'target'
+	private int[][] createObstacleMap(Tile[][] worldTiles) {
+		int[][] obstacleMap = new int[worldTiles.length][worldTiles[1].length];
+		for (int i = 0; i < obstacleMap.length; i++){
+			for (int j = 0; j < obstacleMap[i].length; j++) {
+				if(worldTiles[i][j].isWalkable()){
+					obstacleMap[i][j] = 0;
+				} else{
+					obstacleMap[i][j] = 1;
+				}
+			}
+		}
+		return obstacleMap;
+	}
+
+	private ArrayList<Position> track(Position start, Position target, AreaMap map) {
+		DiagonalHeuristic heuristic = new DiagonalHeuristic();
+		AStar findPath = new AStar(map, heuristic);
+		ArrayList<Position> shortestPath = findPath.calcShortestPath(start.getX(), start.getY(),
+				target.getX(), target.getY());
+		return shortestPath;
 	}
 
 	/**
