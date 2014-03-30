@@ -78,7 +78,7 @@ public class Entity {
 		return name;
 	}
 	
-	public boolean containsComponent(int component){
+	public boolean containsComponent(long component){
 		return (componentKey & component) == component;
 	}
 }

@@ -32,39 +32,39 @@ public class Engine {
 	// Debug flag:
 	public static boolean debug = true; 
 	// Constants: Components
-	private static int componentID = 0;
-	public static final int CompAttribute = 1 << componentID++;
-	public static final int CompHealth = 1 << componentID++;
-	public static final int CompInput = 1 << componentID++;
-	public static final int CompPosition = 1 << componentID++;
-	public static final int CompSprite = 1 << componentID++;
-	public static final int CompTurnsLeft = 1 << componentID++;
-	public static final int CompDirection = 1 << componentID++;
-	public static final int CompAI = 1 << componentID++;
-	public static final int CompHighlight = 1 << componentID++;
-	public static final int CompPlayer = 1 << componentID++;
-	public static final int CompWeapon = 1 << componentID++;
-	public static final int CompFieldOfView = 1 << componentID++;
-	public static final int CompSeed = 1 << componentID++;
-	public static final int CompDungeon= 1 << componentID++;
-	public static final int CompSelectedFlag = 1 << componentID++;
-	public static final int CompGold = 1 << componentID++;
-	public static final int CompBlocksWalking = 1 << componentID++;
+	private static long componentID = 0;
+	public static final long CompAttribute = 1 << componentID++;
+	public static final long CompHealth = 1 << componentID++;
+	public static final long CompInput = 1 << componentID++;
+	public static final long CompPosition = 1 << componentID++;
+	public static final long CompSprite = 1 << componentID++;
+	public static final long CompTurnsLeft = 1 << componentID++;
+	public static final long CompDirection = 1 << componentID++;
+	public static final long CompAI = 1 << componentID++;
+	public static final long CompHighlight = 1 << componentID++;
+	public static final long CompPlayer = 1 << componentID++;
+	public static final long CompWeapon = 1 << componentID++;
+	public static final long CompFieldOfView = 1 << componentID++;
+	public static final long CompSeed = 1 << componentID++;
+	public static final long CompDungeon= 1 << componentID++;
+	public static final long CompSelectedFlag = 1 << componentID++;
+	public static final long CompGold = 1 << componentID++;
+	public static final long CompBlocksWalking = 1 << componentID++;
 	
-	public static final int CompBlocksLineOfSight = 1 << componentID++; // simon has 17, 18, change to an itterator or something
+	public static final long CompBlocksLineOfSight = 1 << componentID++; // simon has 17, 18, change to an itterator or something
 	
 	
 	// Constants: System requirements:
-	public static final int inputSysReq = CompInput;
-	public static final int renderingSysReq = CompSprite | CompPosition;
-	public static final int moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
-	public static final int mobSpriteSysReq = CompSprite | CompDirection;
-	public static final int highlightSysReq = CompSprite | CompPosition;
-	public static final int aiSysReq = CompAI | CompInput;
-	public static final int playerInputSysReq = CompPlayer;
-	public static final int combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
-	public static final int levelingSystemReq = CompAttribute;
-	public static final int dungeonReq = CompSprite | CompPosition;
+	public static final long inputSysReq = CompInput;
+	public static final long renderingSysReq = CompSprite | CompPosition;
+	public static final long moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
+	public static final long mobSpriteSysReq = CompSprite | CompDirection;
+	public static final long highlightSysReq = CompSprite | CompPosition;
+	public static final long aiSysReq = CompAI | CompInput;
+	public static final long playerInputSysReq = CompPlayer;
+	public static final long combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
+	public static final long levelingSystemReq = CompAttribute;
+	public static final long dungeonReq = CompSprite | CompPosition;
 	
 	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
