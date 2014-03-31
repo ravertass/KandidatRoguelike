@@ -51,6 +51,12 @@ public class Entity {
 			componentKey |= Engine.CompDungeon;
 		} else if(compClass == SelectedFlag.class){
 			componentKey |= Engine.CompSelectedFlag;
+		} else if(compClass == Gold.class){
+			componentKey |= Engine.CompGold;
+		} else if(compClass == BlocksWalking.class){
+			componentKey |= Engine.CompBlocksWalking;
+		} else if(compClass == BlocksLineOfSight.class){
+			componentKey |= Engine.CompBlocksLineOfSight;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}
@@ -70,5 +76,9 @@ public class Entity {
 	
 	public String toString(){
 		return name;
+	}
+	
+	public boolean containsComponent(int component){
+		return (componentKey & component) == component;
 	}
 }

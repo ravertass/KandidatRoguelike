@@ -20,13 +20,13 @@ public class InputManager implements Subject {
 	private HashMap<Integer, InputAction> keyToAction;
 
 	/**
-	 * This is where you delcare all the different events that the keyboard and mouse can cause. 
+	 * This is where you declare all the different events that the keyboard and mouse can cause. 
 	 * @author twister
 	 *
 	 */
 	public static enum InputAction {
 		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING,
-		DUMMY, LOOT// TODO
+		DUMMY, LOOT, INTERACTION //TODO
 		// add
 		// more
 		// stuff
@@ -93,7 +93,6 @@ public class InputManager implements Subject {
 				pressedKey = key;
 				if(keyToAction.containsKey(key))
 					notifyObservers(keyToAction.get(key));
-				
 			}
 		}
 		
@@ -104,11 +103,7 @@ public class InputManager implements Subject {
 				}
 				notifyObservers(InputAction.MOUSECLICK);
 			}
-
 		}
-		
-		
-
 	}
 	
 	/**
@@ -131,13 +126,8 @@ public class InputManager implements Subject {
 		keyToAction.put(Keyboard.KEY_NUMPAD1, InputAction.GO_SOUTHWEST);
 		keyToAction.put(Keyboard.KEY_C, InputAction.GO_SOUTHEAST);
 		keyToAction.put(Keyboard.KEY_NUMPAD3, InputAction.GO_SOUTHEAST);
-		keyToAction.put(Keyboard.KEY_W, InputAction.GO_NORTH);
-		keyToAction.put(Keyboard.KEY_W, InputAction.GO_NORTH);
 		keyToAction.put(Keyboard.KEY_NUMPAD5, InputAction.DO_NOTHING);
 		keyToAction.put(Keyboard.KEY_G, InputAction.LOOT);
-		
+		keyToAction.put(Keyboard.KEY_F, InputAction.INTERACTION);
 	}
-	
-	
-
 }

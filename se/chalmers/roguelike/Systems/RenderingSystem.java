@@ -41,6 +41,7 @@ import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.PopupText;
@@ -273,18 +274,14 @@ public class RenderingSystem implements ISystem {
 					drawNonTile(entity.getComponent(Sprite.class),
 							entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
-				} else if (entity.getComponent(PopupText.class) != null) {
-					drawNonTile(entity.getComponent(Sprite.class),
-							entity.getComponent(Position.class));
-					ArrayList<String> popupText = entity.getComponent(
-							PopupText.class).getText();
-					Position drawPos = new Position(entity.getComponent(
-							Position.class).getX(), entity.getComponent(
-							Position.class).getY()
-							+ 300 - font.getHeight());
-					for (String s : popupText) {
-						font.drawString(drawPos.getX(), drawPos.getY(), s);
-						drawPos.setY(drawPos.getY() - font.getHeight());
+
+				} else if(entity.getComponent(PopupText.class) != null) {
+					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+					ArrayList<String> popupText = entity.getComponent(PopupText.class).getText();
+					Position drawPos = new Position(entity.getComponent(Position.class).getX(), entity.getComponent(Position.class).getY()+300-font.getHeight());
+					for(String s : popupText) {
+						font.drawString(drawPos.getX(),drawPos.getY(),s);
+						drawPos.setY(drawPos.getY()-font.getHeight());
 
 					}
 				} else {
@@ -308,8 +305,7 @@ public class RenderingSystem implements ISystem {
 				font.drawString(Engine.screenWidth - 120, 300,
 						"\nVisited before: " + visited);
 			}
-
-		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
+		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
 				drawNonTile(e.getComponent(Sprite.class),
@@ -632,13 +628,15 @@ public class RenderingSystem implements ISystem {
 		// e will always be the player here
 		Attribute attributes = e.getComponent(Attribute.class);
 		Weapon weapon = e.getComponent(Weapon.class);
-		Health health = e.getComponent(Health.class); 
+		Health health = e.getComponent(Health.class);
+		Gold gold = e.getComponent(Gold.class);
 		double hp = health.getHealth();
 		double hpPercentage = health.getHealthPercentage();
 		double maxHp = health.getMaxHealth();
 
 		String info = "Name: "+attributes.getName() +
-				"\nLevel "+attributes.getLevel()+
+				"\nGold: "+gold.getGold()+
+				"\nLevel: "+attributes.getLevel()+
 				"\nXP: "+attributes.experience()+
 				"\nStrength: " + attributes.strength() + 
 				"\nEndurance: " + attributes.endurance() + 

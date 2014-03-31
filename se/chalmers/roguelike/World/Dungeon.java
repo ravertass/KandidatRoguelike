@@ -9,9 +9,6 @@ import se.chalmers.roguelike.Components.Position;
 /**
  * Dungeon is an class that holds the game world along with several helper 
  * functions for determining if the world can be walked on etc.
- * 
- * @author Anttila
- *
  */
 
 public class Dungeon {
@@ -20,9 +17,7 @@ public class Dungeon {
 	private int worldHeight;
 	private Position startpos;
 	private Tile[][] tiles;
-	private ArrayList<Entity> entities;
-//	private ArrayList<Entity> enemies;
-//	private ArrayList<Entity> backup = new ArrayList<Entity>();  
+	private ArrayList<Entity> entities;  
 	private boolean currentlyRegistering = false;
 	private Dungeon previousDungeonLevel;
 	private Dungeon nextDungeonLevel;
@@ -33,14 +28,13 @@ public class Dungeon {
 	 * @param worldHeight the height of the world
 	 * @param tiles the array of tiles the world should have
 	 */
-	public Dungeon(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> enemies ){
+	public Dungeon(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> entities ){
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
 		this.setStartpos(startpos);
-//		this.setEnemies(enemies);
-		entities = new ArrayList<Entity>();
-		entities.addAll(enemies);
+		this.entities = new ArrayList<Entity>();
+		this.entities.addAll(entities);
 	}
 	
 	/**
@@ -130,15 +124,6 @@ public class Dungeon {
 		entities.remove(entity);
 	}
 	public void unregister(Engine engine){
-
-		/*
-		 * This is probably the worst code I've written in a while. Why does it look 
-		 * like this? To avoid concurrency issues, otherwise if you just iterate over
-		 * the list, it will change the list since removeEntity will in the end remove
-		 * it from the list you're iterating over. Stupid goddamn thing.
-		 * 
-		 * I'll rewrite it to not be crap some day I guess.
-		 */
 		currentlyRegistering = true;
 		int player = -1;
 		for(int i=0;i<entities.size();i++){
@@ -155,10 +140,8 @@ public class Dungeon {
 	}
 	
 	public void register(Engine engine){
-		System.out.println("Foobar");
 		currentlyRegistering = true;
 		for(Entity e : entities){
-			System.out.println("RESTORING");
 			engine.addEntity(e);
 		}
 		currentlyRegistering = false;
@@ -172,19 +155,16 @@ public class Dungeon {
 		this.startpos = startpos;
 	}
 
-//	public ArrayList<Entity> getEnemies() {
-//		return enemies;
-//	}
-
 	public void setEnemies(ArrayList<Entity> enemies) {
-//		this.enemies = enemies;
 		entities.addAll(enemies);
 	}
 
 	public Dungeon getPreviousDungeonLevel() {
+		System.out.println("getting prev "+this);
 		return previousDungeonLevel;
 	}
 	public void setPreviousDungeonLevel(Dungeon previousDungeonLevel) {
+		System.out.println("setting prev "+this);
 		this.previousDungeonLevel = previousDungeonLevel;
 	}
 
