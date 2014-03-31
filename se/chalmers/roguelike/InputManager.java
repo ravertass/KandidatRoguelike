@@ -127,9 +127,6 @@ public class InputManager implements Subject {
 		keyToAction.put(Keyboard.KEY_C, InputAction.GO_SOUTHEAST);
 		keyToAction.put(Keyboard.KEY_NUMPAD3, InputAction.GO_SOUTHEAST);
 		keyToAction.put(Keyboard.KEY_NUMPAD5, InputAction.DO_NOTHING);
-<<<<<<< HEAD
 		keyToAction.put(Keyboard.KEY_F, InputAction.INTERACTION);
-=======
->>>>>>> pathFinding
 	}
 }
