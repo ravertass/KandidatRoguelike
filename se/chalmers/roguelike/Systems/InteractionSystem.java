@@ -23,11 +23,18 @@ public class InteractionSystem implements ISystem, Observer {
 	private Entity player;
 	private Dungeon dungeon;
 	
+	/**
+	 * Sets up the interactionsystem.
+	 * 
+	 * @param engine the engine instance the system uses.
+	 */
 	public InteractionSystem(Engine engine){
 		this.engine = engine;
 	}
 	
-	@Override
+	/**
+	 * Runs with the game loop.
+	 */
 	public void update() {
 		if(dungeon == null || player == null){
 			return;
@@ -35,18 +42,26 @@ public class InteractionSystem implements ISystem, Observer {
 		interact();
 	}
 
-	@Override
+	/**
+	 * Adds a player to the system
+	 * @param entity the player
+	 */
 	public void addEntity(Entity entity) {
 		player = entity;
 		
 	}
 
-	@Override
+	/**
+	 * Removes the player from the system
+	 */
 	public void removeEntity(Entity entity) {
-		// TODO Auto-generated method stub
+		player = null;
 		
 	}
 	
+	/**
+	 * Picks up whatever is on the player tile.
+	 */
 	private void interact(){
 		Position pos = player.getComponent(Position.class);
 		Tile tile = dungeon.getTile(pos.getX(), pos.getY());
@@ -56,31 +71,32 @@ public class InteractionSystem implements ISystem, Observer {
 				Gold playerGold = player.getComponent(Gold.class);
 				Gold entityGold = e.getComponent(Gold.class);
 				playerGold.setGold(playerGold.getGold()+entityGold.getGold());
-				System.out.println("GOLD PICKED UP!");
 				engine.removeEntity(e);
 			}
 		}
 	}
 	
+	/**
+	 * Sets the dungeon that the system will be using
+	 * @param dungeon the dungeon that should be used
+	 */
 	public void setDungeon(Dungeon dungeon){
 		this.dungeon = dungeon;
 	}
 
-	@Override
+	/**
+	 * notify-function for the observer interface, will match and see if the 
+	 * message from the observer is correct.
+	 */
 	public void notify(Enum<?> i) {
 		if(Engine.gameState == Engine.GameState.DUNGEON && player != null && i.equals(InputAction.INTERACTION)){
-			System.out.println("INTERACTION DEBUG");
 			Position pos = player.getComponent(Position.class);
 			Tile tile = dungeon.getTile(pos.getX(), pos.getY());
 			ArrayList<Entity> entities = tile.getEntities();
 			if(entities.size()-1 != 0){ // -1 because player will always be counted as one
-				// if this occurs, use the entities on the current tile
 				for(Entity e : entities){
 					if(e.containsComponent(Engine.CompDungeon)) {
 						DungeonComponent dc = e.getComponent(DungeonComponent.class);
-						if(dc.getDungeon() == null){
-							System.out.println("asdf");
-						}
 						Dungeon nextDungeon = dc.getDungeon();
 						if(nextDungeon != null){
 							engine.loadDungeon(nextDungeon, Engine.GameState.DUNGEON);
@@ -128,5 +144,4 @@ public class InteractionSystem implements ISystem, Observer {
 			}
 		}
 	}
-
 }
