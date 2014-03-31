@@ -34,7 +34,10 @@ public class Dungeon {
 		this.tiles = tiles;
 		this.setStartpos(startpos);
 		this.entities = new ArrayList<Entity>();
-		this.entities.addAll(entities);
+		for(Entity e : entities){
+			Position pos = e.getComponent(Position.class);
+			addEntity(pos.getX(), pos.getY(), e);
+		}
 	}
 	
 	/**
@@ -95,12 +98,16 @@ public class Dungeon {
 	 * @param worldHeight the height of the new world, must match the array
 	 * @param tiles a 2d-array of all the tiles for the world
 	 */
-	public void setWorld(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> enemies){
+	public void setWorld(int worldWidth, int worldHeight, Tile[][] tiles, Position startpos, ArrayList<Entity> entities){
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
 		//this.setEnemies(enemies);
-		entities.addAll(enemies);
+		//entities.addAll(enemies);
+		for(Entity e : entities){
+			Position pos = e.getComponent(Position.class);
+			addEntity(pos.getX(), pos.getY(), e);
+		}
 		this.setStartpos(startpos);
 	}
 	public void addEntity(int x, int y, Entity entity){
