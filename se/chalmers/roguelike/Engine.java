@@ -245,7 +245,7 @@ public class Engine {
 				levelingSys.update();
 				turnSystem.update();
 				if(player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0){
-					aiSystem.update(dungeon);
+					aiSystem.update(dungeon, player);
 					System.out.println("------------NEW TURN------------");
 				}
 				

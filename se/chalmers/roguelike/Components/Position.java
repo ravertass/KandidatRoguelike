@@ -72,6 +72,4 @@ public class Position implements IComponent, Comparable<Position>{
 		else 
 			return -1;
 	}
-	
-
 }
