@@ -104,7 +104,7 @@ public class Dungeon {
 		this.tiles = tiles;
 		//this.setEnemies(enemies);
 		//entities.addAll(enemies);
-		for(Entity e : enemies){
+		for(Entity e : entities){
 			Position pos = e.getComponent(Position.class);
 			addEntity(pos.getX(), pos.getY(), e);
 		}
