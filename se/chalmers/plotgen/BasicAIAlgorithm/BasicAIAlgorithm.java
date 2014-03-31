@@ -46,10 +46,9 @@ public class BasicAIAlgorithm {
 		this.actors = actors;
 		this.props = props;
 		this.random = random;
-		plotGraph = createPlot();
 	}
 
-	private PlotGraph createPlot() {
+	public PlotGraph createPlot() {
 
 		// Put actors on scenes and props on scenes and actors
 		placePlotBodies();
@@ -124,7 +123,17 @@ public class BasicAIAlgorithm {
 					plotGraph.addVertex(lastVertex, newVertex, newEdge);
 					lastVertex = newVertex;					
 				}
+				
+				// If the plot is too long, we'll try again
+				if (plotGraph.size() > 9) {
+					return null;
+				}
 			}
+		}
+		
+		// If the plot is too short, we'll also try again
+		if (plotGraph.size() < 4) {
+			return null;
 		}
 
 		return plotGraph;
@@ -347,6 +356,8 @@ public class BasicAIAlgorithm {
 				// Another special case:
 				// Only the mainAgent should be able to kill the
 				// character that the mainAgent wants to kill
+				//TODO: This doesn't seem to work!
+				// 		It seems the program doesn't get into the loop below at all sometimes...
 				if (actor != mainAgent.getSelf()) {
 					for (ICondition mainGoal : mainAgent.getTrueGoals()) {
 						if (killOp.getSetTrue().contains(mainGoal)) {
@@ -451,9 +462,5 @@ public class BasicAIAlgorithm {
 			}
 		}
 		return true;
-	}
-
-	public PlotGraph getPlotGraph() {
-		return plotGraph;
 	}
 }

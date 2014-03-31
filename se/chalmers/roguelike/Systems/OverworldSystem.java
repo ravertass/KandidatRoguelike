@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.PlotAction;
 import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
@@ -37,13 +38,8 @@ public class OverworldSystem implements ISystem, Observer {
 	public boolean popupActive;
 	private ArrayList<String> popupText;
 	private Entity popup;
-	
-	private PlotSystem plotSys;
 
-	// Making OverworldSystem know of PlotSystem breaks the E-C pattern but fuck
-	// it, it's really stupid to do this any other way
-	public OverworldSystem(Engine engine, PlotSystem plotSys) {
-		this.plotSys = plotSys;
+	public OverworldSystem(Engine engine) {
 		this.engine = engine;
 		activeStar = null;
 		popupActive = false;
@@ -149,10 +145,14 @@ public class OverworldSystem implements ISystem, Observer {
 		String coords = star.x + "," + star.y;
 		activeStar = stars.get(coords);
 		activeStar.getComponent(SelectedFlag.class).setFlag(true);
-		// TODO här får PlotSystem sägas till!
-		if (plotSys.visitAction(stars.get(coords))) {
-			//TODO den här måste av godtycklig anledning vara ganska lång...
-			createTextPopup(plotSys.getActiveString());
+
+		// This is we're we check if there's a current plot action coupled with
+		// the star
+		if (activeStar.getComponent(PlotAction.class).getAction() != null) {
+			// TODO den här måste av godtycklig anledning vara ganska lång...
+			createTextPopup(activeStar.getComponent(PlotAction.class)
+					.getPlotText());
+			activeStar.getComponent(PlotAction.class).setActionPerformed(true);
 		}
 	}
 

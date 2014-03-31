@@ -118,4 +118,8 @@ public class PlotGraph {
 		}
 		return string;
 	}
+	
+	public int size() {
+		return graph.size();
+	}
 }

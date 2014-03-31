@@ -15,6 +15,7 @@ import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Player;
+import se.chalmers.roguelike.Components.PlotAction;
 import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
@@ -119,6 +120,7 @@ public class EntityCreator {
 		star.add(new Seed(seed));
 		star.add(new SelectedFlag(false));
 		star.add(new DungeonComponent());
+		star.add(new PlotAction());
 		engine.addEntity(star);
 		return star;
 	}

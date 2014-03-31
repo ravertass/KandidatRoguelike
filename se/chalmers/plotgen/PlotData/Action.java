@@ -1,7 +1,5 @@
 package se.chalmers.plotgen.PlotData;
 
-import se.chalmers.plotgen.BasicAIAlgorithm.LivesCondition;
-
 /**
  * This class models an action in a game, e.g. [Leif] [KILLS] [Uffe]
  * 
@@ -109,6 +107,10 @@ public class Action {
 
 	public Actor getObjectActor() {
 		return objectActor;
+	}
+	
+	public Scene getObjectScene() {
+		return objectScene;
 	}
 
 	public ActionType getActionType() {

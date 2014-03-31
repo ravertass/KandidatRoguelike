@@ -13,6 +13,7 @@ import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.Components.PlotAction;
 
 //TODO: Kanske ska man ha en entitet som är "OverworldMainCharacter", som bland
 // annat håller koll på om det aktuella uppdraget är klarat eller ej...?
@@ -34,7 +35,7 @@ public class PlotSystem implements ISystem {
 	private boolean starsCreated;
 
 	private PlotGraph plotGraph;
-	
+
 	public PlotSystem(Engine engine, PlotEngine plotEngine) {
 		starsCreated = false;
 		scenes = plotEngine.getScenes();
@@ -43,12 +44,41 @@ public class PlotSystem implements ISystem {
 		this.engine = engine;
 		this.plotEngine = plotEngine;
 		testPlot();
+		// I vanliga fall är all plot kopplad till stjärnor
+		// Men, det finns ett gränsfall: Allra första plot-texten
+		// Lämpligtvis skriver man en metod i PlotSystem som returnerar den,
+		// sen skickar man med den med OverworldSystems konstruktor och
+		// skriver ut den det första man gör.
+	}
+
+	private void actionsToStars() {
+		ArrayList<PlotEdge> edges = new ArrayList<PlotEdge>();
+		edges.addAll(plotGraph.getAdjacentVertices().keySet());
+		for (PlotEdge edge : edges) {
+			if (edge.getAction().getActionType() == Action.ActionType.VISIT) {
+				Entity star = scenesStars
+						.get(edge.getAction().getObjectScene());
+				star.getComponent(PlotAction.class).setAction(edge.getAction());
+				star.getComponent(PlotAction.class)
+						.setPlotText(
+								plotGraph.getAdjacentVertices().get(edge)
+										.getPlotText());
+			}
+		}
+	}
+
+	private void nextAction(Action action) {
+		ArrayList<PlotEdge> edges = new ArrayList<PlotEdge>();
+		edges.addAll(plotGraph.getAdjacentVertices().keySet());
+		PlotVertex nextVertex = plotGraph.getAdjacentVertices().get(
+				new PlotEdge(action));
+		plotGraph.setActiveVertex(nextVertex);
 	}
 
 	private void setupStars() {
 		int radius = 50;
 
-		Random rand = new Random(1234L); // Make seed depenendant later
+		Random rand = new Random(1235L); // Make seed depenendant later
 
 		int i = 0;
 		for (Scene scene : scenes) {
@@ -68,9 +98,25 @@ public class PlotSystem implements ISystem {
 	public void update() {
 		if (!starsCreated) {
 			setupStars();
+			actionsToStars();
 			starsCreated = true;
 		}
 
+		// TODO: Sjukt ineffektivt sätt att göra detta på... Lös!
+		ArrayList<Scene> scenes = new ArrayList<Scene>();
+		scenes.addAll(scenesStars.keySet());
+
+		for (Scene scene : scenes) {
+			PlotAction plotAction = scenesStars.get(scene).getComponent(
+					PlotAction.class);
+			if (plotAction.getActionPerformed()) {
+				nextAction(plotAction.getAction());
+				actionsToStars();
+				plotAction.setActionPerformed(false);
+				plotAction.setAction(null);
+				plotAction.setPlotText(null);
+			}
+		}
 	}
 
 	@Override
@@ -97,28 +143,15 @@ public class PlotSystem implements ISystem {
 		PlotEdge firstEdge = new PlotEdge(new Action(Action.ActionType.VISIT,
 				mainCharacter, scenes.get(1)));
 
-		PlotVertex secondVertex = new PlotVertex("Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann!");
+		PlotVertex secondVertex = new PlotVertex(
+				"Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann!");
 		plotGraph.addVertex(rootVertex, secondVertex, firstEdge);
-	}
 
-	public boolean visitAction(Entity star) {
-		Action action = new Action(Action.ActionType.VISIT, mainCharacter,
-				starsScenes.get(star));
-		ArrayList<PlotEdge> edges = new ArrayList<PlotEdge>();
-		HashMap<PlotEdge, PlotVertex> adjacencies = plotGraph.getAdjacentVertices();
-		edges.addAll(adjacencies.keySet());
-		for (PlotEdge edge : edges) {
-			if (edge.getAction().equals(action)) {
-				plotGraph.setActiveVertex(adjacencies.get(edge));
-				// TODO: Det här är stället som gäller!
-				System.out.println(plotGraph.getActiveVertex().getPlotText());
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public String getActiveString() {
-		return plotGraph.getActiveVertex().getPlotText();
+		PlotEdge secondEdge = new PlotEdge(new Action(Action.ActionType.VISIT,
+				mainCharacter, scenes.get(2)));
+
+		PlotVertex thirdVertex = new PlotVertex(
+				"Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen!");
+		plotGraph.addVertex(secondVertex, thirdVertex, secondEdge);
 	}
 }
