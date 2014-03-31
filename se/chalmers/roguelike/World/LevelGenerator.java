@@ -180,6 +180,7 @@ public class LevelGenerator {
 		worldGrid = grid;
 
 		dungeon  = toDungeon();
+
 		//Generate nextLevel
 		if (stairsDown != null){
 			LevelGenerator nextLevelGen = new LevelGenerator(seed, (int) (amountOfRooms*0.7), generatedRoomSize, largeEnoughRoom, corridorDensity, stairProbability-20, wall, floor);
@@ -194,7 +195,6 @@ public class LevelGenerator {
 			nextDungeonLevel.addEntity(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(), stairUp);
 		} 
 		if(dungeon.getPreviousDungeonLevel() == null){
-			System.out.println("hej2");
 			int x = getStartPos().getX();
 			int y = getStartPos().getY();
 			Entity stairUp = EntityCreator.createStairs(x, y,"stairs_up",null);
@@ -234,7 +234,7 @@ public class LevelGenerator {
 				components.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); //hardcoded equals bad
 				components.add(new FieldOfView(8)); //hardcoded equals bad
 				components.add(attribute);
-				enemies.add(EntityCreator.createEntity("(Enemy)" + name,
+				dungeonEntities.add(EntityCreator.createEntity("(Enemy)" + name,
 						components));
 			}
 		}
@@ -586,11 +586,11 @@ public class LevelGenerator {
 	public Dungeon toDungeon() {
 		Dungeon dungeon = new Dungeon();
 		Tile[][] tiles = toTiles();
-		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos(), enemies);
-		for(Entity e : dungeonEntities){
-			Position pos = e.getComponent(Position.class);
-			dungeon.addEntity(pos.getX(), pos.getY(), e);
-		}
+		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos(), dungeonEntities);
+//		for(Entity e : dungeonEntities){
+//			Position pos = e.getComponent(Position.class);
+//			dungeon.addEntity(pos.getX(), pos.getY(), e);
+//		}
 		return dungeon;
 	}
 
