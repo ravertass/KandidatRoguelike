@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.EntityCreator;
+import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Direction.Dir;
 import se.chalmers.roguelike.Components.DungeonComponent;
@@ -109,11 +110,18 @@ public class InteractionSystem implements ISystem, Observer {
 					if(e.containsComponent(Engine.CompSprite | Engine.CompBlocksLineOfSight | Engine.CompBlocksWalking)){
 						// should be a door, add door flag later?
 						// Generate an open door:
-						
-						Entity newDoor = EntityCreator.createDoor(x,y,"door_vertical",true);
+						BlocksWalking blocksWalking = e.getComponent(BlocksWalking.class);
+						Entity newDoor;
+						if(blocksWalking.getBlocksWalking()){
+							// door is closed, open it
+							newDoor = EntityCreator.createDoor(x,y,"door_vertical",true);
+						} else {
+							// door is open, close it
+							newDoor = EntityCreator.createDoor(x,y,"door_vertical",false);
+						}
 						engine.removeEntity(e);
 						engine.addEntity(newDoor);
-					}
+					} 
 				}
 			}
 		}
