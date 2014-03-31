@@ -132,6 +132,11 @@ public class LevelGenerator {
 		floors.add("light_brown_floor");
 		floors.add("floor_purple");
 		floors.add("floor_hexagon");
+		floors.add("checkerdfloor");
+		floors.add("floor");
+		floors.add("floor_granite");
+		floors.add("floor_hourglass_yellow");
+		floors.add("floor_tiled_whiteandblack");
 
 		floor = floors.get(rand.nextInt(floors.size()));
 	}
