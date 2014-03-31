@@ -38,11 +38,11 @@ public class EntityCreator {
 
 	public Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
 		Entity player = new Entity("Player");
-		player.add(new Health(5));
+		player.add(new Health(50));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
 //		player.add(new Sprite("mobs/mob_knight"));
-		player.add(new Sprite("gravestone"));
+		player.add(new Sprite("mobs/mob_military_vet"));
 		player.add(new Position(44, 44));
 		player.add(new Direction());
 		player.add(new Player());
