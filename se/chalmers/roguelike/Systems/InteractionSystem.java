@@ -11,6 +11,7 @@ import se.chalmers.roguelike.Components.Direction.Dir;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Observer;
@@ -109,15 +110,16 @@ public class InteractionSystem implements ISystem, Observer {
 				for(Entity e : entities){
 					if(e.containsComponent(Engine.CompSprite | Engine.CompBlocksLineOfSight | Engine.CompBlocksWalking)){
 						// should be a door, add door flag later?
-						// Generate an open door:
 						BlocksWalking blocksWalking = e.getComponent(BlocksWalking.class);
+						String spriteName = e.getComponent(Sprite.class).getSpriteName();
+						int lastUnderscore = spriteName.lastIndexOf('_');
 						Entity newDoor;
 						if(blocksWalking.getBlocksWalking()){
 							// door is closed, open it
-							newDoor = EntityCreator.createDoor(x,y,"door_vertical",true);
+							newDoor = EntityCreator.createDoor(x,y,(spriteName.substring(0, lastUnderscore)+"_open"),true);
 						} else {
 							// door is open, close it
-							newDoor = EntityCreator.createDoor(x,y,"door_vertical",false);
+							newDoor = EntityCreator.createDoor(x,y,(spriteName.substring(0, lastUnderscore)+"_closed"),true);
 						}
 						engine.removeEntity(e);
 						engine.addEntity(newDoor);
