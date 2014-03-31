@@ -116,13 +116,7 @@ public class Tile {
 	public boolean hasBeenSeen() {
 		return this.hasBeenSeen;
 	}
-<<<<<<< HEAD
-	
-	public ArrayList<Entity> getEntities() {
-		return this.entities;
-	}
 
-=======
 	public ArrayList<Entity> getEntities(){
 		// Creates a copy of the list so we dont modify the tiles list directly
 		ArrayList<Entity> newList = new ArrayList<Entity>();
@@ -131,5 +125,4 @@ public class Tile {
 		}
 		return newList;
 	}
->>>>>>> b84a50a23ac827f6ce97d84cd624163dca7e3cb5
 }

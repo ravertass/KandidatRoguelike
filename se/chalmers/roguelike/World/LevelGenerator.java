@@ -228,7 +228,6 @@ public class LevelGenerator {
 				components.add(new BlocksWalking(true));
 				components.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); //hardcoded equals bad
 				components.add(new FieldOfView(8)); //hardcoded equals bad
-				Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE, SpaceRace.SPACE_DWARF, 1, 50);
 				components.add(attribute);
 				enemies.add(EntityCreator.createEntity("(Enemy)" + name,
 						components));
