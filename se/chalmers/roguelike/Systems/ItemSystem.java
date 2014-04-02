@@ -1,19 +1,43 @@
 package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Random;
 
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.Components.DoubleName;
+import se.chalmers.roguelike.Components.Health;
+import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.util.Pair;
 
 public class ItemSystem implements ISystem { 
 	
-	private ArrayList<Entity> potions;
+	private HashMap<Entity, UseEffect> lookupPotions;
+	private ArrayList<Pair<Entity, UseEffect>> listPotions;
 	
-	private ArrayList<Sprite> colors;
+	private ArrayList<String> colors;
+	private UseEffect[] effects;
+	
+	public static enum UseEffect {
+		HEAL, TAKE_DAMAGE
+	};
 	
 	public ItemSystem() {
-		potions = new ArrayList<Entity>();
+		lookupPotions = new HashMap<Entity, UseEffect>();
+		listPotions = new ArrayList<Pair<Entity, UseEffect>>();
 		this.setupPotions();
+		effects = UseEffect.values();
+		Collections.shuffle(colors);
+		int counter = 0;
+		for(UseEffect pe : effects) {
+			Entity e = new Entity(colors.get(counter) + " potion");
+			e.add(new Sprite("potions/potion_" + colors.get(counter)));
+			e.add(new DoubleName(pe.toString().toLowerCase() + " potion"));
+			lookupPotions.put(e, pe);
+			listPotions.add(new Pair<Entity, UseEffect>(e, pe));
+		}
 	}
 
 	@Override
@@ -33,20 +57,44 @@ public class ItemSystem implements ISystem {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	public static Entity getRandomPotion() {
+	/**
+	 * This uses an item on the specific target.
+	 * @param target
+	 * @param item
+	 */
+	public void useItem(Entity target, Entity item) {
+		UseEffect ue = lookupPotions.get(item);
+		
+		if(ue == UseEffect.HEAL) { // Heals for 50% of the targets maxhealth.
+			Health h = target.getComponent(Health.class);
+			h.increaseHealth(h.getMaxHealth()/2);
+		} else if(ue == UseEffect.TAKE_DAMAGE) { // takes 25 % damage if player drinks it, 50 % if thrown at monster
+			Health h = target.getComponent(Health.class);
+			if(target.getComponent(Player.class) != null) {
+				h.decreaseHealth(h.getMaxHealth()/4);
+			} else {
+				h.decreaseHealth(h.getMaxHealth()/2);
+			}
+		}
 		
 	}
 	
+	public Entity getRandomPotion() {
+		Random r = new Random();
+		int i = r.nextInt(lookupPotions.size());
+		return listPotions.get(i).getFirst();
+	}
+	
+	
 	private void setupPotions() {
-		colors.add(new Sprite("potions/potions_blue"));
-		colors.add(new Sprite("potions/potions_red"));
-		colors.add(new Sprite("potions/potions_white"));
-		colors.add(new Sprite("potions/potions_green"));
-		colors.add(new Sprite("potions/potions_cyan"));
-		colors.add(new Sprite("potions/potions_magenta"));
-		colors.add(new Sprite("potions/potions_silver"));
-		colors.add(new Sprite("potions/potions_gold"));
-		colors.add(new Sprite("potions/potions_misty"));
+		colors.add("blue");
+		colors.add("red");
+//		colors.add(new Sprite("potions/potions_white"));
+//		colors.add(new Sprite("potions/potions_green"));
+//		colors.add(new Sprite("potions/potions_cyan"));
+//		colors.add(new Sprite("potions/potions_magenta"));
+//		colors.add(new Sprite("potions/potions_silver"));
+//		colors.add(new Sprite("potions/potions_gold"));
+//		colors.add(new Sprite("potions/potions_misty"));
 	}
 }

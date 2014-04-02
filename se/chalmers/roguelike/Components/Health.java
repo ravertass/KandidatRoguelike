@@ -23,9 +23,23 @@ public class Health implements IComponent{
 	public int getHealth() {
 		return health;
 	}
-	
+	/**
+	 * Decreases current health and not maximum health.
+	 * @param n
+	 */
 	public void decreaseHealth(int n) {
 		health -= n;
+	}
+	/**
+	 * Increasing current health and not maximum health.
+	 * @param heal
+	 */
+	public void increaseHealth(int heal) {
+		if (health + heal >= maxHealth) {
+			health = maxHealth;
+		} else {
+			health += heal;
+		}
 	}
 	/**
 	 * 
