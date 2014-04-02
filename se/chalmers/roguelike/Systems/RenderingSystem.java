@@ -274,18 +274,14 @@ public class RenderingSystem implements ISystem {
 					drawNonTile(entity.getComponent(Sprite.class),
 							entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
-				} else if (entity.getComponent(PopupText.class) != null) {
-					drawNonTile(entity.getComponent(Sprite.class),
-							entity.getComponent(Position.class));
-					ArrayList<String> popupText = entity.getComponent(
-							PopupText.class).getText();
-					Position drawPos = new Position(entity.getComponent(
-							Position.class).getX(), entity.getComponent(
-							Position.class).getY()
-							+ 300 - font.getHeight());
-					for (String s : popupText) {
-						font.drawString(drawPos.getX(), drawPos.getY(), s);
-						drawPos.setY(drawPos.getY() - font.getHeight());
+
+				} else if(entity.getComponent(PopupText.class) != null) {
+					drawNonTile(entity.getComponent(Sprite.class),entity.getComponent(Position.class));
+					ArrayList<String> popupText = entity.getComponent(PopupText.class).getText();
+					Position drawPos = new Position(entity.getComponent(Position.class).getX(), entity.getComponent(Position.class).getY()+300-font.getHeight());
+					for(String s : popupText) {
+						font.drawString(drawPos.getX(),drawPos.getY(),s);
+						drawPos.setY(drawPos.getY()-font.getHeight());
 
 					}
 				} else {
@@ -309,8 +305,7 @@ public class RenderingSystem implements ISystem {
 				font.drawString(Engine.screenWidth - 120, 300,
 						"\nVisited before: " + visited);
 			}
-
-		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
+		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
 				drawNonTile(e.getComponent(Sprite.class),
