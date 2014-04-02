@@ -26,7 +26,7 @@ public class InputManager implements Subject {
 	 */
 	public static enum InputAction {
 		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING,
-		DUMMY, LOOT// TODO
+		INTERACTION, DUMMY, LOOT// TODO
 		// add
 		// more
 		// stuff
@@ -135,7 +135,7 @@ public class InputManager implements Subject {
 		keyToAction.put(Keyboard.KEY_W, InputAction.GO_NORTH);
 		keyToAction.put(Keyboard.KEY_NUMPAD5, InputAction.DO_NOTHING);
 		keyToAction.put(Keyboard.KEY_G, InputAction.LOOT);
-		
+		keyToAction.put(Keyboard.KEY_F, InputAction.INTERACTION);
 	}
 	
 	

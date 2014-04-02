@@ -41,6 +41,7 @@ import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.PopupText;
@@ -632,13 +633,15 @@ public class RenderingSystem implements ISystem {
 		// e will always be the player here
 		Attribute attributes = e.getComponent(Attribute.class);
 		Weapon weapon = e.getComponent(Weapon.class);
-		Health health = e.getComponent(Health.class); 
+		Health health = e.getComponent(Health.class);
+		Gold gold = e.getComponent(Gold.class);
 		double hp = health.getHealth();
 		double hpPercentage = health.getHealthPercentage();
 		double maxHp = health.getMaxHealth();
 
 		String info = "Name: "+attributes.getName() +
-				"\nLevel "+attributes.getLevel()+
+				"\nGold: "+gold.getGold()+
+				"\nLevel: "+attributes.getLevel()+
 				"\nXP: "+attributes.experience()+
 				"\nStrength: " + attributes.strength() + 
 				"\nEndurance: " + attributes.endurance() + 

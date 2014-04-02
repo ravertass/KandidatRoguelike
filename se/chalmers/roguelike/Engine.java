@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Systems.AISystem;
 import se.chalmers.roguelike.Systems.CombatSystem;
 import se.chalmers.roguelike.Systems.HighlightSystem;
 import se.chalmers.roguelike.Systems.InventorySystem;
+import se.chalmers.roguelike.Systems.InteractionSystem;
 import se.chalmers.roguelike.Systems.LevelingSystem;
 import se.chalmers.roguelike.Systems.MainMenuSystem;
 import se.chalmers.roguelike.Systems.MobSpriteSystem;
@@ -47,6 +48,10 @@ public class Engine {
 	public static final int CompSeed = 1 << 12;
 	public static final int CompDungeon= 1 << 13;
 	public static final int CompSelectedFlag = 1 << 14;
+	public static final int CompGold = 1 << 15;
+	public static final int CompBlocksWalking = 1 << 16;
+	
+	public static final int CompBlocksLineOfSight = 1 << 19; // simon has 17, 18, change to an itterator or something
 	
 
 	public static final int CompInventory = 1<<17;
@@ -76,7 +81,6 @@ public class Engine {
 	// Systems:
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
-	private MobSpriteSystem mobSpriteSys;
 	private HighlightSystem highlightSys;
 	private Entity player; // TODO: remove somehow?
 	private TurnSystem turnSystem;
@@ -88,6 +92,8 @@ public class Engine {
 	private OverworldSystem overworldSys;
 	private MainMenuSystem mainmenuSys;
 	private InventorySystem inventorySys;
+	private InteractionSystem interactionSys;
+	private MobSpriteSystem mobSpriteSys;
 	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -219,6 +225,13 @@ public class Engine {
 				inventorySys.addEntity(entity);
 			}
 		}
+		if(entity.containsComponent(CompPlayer)){
+			if(remove){
+				interactionSys.removeEntity(entity);
+			} else {
+				interactionSys.addEntity(entity);
+			}
+		}
 		
 		
 	}
@@ -241,6 +254,8 @@ public class Engine {
 				combatsystem.update(dungeon);
 				moveSys.update(dungeon);
 				inventorySys.update(dungeon);
+				interactionSys.update();
+
 				mobSpriteSys.update();
 				highlightSys.update(dungeon);
 				levelingSys.update();
@@ -290,6 +305,7 @@ public class Engine {
 		overworldSys = new OverworldSystem(this);
 		mainmenuSys = new MainMenuSystem(this);
 		inventorySys = new InventorySystem();
+		interactionSys = new InteractionSystem(this);
 	}
 	
 	/**
@@ -307,6 +323,7 @@ public class Engine {
 		inputManager.addObserver(highlightSys);
 		inputManager.addObserver(overworldSys);
 		inputManager.addObserver(mainmenuSys);
+		inputManager.addObserver(interactionSys);
 	}
 	
 	/**
@@ -318,14 +335,21 @@ public class Engine {
 	
 	public void loadDungeon(Dungeon dungeon, GameState newState){
 		// TODO: Loading screen stuff
-		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
-			this.dungeon = dungeon;
-			player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
-			this.dungeon.register(this);
-			renderingSys.setDungeon(dungeon);
-			addEntity(player);
-			gameState = newState;
+//		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
+		if(gameState == GameState.OVERWORLD){
+			overworldSys.unregister();
 		}
+		if(this.dungeon != null){
+			this.dungeon.unregister(this);
+		}
+		this.dungeon = dungeon;
+		player.getComponent(Position.class).set(dungeon.getStartpos().getX(), dungeon.getStartpos().getY()); // This respawns the player 1,1 of each map
+		this.dungeon.register(this);
+		renderingSys.setDungeon(dungeon);
+		interactionSys.setDungeon(dungeon);
+		addEntity(player);
+		gameState = newState;
+//		}
 	}
 	public void loadOverworld(){
 		if(gameState == GameState.OVERWORLD){
