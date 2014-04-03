@@ -11,7 +11,7 @@ import se.chalmers.roguelike.Components.Attribute;
 public class Entity {
 
 	HashMap<Class<?>, IComponent> components;
-	private int componentKey;
+	private long componentKey;
 	private String name;
 	
 	public Entity(String name){
@@ -57,11 +57,13 @@ public class Entity {
 			componentKey |= Engine.CompBlocksWalking;
 		} else if(compClass == PlotAction.class){
 			componentKey |= Engine.CompPlotAction;
+		} else if(compClass == BlocksLineOfSight.class){
+			componentKey |= Engine.CompBlocksLineOfSight;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}
 	
-	public int getComponentKey(){
+	public long getComponentKey(){
 		return componentKey;
 	}
 	
@@ -78,7 +80,7 @@ public class Entity {
 		return name;
 	}
 	
-	public boolean containsComponent(int component){
+	public boolean containsComponent(long component){
 		return (componentKey & component) == component;
 	}
 }

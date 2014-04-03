@@ -43,6 +43,7 @@ import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Health;
+import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.SelectedFlag;
@@ -104,7 +105,7 @@ public class RenderingSystem implements ISystem {
 		entitiesToDraw = new ArrayList<Entity>();
 
 		// Font
-		Font awtFont = new Font("Arial", Font.PLAIN, 14);
+		Font awtFont = new Font("Times New Roman", Font.BOLD, 14);
 		font = new TrueTypeFont(awtFont, false);
 
 		/*
@@ -231,9 +232,9 @@ public class RenderingSystem implements ISystem {
 	}
 
 	/**
-	 * Update should be run on every iteration of the game loop.
+	 * update should be run of every itteration of the game loop.
 	 * 
-	 * Based on what state the game engine is set to it will draw different
+	 * Based on what the state the game engine is set to it will draw different
 	 * things.
 	 */
 	public void update() {
@@ -273,6 +274,7 @@ public class RenderingSystem implements ISystem {
 					drawNonTile(entity.getComponent(Sprite.class),
 							entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
+
 				} else if (entity.getComponent(PopupText.class) != null) {
 					drawNonTile(entity.getComponent(Sprite.class),
 							entity.getComponent(Position.class));
@@ -303,12 +305,11 @@ public class RenderingSystem implements ISystem {
 				String visited = activeStar
 						.getComponent(DungeonComponent.class).getDungeon() == null ? "no"
 						: "yes";
-				font.drawString(Engine.screenWidth - 220, 300,
+				font.drawString(Engine.screenWidth - 120, 300,
 						"Selected star: " + activeStar.toString());
-				font.drawString(Engine.screenWidth - 220, 300,
+				font.drawString(Engine.screenWidth - 120, 300,
 						"\nVisited before: " + visited);
 			}
-
 		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
@@ -393,9 +394,9 @@ public class RenderingSystem implements ISystem {
 	 */
 	private void drawMenuOW() {
 
-		int x = Engine.screenWidth - 256;
+		int x = Engine.screenWidth - 128;
 		int y = 0;
-		int sizeX = 256;
+		int sizeX = 128;
 		int sizeY = Engine.screenHeight;
 
 		float spriteULX = 0.0f;
@@ -492,7 +493,7 @@ public class RenderingSystem implements ISystem {
 
 		texture.bind();
 		glEnable(GL_BLEND); // remove? this should make sure that textures are
-							// enabled
+		// enabled
 		glBegin(GL_QUADS);
 		glTexCoord2f(spriteULX, spriteLRY);
 		glVertex2d(x, y);
@@ -588,17 +589,17 @@ public class RenderingSystem implements ISystem {
 		Health h = e.getComponent(Health.class);
 		double healthPercentage = h.getHealthPercentage();
 		double healthbarLength = healthPercentage * Engine.spriteSize; // calculates
-																		// how
-																		// much
-																		// of
-																		// the
-																		// green
-																		// should
-																		// be
-																		// drawn
-																		// over
-																		// the
-																		// red
+		// how
+		// much
+		// of
+		// the
+		// green
+		// should
+		// be
+		// drawn
+		// over
+		// the
+		// red
 
 		int hblength = (int) healthbarLength;
 		// draw the red part of the healthbar
@@ -666,6 +667,35 @@ public class RenderingSystem implements ISystem {
 				- menuWidth - 22, (int) hp + "/" + (int) maxHp);
 		font.drawString(Engine.screenWidth - menuWidth, Engine.screenHeight
 				- menuWidth - 20 - 20, info); // -20 due to HP bar
+
+		// draw inventory
+		Inventory inv = e.getComponent(Inventory.class);
+		ArrayList<Entity> items = inv.getItems();
+		// below the background to the inventory-positions will be drawn
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 6; j++) {
+				drawSprite(new Sprite("noslipfloor"), Engine.screenWidth - 200
+						+ 4 + i * Engine.spriteSize * 2, 20 + j
+						* Engine.spriteSize * 2, Engine.spriteSize * 2,
+						Engine.spriteSize * 2);
+			}
+		}
+		int drawX = Engine.screenWidth - menuWidth + 4;
+		int drawY = 20 + Engine.spriteSize * 2 * 5; // times two for double
+													// size, and times 5 for
+													// size of inventory (6x6)
+		for (Entity ent : items) { // this will draw all the items currently in
+									// the inventory
+			drawSprite(ent.getComponent(Sprite.class), drawX, drawY,
+					Engine.spriteSize * 2, Engine.spriteSize * 2);
+			if (drawX + Engine.spriteSize >= Engine.screenWidth) {
+				drawX = Engine.screenWidth - menuWidth + 4;
+				drawY += Engine.spriteSize * 2;
+			} else {
+				drawX += Engine.spriteSize * 2;
+			}
+
+		}
 	}
 
 	/**

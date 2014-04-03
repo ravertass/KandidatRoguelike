@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Attribute;
+import se.chalmers.roguelike.Components.BlocksLineOfSight;
+import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Sprite;
 
 public class Tile {
@@ -12,15 +14,16 @@ public class Tile {
 	private Sprite backgroundSprite;
 	private ArrayList<Entity> entities;
 	private boolean backgroundWalkable;
-	private boolean blocksLineOfSight;
+	// private boolean blocksLineOfSight;
 	private boolean hasBeenSeen;
-	private int itemsBlocking;
+	private int itemsBlocking, blocksLineOfSight;
 
 	public Tile(Sprite backgroundSprite, boolean backgroundWalkable,
 			boolean blocksLineOfSight) {
 		this.backgroundSprite = backgroundSprite;
 		this.backgroundWalkable = backgroundWalkable;
-		this.blocksLineOfSight = blocksLineOfSight;
+//		this.blocksLineOfSight = blocksLineOfSight;
+		this.blocksLineOfSight = (blocksLineOfSight ? 1 : 0); 
 		entities = new ArrayList<Entity>();
 		this.hasBeenSeen = false;
 		itemsBlocking = 0;
@@ -62,23 +65,38 @@ public class Tile {
 	}
 
 	public boolean blocksLineOfSight() {
-		return blocksLineOfSight;
+		return blocksLineOfSight != 0;
 	}
 
 	public void setBlocksLineOfSight(boolean blocksLineOfSight) {
-		this.blocksLineOfSight = blocksLineOfSight;
+		if(blocksLineOfSight){
+			this.blocksLineOfSight++;
+		} else {
+			this.blocksLineOfSight = 0; // set to -- or something?
+		}
+		// this.blocksLineOfSight = blocksLineOfSight;
 	}
 
 	public void addEntity(Entity e) {
-		if(e.containsComponent(Engine.CompBlocksWalking)){
+		BlocksWalking blocksWalking = e.getComponent(BlocksWalking.class);
+		BlocksLineOfSight blocksLOS = e.getComponent(BlocksLineOfSight.class);
+		if(blocksWalking != null && blocksWalking.getBlocksWalking()){
 			itemsBlocking++;
+		}
+		if(blocksLOS != null && blocksLOS.getBlockStatus()){
+			blocksLineOfSight++;
 		}
 		entities.add(e);
 	}
 
 	public void removeEntity(Entity e) {
-		if(e.containsComponent(Engine.CompBlocksWalking)){
+		BlocksWalking blocksWalking = e.getComponent(BlocksWalking.class);
+		BlocksLineOfSight blocksLOS = e.getComponent(BlocksLineOfSight.class);
+		if(blocksWalking != null && blocksWalking.getBlocksWalking()){
 			itemsBlocking--;
+		}
+		if(blocksLOS != null && blocksLOS.getBlockStatus()){
+			blocksLineOfSight--;
 		}
 		entities.remove(e);
 	}
@@ -98,6 +116,7 @@ public class Tile {
 	public boolean hasBeenSeen() {
 		return this.hasBeenSeen;
 	}
+
 	public ArrayList<Entity> getEntities(){
 		// Creates a copy of the list so we dont modify the tiles list directly
 		ArrayList<Entity> newList = new ArrayList<Entity>();

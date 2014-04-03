@@ -13,36 +13,39 @@ public class InputManager implements Subject {
 
 	private ArrayList<Observer> observers;
 	private Engine engine;
-	
+
 	private long startTime;
 	private int pressedKey;
-	
+
 	private HashMap<Integer, InputAction> keyToAction;
 
 	/**
 	 * This is where you declare all the different events that the keyboard and mouse can cause. 
+	 * This is where you declare all the different events that the keyboard and
+	 * mouse can cause.
+	 * 
 	 * @author twister
-	 *
+	 * 
 	 */
 	public static enum InputAction {
-		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING,
-		INTERACTION, DUMMY// TODO
+		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING, DUMMY, LOOT, INTERACTION // TODO
 		// add
 		// more
 		// stuff
 		// here
 	}
 
-//	public InputManager() {
-//		observers = new ArrayList<Observer>();
-//	}
-	public InputManager(Engine engine){
+	// public InputManager() {
+	// observers = new ArrayList<Observer>();
+	// }
+	public InputManager(Engine engine) {
 		keyToAction = new HashMap<Integer, InputAction>();
 		this.engine = engine;
 		observers = new ArrayList<Observer>();
 		setupKeyToAction();
 		startTime = System.currentTimeMillis();
 	}
+
 	@Override
 	public void addObserver(Observer o) {
 		observers.add(o);
@@ -54,8 +57,10 @@ public class InputManager implements Subject {
 		observers.remove(o);
 
 	}
+
 	/**
-	 * This is where the input is passed on to all the system who subscribes to input.
+	 * This is where the input is passed on to all the system who subscribes to
+	 * input.
 	 */
 	@Override
 	public void notifyObservers(final Enum<?> e) {
@@ -65,22 +70,32 @@ public class InputManager implements Subject {
 		startTime = System.currentTimeMillis();
 
 	}
+
 	/**
-	 * This is where the keyboard and mouse are checked for input and the appropriate event is sent to subscribers.
+	 * This is where the keyboard and mouse are checked for input and the
+	 * appropriate event is sent to subscribers.
 	 */
 	public void update() {
-		if(Keyboard.isKeyDown(pressedKey) && System.currentTimeMillis() - startTime > 180L) {
-			if(keyToAction.containsKey(pressedKey))
+		if (Keyboard.isKeyDown(pressedKey)
+				&& System.currentTimeMillis() - startTime > 180L) {
+			if (keyToAction.get(pressedKey) == InputAction.GO_NORTHEAST
+					|| keyToAction.get(pressedKey) == InputAction.GO_NORTH
+					|| keyToAction.get(pressedKey) == InputAction.GO_NORTHWEST
+					|| keyToAction.get(pressedKey) == InputAction.GO_WEST
+					|| keyToAction.get(pressedKey) == InputAction.GO_SOUTHWEST
+					|| keyToAction.get(pressedKey) == InputAction.GO_SOUTH
+					|| keyToAction.get(pressedKey) == InputAction.GO_SOUTHEAST
+					|| keyToAction.get(pressedKey) == InputAction.GO_EAST)
 				notifyObservers(keyToAction.get(pressedKey));
 		}
 		while (Keyboard.next()) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-				System.exit(0); //Should be passed on to engine?
+				System.exit(0); // Should be passed on to engine?
 			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_F1)){
-				Engine.debug = !Engine.debug; 
+			if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+				Engine.debug = !Engine.debug;
 			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_F2)){
+			if (Keyboard.isKeyDown(Keyboard.KEY_F2)) {
 				engine.loadOverworld();
 			}
 
@@ -91,26 +106,22 @@ public class InputManager implements Subject {
 			if (Keyboard.getEventKeyState()) {
 				int key = Keyboard.getEventKey();
 				pressedKey = key;
-				if(keyToAction.containsKey(key))
+				if (keyToAction.containsKey(key))
 					notifyObservers(keyToAction.get(key));
-				
 			}
 		}
-		
+
 		while (Mouse.next()) {
 			if (Mouse.getEventButtonState()) {
-				if(Engine.debug){
-					System.out.println("Mouse click at X: "+Mouse.getX()+" Y: "+Mouse.getY());
+				if (Engine.debug) {
+					System.out.println("Mouse click at X: " + Mouse.getX()
+							+ " Y: " + Mouse.getY());
 				}
 				notifyObservers(InputAction.MOUSECLICK);
 			}
-
 		}
-		
-		
-
 	}
-	
+
 	/**
 	 * This will setup the hashmap that contains the key mapped to the action.
 	 */
@@ -131,12 +142,8 @@ public class InputManager implements Subject {
 		keyToAction.put(Keyboard.KEY_NUMPAD1, InputAction.GO_SOUTHWEST);
 		keyToAction.put(Keyboard.KEY_C, InputAction.GO_SOUTHEAST);
 		keyToAction.put(Keyboard.KEY_NUMPAD3, InputAction.GO_SOUTHEAST);
-		keyToAction.put(Keyboard.KEY_W, InputAction.GO_NORTH);
-		keyToAction.put(Keyboard.KEY_W, InputAction.GO_NORTH);
 		keyToAction.put(Keyboard.KEY_NUMPAD5, InputAction.DO_NOTHING);
+		keyToAction.put(Keyboard.KEY_G, InputAction.LOOT);
 		keyToAction.put(Keyboard.KEY_F, InputAction.INTERACTION);
 	}
-	
-	
-
 }

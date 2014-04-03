@@ -13,6 +13,7 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Systems.AISystem;
 import se.chalmers.roguelike.Systems.CombatSystem;
 import se.chalmers.roguelike.Systems.HighlightSystem;
+import se.chalmers.roguelike.Systems.InventorySystem;
 import se.chalmers.roguelike.Systems.InteractionSystem;
 import se.chalmers.roguelike.Systems.LevelingSystem;
 import se.chalmers.roguelike.Systems.MainMenuSystem;
@@ -35,42 +36,47 @@ public class Engine {
 	// Debug flag:
 	public static boolean debug = true;
 	// Constants: Components
-	public static final int CompAttribute = 1 << 0;
-	public static final int CompHealth = 1 << 1;
-	public static final int CompInput = 1 << 2;
-	public static final int CompPosition = 1 << 3;
-	public static final int CompSprite = 1 << 4;
-	public static final int CompTurnsLeft = 1 << 5;
-	public static final int CompDirection = 1 << 6;
-	public static final int CompAI = 1 << 7;
-	public static final int CompHighlight = 1 << 8;
-	public static final int CompPlayer = 1 << 9;
-	public static final int CompWeapon = 1 << 10;
-	public static final int CompFieldOfView = 1 << 11;
-	public static final int CompSeed = 1 << 12;
-	public static final int CompDungeon = 1 << 13;
-	public static final int CompSelectedFlag = 1 << 14;
-	public static final int CompGold = 1 << 15;
-	public static final int CompBlocksWalking = 1 << 16;
-	public static final int CompPlotAction = 1 << 17;
-
-	// Constants: System requirements:
-	public static final int inputSysReq = CompInput;
-	public static final int renderingSysReq = CompSprite | CompPosition;
-	public static final int moveSysReq = CompInput | CompPosition
-			| CompDirection | CompTurnsLeft;
-	public static final int mobSpriteSysReq = CompSprite | CompDirection;
-	public static final int highlightSysReq = CompSprite | CompPosition;
-	public static final int aiSysReq = CompAI | CompInput;
-	public static final int playerInputSysReq = CompPlayer;
-	public static final int combatSystemReq = CompInput | CompHealth
-			| CompPosition | CompTurnsLeft;
-	public static final int levelingSystemReq = CompAttribute;
-	public static final int dungeonReq = CompSprite | CompPosition;
-	public static final int overworldReq = CompDungeon | CompSelectedFlag
-			| CompPosition;
 
 	// / private int fps; // updates per second, not necessarly fps
+	private static long componentID = 0;
+	public static final long CompAttribute = 1 << componentID++;
+	public static final long CompHealth = 1 << componentID++;
+	public static final long CompInput = 1 << componentID++;
+	public static final long CompPosition = 1 << componentID++;
+	public static final long CompSprite = 1 << componentID++;
+	public static final long CompTurnsLeft = 1 << componentID++;
+	public static final long CompDirection = 1 << componentID++;
+	public static final long CompAI = 1 << componentID++;
+	public static final long CompHighlight = 1 << componentID++;
+	public static final long CompPlayer = 1 << componentID++;
+	public static final long CompWeapon = 1 << componentID++;
+	public static final long CompFieldOfView = 1 << componentID++;
+	public static final long CompSeed = 1 << componentID++;
+	public static final long CompDungeon= 1 << componentID++;
+	public static final long CompSelectedFlag = 1 << componentID++;
+	public static final long CompGold = 1 << componentID++;
+	public static final long CompBlocksWalking = 1 << componentID++;
+	public static final long CompBlocksLineOfSight = 1 << componentID++;
+	public static final long CompInventory = 1<<componentID++;
+	public static final long CompPocketable = 1<<componentID++;
+	public static final long CompPlotAction = 1<<componentID++;
+	
+	// Constants: System requirements:
+
+	public static final long inventoryReq = CompInventory;
+	public static final long inputSysReq = CompInput;
+	public static final long renderingSysReq = CompSprite | CompPosition;
+	public static final long moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
+	public static final long mobSpriteSysReq = CompSprite | CompDirection;
+	public static final long highlightSysReq = CompSprite | CompPosition;
+	public static final long aiSysReq = CompAI | CompInput;
+	public static final long playerInputSysReq = CompPlayer;
+	public static final long combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
+	public static final long levelingSystemReq = CompAttribute;
+	public static final long dungeonReq = CompSprite | CompPosition;
+	public static final long overworldReq = CompDungeon | CompSelectedFlag
+			| CompPosition;
+	
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
 	private ArrayList<Entity> entities; // useless?
 	public EntityCreator entityCreator;
@@ -91,6 +97,7 @@ public class Engine {
 	private LevelingSystem levelingSys;
 	private OverworldSystem overworldSys;
 	private MainMenuSystem mainmenuSys;
+	private InventorySystem inventorySys;
 	private InteractionSystem interactionSys;
 	private PlotSystem plotSys;
 	private PlotEngine plotEngine;
@@ -150,17 +157,18 @@ public class Engine {
 	 *            if true the entity should be removed from systems, if false it
 	 *            will be added
 	 */
-	private void addOrRemoveEntity(Entity entity, boolean remove) {
-		int compKey = entity.getComponentKey();
-		// if((compKey & inputSysReq) == inputSysReq) {
-		// if(remove){
-		// inputSys.removeEntity(entity);
-		// } else {
-		// inputSys.addEntity(entity);
-		// }
-		// }
-		if ((compKey & renderingSysReq) == renderingSysReq) {
-			if (remove) {
+
+	private void addOrRemoveEntity(Entity entity, boolean remove){		
+		long compKey = entity.getComponentKey(); 
+//		if((compKey & inputSysReq) == inputSysReq) {
+//			if(remove){
+//				inputSys.removeEntity(entity);
+//			} else {
+//				inputSys.addEntity(entity);
+//			}
+//		}
+		if((compKey & renderingSysReq) == renderingSysReq) {
+			if(remove){
 				renderingSys.removeEntity(entity);
 			} else {
 				renderingSys.addEntity(entity);
@@ -236,14 +244,20 @@ public class Engine {
 				overworldSys.addEntity(entity);
 			}
 		}
-		if (entity.containsComponent(CompPlayer)) {
-			if (remove) {
+		if((compKey & inventoryReq) == inventoryReq) {
+			if(remove) {
+				inventorySys.removeEntity(entity);
+			} else {
+				inventorySys.addEntity(entity);
+			}
+		}
+		if(entity.containsComponent(CompPlayer)){
+			if(remove){
 				interactionSys.removeEntity(entity);
 			} else {
 				interactionSys.addEntity(entity);
 			}
 		}
-
 	}
 
 	/**
@@ -264,13 +278,16 @@ public class Engine {
 				inputManager.update();
 				combatsystem.update(dungeon);
 				moveSys.update(dungeon);
+				inventorySys.update(dungeon);
 				interactionSys.update();
 				mobSpriteSys.update();
 				highlightSys.update(dungeon);
 				levelingSys.update();
 				turnSystem.update();
-				if (player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0) {
-					aiSystem.update(dungeon);
+
+				if(player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0){
+					aiSystem.update(dungeon, player);
+
 					System.out.println("------------NEW TURN------------");
 				}
 
@@ -318,6 +335,7 @@ public class Engine {
 		plotSys = new PlotSystem(this, plotEngine);
 		overworldSys = new OverworldSystem(this);
 		mainmenuSys = new MainMenuSystem(this);
+		inventorySys = new InventorySystem();
 		interactionSys = new InteractionSystem(this);
 	}
 
@@ -348,9 +366,11 @@ public class Engine {
 
 	public void loadDungeon(Dungeon dungeon, GameState newState) {
 		// TODO: Loading screen stuff
-		// if(gameState == GameState.OVERWORLD && newState ==
-		// GameState.DUNGEON){
-		if (this.dungeon != null) {
+//		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
+		if(gameState == GameState.OVERWORLD){
+			overworldSys.unregister();
+		}
+		if(this.dungeon != null){
 			this.dungeon.unregister(this);
 		}
 		this.dungeon = dungeon;
