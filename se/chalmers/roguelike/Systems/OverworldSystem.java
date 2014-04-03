@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Random;
 
 import org.lwjgl.input.Mouse;
@@ -39,11 +40,13 @@ public class OverworldSystem implements ISystem, Observer {
 	public boolean popupActive;
 	private ArrayList<String> popupText;
 	private Entity popup;
+	private LinkedList<String> popupQueue;
 
 	public OverworldSystem(Engine engine) {
 		this.engine = engine;
 		activeStar = null;
 		popupActive = false;
+		popupQueue = new LinkedList<String>();
 		stars = new HashMap<String, Entity>();
 		starRectangles = new ArrayList<Rectangle>();
 		playButton = engine.entityCreator.createButton(Engine.screenWidth - 80,
@@ -58,20 +61,19 @@ public class OverworldSystem implements ISystem, Observer {
 
 	@Override
 	public void update() {
-		// This is we're we check if there's a MEET plot action coupled with
-		// the star
 		if (activeStar == null) {
 			return;
 		}
-		
+
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
-			System.out.println(action);
+			// This is we're we check if there's a MEET plot action coupled with
+			// the star
 			if (action.getActionType() == Action.ActionType.MEET) {
-				System.out.println("BANANAS");
-				createTextPopup(activeStar.getComponent(PlotAction.class)
+				newPopup(activeStar.getComponent(PlotAction.class)
 						.getPlotText());
-				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
+				activeStar.getComponent(PlotAction.class).setActionPerformed(
+						true);
 			}
 		}
 	}
@@ -110,13 +112,16 @@ public class OverworldSystem implements ISystem, Observer {
 				loadDungeon();
 			} else if (menuRect.contains(mouseX, mouseY) && !popupActive) {
 				// engine.loadMainMenu();
-				createTextPopup("Whatever nulla incididunt, delectus tousled bespoke Marfa gluten-free. Cliche biodiesel quinoa letterpress incididunt Thundercats keffiyeh hoodie scenester actually. Vice disrupt VHS, pariatur eu esse messenger bag hashtag leggings. Viral velit vegan selfies gluten-free fashion axe, ex deep v Austin culpa skateboard church-key bespoke delectus twee. Pariatur kitsch fixie occaecat excepteur Williamsburg. Next level hoodie distillery fap, non mlkshk blog 8-bit chia minim Etsy. Sunt deserunt actually Banksy deep v.");
+				newPopup("Whatever nulla incididunt, delectus tousled bespoke Marfa gluten-free. Cliche biodiesel quinoa letterpress incididunt Thundercats keffiyeh hoodie scenester actually. Vice disrupt VHS, pariatur eu esse messenger bag hashtag leggings. Viral velit vegan selfies gluten-free fashion axe, ex deep v Austin culpa skateboard church-key bespoke delectus twee. Pariatur kitsch fixie occaecat excepteur Williamsburg. Next level hoodie distillery fap, non mlkshk blog 8-bit chia minim Etsy. Sunt deserunt actually Banksy deep v.");
 			} else if (popupActive && popupRect.contains(mouseX, mouseY)) {
 				engine.removeEntity(popupButton);
 				engine.removeEntity(popup);
 				popupButton = null;
 				popup = null;
 				popupActive = false;
+				if (popupQueue.size() != 0) {
+					createTextPopup(popupQueue.poll());
+				}
 			}
 		}
 	}
@@ -167,9 +172,10 @@ public class OverworldSystem implements ISystem, Observer {
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
 			if (action.getActionType() == Action.ActionType.VISIT) {
-				createTextPopup(activeStar.getComponent(PlotAction.class)
+				newPopup(activeStar.getComponent(PlotAction.class)
 						.getPlotText());
-				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
+				activeStar.getComponent(PlotAction.class).setActionPerformed(
+						true);
 			}
 		}
 	}
@@ -243,17 +249,16 @@ public class OverworldSystem implements ISystem, Observer {
 		starRectangles.add(new Rectangle(x, y, 16, 16));// test case
 		stars.put((x + "," + y), star);
 	}
-
-	/**
-	 * Returns the currently active star
-	 * 
-	 * @return the active star
-	 */
-	public Entity getActiveStar() {
-		return activeStar;
+	
+	private void newPopup(String s) {
+		if (!popupActive) {
+			createTextPopup(s);
+		} else {
+			popupQueue.add(s);
+		}
 	}
 
-	public void createTextPopup(String s) {
+	private void createTextPopup(String s) {
 
 		ArrayList<String> sequencedString = new ArrayList<String>();
 
@@ -288,9 +293,4 @@ public class OverworldSystem implements ISystem, Observer {
 				500, 300);
 		engine.addEntity(popup);
 	}
-
-	public ArrayList<String> getPopupText() {
-		return this.popupText;
-	}
-
 }

@@ -66,12 +66,12 @@ public class PlotSystem implements ISystem {
 				star = scenesStars
 						.get(edge.getAction().getObjectActor().getLocation());
 			}
+			star.getComponent(PlotAction.class).setActionPerformed(false);
 			star.getComponent(PlotAction.class).setAction(edge.getAction());
 			star.getComponent(PlotAction.class)
 					.setPlotText(
 							plotGraph.getAdjacentVertices().get(edge)
 									.getPlotText());
-			star.getComponent(PlotAction.class).setActionPerformed(false);
 		}
 	}
 
@@ -123,13 +123,13 @@ public class PlotSystem implements ISystem {
 
 		for (Scene scene : scenes) {
 			PlotAction plotAction = scenesStars.get(scene).getComponent(
-					PlotAction.class);
+					PlotAction.class);			
 			if (plotAction.getActionPerformed()) {
 				nextAction(plotAction.getAction());
-				actionsToStars();
 				plotAction.setActionPerformed(false);
 				plotAction.setAction(null);
 				plotAction.setPlotText(null);
+				actionsToStars();
 			}
 		}
 	}
@@ -150,7 +150,7 @@ public class PlotSystem implements ISystem {
 		mainCharacter = new Actor("MainChar");
 		mainCharacter.setLocation(scenes.get(0));
 		
-		secondCharacter = new Actor("SeondChar");
+		secondCharacter = new Actor("SecondChar");
 		secondCharacter.setLocation(scenes.get(2));
 
 		plotGraph = new PlotGraph();

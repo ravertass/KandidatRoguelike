@@ -6,7 +6,7 @@ public class PlotAction implements IComponent {
 
 	Action action;
 	String plotText;
-	Boolean actionPerformed;  
+	Boolean actionPerformed;
 	
 	public PlotAction() {
 		actionPerformed = false;
