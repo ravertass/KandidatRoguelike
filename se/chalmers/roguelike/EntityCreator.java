@@ -164,4 +164,11 @@ public class EntityCreator {
 		popup.add(new PopupText(text));
 		return popup;
 	}
+	
+	public Entity createSpaceShip(int x, int y) {
+		Entity spaceShip = new Entity("Spaceship");
+		spaceShip.add(new Sprite("mobs/mob_bear", 32, 32));
+		spaceShip.add(new Position(x, y));
+		return spaceShip;
+	}
 }

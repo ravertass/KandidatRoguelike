@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.lwjgl.input.Mouse;
 
+import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
@@ -57,7 +58,22 @@ public class OverworldSystem implements ISystem, Observer {
 
 	@Override
 	public void update() {
-
+		// This is we're we check if there's a MEET plot action coupled with
+		// the star
+		if (activeStar == null) {
+			return;
+		}
+		
+		Action action = activeStar.getComponent(PlotAction.class).getAction();
+		if (action != null) {
+			System.out.println(action);
+			if (action.getActionType() == Action.ActionType.MEET) {
+				System.out.println("BANANAS");
+				createTextPopup(activeStar.getComponent(PlotAction.class)
+						.getPlotText());
+				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
+			}
+		}
 	}
 
 	@Override
@@ -146,13 +162,15 @@ public class OverworldSystem implements ISystem, Observer {
 		activeStar = stars.get(coords);
 		activeStar.getComponent(SelectedFlag.class).setFlag(true);
 
-		// This is we're we check if there's a current plot action coupled with
+		// This is we're we check if there's a VISIT plot action coupled with
 		// the star
-		if (activeStar.getComponent(PlotAction.class).getAction() != null) {
-			// TODO den här måste av godtycklig anledning vara ganska lång...
-			createTextPopup(activeStar.getComponent(PlotAction.class)
-					.getPlotText());
-			activeStar.getComponent(PlotAction.class).setActionPerformed(true);
+		Action action = activeStar.getComponent(PlotAction.class).getAction();
+		if (action != null) {
+			if (action.getActionType() == Action.ActionType.VISIT) {
+				createTextPopup(activeStar.getComponent(PlotAction.class)
+						.getPlotText());
+				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
+			}
 		}
 	}
 

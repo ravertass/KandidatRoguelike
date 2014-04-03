@@ -26,6 +26,7 @@ public class PlotSystem implements ISystem {
 	private PlotEngine plotEngine;
 	private ArrayList<Scene> scenes;
 	private Actor mainCharacter;
+	private Actor secondCharacter;
 
 	// You could use a bi-directional map for this, but since there is none
 	// in the standard Java API, I won't.
@@ -55,15 +56,22 @@ public class PlotSystem implements ISystem {
 		ArrayList<PlotEdge> edges = new ArrayList<PlotEdge>();
 		edges.addAll(plotGraph.getAdjacentVertices().keySet());
 		for (PlotEdge edge : edges) {
+			Entity star = null;
 			if (edge.getAction().getActionType() == Action.ActionType.VISIT) {
-				Entity star = scenesStars
+				star = scenesStars
 						.get(edge.getAction().getObjectScene());
-				star.getComponent(PlotAction.class).setAction(edge.getAction());
-				star.getComponent(PlotAction.class)
-						.setPlotText(
-								plotGraph.getAdjacentVertices().get(edge)
-										.getPlotText());
 			}
+			
+			if (edge.getAction().getActionType() == Action.ActionType.MEET) {
+				star = scenesStars
+						.get(edge.getAction().getObjectActor().getLocation());
+			}
+			star.getComponent(PlotAction.class).setAction(edge.getAction());
+			star.getComponent(PlotAction.class)
+					.setPlotText(
+							plotGraph.getAdjacentVertices().get(edge)
+									.getPlotText());
+			star.getComponent(PlotAction.class).setActionPerformed(false);
 		}
 	}
 
@@ -75,16 +83,23 @@ public class PlotSystem implements ISystem {
 		plotGraph.setActiveVertex(nextVertex);
 	}
 
+	/**
+	 * Creates all stars, and also the space ship
+	 */
 	private void setupStars() {
 		int radius = 50;
 
-		Random rand = new Random(1235L); // Make seed depenendant later
+		Random rand = new Random(1235L); // Make seed dependent later
 
 		int i = 0;
 		for (Scene scene : scenes) {
 			double rad = i * Math.PI / 180;
 			int x = (int) (radius * Math.cos(rad) + 400);
 			int y = (int) (radius * Math.sin(rad) + 400);
+			
+			// Create the spaceship entity
+			engine.entityCreator.createSpaceShip(x, y);
+			
 			Entity star = engine.entityCreator.createStar(x, y,
 					rand.nextLong(), (scene + " Star"));
 			scenesStars.put(scene, star);
@@ -134,6 +149,9 @@ public class PlotSystem implements ISystem {
 	private void testPlot() {
 		mainCharacter = new Actor("MainChar");
 		mainCharacter.setLocation(scenes.get(0));
+		
+		secondCharacter = new Actor("SeondChar");
+		secondCharacter.setLocation(scenes.get(2));
 
 		plotGraph = new PlotGraph();
 
@@ -153,5 +171,12 @@ public class PlotSystem implements ISystem {
 		PlotVertex thirdVertex = new PlotVertex(
 				"Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen!");
 		plotGraph.addVertex(secondVertex, thirdVertex, secondEdge);
+		
+		PlotEdge thirdEdge = new PlotEdge(new Action(Action.ActionType.MEET,
+				mainCharacter, secondCharacter));
+
+		PlotVertex fourthVertex = new PlotVertex(
+				"You met this guy, You met this guy, You met this guy, You met this guy, You met this guy, You met this guy, You met this guy!");
+		plotGraph.addVertex(thirdVertex, fourthVertex, thirdEdge);
 	}
 }
