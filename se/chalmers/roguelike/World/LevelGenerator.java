@@ -57,6 +57,8 @@ public class LevelGenerator {
 	private ArrayList<Entity> enemies;
 
 	private Dungeon dungeon;
+	private int plotThingY;
+	private int plotThingX;
 
 	/**
 	 * 
@@ -175,35 +177,68 @@ public class LevelGenerator {
 		generateUnlockedDoors(grid);
 		generateStairs();
 		generateTreasurePositions();
+		generatePlotThingPosition();
 
 		print(grid);
 		worldGrid = grid;
 
-		dungeon  = toDungeon();
+		dungeon = toDungeon();
+		dungeon.addPlotThingPosition(plotThingX, plotThingY);
 
-		//Generate nextLevel
-		if (stairsDown != null){
-			LevelGenerator nextLevelGen = new LevelGenerator(seed, (int) (amountOfRooms*0.7), generatedRoomSize, largeEnoughRoom, corridorDensity, stairProbability-20, wall, floor);
-			Dungeon nextDungeonLevel = nextLevelGen.getDungeon(); // was toDungeon, would re-created the subdungeon
+		// Generate nextLevel
+		if (stairsDown != null) {
+			LevelGenerator nextLevelGen = new LevelGenerator(seed,
+					(int) (amountOfRooms * 0.7), generatedRoomSize,
+					largeEnoughRoom, corridorDensity, stairProbability - 20,
+					wall, floor);
+			Dungeon nextDungeonLevel = nextLevelGen.getDungeon(); // was
+																	// toDungeon,
+																	// would
+																	// re-created
+																	// the
+																	// subdungeon
 			dungeon.setNextDungeonLevel(nextDungeonLevel);
 			nextDungeonLevel.setPreviousDungeonLevel(dungeon);
-			Entity stair = EntityCreator.createStairs(stairsDown.getX(), stairsDown.getY(),
-					"stairs_down",nextDungeonLevel);
+			Entity stair = EntityCreator.createStairs(stairsDown.getX(),
+					stairsDown.getY(), "stairs_down", nextDungeonLevel);
 			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
 			System.out.println("Created Subdungeon");
-			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(),"stairs_up",nextDungeonLevel.getPreviousDungeonLevel());
-			nextDungeonLevel.addEntity(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(), stairUp);
-		} 
-		if(dungeon.getPreviousDungeonLevel() == null){
+			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel
+					.getStartpos().getX(), nextDungeonLevel.getStartpos()
+					.getY(), "stairs_up", nextDungeonLevel
+					.getPreviousDungeonLevel());
+			nextDungeonLevel.addEntity(nextDungeonLevel.getStartpos().getX(),
+					nextDungeonLevel.getStartpos().getY(), stairUp);
+		}
+		if (dungeon.getPreviousDungeonLevel() == null) {
 			int x = getStartPos().getX();
 			int y = getStartPos().getY();
-			Entity stairUp = EntityCreator.createStairs(x, y,"stairs_up",null);
+			Entity stairUp = EntityCreator
+					.createStairs(x, y, "stairs_up", null);
 			dungeon.addEntity(x, y, stairUp);
 		}
 
-		if(largeRooms.size() == 0)
+		if (largeRooms.size() == 0)
 
 			run();
+	}
+
+	private void generatePlotThingPosition() {
+		plotThingX = 0;
+		while (plotThingX == 0) {
+			for (Rectangle room : largeRooms) {
+				// I think this checks so we're not in the start room
+				if (room == largeRooms.get(0)) {
+					continue;
+				}
+
+				// Magic number determines the chance
+				if (rand.nextInt(10) == 1) {
+					plotThingX = room.x + 2 + Math.abs(xMinDisplacement);
+					plotThingY = room.y + 2 + Math.abs(yMinDisplacement);
+				}
+			}
+		}
 	}
 
 	private void generateEnemies() {
@@ -231,11 +266,13 @@ public class LevelGenerator {
 				Attribute attribute = new Attribute(name,
 						SpaceClass.SPACE_ROGUE, SpaceRace.SPACE_DWARF, 1, 50);
 				components.add(new BlocksWalking(true));
-				components.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); //hardcoded equals bad
-				components.add(new FieldOfView(8)); //hardcoded equals bad
+				components.add(new Weapon(2, 6, 0,
+						TargetingSystem.SINGLE_TARGET, 1, 1)); // hardcoded
+																// equals bad
+				components.add(new FieldOfView(8)); // hardcoded equals bad
 				components.add(attribute);
-				dungeonEntities.add(EntityCreator.createEntity("(Enemy)" + name,
-						components));
+				dungeonEntities.add(EntityCreator.createEntity(
+						"(Enemy)" + name, components));
 			}
 		}
 		System.out.println(enemies);
@@ -295,11 +332,11 @@ public class LevelGenerator {
 	 * Tries to generate a stair with the success rate of stairProbability
 	 */
 
-	private void generateStairs(){
+	private void generateStairs() {
 		System.out.println("generateStairs() running");
-		if (rand.nextInt(100)+1 <= stairProbability){
+		if (rand.nextInt(100) + 1 <= stairProbability) {
 			System.out.println("STAIR GENERATED");
-			int stairsDownRoom = rand.nextInt(largeRooms.size()-1) + 1;
+			int stairsDownRoom = rand.nextInt(largeRooms.size() - 1) + 1;
 			Rectangle room = largeRooms.get(stairsDownRoom);
 			int x = room.x + 1 + Math.abs(xMinDisplacement)
 					+ rand.nextInt(room.width - 2);
@@ -556,27 +593,30 @@ public class LevelGenerator {
 				} else if (worldGrid[y][x] == '.') {
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
 
-				}
-				else if (worldGrid[y][x] == '-') {
-//					tiles[y][x] = new Tile(new Sprite("door_horizontal"), true, true);
+				} else if (worldGrid[y][x] == '-') {
+					// tiles[y][x] = new Tile(new Sprite("door_horizontal"),
+					// true, true);
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
-					Entity door = EntityCreator.createDoor(x,y,"door_horizontal",false);
+					Entity door = EntityCreator.createDoor(x, y,
+							"door_horizontal", false);
 					dungeonEntities.add(door);
-				}
-				else if (worldGrid[y][x] == '|') {
-					//tiles[y][x] = new Tile(new Sprite("door_vertical"), true, true);
+				} else if (worldGrid[y][x] == '|') {
+					// tiles[y][x] = new Tile(new Sprite("door_vertical"), true,
+					// true);
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
-					Entity door = EntityCreator.createDoor(x,y,"door_vertical",false);
+					Entity door = EntityCreator.createDoor(x, y,
+							"door_vertical", false);
 					dungeonEntities.add(door);
-				}
-				else if (worldGrid[y][x] == 'T') {
-					tiles[y][x] = new Tile(new Sprite("mobs/mob_bear"), true, false);
+				} else if (worldGrid[y][x] == 'T') {
+					tiles[y][x] = new Tile(new Sprite("mobs/mob_bear"), true,
+							false);
 				}
 			}
 		}
-		
-		for(Position treasure : treasurePositions){
-			Entity gold = EntityCreator.createGold(treasure.getX(),treasure.getY(),100);
+
+		for (Position treasure : treasurePositions) {
+			Entity gold = EntityCreator.createGold(treasure.getX(),
+					treasure.getY(), 100);
 			dungeonEntities.add(gold);
 		}
 
@@ -586,11 +626,12 @@ public class LevelGenerator {
 	public Dungeon toDungeon() {
 		Dungeon dungeon = new Dungeon();
 		Tile[][] tiles = toTiles();
-		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos(), dungeonEntities);
-//		for(Entity e : dungeonEntities){
-//			Position pos = e.getComponent(Position.class);
-//			dungeon.addEntity(pos.getX(), pos.getY(), e);
-//		}
+		dungeon.setWorld(tiles[0].length, tiles.length, tiles, getStartPos(),
+				dungeonEntities);
+		// for(Entity e : dungeonEntities){
+		// Position pos = e.getComponent(Position.class);
+		// dungeon.addEntity(pos.getX(), pos.getY(), e);
+		// }
 		return dungeon;
 	}
 
