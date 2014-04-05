@@ -52,31 +52,34 @@ public class Engine {
 	public static final long CompWeapon = 1 << componentID++;
 	public static final long CompFieldOfView = 1 << componentID++;
 	public static final long CompSeed = 1 << componentID++;
-	public static final long CompDungeon= 1 << componentID++;
+	public static final long CompDungeon = 1 << componentID++;
 	public static final long CompSelectedFlag = 1 << componentID++;
 	public static final long CompGold = 1 << componentID++;
 	public static final long CompBlocksWalking = 1 << componentID++;
 	public static final long CompBlocksLineOfSight = 1 << componentID++;
-	public static final long CompInventory = 1<<componentID++;
-	public static final long CompPocketable = 1<<componentID++;
-	public static final long CompPlotAction = 1<<componentID++;
-	
+	public static final long CompInventory = 1 << componentID++;
+	public static final long CompPocketable = 1 << componentID++;
+	public static final long CompPlotAction = 1 << componentID++;
+	public static final long CompEnemyType = 1 << componentID++;
+
 	// Constants: System requirements:
 
 	public static final long inventoryReq = CompInventory;
 	public static final long inputSysReq = CompInput;
 	public static final long renderingSysReq = CompSprite | CompPosition;
-	public static final long moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
+	public static final long moveSysReq = CompInput | CompPosition
+			| CompDirection | CompTurnsLeft;
 	public static final long mobSpriteSysReq = CompSprite | CompDirection;
 	public static final long highlightSysReq = CompSprite | CompPosition;
 	public static final long aiSysReq = CompAI | CompInput;
 	public static final long playerInputSysReq = CompPlayer;
-	public static final long combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
+	public static final long combatSystemReq = CompInput | CompHealth
+			| CompPosition | CompTurnsLeft;
 	public static final long levelingSystemReq = CompAttribute;
 	public static final long dungeonReq = CompSprite | CompPosition;
 	public static final long overworldReq = CompDungeon | CompSelectedFlag
 			| CompPosition;
-	
+
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
 	private ArrayList<Entity> entities; // useless?
 	public EntityCreator entityCreator;
@@ -158,17 +161,17 @@ public class Engine {
 	 *            will be added
 	 */
 
-	private void addOrRemoveEntity(Entity entity, boolean remove){		
-		long compKey = entity.getComponentKey(); 
-//		if((compKey & inputSysReq) == inputSysReq) {
-//			if(remove){
-//				inputSys.removeEntity(entity);
-//			} else {
-//				inputSys.addEntity(entity);
-//			}
-//		}
-		if((compKey & renderingSysReq) == renderingSysReq) {
-			if(remove){
+	private void addOrRemoveEntity(Entity entity, boolean remove) {
+		long compKey = entity.getComponentKey();
+		// if((compKey & inputSysReq) == inputSysReq) {
+		// if(remove){
+		// inputSys.removeEntity(entity);
+		// } else {
+		// inputSys.addEntity(entity);
+		// }
+		// }
+		if ((compKey & renderingSysReq) == renderingSysReq) {
+			if (remove) {
 				renderingSys.removeEntity(entity);
 			} else {
 				renderingSys.addEntity(entity);
@@ -244,15 +247,15 @@ public class Engine {
 				overworldSys.addEntity(entity);
 			}
 		}
-		if((compKey & inventoryReq) == inventoryReq) {
-			if(remove) {
+		if ((compKey & inventoryReq) == inventoryReq) {
+			if (remove) {
 				inventorySys.removeEntity(entity);
 			} else {
 				inventorySys.addEntity(entity);
 			}
 		}
-		if(entity.containsComponent(CompPlayer)){
-			if(remove){
+		if (entity.containsComponent(CompPlayer)) {
+			if (remove) {
 				interactionSys.removeEntity(entity);
 			} else {
 				interactionSys.addEntity(entity);
@@ -285,7 +288,7 @@ public class Engine {
 				levelingSys.update();
 				turnSystem.update();
 
-				if(player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0){
+				if (player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0) {
 					aiSystem.update(dungeon, player);
 
 					System.out.println("------------NEW TURN------------");
@@ -366,11 +369,12 @@ public class Engine {
 
 	public void loadDungeon(Dungeon dungeon, GameState newState) {
 		// TODO: Loading screen stuff
-//		if(gameState == GameState.OVERWORLD && newState == GameState.DUNGEON){
-		if(gameState == GameState.OVERWORLD){
+		// if(gameState == GameState.OVERWORLD && newState ==
+		// GameState.DUNGEON){
+		if (gameState == GameState.OVERWORLD) {
 			overworldSys.unregister();
 		}
-		if(this.dungeon != null){
+		if (this.dungeon != null) {
 			this.dungeon.unregister(this);
 		}
 		this.dungeon = dungeon;

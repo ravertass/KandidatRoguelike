@@ -2,9 +2,27 @@ package se.chalmers.roguelike.World;
 
 import java.util.ArrayList;
 
+import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.EntityCreator;
+import se.chalmers.roguelike.Components.AI;
+import se.chalmers.roguelike.Components.Attribute;
+import se.chalmers.roguelike.Components.BlocksWalking;
+import se.chalmers.roguelike.Components.Direction;
+import se.chalmers.roguelike.Components.EnemyType;
+import se.chalmers.roguelike.Components.FieldOfView;
+import se.chalmers.roguelike.Components.Health;
+import se.chalmers.roguelike.Components.IComponent;
+import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.Components.Weapon;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
+import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 
 /**
  * Dungeon is an class that holds the game world along with several helper
@@ -22,6 +40,7 @@ public class Dungeon {
 	private Dungeon previousDungeonLevel;
 	private Dungeon nextDungeonLevel;
 	private int plotThingX, plotThingY;
+	private boolean plotAccomplished = false;
 
 	/**
 	 * Creates a new world object
@@ -218,13 +237,7 @@ public class Dungeon {
 		plotThingY = y;
 	}
 
-	/**
-	 * This is the method with which you add the plotThing (the boss/the main
-	 * loot) to the dungeon.
-	 * 
-	 * @param plotThing
-	 */
-	public void addPlotThing(Entity plotThing) {
+	private void addPlotThing(Entity plotThing) {
 		if (nextDungeonLevel == null) {
 			addEntity(plotThingX, plotThingY, plotThing);
 		} else {
@@ -232,11 +245,52 @@ public class Dungeon {
 		}
 	}
 
-	public int getPlotThingX() {
-		return plotThingX;
+	/**
+	 * This is the method with which you add a boss to the dungeon.
+	 * 
+	 * @param plotThing
+	 */
+	public void addBoss(Actor actor) {
+		ArrayList<IComponent> components = new ArrayList<IComponent>();
+
+		String name = actor.toString();
+		String sprite = "mobs/mob_smurf";
+		components.add(new EnemyType(EnemyType.Type.BOSS));
+		components.add(new Health(20));
+		components.add(new TurnsLeft(1));
+		components.add(new Input());
+		components.add(new Sprite(sprite));
+		components.add(new Inventory()); // TODO add items that the
+											// enemy is carrying here,
+											// arraylist<entity> inside
+											// constructor
+		components.add(new Position(plotThingX, plotThingY));
+		components.add(new Direction());
+		components.add(new AI());
+		Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE,
+				SpaceRace.SPACE_DWARF, 1, 50);
+		components.add(new BlocksWalking(true));
+		components
+				.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); // hardcoded
+																				// equals
+																				// bad
+		components.add(new FieldOfView(8)); // hardcoded equals bad
+		components.add(attribute);
+		Entity boss = EntityCreator.createEntity("(Boss)" + name, components);
+		addPlotThing(boss);
 	}
-	
-	public int getPlotThingY() {
-		return plotThingY;
+
+	/**
+	 * @return if the boss has been defeated/the plot item has been picked up
+	 */
+	public boolean getPlotAccomplished() {
+		return plotAccomplished;
+	}
+
+	public void setPlotAccomplished(boolean plotAccomplished) {
+		this.plotAccomplished = plotAccomplished;
+		if (previousDungeonLevel != null) {
+			previousDungeonLevel.setPlotAccomplished(plotAccomplished);
+		}
 	}
 }

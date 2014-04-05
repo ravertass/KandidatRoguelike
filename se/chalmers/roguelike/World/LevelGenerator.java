@@ -16,6 +16,7 @@ import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.FieldOfView;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.Components.Direction;
+import se.chalmers.roguelike.Components.EnemyType;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
@@ -250,6 +251,7 @@ public class LevelGenerator {
 
 				String name = ng.generateName();
 				String sprite = "mobs/mob_slime";
+				components.add(new EnemyType(EnemyType.Type.GRUNT));
 				components.add(new Health(10));
 				components.add(new TurnsLeft(1));
 				components.add(new Input());

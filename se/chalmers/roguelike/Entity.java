@@ -59,6 +59,8 @@ public class Entity {
 			componentKey |= Engine.CompPlotAction;
 		} else if(compClass == BlocksLineOfSight.class){
 			componentKey |= Engine.CompBlocksLineOfSight;
+		} else if(compClass == EnemyType.class){
+			componentKey |= Engine.CompEnemyType;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}

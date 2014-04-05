@@ -67,13 +67,27 @@ public class OverworldSystem implements ISystem, Observer {
 
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
-			// This is we're we check if there's a MEET plot action coupled with
+			// This is where we check if there's a MEET plot action coupled with
 			// the star
 			if (action.getActionType() == Action.ActionType.MEET) {
 				newPopup(activeStar.getComponent(PlotAction.class)
 						.getPlotText());
 				activeStar.getComponent(PlotAction.class).setActionPerformed(
 						true);
+			}
+			
+			Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class)
+					.getDungeon();
+			// This is where we check if there's a KILL plot action coupled with
+			// the star, and if the player has performed it
+			if ((action.getActionType() == Action.ActionType.KILL)
+					& (starDungeon != null)) {
+				if (starDungeon.getPlotAccomplished()) {
+					newPopup(activeStar.getComponent(PlotAction.class)
+							.getPlotText());
+					activeStar.getComponent(PlotAction.class).setActionPerformed(
+							true);
+				}
 			}
 		}
 	}
@@ -142,6 +156,14 @@ public class OverworldSystem implements ISystem, Observer {
 					starDungeon);
 		}
 
+		if (activeStar.getComponent(PlotAction.class).getAction() != null) {
+			if (activeStar.getComponent(PlotAction.class).getAction()
+					.getActionType() == Action.ActionType.KILL) {
+				starDungeon.addBoss(activeStar.getComponent(PlotAction.class)
+						.getAction().getObjectActor());
+			}
+		}
+
 		unregister();
 		engine.loadDungeon(starDungeon, Engine.GameState.DUNGEON);
 	}
@@ -167,7 +189,7 @@ public class OverworldSystem implements ISystem, Observer {
 		activeStar = stars.get(coords);
 		activeStar.getComponent(SelectedFlag.class).setFlag(true);
 
-		// This is we're we check if there's a VISIT plot action coupled with
+		// This is where we check if there's a VISIT plot action coupled with
 		// the star
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
@@ -249,7 +271,7 @@ public class OverworldSystem implements ISystem, Observer {
 		starRectangles.add(new Rectangle(x, y, 16, 16));// test case
 		stars.put((x + "," + y), star);
 	}
-	
+
 	private void newPopup(String s) {
 		if (!popupActive) {
 			createTextPopup(s);
