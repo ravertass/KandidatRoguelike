@@ -135,7 +135,7 @@ public class InteractionSystem implements ISystem, Observer {
 							newDoor = EntityCreator.createDoor(x,y,(spriteName.substring(0, lastUnderscore)+"_open"),true);
 						} else {
 							// door is open, close it
-							newDoor = EntityCreator.createDoor(x,y,(spriteName.substring(0, lastUnderscore)+"_closed"),true);
+							newDoor = EntityCreator.createDoor(x,y,(spriteName.substring(0, lastUnderscore)+"_closed"),false);
 						}
 						engine.removeEntity(e);
 						engine.addEntity(newDoor);

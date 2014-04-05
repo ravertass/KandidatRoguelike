@@ -64,7 +64,7 @@ public class Engine {
 	public static final long moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
 	public static final long mobSpriteSysReq = CompSprite | CompDirection;
 	public static final long highlightSysReq = CompSprite | CompPosition;
-	public static final long aiSysReq = CompAI | CompInput;
+	public static final long aiSysReq = CompAI | CompInput; // add CompFieldOfView?
 	public static final long playerInputSysReq = CompPlayer;
 	public static final long combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft;
 	public static final long levelingSystemReq = CompAttribute;
