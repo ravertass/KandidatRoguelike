@@ -26,6 +26,7 @@ public class Sprite implements IComponent {
 	private int spriteX, spriteY; // the (tile) coordinates for current sprite
 	private boolean visible;
 	private static HashMap<String,Texture> loadTextures = new HashMap<String,Texture>();
+	private String spritename;
 	
 	/**
 	 * A constructor where the starting sprite always is the upper-
@@ -54,6 +55,7 @@ public class Sprite implements IComponent {
 	 * starting sprite.
 	 */
 	public Sprite(String fileName, int spriteSize, int spriteX, int spriteY) {
+		spritename = fileName;
 		spritesheet = loadTexture(fileName);
 		this.sizeX = spriteSize;
 		this.sizeY = spriteSize;
@@ -222,6 +224,11 @@ public class Sprite implements IComponent {
 	 * @param fileName
 	 */
 	public void setSpritesheet(String fileName) {
+		spritename = fileName;
 		spritesheet = loadTexture(fileName);
+	}
+	
+	public String getSpriteName(){
+		return spritename;
 	}
 }
