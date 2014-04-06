@@ -1,13 +1,13 @@
 package se.chalmers.roguelike.Components;
 
-public class EnemyType implements IComponent {
+public class MobType implements IComponent {
 	public enum Type {
-		GRUNT, BOSS
+		PLAYER, GRUNT, BOSS
 	}
 	
 	private Type type;
 	
-	public EnemyType(Type type) {
+	public MobType(Type type) {
 		this.type = type;
 	}
 	

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Attribute;
-import se.chalmers.roguelike.Components.EnemyType;
+import se.chalmers.roguelike.Components.MobType;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Position;
@@ -137,7 +137,7 @@ public class CombatSystem implements ISystem {
 
 			// This checks if the enemy killed was a boss; if it was, the dungeon 
 			// should know that it has been killed
-			if (e.getComponent(EnemyType.class).getType() == EnemyType.Type.BOSS) {
+			if (e.getComponent(MobType.class).getType() == MobType.Type.BOSS) {
 				dungeon.setPlotAccomplished(true);
 			}
 			

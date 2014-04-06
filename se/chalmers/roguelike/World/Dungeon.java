@@ -10,7 +10,7 @@ import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
-import se.chalmers.roguelike.Components.EnemyType;
+import se.chalmers.roguelike.Components.MobType;
 import se.chalmers.roguelike.Components.FieldOfView;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.IComponent;
@@ -255,7 +255,7 @@ public class Dungeon {
 
 		String name = actor.toString();
 		String sprite = "mobs/mob_smurf";
-		components.add(new EnemyType(EnemyType.Type.BOSS));
+		components.add(new MobType(MobType.Type.BOSS));
 		components.add(new Health(20));
 		components.add(new TurnsLeft(1));
 		components.add(new Input());

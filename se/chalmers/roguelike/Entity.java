@@ -59,8 +59,8 @@ public class Entity {
 			componentKey |= Engine.CompPlotAction;
 		} else if(compClass == BlocksLineOfSight.class){
 			componentKey |= Engine.CompBlocksLineOfSight;
-		} else if(compClass == EnemyType.class){
-			componentKey |= Engine.CompEnemyType;
+		} else if(compClass == MobType.class){
+			componentKey |= Engine.CompMobType;
 		} else if(compClass == Stair.class){
 			componentKey |= Engine.CompStair;
 		}

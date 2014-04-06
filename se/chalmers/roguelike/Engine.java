@@ -60,7 +60,7 @@ public class Engine {
 	public static final long CompInventory = 1 << componentID++;
 	public static final long CompPocketable = 1 << componentID++;
 	public static final long CompPlotAction = 1 << componentID++;
-	public static final long CompEnemyType = 1 << componentID++;
+	public static final long CompMobType = 1 << componentID++;
 	public static final long CompStair = 1 << componentID++;
 	
 	// Constants: System requirements:
@@ -75,7 +75,7 @@ public class Engine {
 	public static final long aiSysReq = CompAI | CompInput; // add CompFieldOfView?
 	public static final long playerInputSysReq = CompPlayer;
 	public static final long combatSystemReq = CompInput | CompHealth
-			| CompPosition | CompTurnsLeft;
+			| CompPosition | CompTurnsLeft | CompMobType;
 	public static final long levelingSystemReq = CompAttribute;
 	public static final long dungeonReq = CompSprite | CompPosition;
 	public static final long overworldReq = CompDungeon | CompSelectedFlag

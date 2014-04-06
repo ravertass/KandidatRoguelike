@@ -16,6 +16,7 @@ import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Inventory;
+import se.chalmers.roguelike.Components.MobType;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.PlotAction;
 import se.chalmers.roguelike.Components.PopupText;
@@ -40,6 +41,7 @@ public class EntityCreator {
 
 	public Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
 		Entity player = new Entity("Player");
+		player.add(new MobType(MobType.Type.PLAYER));
 		player.add(new Health(50));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
