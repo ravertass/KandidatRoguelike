@@ -61,6 +61,8 @@ public class Entity {
 			componentKey |= Engine.CompBlocksLineOfSight;
 		} else if(compClass == EnemyType.class){
 			componentKey |= Engine.CompEnemyType;
+		} else if(compClass == Stair.class){
+			componentKey |= Engine.CompStair;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}

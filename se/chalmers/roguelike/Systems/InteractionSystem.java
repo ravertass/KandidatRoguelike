@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Stair;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Observer;
@@ -82,6 +83,7 @@ public class InteractionSystem implements ISystem, Observer {
 	 */
 	public void setDungeon(Dungeon dungeon){
 		this.dungeon = dungeon;
+		System.out.println("New dungeon set");
 	}
 
 	/**
@@ -95,11 +97,12 @@ public class InteractionSystem implements ISystem, Observer {
 			ArrayList<Entity> entities = tile.getEntities();
 			if(entities.size()-1 != 0){ // -1 because player will always be counted as one
 				for(Entity e : entities){
-					if(e.containsComponent(Engine.CompDungeon)) {
+					if(e.containsComponent(Engine.CompStair)) {
 						DungeonComponent dc = e.getComponent(DungeonComponent.class);
 						Dungeon nextDungeon = dc.getDungeon();
+						Stair stair = e.getComponent(Stair.class);
 						if(nextDungeon != null){
-							engine.loadDungeon(nextDungeon, Engine.GameState.DUNGEON);
+							engine.loadDungeon(nextDungeon, stair.getX(), stair.getY());
 						} else {
 							engine.loadOverworld();
 						}

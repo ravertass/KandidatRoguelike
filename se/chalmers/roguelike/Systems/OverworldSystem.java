@@ -165,7 +165,7 @@ public class OverworldSystem implements ISystem, Observer {
 		}
 
 		unregister();
-		engine.loadDungeon(starDungeon, Engine.GameState.DUNGEON);
+		engine.loadDungeon(starDungeon, starDungeon.getStartpos().getX(), starDungeon.getStartpos().getY());
 	}
 
 	/**

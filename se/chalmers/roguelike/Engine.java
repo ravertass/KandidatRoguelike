@@ -61,7 +61,8 @@ public class Engine {
 	public static final long CompPocketable = 1 << componentID++;
 	public static final long CompPlotAction = 1 << componentID++;
 	public static final long CompEnemyType = 1 << componentID++;
-
+	public static final long CompStair = 1 << componentID++;
+	
 	// Constants: System requirements:
 
 	public static final long inventoryReq = CompInventory;
@@ -367,26 +368,21 @@ public class Engine {
 		new Engine().run();
 	}
 
-	public void loadDungeon(Dungeon dungeon, GameState newState) {
+	public void loadDungeon(Dungeon dungeon, int startX, int startY){
 		// TODO: Loading screen stuff
-		// if(gameState == GameState.OVERWORLD && newState ==
-		// GameState.DUNGEON){
-		if (gameState == GameState.OVERWORLD) {
+		if(gameState == GameState.OVERWORLD){
 			overworldSys.unregister();
 		}
 		if (this.dungeon != null) {
 			this.dungeon.unregister(this);
 		}
 		this.dungeon = dungeon;
-		player.getComponent(Position.class).set(dungeon.getStartpos().getX(),
-				dungeon.getStartpos().getY()); // This respawns the player 1,1
-												// of each map
 		this.dungeon.register(this);
+		player.getComponent(Position.class).set(startX, startY);
 		renderingSys.setDungeon(dungeon);
 		interactionSys.setDungeon(dungeon);
 		addEntity(player);
-		gameState = newState;
-		// }
+		gameState = GameState.DUNGEON;
 	}
 
 	public void loadOverworld() {

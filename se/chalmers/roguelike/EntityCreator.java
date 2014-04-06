@@ -23,6 +23,7 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Stair;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
@@ -149,9 +150,10 @@ public class EntityCreator {
 		return gold;
 	}
 	
-	public static Entity createStairs(int x, int y, String sprite, Dungeon dungeon){
+	public static Entity createStairs(int x, int y, int spawnX, int spawnY, String sprite, Dungeon dungeon){
 		Entity stairs = new Entity("stairs");
 		stairs.add(new Position(x,y));
+		stairs.add(new Stair(spawnX,spawnY));
 		stairs.add(new Sprite(sprite));
 		stairs.add(new DungeonComponent(dungeon));
 		return stairs;
