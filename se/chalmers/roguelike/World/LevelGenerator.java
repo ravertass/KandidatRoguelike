@@ -187,17 +187,23 @@ public class LevelGenerator {
 			Dungeon nextDungeonLevel = nextLevelGen.getDungeon(); // was toDungeon, would re-created the subdungeon
 			dungeon.setNextDungeonLevel(nextDungeonLevel);
 			nextDungeonLevel.setPreviousDungeonLevel(dungeon);
-			Entity stair = EntityCreator.createStairs(stairsDown.getX(), stairsDown.getY(),
+			Entity stair = EntityCreator.createStairs(
+					stairsDown.getX(), stairsDown.getY(),
+					nextDungeonLevel.getStartpos().getX(), 
+					nextDungeonLevel.getStartpos().getY(),
 					"stairs_down",nextDungeonLevel);
 			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
 			System.out.println("Created Subdungeon");
-			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(),"stairs_up",nextDungeonLevel.getPreviousDungeonLevel());
+			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(), 
+					nextDungeonLevel.getStartpos().getY(),  stairsDown.getX(), stairsDown.getY(),
+					"stairs_up", nextDungeonLevel
+					.getPreviousDungeonLevel());
 			nextDungeonLevel.addEntity(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(), stairUp);
 		} 
 		if(dungeon.getPreviousDungeonLevel() == null){
 			int x = getStartPos().getX();
 			int y = getStartPos().getY();
-			Entity stairUp = EntityCreator.createStairs(x, y,"stairs_up",null);
+			Entity stairUp = EntityCreator.createStairs(x, y, -1, -1, "stairs_up",null);
 			dungeon.addEntity(x, y, stairUp);
 		}
 

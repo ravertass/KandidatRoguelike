@@ -57,6 +57,8 @@ public class Entity {
 			componentKey |= Engine.CompBlocksWalking;
 		} else if(compClass == BlocksLineOfSight.class){
 			componentKey |= Engine.CompBlocksLineOfSight;
+		} else if(compClass == Stair.class){
+			componentKey |= Engine.CompStair;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}
