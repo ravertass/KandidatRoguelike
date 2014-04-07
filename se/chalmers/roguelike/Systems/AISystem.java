@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.util.ShadowCaster;
 import se.chalmers.roguelike.util.Util;
 import se.chalmers.roguelike.util.pathfinding.AStar;
 import se.chalmers.roguelike.util.pathfinding.AreaMap;
@@ -43,9 +44,9 @@ public class AISystem implements ISystem {
 			int y = e.getComponent(Position.class).getY();
 			Input input = e.getComponent(Input.class);
 			int dist = e.getComponent(FieldOfView.class).getViewDistance();
-			//int[][] fov = new ShadowCaster().calculateFOV(world, x, y, dist);
+	//		int[][] fov = new ShadowCaster().calculateFOV(world, x, y, dist);
 			ai = e.getComponent(AI.class);
-			//targetPlayer(ai, fov, player);
+	//		targetPlayer(ai, fov, player);
 			targetPlayer(ai, x, y, dist, player);
 			Entity target = ai.getTarget();
 			
@@ -140,7 +141,24 @@ public class AISystem implements ISystem {
 		}
 	}
 
-	//private void targetPlayer(AI ai, int[][] fieldOfView, Entity player) {
+	private void targetPlayer(AI ai, int[][] fieldOfView, Entity player) {
+		int px = player.getComponent(Position.class).getX();
+		int py = player.getComponent(Position.class).getY();
+	
+		Entity target = ai.getTarget();
+		if (fieldOfView[py][px] == 1){
+			ai.setTarget(player);
+			if(target != ai.getTarget()){
+				System.out.println("YOU HAVE BEEN FOUND BY AN ENEMY");
+			}
+		} else {
+			ai.setTarget(null);
+			if(target != ai.getTarget()){
+				System.out.println("THE ENEMY LOST INTEREST IN TRACKING YOU");
+			}
+		}
+	}
+	
 	private void targetPlayer(AI ai, int x, int y, int dist, Entity player) {
 		int px = player.getComponent(Position.class).getX();
 		int py = player.getComponent(Position.class).getY();
@@ -150,12 +168,12 @@ public class AISystem implements ISystem {
 		if (enemyDist.size() <= dist){
 			ai.setTarget(player);
 			if(target != ai.getTarget()){
-				System.out.println("TARGET FOUND");
+				System.out.println("YOU HAVE BEEN FOUND BY AN ENEMY");
 			}
 		} else {
 			ai.setTarget(null);
 			if(target != ai.getTarget()){
-				System.out.println("TARGET LOST");
+				System.out.println("THE ENEMY LOST INTEREST IN TRACKING YOU");
 			}
 		}
 	}

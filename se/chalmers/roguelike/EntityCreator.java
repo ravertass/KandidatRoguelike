@@ -10,6 +10,7 @@ import se.chalmers.roguelike.Components.BlocksLineOfSight;
 import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.FieldOfView;
 import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
@@ -71,6 +72,7 @@ public class EntityCreator {
 		enemy.add(new Position(45, 44));
 		enemy.add(new Direction());
 		enemy.add(new AI());
+		enemy.add(new FieldOfView(10));
 		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.SPACE_ROGUE, Attribute.SpaceRace.SPACE_ALIEN, 1, 50));
 		enemy.add(new Inventory()); // here items that the enemy drops should be added
 		enemy.add(new BlocksWalking(true));

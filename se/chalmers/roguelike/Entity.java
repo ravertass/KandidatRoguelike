@@ -63,6 +63,8 @@ public class Entity {
 			componentKey |= Engine.CompMobType;
 		} else if(compClass == Stair.class){
 			componentKey |= Engine.CompStair;
+		} else if(compClass == FieldOfView.class){
+			componentKey |= Engine.CompFieldOfView;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}
