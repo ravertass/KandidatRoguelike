@@ -103,7 +103,7 @@ public class OverworldSystem implements ISystem, Observer {
 	@Override
 	public void removeEntity(Entity entity) {
 		// TODO not necessary?
-
+		//Or should it be possible to visit other galaxies?
 	}
 
 	/**

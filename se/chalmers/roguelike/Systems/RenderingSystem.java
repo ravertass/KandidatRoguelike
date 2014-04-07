@@ -105,7 +105,7 @@ public class RenderingSystem implements ISystem {
 		entitiesToDraw = new ArrayList<Entity>();
 
 		// Font
-		Font awtFont = new Font("Times New Roman", Font.BOLD, 14);
+		Font awtFont = new Font("/resources/fonts/circula-medium.otf", Font.BOLD, 14);
 		font = new TrueTypeFont(awtFont, false);
 
 		/*
@@ -116,7 +116,7 @@ public class RenderingSystem implements ISystem {
 			owBackground = TextureLoader.getTexture("PNG", new FileInputStream(
 					new File("./resources/" + "background_ow" + ".png")));
 			owMenu = TextureLoader.getTexture("PNG", new FileInputStream(
-					new File("./resources/" + "menu_background_ow" + ".png")));
+					new File("./resources/" + "menu_background_ow_long" + ".png")));
 		} catch (FileNotFoundException e) {
 			System.out.println("The file does not exist");
 			e.printStackTrace();
@@ -305,9 +305,9 @@ public class RenderingSystem implements ISystem {
 				String visited = activeStar
 						.getComponent(DungeonComponent.class).getDungeon() == null ? "no"
 						: "yes";
-				font.drawString(Engine.screenWidth - 120, 300,
+				font.drawString(Engine.screenWidth - 170, 300,
 						"Selected star: " + activeStar.toString());
-				font.drawString(Engine.screenWidth - 120, 300,
+				font.drawString(Engine.screenWidth - 170, 300,
 						"\nVisited before: " + visited);
 			}
 		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
@@ -394,9 +394,9 @@ public class RenderingSystem implements ISystem {
 	 */
 	private void drawMenuOW() {
 
-		int x = Engine.screenWidth - 128;
+		int x = Engine.screenWidth - 180;
 		int y = 0;
-		int sizeX = 128;
+		int sizeX = 180;
 		int sizeY = Engine.screenHeight;
 
 		float spriteULX = 0.0f;
@@ -588,18 +588,8 @@ public class RenderingSystem implements ISystem {
 
 		Health h = e.getComponent(Health.class);
 		double healthPercentage = h.getHealthPercentage();
-		double healthbarLength = healthPercentage * Engine.spriteSize; // calculates
-		// how
-		// much
-		// of
-		// the
-		// green
-		// should
-		// be
-		// drawn
-		// over
-		// the
-		// red
+		// calculates how much of the green should be drawn over the red
+		double healthbarLength = healthPercentage * Engine.spriteSize;
 
 		int hblength = (int) healthbarLength;
 		// draw the red part of the healthbar
@@ -616,7 +606,6 @@ public class RenderingSystem implements ISystem {
 				&& y < camera.getHeight() * Engine.spriteSize) {
 			drawUntexturedQuad(x, y + Engine.spriteSize, hblength,
 					Engine.spriteSize / 8);
-
 		}
 		glColor3f(1.0f, 1.0f, 1.0f);
 	}
