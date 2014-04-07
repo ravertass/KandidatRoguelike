@@ -641,7 +641,8 @@ public class RenderingSystem implements ISystem {
 				+ (weapon.getModifier() == 0 ? "" : "+" + weapon.getModifier())
 				+ "\nRange: " + weapon.getRange() + "\nTargeting system: "
 				+ weapon.getTargetingSystemString();
-
+		
+		
 		// draw hp bar
 		glColor3f(1.0f, 0.0f, 0.0f); // red part
 		drawUntexturedQuad(Engine.screenWidth - (menuWidth - 10),
@@ -656,7 +657,11 @@ public class RenderingSystem implements ISystem {
 				- menuWidth - 22, (int) hp + "/" + (int) maxHp);
 		font.drawString(Engine.screenWidth - menuWidth, Engine.screenHeight
 				- menuWidth - 20 - 20, info); // -20 due to HP bar
-
+		if(Engine.debug){
+			Position position = e.getComponent(Position.class);
+			String debug = "Player position: " + position.getX() + "x" + position.getY();
+			font.drawString(0,0,debug);
+		}
 		// draw inventory
 		Inventory inv = e.getComponent(Inventory.class);
 		ArrayList<Entity> items = inv.getItems();

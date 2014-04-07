@@ -91,7 +91,8 @@ public class InteractionSystem implements ISystem, Observer {
 	 * message from the observer is correct.
 	 */
 	public void notify(Enum<?> i) {
-		if(Engine.gameState == Engine.GameState.DUNGEON && player != null && i.equals(InputAction.INTERACTION)){
+		if (Engine.gameState == Engine.GameState.DUNGEON && player != null
+				&& i.equals(InputAction.INTERACTION)) {
 			Position pos = player.getComponent(Position.class);
 			Tile tile = dungeon.getTile(pos.getX(), pos.getY());
 			ArrayList<Entity> entities = tile.getEntities();
@@ -127,6 +128,9 @@ public class InteractionSystem implements ISystem, Observer {
 				tile = dungeon.getTile(x, y);
 				entities = tile.getEntities();
 				for(Entity e : entities){
+					if(Engine.debug){
+						System.out.println("Entity in front of player: "+e);
+					}
 					if(e.containsComponent(Engine.CompSprite | Engine.CompBlocksLineOfSight | Engine.CompBlocksWalking)){
 						// should be a door, add door flag later?
 						BlocksWalking blocksWalking = e.getComponent(BlocksWalking.class);
@@ -135,10 +139,12 @@ public class InteractionSystem implements ISystem, Observer {
 						Entity newDoor;
 						if(blocksWalking.getBlocksWalking()){
 							// door is closed, open it
-							newDoor = EntityCreator.createDoor(x,y,(spriteName.substring(0, lastUnderscore)+"_open"),true);
+							newDoor = EntityCreator.createDoor(x, y,
+									(spriteName.substring(0, lastUnderscore) + "_open"), true);
 						} else {
 							// door is open, close it
-							newDoor = EntityCreator.createDoor(x,y,(spriteName.substring(0, lastUnderscore)+"_closed"),false);
+							newDoor = EntityCreator.createDoor(x, y,
+									(spriteName.substring(0, lastUnderscore)+"_closed"),false);
 						}
 						engine.removeEntity(e);
 						engine.addEntity(newDoor);

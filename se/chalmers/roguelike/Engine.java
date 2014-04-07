@@ -265,16 +265,11 @@ public class Engine {
 	}
 
 	/**
-	 * World's worst game loop.
+	 * The game loop. Handles what should run for each state.
 	 */
 	public void run() {
 		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR,
 				SpaceRace.SPACE_ALIEN);
-		// TODO använd en till spelet given seed
-		// NameGenerator ng = new NameGenerator(2, new Random().nextLong());
-		// for (int i = 0; i <4; i++)
-		// entityCreator.createEnemy(ng.generateName());
-		// entityCreator.createHighlight();
 
 		while (!Display.isCloseRequested()) {
 			if (gameState == GameState.DUNGEON) {
@@ -292,15 +287,12 @@ public class Engine {
 				if (player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0) {
 					aiSystem.update(dungeon, player);
 
-					System.out.println("------------NEW TURN------------");
+					if(Engine.debug){
+						System.out.println("------------NEW TURN------------");
+					}
 				}
 
-				// } else if(gameState == GameState.MENU) {
-
 			} else if (gameState == GameState.OVERWORLD) {
-				// TODO
-				// add system that is used in the overworld
-				// renderingSys.drawOWbackground();
 				plotSys.update();
 				renderingSys.update();
 				inputManager.update();
@@ -320,14 +312,12 @@ public class Engine {
 	 */
 	private void spawnSystems() {
 		renderingSys = new RenderingSystem();
-		dungeon = new Dungeon(); // remove engine?
-		// dungeon.setWorld(50,50,new Generator().toTiles());
+		dungeon = new Dungeon();
 		inputManager = new InputManager(this); // This feels stupid that it
 												// should have engine component,
 												// maybe change once debug stuff
 												// is over for the load manager
-		// inputSys = new InputSystem();
-		moveSys = new MoveSystem(); // remember to update pointer for new worlds
+		moveSys = new MoveSystem();
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem(entityCreator, this);
 		turnSystem = new TurnSystem();
@@ -367,9 +357,14 @@ public class Engine {
 	public static void main(String[] args) {
 		new Engine().run();
 	}
-
+	
+	/**
+	 * Loads a dungeon and changes the gamestate to DUNGEON
+	 * @param dungeon the dungeon that should be loaded
+	 * @param startX the X-coord of the start position for the player
+	 * @param startY the Y-coord of the start position for the player
+	 */
 	public void loadDungeon(Dungeon dungeon, int startX, int startY){
-		// TODO: Loading screen stuff
 		if(gameState == GameState.OVERWORLD){
 			overworldSys.unregister();
 		}
@@ -384,7 +379,10 @@ public class Engine {
 		addEntity(player);
 		gameState = GameState.DUNGEON;
 	}
-
+	
+	/**
+	 * Loads the overworld
+	 */
 	public void loadOverworld() {
 		if (gameState == GameState.OVERWORLD) {
 			return;
@@ -400,14 +398,15 @@ public class Engine {
 		gameState = GameState.OVERWORLD;
 	}
 
+	/**
+	 * Loads the main menu
+	 */
 	public void loadMainMenu() {
 		if (gameState == GameState.DUNGEON && dungeon != null) {
 			dungeon.unregister(this);
 			removeEntity(player); // TODO: Remove, this is due to some bug
-			System.out.println("Unregister of dungeon done");
 		} else if (gameState == GameState.OVERWORLD) {
 			overworldSys.unregister();
-			System.out.println("Unregister of overworld done");
 		}
 		mainmenuSys.register();
 		gameState = GameState.MAIN_MENU;
