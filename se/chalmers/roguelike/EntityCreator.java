@@ -31,22 +31,34 @@ import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.World.Dungeon;
 
+/**
+ * EntityCreator creates entities, either by using pre-defined entity combinations, or by providing lists
+ * of components that should be added
+ */
 public class EntityCreator {
 
 	private Engine engine;
-	//public static IComponent blocksWalking = new BlocksWalking(); // made the component static so everything can use it
 	
+	/**
+	 * Spawns a new entity creator instance
+	 * @param engine the game engine in use
+	 */
 	public EntityCreator(Engine engine) {
 		this.engine = engine;
 	}
 
+	/**
+	 * Creates a player
+	 * @param spaceClass the class of the player
+	 * @param spaceRace the race of the player
+	 * @return the entity that represents a player
+	 */
 	public Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
 		Entity player = new Entity("Player");
 		player.add(new MobType(MobType.Type.PLAYER));
 		player.add(new Health(50));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
-//		player.add(new Sprite("mobs/mob_knight"));
 		player.add(new Sprite("mobs/mob_military_vet"));
 		player.add(new Position(44, 44));
 		player.add(new Direction());
@@ -59,10 +71,13 @@ public class EntityCreator {
 		player.add(new Inventory(a));
 		player.add(new Gold(0));
 		player.add(new BlocksWalking(true));
-		//engine.addEntity(player);
 		return player;
 	}
 
+	/**
+	 * Creates an enemy and directly adds it to the engine
+	 * @param name name of the enemy
+	 */
 	public void createEnemy(String name) {
 		Entity enemy = new Entity("(Enemy) " + name);
 		enemy.add(new Health(10));
@@ -107,6 +122,9 @@ public class EntityCreator {
 		engine.addEntity(enemy);
 	}
 
+	/**
+	 * Creates a hilight marker and adds it to the engine
+	 */
 	public void createHighlight() {
 		Entity highlight = new Entity("Highlight");
 		highlight.add(new Sprite("highlight2"));
@@ -115,6 +133,11 @@ public class EntityCreator {
 		engine.addEntity(highlight);
 	}
 	
+	/**
+	 * Creates a highlight at a specific position and registers it to the engine
+	 * @param pos the position of the highlight
+	 * @return returns the highlight entity
+	 */
 	public Entity createHighlight(Position pos) {
 		Entity highlight = new Entity("Highlight");
 		highlight.add(new Sprite("transparenthighlight"));
@@ -123,6 +146,14 @@ public class EntityCreator {
 		engine.addEntity(highlight);
 		return highlight;
 	}
+	
+	/**
+	 * Creates a star and adds it to the engine
+	 * @param x X-coordinate of the star
+	 * @param y Y-coordinate of the star
+	 * @param seed the seed for the dungeon the star will contain
+	 * @return the star entity
+	 */
 	public Entity createStar(int x, int y, long seed){
 		return createStar(x, y, seed, "Star");
 	}
@@ -137,15 +168,32 @@ public class EntityCreator {
 		engine.addEntity(star);
 		return star;
 	}
+	
+	/**
+	 * Create a new button and registers it in the engine
+	 * 
+	 * @param x X-coordinate of the button 
+	 * @param y Y-coordinate of the button
+	 * @param spriteName the name of the sprite the button will use
+	 * @param width width of the button
+	 * @param height height of the button
+	 * @return the entity representing a button
+	 */
 	public Entity createButton(int x, int y, String spriteName, int width, int height){
 		Entity button = new Entity("button");
-		button.add(new Sprite(spriteName,width, height)); // The 80 thing might screw it up
+		button.add(new Sprite(spriteName,width, height));
 		button.add(new Position(x,y));
 		engine.addEntity(button);
-		System.out.println("New button added");
 		return button;
 	}
 	
+	/**
+	 * Create a stack of gold
+	 * @param x X-coordinate of the gold
+	 * @param y Y-coordinate of the gold
+	 * @param amount the amount of gold
+	 * @return an entity for the gold
+	 */
 	public static Entity createGold(int x, int y, int amount){
 		Entity gold = new Entity("gold");
 		gold.add(new Sprite("cash_small_amt"));
@@ -154,6 +202,16 @@ public class EntityCreator {
 		return gold;
 	}
 	
+	/**
+	 * Creates a stair entity
+	 * @param x X-coordinate for the stairs
+	 * @param y Y-coordinate for the stairs
+	 * @param spawnX the X-coordinate where the player should spawn when using the stairs
+	 * @param spawnY the Y-coordinate where the player should spawn when using the stairs
+	 * @param sprite the sprite of the stairs
+	 * @param dungeon dungeon that should be loaded when the stairs are used
+	 * @return the entity for the stairs
+	 */
 	public static Entity createStairs(int x, int y, int spawnX, int spawnY, String sprite, Dungeon dungeon){
 		Entity stairs = new Entity("stairs");
 		stairs.add(new Position(x,y));
@@ -163,7 +221,14 @@ public class EntityCreator {
 		return stairs;
 	}
 	
-	
+	/**
+	 * Creates a door entity
+	 * @param x X-coordinate for the door
+	 * @param y Y-coordinate for the door
+	 * @param sprite the sprite of the door
+	 * @param open status flag if the door should be open or not
+	 * @return the door entity
+	 */
 	public static Entity createDoor(int x, int y, String sprite, boolean open){
 		Entity door = new Entity("door");
 		door.add(new Position(x,y));
@@ -173,6 +238,13 @@ public class EntityCreator {
 		return door;
 	}
 	
+	/**
+	 * Creates a generic entity based on what components are provided
+	 * 
+	 * @param name name of the entity
+	 * @param components a list of components to be included
+	 * @return a new entity
+	 */
 	public static Entity createEntity(String name, ArrayList<IComponent> components){
 		Entity entity = new Entity(name);
 		for (IComponent component : components) {
@@ -181,6 +253,15 @@ public class EntityCreator {
 		return entity;
 	}
 	
+	/**
+	 * Creates a popup
+	 * @param text text that should be written on the popup
+	 * @param x x-coordinate of the popup
+	 * @param y y-coordinate of the popup
+	 * @param width width of the popup
+	 * @param height height of the popup
+	 * @return the popup entity
+	 */
 	public Entity createPopup(ArrayList<String> text, int x, int y, int width, int height) {
 		Entity popup = new Entity("popup");
 		popup.add(new Sprite("popupbackground", width, height));
@@ -189,6 +270,12 @@ public class EntityCreator {
 		return popup;
 	}
 	
+	/**
+	 * Creates a space ship
+	 * @param x x-coordinate of the ship
+	 * @param y y-coordinate of the ship
+	 * @return a space ship entity
+	 */
 	public Entity createSpaceShip(int x, int y) {
 		Entity spaceShip = new Entity("Spaceship");
 		spaceShip.add(new Sprite("mobs/mob_bear", 32, 32));
