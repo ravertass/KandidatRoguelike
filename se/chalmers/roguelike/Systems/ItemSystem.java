@@ -10,12 +10,14 @@ import se.chalmers.roguelike.Components.DoubleName;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.InputManager.InputAction;
+import se.chalmers.roguelike.util.Observer;
 import se.chalmers.roguelike.util.Pair;
 
-public class ItemSystem implements ISystem { 
+public class ItemSystem implements ISystem{ 
 	
-	private HashMap<Entity, UseEffect> lookupPotions;
-	private ArrayList<Pair<Entity, UseEffect>> listPotions;
+	private static HashMap<Entity, UseEffect> lookupPotions;
+	private static ArrayList<Pair<Entity, UseEffect>> listPotions;
 	
 	private ArrayList<String> colors;
 	private UseEffect[] effects;
@@ -25,6 +27,7 @@ public class ItemSystem implements ISystem {
 	};
 	
 	public ItemSystem() {
+		colors = new ArrayList<String>();
 		lookupPotions = new HashMap<Entity, UseEffect>();
 		listPotions = new ArrayList<Pair<Entity, UseEffect>>();
 		this.setupPotions();
@@ -79,7 +82,7 @@ public class ItemSystem implements ISystem {
 		
 	}
 	
-	public Entity getRandomPotion() {
+	public static Entity getRandomPotion() {
 		Random r = new Random();
 		int i = r.nextInt(lookupPotions.size());
 		return listPotions.get(i).getFirst();
@@ -97,4 +100,5 @@ public class ItemSystem implements ISystem {
 //		colors.add(new Sprite("potions/potions_gold"));
 //		colors.add(new Sprite("potions/potions_misty"));
 	}
+
 }

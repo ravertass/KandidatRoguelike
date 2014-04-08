@@ -25,6 +25,7 @@ import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
+import se.chalmers.roguelike.Systems.ItemSystem;
 import se.chalmers.roguelike.World.Dungeon;
 
 public class EntityCreator {
@@ -48,10 +49,10 @@ public class EntityCreator {
 		player.add(new Player());
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
-		ArrayList<Entity> a = new ArrayList<Entity>();
-		a.add(player);
-		a.add(player);
-		player.add(new Inventory(a));
+		ArrayList<Entity> inv = new ArrayList<Entity>();
+		inv.add(ItemSystem.getRandomPotion());
+		inv.add(ItemSystem.getRandomPotion());
+		player.add(new Inventory(inv));
 		player.add(new Gold(0));
 		player.add(new BlocksWalking(true));
 		//engine.addEntity(player);

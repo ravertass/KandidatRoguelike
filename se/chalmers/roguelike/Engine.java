@@ -11,8 +11,9 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Systems.AISystem;
 import se.chalmers.roguelike.Systems.CombatSystem;
 import se.chalmers.roguelike.Systems.HighlightSystem;
-import se.chalmers.roguelike.Systems.InventorySystem;
 import se.chalmers.roguelike.Systems.InteractionSystem;
+import se.chalmers.roguelike.Systems.InventorySystem;
+import se.chalmers.roguelike.Systems.ItemSystem;
 import se.chalmers.roguelike.Systems.LevelingSystem;
 import se.chalmers.roguelike.Systems.MainMenuSystem;
 import se.chalmers.roguelike.Systems.MobSpriteSystem;
@@ -95,6 +96,7 @@ public class Engine {
 	private InventorySystem inventorySys;
 	private InteractionSystem interactionSys;
 	private MobSpriteSystem mobSpriteSys;
+	private ItemSystem itemSys;
 	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -306,6 +308,7 @@ public class Engine {
 		mainmenuSys = new MainMenuSystem(this);
 		inventorySys = new InventorySystem();
 		interactionSys = new InteractionSystem(this);
+		itemSys = new ItemSystem();
 	}
 	
 	/**
