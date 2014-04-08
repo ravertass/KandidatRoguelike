@@ -20,6 +20,12 @@ public class Entity {
 		this.name = name;
 	}
 	
+	public Entity(String name, long ck, HashMap<Class<?>, IComponent> comps) {
+		this.name = name;
+		this.componentKey = ck;
+		this.components = comps;
+	}
+	
 	public void add(IComponent component) {
 		Class<?> compClass = component.getClass();
 		components.put(compClass, component);
@@ -88,5 +94,9 @@ public class Entity {
 	
 	public boolean containsComponent(long component){
 		return (componentKey & component) == component;
+	}
+	
+	public Entity clone() {
+		return new Entity(name, componentKey, components);
 	}
 }
