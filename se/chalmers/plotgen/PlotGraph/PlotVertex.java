@@ -18,7 +18,15 @@ public class PlotVertex {
 		this.plotText = plotText;
 	}
 	
+	public PlotVertex() {
+		plotText = null;
+	}
+	
 	public String getPlotText() {
 		return plotText;
+	}
+	
+	public void setPlotText(String plotText) {
+		this.plotText = plotText;
 	}
 }

@@ -66,7 +66,6 @@ public class Util {
 		int sy = (y1 < y0) ? 1 : -1;
 
 		int err = dx - dy;
-
 		while (true) {
 			templine.add(new Position(x1, y1));
 		    if (x1 == x0 && y1 == y0) {
@@ -85,9 +84,6 @@ public class Util {
 		        y1 = y1 + sy;
 		    }
 		}
-		
-		
-		
 //		int dx = x1-x0;
 //		int dy = y1-y0;
 //		float error = 0.0f;
@@ -112,6 +108,7 @@ public class Util {
 		}
 		return line;
 	}
+	
 /*	 function line(x0, x1, y0, y1)
      int deltax := x1 - x0
      int deltay := y1 - y0
@@ -133,6 +130,7 @@ public class Util {
 		result.add(new Pair<Integer,Integer>(-1,-1));
 		return result;
 	}
+	
 	/**
 	 * Given a position and a radius this method calculates all the tiles that are inside a circle vid radius radius around the position.
 	 * @param p the starting position
@@ -149,9 +147,9 @@ public class Util {
 					result.add(new Position(x,y));
 			}
 		}
-		return result;
-			
+		return result;		
 	}
+	
 	/**
 	 * Returns true if the target is within the radius of a circle around the origin.
 	 * @param origin

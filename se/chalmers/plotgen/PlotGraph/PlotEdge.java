@@ -22,4 +22,17 @@ public class PlotEdge {
 	public Action getAction() {
 		return action;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof PlotEdge) {
+			return ((PlotEdge) o).getAction().equals(action);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return action.hashCode();
+	}
 }

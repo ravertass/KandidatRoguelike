@@ -6,37 +6,48 @@ import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.BlocksLineOfSight;
+import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.FieldOfView;
+import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Inventory;
+import se.chalmers.roguelike.Components.MobType;
 import se.chalmers.roguelike.Components.Player;
+import se.chalmers.roguelike.Components.PlotAction;
 import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Stair;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
+import se.chalmers.roguelike.World.Dungeon;
 
 public class EntityCreator {
 
 	private Engine engine;
-
+	//public static IComponent blocksWalking = new BlocksWalking(); // made the component static so everything can use it
+	
 	public EntityCreator(Engine engine) {
 		this.engine = engine;
 	}
 
 	public Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
 		Entity player = new Entity("Player");
-		player.add(new Health(5));
+		player.add(new MobType(MobType.Type.PLAYER));
+		player.add(new Health(50));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
-		player.add(new Sprite("mobs/mob_knight"));
+//		player.add(new Sprite("mobs/mob_knight"));
+		player.add(new Sprite("mobs/mob_military_vet"));
 		player.add(new Position(44, 44));
 		player.add(new Direction());
 		player.add(new Player());
@@ -46,6 +57,8 @@ public class EntityCreator {
 		a.add(player);
 		a.add(player);
 		player.add(new Inventory(a));
+		player.add(new Gold(0));
+		player.add(new BlocksWalking(true));
 		//engine.addEntity(player);
 		return player;
 	}
@@ -59,8 +72,10 @@ public class EntityCreator {
 		enemy.add(new Position(45, 44));
 		enemy.add(new Direction());
 		enemy.add(new AI());
+		enemy.add(new FieldOfView(10));
 		enemy.add(new Attribute("Enemy", Attribute.SpaceClass.SPACE_ROGUE, Attribute.SpaceRace.SPACE_ALIEN, 1, 50));
 		enemy.add(new Inventory()); // here items that the enemy drops should be added
+		enemy.add(new BlocksWalking(true));
 		engine.addEntity(enemy);
 	}
 
@@ -88,6 +103,7 @@ public class EntityCreator {
 		enemy.add(new Direction());
 		enemy.add(new AI());
 		enemy.add(attribute);
+		enemy.add(new BlocksWalking(true));
 		engine.addEntity(enemy);
 	}
 
@@ -117,6 +133,7 @@ public class EntityCreator {
 		star.add(new Seed(seed));
 		star.add(new SelectedFlag(false));
 		star.add(new DungeonComponent());
+		star.add(new PlotAction());
 		engine.addEntity(star);
 		return star;
 	}
@@ -127,6 +144,33 @@ public class EntityCreator {
 		engine.addEntity(button);
 		System.out.println("New button added");
 		return button;
+	}
+	
+	public static Entity createGold(int x, int y, int amount){
+		Entity gold = new Entity("gold");
+		gold.add(new Sprite("cash_small_amt"));
+		gold.add(new Position(x,y));
+		gold.add(new Gold(amount));
+		return gold;
+	}
+	
+	public static Entity createStairs(int x, int y, int spawnX, int spawnY, String sprite, Dungeon dungeon){
+		Entity stairs = new Entity("stairs");
+		stairs.add(new Position(x,y));
+		stairs.add(new Stair(spawnX,spawnY));
+		stairs.add(new Sprite(sprite));
+		stairs.add(new DungeonComponent(dungeon));
+		return stairs;
+	}
+	
+	
+	public static Entity createDoor(int x, int y, String sprite, boolean open){
+		Entity door = new Entity("door");
+		door.add(new Position(x,y));
+		door.add(new Sprite(sprite));
+		door.add(new BlocksLineOfSight(!open));
+		door.add(new BlocksWalking(!open));
+		return door;
 	}
 	
 	public static Entity createEntity(String name, ArrayList<IComponent> components){
@@ -143,5 +187,12 @@ public class EntityCreator {
 		popup.add(new Position(x,y));
 		popup.add(new PopupText(text));
 		return popup;
+	}
+	
+	public Entity createSpaceShip(int x, int y) {
+		Entity spaceShip = new Entity("Spaceship");
+		spaceShip.add(new Sprite("mobs/mob_bear", 32, 32));
+		spaceShip.add(new Position(x, y));
+		return spaceShip;
 	}
 }

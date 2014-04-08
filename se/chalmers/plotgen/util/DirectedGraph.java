@@ -24,6 +24,7 @@ public class DirectedGraph<V,E> {
 		adjacencies = new HashMap<V, HashMap<E,V>>();
 	}
 	
+	//TODO: Den här borde ju lämpligtvis skickas med konstruktorn
 	public void setRootVertex(V rootVertex) {
 		this.rootVertex = rootVertex;
 	}
@@ -60,4 +61,7 @@ public class DirectedGraph<V,E> {
 		return adjacencies.get(v);
 	}
 
+	public int size() {
+		return adjacencies.size();
+	}
 }

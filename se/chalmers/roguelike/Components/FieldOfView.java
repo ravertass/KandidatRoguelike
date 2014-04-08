@@ -16,6 +16,7 @@ public class FieldOfView implements IComponent {
 		return this.viewDistance;
 	}
 	
-	
-	
+	public void setViewDistance(int distance) {
+		viewDistance = distance;
+	}
 }
