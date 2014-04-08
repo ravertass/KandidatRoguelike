@@ -16,6 +16,7 @@ import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.FieldOfView;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.Components.Direction;
+import se.chalmers.roguelike.Components.MobType;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
@@ -57,6 +58,8 @@ public class LevelGenerator {
 	private ArrayList<Entity> enemies;
 
 	private Dungeon dungeon;
+	private int plotThingY;
+	private int plotThingX;
 
 	/**
 	 * 
@@ -175,6 +178,7 @@ public class LevelGenerator {
 		generateUnlockedDoors(grid);
 		generateStairs();
 		generateTreasurePositions();
+		generatePlotThingPosition();
 
 		print(grid);
 		worldGrid = grid;
@@ -187,23 +191,47 @@ public class LevelGenerator {
 			Dungeon nextDungeonLevel = nextLevelGen.getDungeon(); // was toDungeon, would re-created the subdungeon
 			dungeon.setNextDungeonLevel(nextDungeonLevel);
 			nextDungeonLevel.setPreviousDungeonLevel(dungeon);
-			Entity stair = EntityCreator.createStairs(stairsDown.getX(), stairsDown.getY(),
+			Entity stair = EntityCreator.createStairs(
+					stairsDown.getX(), stairsDown.getY(),
+					nextDungeonLevel.getStartpos().getX(), 
+					nextDungeonLevel.getStartpos().getY(),
 					"stairs_down",nextDungeonLevel);
 			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
 			System.out.println("Created Subdungeon");
-			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(),"stairs_up",nextDungeonLevel.getPreviousDungeonLevel());
+			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(), 
+					nextDungeonLevel.getStartpos().getY(),  stairsDown.getX(), stairsDown.getY(),
+					"stairs_up", nextDungeonLevel
+					.getPreviousDungeonLevel());
 			nextDungeonLevel.addEntity(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(), stairUp);
 		} 
 		if(dungeon.getPreviousDungeonLevel() == null){
 			int x = getStartPos().getX();
 			int y = getStartPos().getY();
-			Entity stairUp = EntityCreator.createStairs(x, y,"stairs_up",null);
+			Entity stairUp = EntityCreator.createStairs(x, y, -1, -1, "stairs_up",null);
 			dungeon.addEntity(x, y, stairUp);
 		}
 
 		if(largeRooms.size() == 0)
 
 			run();
+	}
+
+	private void generatePlotThingPosition() {
+		plotThingX = 0;
+		while (plotThingX == 0) {
+			for (Rectangle room : largeRooms) {
+				// I think this checks so we're not in the start room
+				if (room == largeRooms.get(0)) {
+					continue;
+				}
+
+				// Magic number determines the chance
+				if (rand.nextInt(10) == 1) {
+					plotThingX = room.x + 2 + Math.abs(xMinDisplacement);
+					plotThingY = room.y + 2 + Math.abs(yMinDisplacement);
+				}
+			}
+		}
 	}
 
 	private void generateEnemies() {
@@ -215,6 +243,7 @@ public class LevelGenerator {
 
 				String name = ng.generateName();
 				String sprite = "mobs/mob_slime";
+				components.add(new MobType(MobType.Type.GRUNT));
 				components.add(new Health(10));
 				components.add(new TurnsLeft(1));
 				components.add(new Input());
@@ -231,8 +260,10 @@ public class LevelGenerator {
 				Attribute attribute = new Attribute(name,
 						SpaceClass.SPACE_ROGUE, SpaceRace.SPACE_DWARF, 1, 50);
 				components.add(new BlocksWalking(true));
-				components.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); //hardcoded equals bad
-				components.add(new FieldOfView(8)); //hardcoded equals bad
+				components.add(new Weapon(2, 6, 0,
+						TargetingSystem.SINGLE_TARGET, 1, 1)); // hardcoded
+																// equals bad
+				components.add(new FieldOfView(8)); // hardcoded equals bad
 				components.add(attribute);
 				dungeonEntities.add(EntityCreator.createEntity("(Enemy)" + name,
 						components));
@@ -295,9 +326,9 @@ public class LevelGenerator {
 	 * Tries to generate a stair with the success rate of stairProbability
 	 */
 
-	private void generateStairs(){
+	private void generateStairs() {
 		System.out.println("generateStairs() running");
-		if (rand.nextInt(100)+1 <= stairProbability){
+		if (rand.nextInt(100) + 1 <= stairProbability) {
 			System.out.println("STAIR GENERATED");
 			int stairsDownRoom = rand.nextInt(largeRooms.size()-1) + 1;
 			Rectangle room = largeRooms.get(stairsDownRoom);

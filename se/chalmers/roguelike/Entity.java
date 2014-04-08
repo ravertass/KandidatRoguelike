@@ -55,8 +55,16 @@ public class Entity {
 			componentKey |= Engine.CompGold;
 		} else if(compClass == BlocksWalking.class){
 			componentKey |= Engine.CompBlocksWalking;
+		} else if(compClass == PlotAction.class){
+			componentKey |= Engine.CompPlotAction;
 		} else if(compClass == BlocksLineOfSight.class){
 			componentKey |= Engine.CompBlocksLineOfSight;
+		} else if(compClass == MobType.class){
+			componentKey |= Engine.CompMobType;
+		} else if(compClass == Stair.class){
+			componentKey |= Engine.CompStair;
+		} else if(compClass == FieldOfView.class){
+			componentKey |= Engine.CompFieldOfView;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}

@@ -4,14 +4,17 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Random;
 
 import org.lwjgl.input.Mouse;
 
+import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.PlotAction;
 import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
@@ -37,11 +40,13 @@ public class OverworldSystem implements ISystem, Observer {
 	public boolean popupActive;
 	private ArrayList<String> popupText;
 	private Entity popup;
+	private LinkedList<String> popupQueue;
 
 	public OverworldSystem(Engine engine) {
 		this.engine = engine;
 		activeStar = null;
 		popupActive = false;
+		popupQueue = new LinkedList<String>();
 		stars = new HashMap<String, Entity>();
 		starRectangles = new ArrayList<Rectangle>();
 		playButton = engine.entityCreator.createButton(Engine.screenWidth - 80,
@@ -49,25 +54,56 @@ public class OverworldSystem implements ISystem, Observer {
 		menuButton = engine.entityCreator.createButton(Engine.screenWidth - 80,
 				200 - 32, "button_menu", 80, 32);
 		menuRect = new Rectangle(Engine.screenWidth - 80, 200 - 32, 80, 32);
-		setupStars();
-		this.unregister();
+		// setupStars(); //TODO kommer troligt vara onödig då PlotSystem nu gör
+		// detta
+		unregister();
 	}
 
 	@Override
 	public void update() {
+		if (activeStar == null) {
+			return;
+		}
 
+		Action action = activeStar.getComponent(PlotAction.class).getAction();
+		if (action != null) {
+			// This is where we check if there's a MEET plot action coupled with
+			// the star
+			if (action.getActionType() == Action.ActionType.MEET) {
+				newPopup(activeStar.getComponent(PlotAction.class)
+						.getPlotText());
+				activeStar.getComponent(PlotAction.class).setActionPerformed(
+						true);
+			}
+			
+			Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class)
+					.getDungeon();
+			// This is where we check if there's a KILL plot action coupled with
+			// the star, and if the player has performed it
+			if ((action.getActionType() == Action.ActionType.KILL)
+					& (starDungeon != null)) {
+				if (starDungeon.getPlotAccomplished()) {
+					newPopup(activeStar.getComponent(PlotAction.class)
+							.getPlotText());
+					activeStar.getComponent(PlotAction.class).setActionPerformed(
+							true);
+				}
+			}
+		}
 	}
 
 	@Override
 	public void addEntity(Entity entity) {
-		// TODO not necessary?
-
+		int x = entity.getComponent(Position.class).getX();
+		int y = entity.getComponent(Position.class).getY();
+		starRectangles.add(new Rectangle(x, y, 16, 16));// test case
+		stars.put((x + "," + y), entity);
 	}
 
 	@Override
 	public void removeEntity(Entity entity) {
 		// TODO not necessary?
-
+		//Or should it be possible to visit other galaxies?
 	}
 
 	/**
@@ -90,13 +126,16 @@ public class OverworldSystem implements ISystem, Observer {
 				loadDungeon();
 			} else if (menuRect.contains(mouseX, mouseY) && !popupActive) {
 				// engine.loadMainMenu();
-				createTextPopup("Whatever nulla incididunt, delectus tousled bespoke Marfa gluten-free. Cliche biodiesel quinoa letterpress incididunt Thundercats keffiyeh hoodie scenester actually. Vice disrupt VHS, pariatur eu esse messenger bag hashtag leggings. Viral velit vegan selfies gluten-free fashion axe, ex deep v Austin culpa skateboard church-key bespoke delectus twee. Pariatur kitsch fixie occaecat excepteur Williamsburg. Next level hoodie distillery fap, non mlkshk blog 8-bit chia minim Etsy. Sunt deserunt actually Banksy deep v.");
+				newPopup("Whatever nulla incididunt, delectus tousled bespoke Marfa gluten-free. Cliche biodiesel quinoa letterpress incididunt Thundercats keffiyeh hoodie scenester actually. Vice disrupt VHS, pariatur eu esse messenger bag hashtag leggings. Viral velit vegan selfies gluten-free fashion axe, ex deep v Austin culpa skateboard church-key bespoke delectus twee. Pariatur kitsch fixie occaecat excepteur Williamsburg. Next level hoodie distillery fap, non mlkshk blog 8-bit chia minim Etsy. Sunt deserunt actually Banksy deep v.");
 			} else if (popupActive && popupRect.contains(mouseX, mouseY)) {
 				engine.removeEntity(popupButton);
 				engine.removeEntity(popup);
 				popupButton = null;
 				popup = null;
 				popupActive = false;
+				if (popupQueue.size() != 0) {
+					createTextPopup(popupQueue.poll());
+				}
 			}
 		}
 	}
@@ -117,8 +156,16 @@ public class OverworldSystem implements ISystem, Observer {
 					starDungeon);
 		}
 
+		if (activeStar.getComponent(PlotAction.class).getAction() != null) {
+			if (activeStar.getComponent(PlotAction.class).getAction()
+					.getActionType() == Action.ActionType.KILL) {
+				starDungeon.addBoss(activeStar.getComponent(PlotAction.class)
+						.getAction().getObjectActor());
+			}
+		}
+
 		unregister();
-		engine.loadDungeon(starDungeon, Engine.GameState.DUNGEON);
+		engine.loadDungeon(starDungeon, starDungeon.getStartpos().getX(), starDungeon.getStartpos().getY());
 	}
 
 	/**
@@ -141,6 +188,18 @@ public class OverworldSystem implements ISystem, Observer {
 		String coords = star.x + "," + star.y;
 		activeStar = stars.get(coords);
 		activeStar.getComponent(SelectedFlag.class).setFlag(true);
+
+		// This is where we check if there's a VISIT plot action coupled with
+		// the star
+		Action action = activeStar.getComponent(PlotAction.class).getAction();
+		if (action != null) {
+			if (action.getActionType() == Action.ActionType.VISIT) {
+				newPopup(activeStar.getComponent(PlotAction.class)
+						.getPlotText());
+				activeStar.getComponent(PlotAction.class).setActionPerformed(
+						true);
+			}
+		}
 	}
 
 	/**
@@ -184,7 +243,7 @@ public class OverworldSystem implements ISystem, Observer {
 	private void setupStars() {
 		int radius = 50;
 
-		Random rand = new Random(1234L); // Make seed depenendant later
+		Random rand = new Random(1234L); // Make seed dependent later
 
 		for (int i = 1; i < 360 * 3; i += 45) {
 			double rad = i * Math.PI / 180;
@@ -213,16 +272,15 @@ public class OverworldSystem implements ISystem, Observer {
 		stars.put((x + "," + y), star);
 	}
 
-	/**
-	 * Returns the currently active star
-	 * 
-	 * @return the active star
-	 */
-	public Entity getActiveStar() {
-		return activeStar;
+	private void newPopup(String s) {
+		if (!popupActive) {
+			createTextPopup(s);
+		} else {
+			popupQueue.add(s);
+		}
 	}
 
-	public void createTextPopup(String s) {
+	private void createTextPopup(String s) {
 
 		ArrayList<String> sequencedString = new ArrayList<String>();
 
@@ -236,7 +294,16 @@ public class OverworldSystem implements ISystem, Observer {
 		TrueTypeFont ttf = new TrueTypeFont(font, false);
 		StringBuilder sb = new StringBuilder();
 		for (String word : s.split(" ")) {
-			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { //magic number //TODO why is this happening and why should it be so high?
+			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { // magic
+																	// number
+																	// //TODO
+																	// why is
+																	// this
+																	// happening
+																	// and why
+																	// should it
+																	// be so
+																	// high?
 				sequencedString.add(sb.toString());
 				sb = new StringBuilder();
 			}
@@ -248,9 +315,4 @@ public class OverworldSystem implements ISystem, Observer {
 				500, 300);
 		engine.addEntity(popup);
 	}
-
-	public ArrayList<String> getPopupText() {
-		return this.popupText;
-	}
-
 }

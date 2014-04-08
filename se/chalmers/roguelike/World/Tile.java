@@ -116,7 +116,6 @@ public class Tile {
 	public boolean hasBeenSeen() {
 		return this.hasBeenSeen;
 	}
-
 	public ArrayList<Entity> getEntities(){
 		// Creates a copy of the list so we dont modify the tiles list directly
 		ArrayList<Entity> newList = new ArrayList<Entity>();

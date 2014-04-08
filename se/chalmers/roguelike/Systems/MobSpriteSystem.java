@@ -41,7 +41,6 @@ public class MobSpriteSystem implements ISystem {
 			Direction direction = entity.getComponent(Direction.class);
 			Direction.Dir dir = direction.getDir();
 			
-			// I guess this code is a bit spaghetti-ish, but meh
 			if (dir == Direction.Dir.SOUTH) {
 				sprite.setSpriteX(SX);
 				sprite.setSpriteY(SY);
