@@ -13,8 +13,8 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Systems.AISystem;
 import se.chalmers.roguelike.Systems.CombatSystem;
 import se.chalmers.roguelike.Systems.HighlightSystem;
-import se.chalmers.roguelike.Systems.InteractionSystem;
 import se.chalmers.roguelike.Systems.InventorySystem;
+import se.chalmers.roguelike.Systems.InteractionSystem;
 import se.chalmers.roguelike.Systems.LevelingSystem;
 import se.chalmers.roguelike.Systems.MainMenuSystem;
 import se.chalmers.roguelike.Systems.MobSpriteSystem;
@@ -58,11 +58,14 @@ public class Engine {
 	public static final long CompGold = 1 << componentID++;
 	public static final long CompBlocksWalking = 1 << componentID++;
 	public static final long CompBlocksLineOfSight = 1 << componentID++;
-	public static final long CompInventory = 1 << componentID++;
-	public static final long CompPocketable = 1 << componentID++;
 	public static final long CompPlotAction = 1 << componentID++;
 	public static final long CompMobType = 1 << componentID++;
 	public static final long CompStair = 1 << componentID++;
+	public static final long CompInventory = 1<<componentID++;
+	public static final long CompPocketable = 1<<componentID++;
+	public static final long CompDoubleName = 1<<componentID++;
+	
+	
 	
 	// Constants: System requirements:
 
@@ -82,6 +85,8 @@ public class Engine {
 	public static final long overworldReq = CompDungeon | CompSelectedFlag
 			| CompPosition;
 
+	
+	/// private int fps; // updates per second, not necessarly fps
 	// private ArrayList<ISystem> systems; // Depreached, re-add later?
 	private ArrayList<Entity> entities; // useless?
 	public EntityCreator entityCreator;
@@ -91,7 +96,6 @@ public class Engine {
 	// Systems:
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
-	private MobSpriteSystem mobSpriteSys;
 	private HighlightSystem highlightSys;
 	private Entity player; // TODO: remove somehow?
 	private TurnSystem turnSystem;
@@ -106,7 +110,8 @@ public class Engine {
 	private InteractionSystem interactionSys;
 	private PlotSystem plotSys;
 	private PlotEngine plotEngine;
-
+	private MobSpriteSystem mobSpriteSys;
+	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
 	}
@@ -256,13 +261,14 @@ public class Engine {
 				inventorySys.addEntity(entity);
 			}
 		}
-		if (entity.containsComponent(CompPlayer)) {
-			if (remove) {
+		if(entity.containsComponent(CompPlayer)){
+			if(remove){
 				interactionSys.removeEntity(entity);
 			} else {
 				interactionSys.addEntity(entity);
 			}
 		}
+		
 	}
 
 	/**

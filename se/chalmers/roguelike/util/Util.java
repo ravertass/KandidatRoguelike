@@ -1,6 +1,7 @@
 package se.chalmers.roguelike.util;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import se.chalmers.roguelike.Components.Position;
 
