@@ -591,13 +591,13 @@ public class LevelGenerator {
 				else if (worldGrid[y][x] == '-') {
 //					tiles[y][x] = new Tile(new Sprite("door_horizontal"), true, true);
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
-					Entity door = EntityCreator.createDoor(x,y,"door_horizontal",false);
+					Entity door = EntityCreator.createDoor(x,y,"door_horizontal_closed",false);
 					dungeonEntities.add(door);
 				}
 				else if (worldGrid[y][x] == '|') {
 					//tiles[y][x] = new Tile(new Sprite("door_vertical"), true, true);
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
-					Entity door = EntityCreator.createDoor(x,y,"door_vertical",false);
+					Entity door = EntityCreator.createDoor(x,y,"door_vertical_closed",false);
 					dungeonEntities.add(door);
 				}
 				else if (worldGrid[y][x] == 'T') {
