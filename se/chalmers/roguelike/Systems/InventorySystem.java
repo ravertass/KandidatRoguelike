@@ -2,6 +2,9 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
+import org.lwjgl.input.Mouse;
+import org.lwjgl.util.Rectangle;
+
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager.InputAction;
@@ -25,11 +28,17 @@ public class InventorySystem implements ISystem, Observer {
 
 	private Entity player;
 
+	private ItemSystem itemSystem;
+
 	private Dungeon world;
+	
+	private Rectangle inventoryBox;
 
 	private boolean timeToLoot;
 
 	public InventorySystem() {
+		inventoryBox = new Rectangle(Engine.screenWidth - 200 + 4, 20, Engine.spriteSize * 2 * 6, Engine.spriteSize * 2 * 6);
+		itemSystem = new ItemSystem();
 		this.entities = new ArrayList<Entity>();
 		toRemove = new ArrayList<Entity>();
 		timeToLoot = false;
@@ -86,8 +95,13 @@ public class InventorySystem implements ISystem, Observer {
 
 	@Override
 	public void notify(Enum<?> i) {
-		if ((InputAction) i == InputAction.LOOT)
+		if ((InputAction) i == InputAction.LOOT) {
 			timeToLoot = true;
+		} else if(((InputAction) i == InputAction.MOUSECLICK) && Engine.gameState == Engine.GameState.DUNGEON) {
+			if(inventoryBox.contains(Mouse.getX(), Mouse.getY())) {
+				
+			}
+		}
 	}
 
 }
