@@ -68,7 +68,6 @@ public class ItemSystem implements ISystem {
 	 * @param item
 	 */
 	public void useItem(Entity target, Entity item) {
-		System.out.println("Heeeaaaaliiiiiiing :D only");
 
 		if(item.getComponent(Usable.class) != null) {
 			UseEffect ue = item.getComponent(Usable.class).getUseEffect();
