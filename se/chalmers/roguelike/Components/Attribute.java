@@ -147,4 +147,16 @@ public class Attribute implements IComponent {
 		this.xpyield = x;
 	}
 
+	public IComponent clone(){
+		Attribute attrib = new Attribute(name, spaceClass, spaceRace, level, xpyield);
+		attrib.experience = experience;
+		attrib.xpyield = xpyield;
+		attrib.strength = strength;
+		attrib.endurance = endurance;
+		attrib.perception = perception;
+		attrib.intelligence = intelligence;
+		attrib.charisma = charisma;
+		attrib.agility = agility;
+		return attrib;
+	}
 }

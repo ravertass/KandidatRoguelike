@@ -125,6 +125,11 @@ public class Entity {
 	}
 	
 	public Entity clone() {
-		return new Entity(new String(name), new Long(componentKey), new HashMap<Class<?>,IComponent>(components));
+
+		Entity newEntity = new Entity(name);
+		for(IComponent comp : components.values()){
+			newEntity.add(comp.clone());
+		}
+		return newEntity;
 	}
 }

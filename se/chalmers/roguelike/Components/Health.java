@@ -60,4 +60,11 @@ public class Health implements IComponent{
 		return (double)health/(double)maxHealth;
 	}
 	
+	public IComponent clone(){
+		Health newHealth = new Health(maxHealth);
+		newHealth.health = this.health;
+		newHealth.invulnerable = this.invulnerable;
+		return newHealth;
+	}
+	
 }

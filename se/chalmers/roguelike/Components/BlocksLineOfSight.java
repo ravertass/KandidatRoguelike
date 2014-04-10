@@ -14,4 +14,9 @@ public class BlocksLineOfSight implements IComponent {
 	public void setBlockStatus(boolean blockStatus){
 		this.blockStatus = blockStatus;
 	}
+	
+	public IComponent clone() { 
+		return new BlocksLineOfSight(blockStatus);
+		
+	}
 }
