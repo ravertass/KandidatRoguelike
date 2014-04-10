@@ -71,6 +71,8 @@ public class Entity {
 			componentKey |= Engine.CompStair;
 		} else if(compClass == FieldOfView.class){
 			componentKey |= Engine.CompFieldOfView;
+		} else if (compClass == Usable.class) {
+			componentKey |= Engine.CompUsable;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}
