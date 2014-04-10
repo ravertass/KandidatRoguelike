@@ -20,6 +20,8 @@ public class ItemSystem implements ISystem {
 
 	private ArrayList<String> colors;
 	private UseEffect[] effects;
+	
+	private static Random random;
 
 	public static enum UseEffect {
 		HEAL, TAKE_DAMAGE
@@ -91,21 +93,24 @@ public class ItemSystem implements ISystem {
 	}
 
 	public static Entity getRandomPotion() {
-		Random r = new Random();
-		int i = r.nextInt(lookupPotions.size());
+		if(random == null) {
+			random = new Random();
+		}
+		int i = random.nextInt(lookupPotions.size());
 		return listPotions.get(i).getFirst().clone();
 	}
 
 	private void setupPotions() {
+		colors.add("black");
 		colors.add("blue");
 		colors.add("red");
-		// colors.add(new Sprite("potions/potions_white"));
-		// colors.add(new Sprite("potions/potions_green"));
-		// colors.add(new Sprite("potions/potions_cyan"));
-		// colors.add(new Sprite("potions/potions_magenta"));
-		// colors.add(new Sprite("potions/potions_silver"));
-		// colors.add(new Sprite("potions/potions_gold"));
-		// colors.add(new Sprite("potions/potions_misty"));
+		colors.add("white");
+		colors.add("green");
+		colors.add("cyan");
+		colors.add("magenta");
+		colors.add("silver");
+		colors.add("gold");
+		colors.add("misty");
 	}
 
 }
