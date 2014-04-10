@@ -125,6 +125,6 @@ public class Entity {
 	}
 	
 	public Entity clone() {
-		return new Entity(name, componentKey, components);
+		return new Entity(new String(name), new Long(componentKey), new HashMap<Class<?>,IComponent>(components));
 	}
 }
