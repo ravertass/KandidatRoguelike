@@ -65,6 +65,7 @@ public class Engine {
 	public static final long CompInventory = 1<<componentID++;
 	public static final long CompPocketable = 1<<componentID++;
 	public static final long CompDoubleName = 1<<componentID++;
+	public static final long CompUsable = 1<<componentID++;
 	
 	
 	
