@@ -1,6 +1,5 @@
 package se.chalmers.roguelike.Components;
 
-import se.chalmers.roguelike.Systems.ItemSystem;
 import se.chalmers.roguelike.Systems.ItemSystem.UseEffect;
 
 /**
