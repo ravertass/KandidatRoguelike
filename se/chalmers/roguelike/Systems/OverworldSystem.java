@@ -15,7 +15,6 @@ import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.PlotAction;
-import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
@@ -181,9 +180,7 @@ public class OverworldSystem implements ISystem, Observer {
 					Engine.screenWidth - 80, 200, "button_play", 80, 32);
 			playRect = new Rectangle(Engine.screenWidth - 80, 200, 80, 32);
 		} else {
-			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates
-																		// current
-																		// star
+			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates current star
 		}
 		String coords = star.x + "," + star.y;
 		activeStar = stars.get(coords);
@@ -207,17 +204,12 @@ public class OverworldSystem implements ISystem, Observer {
 	 * switching from the overworld.
 	 */
 	public void unregister() {
-		// activeStar = null; // Possibly leave this with an active one, so that
-		// if you return to the ship it wont be inactive
-		// playRect = null;
 
-		// Unregisters all the stars
 		for (Entity star : stars.values()) {
 			engine.removeEntity(star);
 		}
 		engine.removeEntity(playButton);
 		engine.removeEntity(menuButton);
-		// playButton = null;
 	}
 
 	/**
@@ -294,8 +286,7 @@ public class OverworldSystem implements ISystem, Observer {
 		TrueTypeFont ttf = new TrueTypeFont(font, false);
 		StringBuilder sb = new StringBuilder();
 		for (String word : s.split(" ")) {
-			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { // magic
-																	// number
+			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { // magic number
 																	// //TODO
 																	// why is
 																	// this
