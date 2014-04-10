@@ -215,12 +215,12 @@ public class RenderingSystem implements ISystem {
 						draw(tile.getSprite(), drawPos);
 						glColor3f(1.0f, 1.0f, 1.0f);
 					}
-					if (tile != null && tile.hasBeenSeen()) {
+					if (tile != null && (Engine.debug || tile.hasBeenSeen())) {
 						// Tiles within of the camera view that will be drawn on
 						// minimap
 						drawMinimap(tile.getSprite(), drawPos);
 					}
-				} else if (tile != null && tile.hasBeenSeen()) {
+				} else if (tile != null && (Engine.debug || tile.hasBeenSeen())) {
 					// Tiles outside of the camera view that will be drawn on
 					// minimap
 					glColor3f(0.5f, 0.5f, 0.5f);
