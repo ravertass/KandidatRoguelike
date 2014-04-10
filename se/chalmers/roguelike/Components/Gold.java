@@ -17,4 +17,8 @@ public class Gold implements IComponent {
 	public void setGold(int gold){
 		amountOfGold = gold;
 	}
+	
+	public IComponent clone() {
+		return new Gold(amountOfGold);
+	}
 }

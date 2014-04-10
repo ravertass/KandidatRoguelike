@@ -46,4 +46,9 @@ public class TurnsLeft implements IComponent {
 	public void decreaseTurnsLeft(){
 		turnsLeft -= 1;
 	}
+	
+	public IComponent clone() {
+		return new TurnsLeft(turnsLeft);
+	}
+
 }

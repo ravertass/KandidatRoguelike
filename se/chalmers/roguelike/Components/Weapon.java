@@ -73,4 +73,9 @@ public class Weapon implements IComponent{
 			return "Unknown";
 		}
 	}
+	
+	public IComponent clone() {
+		return new Weapon(numberOfDice, sizeOfDice, modifier, targetingSystem, aoesize, range);
+	}
+
 }

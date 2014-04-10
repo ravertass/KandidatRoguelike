@@ -33,4 +33,9 @@ public class Stair implements IComponent{
 	public String toString() {
 		return ("(X:" + x + ",Y:" + y + ")");
 	}
+	
+	public IComponent clone() {
+		return new Stair(x,y);
+	}
+
 }

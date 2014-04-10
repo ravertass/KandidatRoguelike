@@ -13,4 +13,9 @@ public class Seed implements IComponent {
 	public void setSeed(long seed){
 		this.seed = seed;
 	}
+	
+	public IComponent clone() {
+		return new Seed(seed);
+	}
+
 }

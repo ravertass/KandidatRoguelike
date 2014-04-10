@@ -9,5 +9,10 @@ public class Pocketable implements IComponent {
 	public Pocketable() {
 		
 	}
+	
+	public IComponent clone() {
+		return new Pocketable();
+	}
+
 
 }

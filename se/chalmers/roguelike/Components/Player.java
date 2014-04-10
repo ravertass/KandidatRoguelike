@@ -7,4 +7,8 @@ package se.chalmers.roguelike.Components;
  */
 public class Player implements IComponent{
 	// lol
+	public IComponent clone() {
+		return new Player(); //mer lol här alltså
+	}
+
 }

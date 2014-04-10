@@ -48,5 +48,14 @@ public class Inventory implements IComponent {
 	public boolean isFull() {
 		return items.size() >= maxSize;
 	}
+	
+	public IComponent clone() {
+		ArrayList<Entity> copiedItems = new ArrayList<Entity>();
+		for(Entity e : items) {
+			copiedItems.add(e.clone());
+		}
+		return new Inventory(copiedItems);
+	}
+
 
 }
