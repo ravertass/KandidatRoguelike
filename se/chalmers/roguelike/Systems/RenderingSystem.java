@@ -93,9 +93,8 @@ public class RenderingSystem implements ISystem {
 		setupDisplay();
 		setupOpenGL();
 		try {
-			fontRenderer = new FontRenderer(new UnicodeFont(
-					"/resources/fonts/circula-medium.otf", 28, false, true),
-					Color.white);
+			fontRenderer = new FontRenderer(new UnicodeFont("/resources/fonts/circula-medium.otf", 28, false,
+					true), Color.white);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -113,10 +112,10 @@ public class RenderingSystem implements ISystem {
 		 * the texture and where to store it (outside of ECS?) and remove later
 		 */
 		try {
-			owBackground = TextureLoader.getTexture("PNG", new FileInputStream(
-					new File("./resources/" + "background_ow" + ".png")));
-			owMenu = TextureLoader.getTexture("PNG", new FileInputStream(
-					new File("./resources/" + "menu_background_ow_long" + ".png")));
+			owBackground = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/"
+					+ "background_ow" + ".png")));
+			owMenu = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/"
+					+ "menu_background_ow_long" + ".png")));
 		} catch (FileNotFoundException e) {
 			System.out.println("The file does not exist");
 			e.printStackTrace();
@@ -154,8 +153,7 @@ public class RenderingSystem implements ISystem {
 			DisplayMode[] modes = Display.getAvailableDisplayModes();
 
 			for (int i = 0; i < modes.length; i++) {
-				if (modes[i].getWidth() == DISPLAY_WIDTH
-						&& modes[i].getHeight() == DISPLAY_HEIGHT
+				if (modes[i].getWidth() == DISPLAY_WIDTH && modes[i].getHeight() == DISPLAY_HEIGHT
 						&& modes[i].isFullscreenCapable()) {
 					displayMode = modes[i];
 				}
@@ -183,19 +181,16 @@ public class RenderingSystem implements ISystem {
 		int cheight = camera.getHeight();
 
 		Position playerPos = player.getComponent(Position.class);
-		camera.setPosition(new Position(playerPos.getX() - cwidth / 2,
-				playerPos.getY() - cheight / 2));
+		camera.setPosition(new Position(playerPos.getX() - cwidth / 2, playerPos.getY() - cheight / 2));
 
 		// Clear the window
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Position pos = new Position(playerPos.getX() - cwidth / 2,
-				playerPos.getY() - cheight / 2);
+		Position pos = new Position(playerPos.getX() - cwidth / 2, playerPos.getY() - cheight / 2);
 
 		ShadowCaster sc = new ShadowCaster();
 
-		lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(),
-				25);
+		lightMap = sc.calculateFOV(dungeon, playerPos.getX(), playerPos.getY(), 25);
 
 		// This code draws out the background sprites for all tiles in the
 		// camera's view
@@ -215,12 +210,12 @@ public class RenderingSystem implements ISystem {
 						draw(tile.getSprite(), drawPos);
 						glColor3f(1.0f, 1.0f, 1.0f);
 					}
-					if (tile != null && tile.hasBeenSeen()) {
+					if (tile != null && (Engine.debug || tile.hasBeenSeen())) {
 						// Tiles within of the camera view that will be drawn on
 						// minimap
 						drawMinimap(tile.getSprite(), drawPos);
 					}
-				} else if (tile != null && tile.hasBeenSeen()) {
+				} else if (tile != null && (Engine.debug || tile.hasBeenSeen())) {
 					// Tiles outside of the camera view that will be drawn on
 					// minimap
 					glColor3f(0.5f, 0.5f, 0.5f);
@@ -232,7 +227,7 @@ public class RenderingSystem implements ISystem {
 	}
 
 	/**
-	 * update should be run of every itteration of the game loop.
+	 * update should be run of every iteration of the game loop.
 	 * 
 	 * Based on what the state the game engine is set to it will draw different
 	 * things.
@@ -255,12 +250,9 @@ public class RenderingSystem implements ISystem {
 			for (Entity entity : entitiesToDraw) {
 				Position epos = entity.getComponent(Position.class);
 				if ((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
-					draw(entity.getComponent(Sprite.class),
-							entity.getComponent(Position.class));
-				else if (Engine.debug
-						|| lightMap[epos.getX()][epos.getY()] == 1)
-					draw(entity.getComponent(Sprite.class),
-							entity.getComponent(Position.class));
+					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
+				else if (Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
+					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 			}
 		} else if (Engine.gameState == Engine.GameState.OVERWORLD) {
 			drawBackground();
@@ -271,27 +263,21 @@ public class RenderingSystem implements ISystem {
 				if (flag != null && flag.getFlag()) {
 					activeStar = entity;
 					glColor3f(1.0f, 0.0f, 0.0f);
-					drawNonTile(entity.getComponent(Sprite.class),
-							entity.getComponent(Position.class));
+					drawNonTile(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
 
 				} else if (entity.getComponent(PopupText.class) != null) {
-					drawNonTile(entity.getComponent(Sprite.class),
-							entity.getComponent(Position.class));
-					ArrayList<String> popupText = entity.getComponent(
-							PopupText.class).getText();
-					Position drawPos = new Position(entity.getComponent(
-							Position.class).getX(), entity.getComponent(
-							Position.class).getY()
-							+ 300 - font.getHeight());
+					drawNonTile(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
+					ArrayList<String> popupText = entity.getComponent(PopupText.class).getText();
+					Position drawPos = new Position(entity.getComponent(Position.class).getX(), entity
+							.getComponent(Position.class).getY() + 300 - font.getHeight());
 					for (String s : popupText) {
 						font.drawString(drawPos.getX(), drawPos.getY(), s);
 						drawPos.setY(drawPos.getY() - font.getHeight());
 
 					}
 				} else {
-					drawNonTile(entity.getComponent(Sprite.class),
-							entity.getComponent(Position.class));
+					drawNonTile(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 				}
 			}
 			/*
@@ -302,19 +288,15 @@ public class RenderingSystem implements ISystem {
 			 * it here instead after the loop.
 			 */
 			if (activeStar != null) {
-				String visited = activeStar
-						.getComponent(DungeonComponent.class).getDungeon() == null ? "no"
+				String visited = activeStar.getComponent(DungeonComponent.class).getDungeon() == null ? "no"
 						: "yes";
-				font.drawString(Engine.screenWidth - 170, 300,
-						"Selected star: " + activeStar.toString());
-				font.drawString(Engine.screenWidth - 170, 300,
-						"\nVisited before: " + visited);
+				font.drawString(Engine.screenWidth - 170, 300, "Selected star: " + activeStar.toString());
+				font.drawString(Engine.screenWidth - 170, 300, "\nVisited before: " + visited);
 			}
 		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
-				drawNonTile(e.getComponent(Sprite.class),
-						e.getComponent(Position.class));
+				drawNonTile(e.getComponent(Sprite.class), e.getComponent(Position.class));
 			}
 		}
 
@@ -349,8 +331,7 @@ public class RenderingSystem implements ISystem {
 
 		// We determine if the entity is within the camera's
 		// view; if so, we draw it
-		if (x >= 0 && x < camera.getWidth() * size && y >= 0
-				&& y < camera.getHeight() * size) {
+		if (x >= 0 && x < camera.getWidth() * size && y >= 0 && y < camera.getHeight() * size) {
 			drawSprite(sprite, x, y, size, size);
 		}
 	}
@@ -385,8 +366,8 @@ public class RenderingSystem implements ISystem {
 		float spriteULY = 0.0f;
 		float spriteLRX = ((float) (sizeX)) / owBackground.getTextureWidth();
 		float spriteLRY = ((float) (sizeY)) / owBackground.getTextureHeight();
-		drawTexturedQuad(owBackground, 0, 0, Engine.screenWidth,
-				Engine.screenHeight, spriteULX, spriteULY, spriteLRX, spriteLRY);
+		drawTexturedQuad(owBackground, 0, 0, Engine.screenWidth, Engine.screenHeight, spriteULX, spriteULY,
+				spriteLRX, spriteLRY);
 	}
 
 	/**
@@ -404,8 +385,7 @@ public class RenderingSystem implements ISystem {
 		float spriteLRX = ((float) (sizeX)) / owMenu.getTextureWidth();
 		float spriteLRY = ((float) (sizeY)) / owMenu.getTextureHeight();
 		// Make owMenu a sprite later?
-		drawTexturedQuad(owMenu, x, y, sizeX, sizeY, spriteULX, spriteULY,
-				spriteLRX, spriteLRY);
+		drawTexturedQuad(owMenu, x, y, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
 
 	/**
@@ -420,8 +400,6 @@ public class RenderingSystem implements ISystem {
 	private void drawMinimap(Sprite sprite, Position position) {
 		if (!sprite.getVisibility())
 			return;
-		// TODO: Move the variables to a better place and in general change the
-		// hardcoded stuff in the whole class
 
 		int minimapX = (Engine.screenWidth - minimapWidth);
 		int minimapY = Engine.screenHeight - minimapHeight;
@@ -429,10 +407,10 @@ public class RenderingSystem implements ISystem {
 		int camX = camera.getPosition().getX();
 		int camY = camera.getPosition().getY();
 
-		int x = (position.getX() - camX) * size + minimapX + minimapWidth / 2
-				- camera.getWidth() * size / (2);
-		int y = (position.getY() - camY) * size + minimapY + minimapHeight / 2
-				- camera.getHeight() * size / (2);
+		int x = (position.getX() - camX) * size + minimapX + minimapWidth / 2 - camera.getWidth() * size
+				/ (2);
+		int y = (position.getY() - camY) * size + minimapY + minimapHeight / 2 - camera.getHeight() * size
+				/ (2);
 		if (x < minimapX || y < minimapY) {
 			return;
 		}
@@ -461,8 +439,7 @@ public class RenderingSystem implements ISystem {
 		float spriteLRX = sprite.getLowerRightX();
 		float spriteLRY = sprite.getLowerRightY();
 
-		drawTexturedQuad(texture, x, y, width, height, spriteULX, spriteULY,
-				spriteLRX, spriteLRY);
+		drawTexturedQuad(texture, x, y, width, height, spriteULX, spriteULY, spriteLRX, spriteLRY);
 	}
 
 	/**
@@ -487,9 +464,8 @@ public class RenderingSystem implements ISystem {
 	 * @param spriteLRY
 	 *            lower right Y sprite value
 	 */
-	private void drawTexturedQuad(Texture texture, int x, int y, int width,
-			int height, float spriteULX, float spriteULY, float spriteLRX,
-			float spriteLRY) {
+	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, float spriteULX,
+			float spriteULY, float spriteLRX, float spriteLRY) {
 
 		texture.bind();
 		glEnable(GL_BLEND); // remove? this should make sure that textures are
@@ -579,7 +555,6 @@ public class RenderingSystem implements ISystem {
 	private void drawHealthbar(Entity e) {
 		Position epos = e.getComponent(Position.class); // tilebased positions
 		Position camPos = camera.getPosition();
-		// System.out.println(e + ": " +epos);
 		int camX = camPos.getX();
 		int camY = camPos.getY();
 
@@ -596,16 +571,14 @@ public class RenderingSystem implements ISystem {
 		glColor3f(1.0f, 0.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * Engine.spriteSize && y >= 0
 				&& y < camera.getHeight() * Engine.spriteSize) {
-			drawUntexturedQuad(x, y + Engine.spriteSize, Engine.spriteSize,
-					Engine.spriteSize / 8);
+			drawUntexturedQuad(x, y + Engine.spriteSize, Engine.spriteSize, Engine.spriteSize / 8);
 		}
 
 		// draw the green part of the healthbar ontop of the red
 		glColor3f(0.0f, 1.0f, 0.0f);
 		if (x >= 0 && x < camera.getWidth() * Engine.spriteSize && y >= 0
 				&& y < camera.getHeight() * Engine.spriteSize) {
-			drawUntexturedQuad(x, y + Engine.spriteSize, hblength,
-					Engine.spriteSize / 8);
+			drawUntexturedQuad(x, y + Engine.spriteSize, hblength, Engine.spriteSize / 8);
 		}
 		glColor3f(1.0f, 1.0f, 1.0f);
 	}
@@ -628,45 +601,40 @@ public class RenderingSystem implements ISystem {
 		double hpPercentage = health.getHealthPercentage();
 		double maxHp = health.getMaxHealth();
 
-		String info = "Name: " + attributes.getName() + "\nGold: "
-				+ gold.getGold() + "\nLevel: " + attributes.getLevel()
-				+ "\nXP: " + attributes.experience() + "\nStrength: "
-				+ attributes.strength() + "\nEndurance: "
-				+ attributes.endurance() + "\nPerception: "
-				+ attributes.perception() + "\nIntelligence: "
-				+ attributes.intelligence() + "\nCharisma: "
-				+ attributes.charisma() + "\nAgility: " + attributes.agility()
-				+ "\n" + "\nWeapon information: " + "\nDamage: "
-				+ weapon.getNumberOfDice() + "D6"
-				+ (weapon.getModifier() == 0 ? "" : "+" + weapon.getModifier())
-				+ "\nRange: " + weapon.getRange() + "\nTargeting system: "
-				+ weapon.getTargetingSystemString();
+		String info = "Name: " + attributes.getName() + "\nGold: " + gold.getGold() + "\nLevel: "
+				+ attributes.getLevel() + "\nXP: " + attributes.experience() + "\nStrength: "
+				+ attributes.strength() + "\nEndurance: " + attributes.endurance() + "\nPerception: "
+				+ attributes.perception() + "\nIntelligence: " + attributes.intelligence() + "\nCharisma: "
+				+ attributes.charisma() + "\nAgility: " + attributes.agility() + "\n"
+				+ "\nWeapon information: " + "\nDamage: " + weapon.getNumberOfDice() + "D6"
+				+ (weapon.getModifier() == 0 ? "" : "+" + weapon.getModifier()) + "\nRange: "
+				+ weapon.getRange() + "\nTargeting system: " + weapon.getTargetingSystemString();
 
 		// draw hp bar
 		glColor3f(1.0f, 0.0f, 0.0f); // red part
-		drawUntexturedQuad(Engine.screenWidth - (menuWidth - 10),
-				Engine.screenHeight - menuWidth - 20, (int) (menuWidth * 0.9),
-				17);
+		drawUntexturedQuad(Engine.screenWidth - (menuWidth - 10), Engine.screenHeight - menuWidth - 20,
+				(int) (menuWidth * 0.9), 17);
 		glColor3f(0.0f, 1.0f, 0.0f); // green part
-		drawUntexturedQuad(Engine.screenWidth - (menuWidth - 10),
-				Engine.screenHeight - menuWidth - 20,
+		drawUntexturedQuad(Engine.screenWidth - (menuWidth - 10), Engine.screenHeight - menuWidth - 20,
 				(int) (menuWidth * 0.9 * hpPercentage), 17);
 		glColor3f(1.0f, 1.0f, 1.0f);
-		font.drawString(Engine.screenWidth - menuWidth / 2, Engine.screenHeight
-				- menuWidth - 22, (int) hp + "/" + (int) maxHp);
-		font.drawString(Engine.screenWidth - menuWidth, Engine.screenHeight
-				- menuWidth - 20 - 20, info); // -20 due to HP bar
-
+		font.drawString(Engine.screenWidth - menuWidth / 2, Engine.screenHeight - menuWidth - 22, (int) hp
+				+ "/" + (int) maxHp);
+		font.drawString(Engine.screenWidth - menuWidth, Engine.screenHeight - menuWidth - 20 - 20, info);
+		
+		if (Engine.debug) {
+			Position position = e.getComponent(Position.class);
+			String debug = "Player position: " + position.getX() + "x" + position.getY();
+			font.drawString(0, 0, debug);
+		}
 		// draw inventory
 		Inventory inv = e.getComponent(Inventory.class);
 		ArrayList<Entity> items = inv.getItems();
 		// below the background to the inventory-positions will be drawn
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
-				drawSprite(new Sprite("noslipfloor"), Engine.screenWidth - 200
-						+ 4 + i * Engine.spriteSize * 2, 20 + j
-						* Engine.spriteSize * 2, Engine.spriteSize * 2,
-						Engine.spriteSize * 2);
+				drawSprite(new Sprite("noslipfloor"), Engine.screenWidth - 200 + 4 + i * Engine.spriteSize
+						* 2, 20 + j * Engine.spriteSize * 2, Engine.spriteSize * 2, Engine.spriteSize * 2);
 			}
 		}
 		int drawX = Engine.screenWidth - menuWidth + 4;
@@ -675,8 +643,8 @@ public class RenderingSystem implements ISystem {
 													// size of inventory (6x6)
 		for (Entity ent : items) { // this will draw all the items currently in
 									// the inventory
-			drawSprite(ent.getComponent(Sprite.class), drawX, drawY,
-					Engine.spriteSize * 2, Engine.spriteSize * 2);
+			drawSprite(ent.getComponent(Sprite.class), drawX, drawY, Engine.spriteSize * 2,
+					Engine.spriteSize * 2);
 			if (drawX + Engine.spriteSize >= Engine.screenWidth) {
 				drawX = Engine.screenWidth - menuWidth + 4;
 				drawY += Engine.spriteSize * 2;

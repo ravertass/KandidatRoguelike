@@ -15,7 +15,6 @@ import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.PlotAction;
-import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
@@ -42,6 +41,12 @@ public class OverworldSystem implements ISystem, Observer {
 	private Entity popup;
 	private LinkedList<String> popupQueue;
 
+	/**
+	 * Sets up a new instance of the overworld system.
+	 * 
+	 * @param engine
+	 *            the engine being used by the game
+	 */
 	public OverworldSystem(Engine engine) {
 		this.engine = engine;
 		activeStar = null;
@@ -49,17 +54,20 @@ public class OverworldSystem implements ISystem, Observer {
 		popupQueue = new LinkedList<String>();
 		stars = new HashMap<String, Entity>();
 		starRectangles = new ArrayList<Rectangle>();
-		playButton = engine.entityCreator.createButton(Engine.screenWidth - 80,
-				200, "button_play_gray", 80, 32);
-		menuButton = engine.entityCreator.createButton(Engine.screenWidth - 80,
-				200 - 32, "button_menu", 80, 32);
+		playButton = engine.entityCreator.createButton(Engine.screenWidth - 80, 200, "button_play_gray", 80,
+				32);
+		menuButton = engine.entityCreator.createButton(Engine.screenWidth - 80, 200 - 32, "button_menu", 80,
+				32);
 		menuRect = new Rectangle(Engine.screenWidth - 80, 200 - 32, 80, 32);
-		// setupStars(); //TODO kommer troligt vara onödig då PlotSystem nu gör
+		// setupStars(); //TODO kommer troligt vara onödig då PlotSystem nu
+		// gör
 		// detta
 		unregister();
 	}
 
-	@Override
+	/**
+	 * update function for the system. Currently handles the checks for plot related updates.
+	 */
 	public void update() {
 		if (activeStar == null) {
 			return;
@@ -70,29 +78,27 @@ public class OverworldSystem implements ISystem, Observer {
 			// This is where we check if there's a MEET plot action coupled with
 			// the star
 			if (action.getActionType() == Action.ActionType.MEET) {
-				newPopup(activeStar.getComponent(PlotAction.class)
-						.getPlotText());
-				activeStar.getComponent(PlotAction.class).setActionPerformed(
-						true);
+				newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
+				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
 			}
-			
-			Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class)
-					.getDungeon();
+
+			Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class).getDungeon();
 			// This is where we check if there's a KILL plot action coupled with
 			// the star, and if the player has performed it
-			if ((action.getActionType() == Action.ActionType.KILL)
-					& (starDungeon != null)) {
+			if ((action.getActionType() == Action.ActionType.KILL) & (starDungeon != null)) {
 				if (starDungeon.getPlotAccomplished()) {
-					newPopup(activeStar.getComponent(PlotAction.class)
-							.getPlotText());
-					activeStar.getComponent(PlotAction.class).setActionPerformed(
-							true);
+					newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
+					activeStar.getComponent(PlotAction.class).setActionPerformed(true);
 				}
 			}
 		}
 	}
 
-	@Override
+	/**
+	 * Adds an entity to the overworld system
+	 * 
+	 * @param entity the entity that should be added to the system
+	 */
 	public void addEntity(Entity entity) {
 		int x = entity.getComponent(Position.class).getX();
 		int y = entity.getComponent(Position.class).getY();
@@ -100,28 +106,29 @@ public class OverworldSystem implements ISystem, Observer {
 		stars.put((x + "," + y), entity);
 	}
 
-	@Override
+	/**
+	 * Removes an entity from the system
+	 * 
+	 * @param entity the entity that should be removed from the system
+	 */
 	public void removeEntity(Entity entity) {
 		// TODO not necessary?
-		//Or should it be possible to visit other galaxies?
+		// Or should it be possible to visit other galaxies?
 	}
 
 	/**
 	 * Handles the input and determines if anything needs to run.
 	 */
 	public void notify(Enum<?> i) {
-		if (Engine.gameState == Engine.GameState.OVERWORLD
-				&& i.equals(InputManager.InputAction.MOUSECLICK)) {
+		if (Engine.gameState == Engine.GameState.OVERWORLD && i.equals(InputManager.InputAction.MOUSECLICK)) {
 			int mouseX = Mouse.getX();
 			int mouseY = Mouse.getY();
 			for (Rectangle star : starRectangles) {
-				// if(star.contains(mouseX,mouseY)){
 				if (!star.contains(mouseX, mouseY))
 					continue;
 				starClicked(star);
 			}
-			if (playRect != null && playRect.contains(mouseX, mouseY)
-					&& !popupActive) {
+			if (playRect != null && playRect.contains(mouseX, mouseY) && !popupActive) {
 				System.out.println("PLAY PRESSED!");
 				loadDungeon();
 			} else if (menuRect.contains(mouseX, mouseY) && !popupActive) {
@@ -144,23 +151,19 @@ public class OverworldSystem implements ISystem, Observer {
 	 * Triggers the loading of a dungeon.
 	 */
 	private void loadDungeon() {
-		Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class)
-				.getDungeon();
+		Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class).getDungeon();
 		if (starDungeon == null) {
 			System.out.println("No dungeon found! Generating one.");
 			long seed = activeStar.getComponent(Seed.class).getSeed();
 
 			LevelGenerator generator = new LevelGenerator(seed);
 			starDungeon = generator.getDungeon();
-			activeStar.getComponent(DungeonComponent.class).setDungeon(
-					starDungeon);
+			activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
 		}
 
 		if (activeStar.getComponent(PlotAction.class).getAction() != null) {
-			if (activeStar.getComponent(PlotAction.class).getAction()
-					.getActionType() == Action.ActionType.KILL) {
-				starDungeon.addBoss(activeStar.getComponent(PlotAction.class)
-						.getAction().getObjectActor());
+			if (activeStar.getComponent(PlotAction.class).getAction().getActionType() == Action.ActionType.KILL) {
+				starDungeon.addBoss(activeStar.getComponent(PlotAction.class).getAction().getObjectActor());
 			}
 		}
 
@@ -177,8 +180,8 @@ public class OverworldSystem implements ISystem, Observer {
 	private void starClicked(Rectangle star) {
 		if (activeStar == null) {
 			engine.removeEntity(playButton);
-			playButton = engine.entityCreator.createButton(
-					Engine.screenWidth - 80, 200, "button_play", 80, 32);
+			playButton = engine.entityCreator.createButton(Engine.screenWidth - 80, 200, "button_play", 80,
+					32);
 			playRect = new Rectangle(Engine.screenWidth - 80, 200, 80, 32);
 		} else {
 			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates
@@ -194,10 +197,8 @@ public class OverworldSystem implements ISystem, Observer {
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
 			if (action.getActionType() == Action.ActionType.VISIT) {
-				newPopup(activeStar.getComponent(PlotAction.class)
-						.getPlotText());
-				activeStar.getComponent(PlotAction.class).setActionPerformed(
-						true);
+				newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
+				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
 			}
 		}
 	}
@@ -207,17 +208,12 @@ public class OverworldSystem implements ISystem, Observer {
 	 * switching from the overworld.
 	 */
 	public void unregister() {
-		// activeStar = null; // Possibly leave this with an active one, so that
-		// if you return to the ship it wont be inactive
-		// playRect = null;
 
-		// Unregisters all the stars
 		for (Entity star : stars.values()) {
 			engine.removeEntity(star);
 		}
 		engine.removeEntity(playButton);
 		engine.removeEntity(menuButton);
-		// playButton = null;
 	}
 
 	/**
@@ -257,14 +253,10 @@ public class OverworldSystem implements ISystem, Observer {
 	/**
 	 * Creates a star for the overworld and adds it to the star hashmap.
 	 * 
-	 * @param x
-	 *            x-coordinate for the star
-	 * @param y
-	 *            y-coordinate for the star
-	 * @param seed
-	 *            the seed that the stars dungeon will be using
-	 * @param starname
-	 *            the name of the star
+	 * @param x x-coordinate for the star
+	 * @param y y-coordinate for the star
+	 * @param seed the seed that the stars dungeon will be using
+	 * @param starname the name of the star
 	 */
 	private void createStar(int x, int y, long seed, String starname) {
 		Entity star = engine.entityCreator.createStar(x, y, seed, starname);
@@ -285,11 +277,9 @@ public class OverworldSystem implements ISystem, Observer {
 		ArrayList<String> sequencedString = new ArrayList<String>();
 
 		popupActive = true;
-		popupButton = engine.entityCreator.createButton(
-				Engine.screenHeight / 2, Engine.screenWidth / 3,
+		popupButton = engine.entityCreator.createButton(Engine.screenHeight / 2, Engine.screenWidth / 3,
 				"play_button_selected", 242, 64);
-		popupRect = new Rectangle(Engine.screenHeight / 2,
-				Engine.screenWidth / 3, 242, 64);
+		popupRect = new Rectangle(Engine.screenHeight / 2, Engine.screenWidth / 3, 242, 64);
 		Font font = new Font("Times New Roman", Font.BOLD, 14);
 		TrueTypeFont ttf = new TrueTypeFont(font, false);
 		StringBuilder sb = new StringBuilder();
@@ -310,9 +300,8 @@ public class OverworldSystem implements ISystem, Observer {
 			sb.append(word + " ");
 		}
 		popupText = sequencedString;
-		popup = engine.entityCreator.createPopup(popupText,
-				Engine.screenWidth / 2 - 250, Engine.screenHeight / 2 - 150,
-				500, 300);
+		popup = engine.entityCreator.createPopup(popupText, Engine.screenWidth / 2 - 250,
+				Engine.screenHeight / 2 - 150, 500, 300);
 		engine.addEntity(popup);
 	}
 }
