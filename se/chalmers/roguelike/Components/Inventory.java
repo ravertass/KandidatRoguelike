@@ -18,7 +18,7 @@ public class Inventory implements IComponent {
 	private int maxSize;
 
 	public Inventory(ArrayList<Entity> a) {
-		maxSize = 16; // TODO magic number change laterz
+		maxSize = 36; // TODO magic numberz
 		items = a;
 	}
 
@@ -47,6 +47,10 @@ public class Inventory implements IComponent {
 	 */
 	public boolean isFull() {
 		return items.size() >= maxSize;
+	}
+	
+	public int getSize() {
+		return items.size();
 	}
 
 }

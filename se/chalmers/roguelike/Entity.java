@@ -73,6 +73,8 @@ public class Entity {
 			componentKey |= Engine.CompFieldOfView;
 		} else if (compClass == Usable.class) {
 			componentKey |= Engine.CompUsable;
+		} else if (compClass == Inventory.class) {
+			componentKey |= Engine.CompInventory;
 		}
 //		System.out.println("New compkey: "+componentKey); // debug
 	}

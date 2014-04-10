@@ -271,6 +271,7 @@ public class Engine {
 				interactionSys.addEntity(entity);
 			}
 		}
+
 		
 	}
 
@@ -370,6 +371,7 @@ public class Engine {
 		inputManager.addObserver(overworldSys);
 		inputManager.addObserver(mainmenuSys);
 		inputManager.addObserver(interactionSys);
+		inputManager.addObserver(inventorySys);
 	}
 
 	/**

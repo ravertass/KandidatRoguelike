@@ -10,6 +10,7 @@ import se.chalmers.roguelike.Components.DoubleName;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Usable;
 import se.chalmers.roguelike.util.Pair;
 
 public class ItemSystem implements ISystem {
@@ -66,9 +67,14 @@ public class ItemSystem implements ISystem {
 	 * @param item
 	 */
 	public void useItem(Entity target, Entity item) {
-		UseEffect ue = lookupPotions.get(item);
-
+		UseEffect ue;
+		if(item.getComponent(Usable.class) != null) {
+			ue = item.getComponent(Usable.class).getUseEffect();
+		} else {
+			ue = lookupPotions.get(item);
+		}
 		if (ue == UseEffect.HEAL) { // Heals for 50% of the targets maxhealth.
+			System.out.println("Heeeaaaaliiiiiiing :D");
 			Health h = target.getComponent(Health.class);
 			h.increaseHealth(h.getMaxHealth() / 2);
 		} else if (ue == UseEffect.TAKE_DAMAGE) { // takes 25 % damage if player

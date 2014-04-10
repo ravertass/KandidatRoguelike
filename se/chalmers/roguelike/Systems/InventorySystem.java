@@ -97,8 +97,19 @@ public class InventorySystem implements ISystem, Observer {
 	public void notify(Enum<?> i) {
 		if ((InputAction) i == InputAction.LOOT) {
 			timeToLoot = true;
-		} else if(((InputAction) i == InputAction.MOUSECLICK) && Engine.gameState == Engine.GameState.DUNGEON) {
+		} else if(((InputAction) i == InputAction.MOUSECLICK) && Engine.gameState == Engine.GameState.DUNGEON && player != null) {
 			if(inventoryBox.contains(Mouse.getX(), Mouse.getY())) {
+				// x and y are the "tilecords" in the inventory
+				int x = (Mouse.getX() - (Engine.screenWidth - 200 + 4))/(Engine.spriteSize*2);
+				int y = (Mouse.getY() - (20 + Engine.spriteSize*2*6)) / (Engine.spriteSize*2);
+				System.out.println(x+y*6);
+				if((x+y*6) + 1 <= player.getComponent(Inventory.class).getSize()) {
+					Entity item = player.getComponent(Inventory.class).getItems().get(x + y * 6);
+					if(item != null) {
+						itemSystem.useItem(player, item);
+						player.getComponent(Inventory.class).deleteItem(item);
+					}
+				}
 				
 			}
 		}
