@@ -55,8 +55,8 @@ public class EntityCreator {
 		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
 		ArrayList<Entity> inv = new ArrayList<Entity>();
-//		inv.add(ItemSystem.getRandomPotion());
-//		inv.add(ItemSystem.getRandomPotion());
+		inv.add(ItemSystem.getRandomPotion());
+		inv.add(ItemSystem.getRandomPotion());
 		inv.add(ItemSystem.getRandomPotion());
 		inv.add(ItemSystem.getRandomPotion());
 		player.add(new Inventory(inv));

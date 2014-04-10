@@ -37,6 +37,7 @@ public class ItemSystem implements ISystem {
 			Entity e = new Entity(colors.get(counter) + " potion");
 			e.add(new Sprite("potions/potion_" + colors.get(counter)));
 			e.add(new DoubleName(pe.toString().toLowerCase() + " potion"));
+			e.add(new Usable(pe));
 			lookupPotions.put(e, pe);
 			listPotions.add(new Pair<Entity, UseEffect>(e, pe));
 		}
@@ -67,26 +68,26 @@ public class ItemSystem implements ISystem {
 	 * @param item
 	 */
 	public void useItem(Entity target, Entity item) {
-		UseEffect ue;
+		System.out.println("Heeeaaaaliiiiiiing :D only");
+
 		if(item.getComponent(Usable.class) != null) {
-			ue = item.getComponent(Usable.class).getUseEffect();
-		} else {
-			ue = lookupPotions.get(item);
-		}
-		if (ue == UseEffect.HEAL) { // Heals for 50% of the targets maxhealth.
-			System.out.println("Heeeaaaaliiiiiiing :D");
-			Health h = target.getComponent(Health.class);
-			h.increaseHealth(h.getMaxHealth() / 2);
-		} else if (ue == UseEffect.TAKE_DAMAGE) { // takes 25 % damage if player
-													// drinks it, 50 % if thrown
-													// at monster
-			Health h = target.getComponent(Health.class);
-			if (target.getComponent(Player.class) != null) {
-				h.decreaseHealth(h.getMaxHealth() / 4);
-			} else {
-				h.decreaseHealth(h.getMaxHealth() / 2);
+			UseEffect ue = item.getComponent(Usable.class).getUseEffect();
+			
+			if (ue == UseEffect.HEAL) { // Heals for 50% of the targets maxhealth.
+				Health h = target.getComponent(Health.class);
+				h.increaseHealth(h.getMaxHealth() / 2);
+			} else if (ue == UseEffect.TAKE_DAMAGE) { // takes 25 % damage if player
+														// drinks it, 50 % if thrown
+				Health h = target.getComponent(Health.class);
+				if (target.getComponent(Player.class) != null) {
+					h.decreaseHealth(h.getMaxHealth() / 4);
+				} else {
+					h.decreaseHealth(h.getMaxHealth() / 2);
+				}
 			}
 		}
+		
+
 
 	}
 
