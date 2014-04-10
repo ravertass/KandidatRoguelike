@@ -72,4 +72,9 @@ public class Position implements IComponent, Comparable<Position>{
 		else 
 			return -1;
 	}
+	
+	public IComponent clone() {
+		return new Position(x,y);
+	}
+
 }

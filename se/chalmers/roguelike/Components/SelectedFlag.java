@@ -18,4 +18,9 @@ public class SelectedFlag implements IComponent{
 	public void setFlag(boolean flag){
 		this.flag = flag;
 	}
+	
+	public IComponent clone() {
+		return new SelectedFlag(flag);
+	}
+
 }

@@ -18,5 +18,9 @@ public class Usable implements IComponent {
 	public UseEffect getUseEffect() {
 		return this.useEffect;
 	}
+	
+	public IComponent clone() {
+		return new Usable(useEffect);
+	}
 
 }

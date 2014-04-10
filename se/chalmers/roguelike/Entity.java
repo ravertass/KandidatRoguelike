@@ -14,6 +14,10 @@ public class Entity {
 	private long componentKey;
 	private String name;
 	
+	/**
+	 * Sets up a new entity
+	 * @param name name of the entity
+	 */
 	public Entity(String name){
 		components = new HashMap<Class<?>, IComponent>();
 		componentKey = 0;
@@ -26,6 +30,11 @@ public class Entity {
 		this.components = comps;
 	}
 	
+
+	/**
+	 * Add a new component to the entity
+	 * @param component component that should be added to the entity
+	 */
 	public void add(IComponent component) {
 		Class<?> compClass = component.getClass();
 		components.put(compClass, component);
@@ -76,31 +85,55 @@ public class Entity {
 		} else if (compClass == Inventory.class) {
 			componentKey |= Engine.CompInventory;
 		}
-//		System.out.println("New compkey: "+componentKey); // debug
 	}
 	
+	/**
+	 * @return the component key of the entity
+	 */
 	public long getComponentKey(){
 		return componentKey;
 	}
 	
+	/**
+	 * Removes a component from the entity
+	 * @param component component to remove
+	 */
 	public void remove(IComponent component) {
 		components.remove(component.getClass());
 	}
 	
+	/**
+	 * Returns a specific component from the entity
+	 * @param type the component type that should be returned
+	 * @return the component that was requested
+	 */
 	public <T extends IComponent> T getComponent(Class<T> type) {
 		
 		return type.cast(components.get(type));
 	}
 	
+	/**
+	 * Returns the name of the component
+	 */
 	public String toString(){
 		return name;
 	}
 	
+	/**
+	 * Checks if the  entity contains one or more components based on a key
+	 * @param component the key that the entity should contain
+	 * @return true if it contains the component(s), otherwise false
+	 */
 	public boolean containsComponent(long component){
 		return (componentKey & component) == component;
 	}
 	
 	public Entity clone() {
-		return new Entity(name, componentKey, components);
+
+		Entity newEntity = new Entity(name);
+		for(IComponent comp : components.values()){
+			newEntity.add(comp.clone());
+		}
+		return newEntity;
 	}
 }

@@ -14,4 +14,9 @@ public class MobType implements IComponent {
 	public Type getType() {
 		return type;
 	}
+	
+	public IComponent clone() {
+		return new MobType(type);
+	}
+
 }

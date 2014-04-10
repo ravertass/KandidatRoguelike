@@ -55,4 +55,11 @@ public class Input implements IComponent {
 		this.attackPos = noAttack;
 	}
 	
+	public IComponent clone() {
+		Input i = new Input();
+		i.setAttackCords(attackPos);
+		return i;
+	}
+
+	
 }

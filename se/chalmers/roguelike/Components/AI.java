@@ -21,5 +21,10 @@ public class AI implements IComponent{
 	public Entity getTarget(){
 		return target;
 	}
+	public IComponent clone() { 
+		AI newAI = new AI();
+		newAI.target = this.target;
+		return newAI;
+	}
 	
 }

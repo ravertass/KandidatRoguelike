@@ -17,5 +17,14 @@ public class PopupText implements IComponent {
 	public void setStrings(ArrayList<String> s) {
 		this.text = s;
 	}
+	
+	public IComponent clone() {
+		ArrayList<String> copy = new ArrayList<String>();
+		for(String s : text) {
+			copy.add(new String(s));
+		}
+		return new PopupText(copy);
+	}
+
 
 }

@@ -65,6 +65,7 @@ public class CombatSystem implements ISystem {
 				TargetingSystem targetingSystem = e.getComponent(Weapon.class)
 						.getTargetingSystem();
 				int range = e.getComponent(Weapon.class).getRange();
+
 				if (targetingSystem == TargetingSystem.LINE) {
 					int i = 0;
 					for (Position pos : line) {
@@ -73,14 +74,12 @@ public class CombatSystem implements ISystem {
 							break;
 						}
 						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
-						// if (tile == null)
-						// break;
+
 						Entity target = tile.containsCharacter();
 						// if there is a valid target, attack then break the
 						// loop
 						if (target != null) {
-							Position targetpos = target
-									.getComponent(Position.class);
+							Position targetpos = target.getComponent(Position.class);
 							attack(targetpos, e);
 						}
 						// if there is a wall, break
@@ -100,6 +99,19 @@ public class CombatSystem implements ISystem {
 				} else if (targetingSystem == TargetingSystem.BOX && line.size() < range) {
 					ArrayList<Position> possibleTargets = new ArrayList<Position>();
 					int aoeSize = e.getComponent(Weapon.class).getAoESize();
+					
+					//Checks for wall:
+					int i = 0;
+					for (Position pos : line) {
+						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
+						if (!tile.isWalkable() && tile.blocksLineOfSight()){
+							// Possibly have the AoE attack hit at the wall then?
+							input.resetAttackCords();
+							return;
+						}
+						i++;
+					}
+					
 					// blow adds all positions around the center with a radius
 					// of the wepons getaoesize
 					for (int x = attackCords.getX() - aoeSize; x <= attackCords

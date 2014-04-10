@@ -11,5 +11,10 @@ public class Highlight implements IComponent {
 	public Highlight() {
 		;
 	}
+	
+	public IComponent clone() {
+		return new Highlight(); //TODO don't know if this i right
+	}
+
 
 }

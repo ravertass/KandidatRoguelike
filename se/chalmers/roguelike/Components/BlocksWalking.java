@@ -20,4 +20,8 @@ public class BlocksWalking implements IComponent{
 	public void setBlocksWalking(boolean blocksWalking){
 		this.blocksWalking = blocksWalking;
 	}
+	
+	public IComponent clone() { 
+		return new BlocksWalking(blocksWalking);
+	}
 }

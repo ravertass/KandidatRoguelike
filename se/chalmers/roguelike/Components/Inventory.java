@@ -49,8 +49,19 @@ public class Inventory implements IComponent {
 		return items.size() >= maxSize;
 	}
 	
+
 	public int getSize() {
 		return items.size();
 	}
+
+	public IComponent clone() {
+		ArrayList<Entity> copiedItems = new ArrayList<Entity>();
+		for(Entity e : items) {
+			copiedItems.add(e.clone());
+		}
+		return new Inventory(copiedItems);
+	}
+
+
 
 }

@@ -37,4 +37,13 @@ public class PlotAction implements IComponent {
 	public void setActionPerformed(boolean actionPerformed) {
 		this.actionPerformed = actionPerformed;
 	}
+	
+	public IComponent clone() {
+		PlotAction pa = new PlotAction();
+		pa.setAction(action);
+		pa.setActionPerformed(actionPerformed);
+		pa.setPlotText(plotText);
+		return pa;
+	}
+
 }

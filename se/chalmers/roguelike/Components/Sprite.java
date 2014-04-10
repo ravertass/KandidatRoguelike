@@ -231,4 +231,11 @@ public class Sprite implements IComponent {
 	public String getSpriteName(){
 		return spritename;
 	}
+	
+	public IComponent clone() {
+		Sprite s = new Sprite(spritename, sizeX, sizeY);
+		s.setVisibility(visible);
+		return s;
+	}
+
 }

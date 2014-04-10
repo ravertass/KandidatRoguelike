@@ -52,4 +52,9 @@ public class SpaceShip implements IComponent {
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
+	
+	public IComponent clone() {
+		return new SpaceShip(speed);
+	}
+
 }

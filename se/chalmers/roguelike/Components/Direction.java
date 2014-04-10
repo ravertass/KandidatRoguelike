@@ -28,4 +28,8 @@ public class Direction implements IComponent {
 	public Dir getDir() {
 		return dir;
 	}
+	
+	public IComponent clone() {
+		return new Direction(dir);
+	}
 }

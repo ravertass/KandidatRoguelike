@@ -15,4 +15,9 @@ public class DoubleName implements IComponent{
 	public String getRealName() {
 		return this.realName;
 	}
+	
+	public IComponent clone() {
+		return new DoubleName(new String(realName));
+	}
+
 }

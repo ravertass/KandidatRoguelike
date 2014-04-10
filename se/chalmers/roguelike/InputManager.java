@@ -9,6 +9,10 @@ import org.lwjgl.input.Mouse;
 import se.chalmers.roguelike.util.Observer;
 import se.chalmers.roguelike.util.Subject;
 
+/**
+ * The input manager is the subject in an observer-pattern. It sends the input to all the listeners so that
+ * various systems can do what they want with it.
+ */
 public class InputManager implements Subject {
 
 	private ArrayList<Observer> observers;
@@ -34,10 +38,11 @@ public class InputManager implements Subject {
 		// stuff
 		// here
 	}
-
-	// public InputManager() {
-	// observers = new ArrayList<Observer>();
-	// }
+	
+	/**
+	 * Creates a new instance of the input manager
+	 * @param engine the game engine that is being used
+	 */
 	public InputManager(Engine engine) {
 		keyToAction = new HashMap<Integer, InputAction>();
 		this.engine = engine;

@@ -19,4 +19,8 @@ public class FieldOfView implements IComponent {
 	public void setViewDistance(int distance) {
 		viewDistance = distance;
 	}
+	
+	public IComponent clone() {
+		return new FieldOfView(viewDistance);
+	}
 }

@@ -18,4 +18,7 @@ public class DungeonComponent implements IComponent{
 	public void setDungeon(Dungeon dungeon){
 		this.dungeon = dungeon;
 	}
+	public IComponent clone() {
+		return new DungeonComponent(dungeon);
+	}
 }
