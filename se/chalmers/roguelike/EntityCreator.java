@@ -181,7 +181,9 @@ public class EntityCreator {
 	 */
 	public Entity createButton(int x, int y, String spriteName, int width, int height){
 		Entity button = new Entity("button");
-		button.add(new Sprite(spriteName,width, height));
+		Sprite sprite = new Sprite(spriteName,width, height);
+		sprite.setLayer(2);
+		button.add(sprite);
 		button.add(new Position(x,y));
 		engine.addEntity(button);
 		return button;

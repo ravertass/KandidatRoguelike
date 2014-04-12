@@ -27,7 +27,7 @@ public class Sprite implements IComponent {
 	private boolean visible;
 	private static HashMap<String,Texture> loadTextures = new HashMap<String,Texture>();
 	private String spritename;
-	
+	private int layer;
 	/**
 	 * A constructor where the starting sprite always is the upper-
 	 * leftmost one in the spritesheet and the sprite size is
@@ -54,7 +54,7 @@ public class Sprite implements IComponent {
 	 * @param spriteY The tile y coord in the spritesheet for the 
 	 * starting sprite.
 	 */
-	public Sprite(String fileName, int spriteSize, int spriteX, int spriteY) {
+	public Sprite(String fileName, int spriteSize, int spriteX, int spriteY, int layer) {
 		spritename = fileName;
 		spritesheet = loadTexture(fileName);
 		this.sizeX = spriteSize;
@@ -62,6 +62,7 @@ public class Sprite implements IComponent {
 		this.spriteX = spriteX;
 		this.spriteY = spriteY;
 		visible = true;
+		this.layer = layer;
 	}
 	
 	/**
@@ -75,7 +76,7 @@ public class Sprite implements IComponent {
 	 * spritesheet.
 	 */
 	public Sprite(String fileName, int spriteSize) {
-		this(fileName, spriteSize, 0, 0);
+		this(fileName, spriteSize, 0, 0, 1);
 	}
 	
 	
@@ -238,4 +239,11 @@ public class Sprite implements IComponent {
 		return s;
 	}
 
+	public int getLayer(){
+		return layer;
+	}
+	
+	public void setLayer(int layer){
+		this.layer = layer;
+	}
 }

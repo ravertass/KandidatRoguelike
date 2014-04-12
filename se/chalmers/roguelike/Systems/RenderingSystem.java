@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -54,6 +55,7 @@ import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
 import se.chalmers.roguelike.util.ShadowCaster;
+import se.chalmers.roguelike.util.SpriteComparator;
 import se.chalmers.roguelike.util.TrueTypeFont;
 
 /**
@@ -72,6 +74,7 @@ public class RenderingSystem implements ISystem {
 	// TODO: Move these two away from here
 	private Texture owBackground = null;
 	private Texture owMenu = null;
+	private SpriteComparator spriteComparator;
 
 	private int[][] lightMap;
 
@@ -102,6 +105,7 @@ public class RenderingSystem implements ISystem {
 
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
+		spriteComparator = new SpriteComparator();
 
 		// Font
 		Font awtFont = new Font("/resources/fonts/circula-medium.otf", Font.BOLD, 14);
@@ -529,6 +533,7 @@ public class RenderingSystem implements ISystem {
 			this.player = entity;
 		}
 		entitiesToDraw.add(entity);
+		Collections.sort(entitiesToDraw,spriteComparator);
 	}
 
 	/**
