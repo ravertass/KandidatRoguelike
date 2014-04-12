@@ -53,6 +53,7 @@ public class Sprite implements IComponent {
 	 * starting sprite.
 	 * @param spriteY The tile y coord in the spritesheet for the 
 	 * starting sprite.
+	 * @param layer THe layer that the sprite should reside on
 	 */
 	public Sprite(String fileName, int spriteSize, int spriteX, int spriteY, int layer) {
 		spritename = fileName;
@@ -229,20 +230,37 @@ public class Sprite implements IComponent {
 		spritesheet = loadTexture(fileName);
 	}
 	
+	
+	/**
+	 * Returns the filename of the texture
+	 * @return texture name
+	 */
 	public String getSpriteName(){
 		return spritename;
 	}
 	
+	/**
+	 * Clones the sprite
+	 */
 	public IComponent clone() {
 		Sprite s = new Sprite(spritename, sizeX, sizeY);
 		s.setVisibility(visible);
+		s.setLayer(layer);
 		return s;
 	}
 
+	/**
+	 * Returns the layer that the sprite resides on
+	 * @return the layer the sprite resides on
+	 */
 	public int getLayer(){
 		return layer;
 	}
 	
+	/**
+	 * Sets the layer that the sprite should reside on
+	 * @param layer the new layer number
+	 */
 	public void setLayer(int layer){
 		this.layer = layer;
 	}
