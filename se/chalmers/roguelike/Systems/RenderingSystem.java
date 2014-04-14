@@ -253,10 +253,18 @@ public class RenderingSystem implements ISystem {
 			// Draw all entities in system if they stand on a lit tile
 			for (Entity entity : entitiesToDraw) {
 				Position epos = entity.getComponent(Position.class);
+				Tile tile = dungeon.getTile(epos.getX(), epos.getY());
 				if ((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 				else if (Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
+				else if (tile.hasBeenSeen() && !entity.containsComponent(Engine.CompAI)){
+					// Draws all entities at the last position you saw them at, excluding entities that
+					// contains the AI component, should make sure they can't move
+					glColor3f(0.5f, 0.5f, 0.5f);
+					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
+					glColor3f(1.0f, 1.0f, 1.0f);
+				}
 			}
 		} else if (Engine.gameState == Engine.GameState.OVERWORLD) {
 			drawBackground();
