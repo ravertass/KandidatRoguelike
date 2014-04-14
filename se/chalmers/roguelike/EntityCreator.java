@@ -69,8 +69,6 @@ public class EntityCreator {
 		ArrayList<Entity> inv = new ArrayList<Entity>();
 		inv.add(ItemSystem.getRandomPotion());
 		inv.add(ItemSystem.getRandomPotion());
-		inv.add(ItemSystem.getRandomPotion());
-		inv.add(ItemSystem.getRandomPotion());
 		player.add(new Inventory(inv));
 		player.add(new Gold(0));
 		player.add(new BlocksWalking(true));
