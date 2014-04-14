@@ -289,10 +289,14 @@ public class RenderingSystem implements ISystem {
 			if (activeStar != null) {
 				String visited = activeStar.getComponent(DungeonComponent.class).getDungeon() == null ? "no"
 						: "yes";
-				font.drawString(Engine.screenWidth - 170, 300, "Selected star: " + activeStar.toString());
-				font.drawString(Engine.screenWidth - 170, 300, "\nVisited before: " + visited);
-			}
-		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
+				glColor3f(0.06f, 0.61f, 0.65f);
+				font.drawString(Engine.screenWidth - 170, 300, "\n" + activeStar.toString());
+				glColor3f(1.0f, 1.0f, 1.0f);
+				font.drawString(Engine.screenWidth - 170, 300, "\n\nVisited before:");
+				glColor3f(0.06f, 0.61f, 0.65f);
+				font.drawString(Engine.screenWidth - 78, 300, "\n\n" + visited);
+				glColor3f(1.0f, 1.0f, 1.0f);	}
+		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
 				drawNonTile(e.getComponent(Sprite.class), e.getComponent(Position.class));
