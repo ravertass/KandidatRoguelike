@@ -242,12 +242,14 @@ public class LevelGenerator {
 				ArrayList<IComponent> components = new ArrayList<IComponent>();
 
 				String name = ng.generateName();
-				String sprite = "mobs/mob_slime";
+				String spriteName = "mobs/mob_slime";
 				components.add(new MobType(MobType.Type.GRUNT));
 				components.add(new Health(10));
 				components.add(new TurnsLeft(1));
 				components.add(new Input());
-				components.add(new Sprite(sprite));
+				Sprite sprite = new Sprite(spriteName);
+				sprite.setLayer(2);
+				components.add(sprite);
 				components.add(new Inventory()); // TODO add items that the
 													// enemy is carrying here,
 													// arraylist<entity> inside

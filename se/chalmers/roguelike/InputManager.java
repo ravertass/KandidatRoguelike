@@ -32,7 +32,9 @@ public class InputManager implements Subject {
 	 * 
 	 */
 	public static enum InputAction {
-		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING, DUMMY, LOOT, INTERACTION // TODO
+		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING, DUMMY, LOOT, INTERACTION,
+		TURN_NORTH, TURN_SOUTH, TURN_WEST, TURN_EAST
+		// TODO
 		// add
 		// more
 		// stuff
@@ -81,7 +83,7 @@ public class InputManager implements Subject {
 	 * appropriate event is sent to subscribers.
 	 */
 	public void update() {
-		if (Keyboard.isKeyDown(pressedKey)
+		if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(pressedKey)
 				&& System.currentTimeMillis() - startTime > 180L) {
 			if (keyToAction.get(pressedKey) == InputAction.GO_NORTHEAST
 					|| keyToAction.get(pressedKey) == InputAction.GO_NORTH
@@ -111,8 +113,19 @@ public class InputManager implements Subject {
 			if (Keyboard.getEventKeyState()) {
 				int key = Keyboard.getEventKey();
 				pressedKey = key;
-				if (keyToAction.containsKey(key))
+				if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && keyToAction.containsKey(key))
 					notifyObservers(keyToAction.get(key));
+				else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+					if(key == Keyboard.KEY_W) {
+						notifyObservers(InputAction.TURN_NORTH);
+					} else if(key == Keyboard.KEY_S) {
+						notifyObservers(InputAction.TURN_SOUTH);
+					} else if(key == Keyboard.KEY_A) {
+						notifyObservers(InputAction.TURN_WEST);
+					} else if(key == Keyboard.KEY_D) {
+						notifyObservers(InputAction.TURN_EAST);
+					}
+				}
 			}
 		}
 

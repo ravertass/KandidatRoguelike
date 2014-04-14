@@ -8,18 +8,27 @@ import org.lwjgl.input.Mouse;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
+import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.util.Observer;
 
+/**
+ * The main menu system sets up and manages the main menu of the game.
+ */
 public class MainMenuSystem implements ISystem, Observer {
 
-	private Rectangle playRect, optionsRect, exitRect, loadRect;
-	private Entity playButton, optionsButton, exitButton, loadButton, highLighted;
-	
+	private Rectangle playRect, optionsRect, exitRect, loadRect, tutorialPlayRect;
+	private Entity playButton, optionsButton, exitButton, loadButton, tutorialPlayButton;
+	private boolean tutorialActive = false;
 	private ArrayList<Entity> buttons;
+	private Entity tutorial;
 
 	private Engine engine;
 
+	/**
+	 * Sets up the buttons and internal logic required for the main menu
+	 * @param e engine being used by the game
+	 */
 	public MainMenuSystem(Engine e) {
 		this.engine = e;
 		buttons = new ArrayList<Entity>();
@@ -58,47 +67,73 @@ public class MainMenuSystem implements ISystem, Observer {
 
 	}
 
-	@Override
+	/**
+	 * Runs with each iteration of the game loop when the game state is set to MAIN_MENU.
+	 * 
+	 * Will highlight the buttons when hovered over
+	 */
 	public void update() {
 		int mouseX = Mouse.getX();
 		int mouseY = Mouse.getY();
 		resetButtonTextures();
-		if(playRect != null && playRect.contains(mouseX,mouseY)){
-			playButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
-		} else if (loadRect != null && loadRect.contains(mouseX,mouseY)){
-			loadButton.getComponent(Sprite.class).setSpritesheet("load_button_selected");
-		} else if (optionsRect != null && optionsRect.contains(mouseX,mouseY)){
-			optionsButton.getComponent(Sprite.class).setSpritesheet("options_button_selected");
-		} else if (exitRect != null && exitRect.contains(mouseX,mouseY)){
-			exitButton.getComponent(Sprite.class).setSpritesheet("exit_button_selected");
+		if(!tutorialActive){
+			if(playRect != null && playRect.contains(mouseX,mouseY)){
+				playButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
+			} else if (loadRect != null && loadRect.contains(mouseX,mouseY)){
+				loadButton.getComponent(Sprite.class).setSpritesheet("load_button_selected");
+			} else if (optionsRect != null && optionsRect.contains(mouseX,mouseY)){
+				optionsButton.getComponent(Sprite.class).setSpritesheet("options_button_selected");
+			} else if (exitRect != null && exitRect.contains(mouseX,mouseY)){
+				exitButton.getComponent(Sprite.class).setSpritesheet("exit_button_selected");
+			}
+		} else if (tutorialPlayRect != null && tutorialPlayRect.contains(mouseX,mouseY)) {
+			tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
+		} else if (tutorialPlayRect != null && !tutorialPlayRect.contains(mouseX,mouseY)) {
+			tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button");
 		}
 	}
 
-	@Override
+	/**
+	 * Adds an entity to the main menu system, currently not used
+	 */
 	public void addEntity(Entity entity) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	/**
+	 * Removes an entity to the main menu system, currently not used
+	 */
 	public void removeEntity(Entity entity) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	/**
+	 * Runs when input is received
+	 */
 	public void notify(Enum<?> i) {
 		if (Engine.gameState == Engine.GameState.MAIN_MENU && i.equals(InputManager.InputAction.MOUSECLICK)) {
 			int mouseX = Mouse.getX();
 			int mouseY = Mouse.getY();
-			if(playRect != null && playRect.contains(mouseX,mouseY)){
-				engine.loadOverworld();
-			} else if (loadRect != null && loadRect.contains(mouseX,mouseY)){
-				System.out.println("Someone implement load stuffs plsplspls");
-			} else if (optionsRect != null && optionsRect.contains(mouseX,mouseY)){
-				System.out.println("Someone implement the options plz");
-			} else if (exitRect != null && exitRect.contains(mouseX,mouseY)){
-				System.exit(1); //TODO not the right thing to do but will do for now
+			if(!tutorialActive){
+				if(playRect != null && playRect.contains(mouseX,mouseY)){
+					engine.loadOverworld();
+				} else if (loadRect != null && loadRect.contains(mouseX,mouseY)){
+					// Temporarily using the load button for tutorial
+					tutorial();
+				} else if (optionsRect != null && optionsRect.contains(mouseX,mouseY)){
+					System.out.println("Someone implement the options plz");
+				} else if (exitRect != null && exitRect.contains(mouseX,mouseY)){
+					System.exit(1); //TODO not the right thing to do but will do for now
+				}
+			} else {
+				if(tutorialPlayRect != null && tutorialPlayRect.contains(mouseX,mouseY)){
+					engine.removeEntity(tutorialPlayButton);
+					engine.removeEntity(tutorial);
+					showMenuButtons(true);
+					tutorialActive = false;
+				}
 			}
 		}
 
@@ -116,17 +151,68 @@ public class MainMenuSystem implements ISystem, Observer {
 
 	}
 
+	/**
+	 * Unregisters all the menu buttons from the engine
+	 */
 	public void unregister() {
 		for (Entity e : buttons) {
 			engine.removeEntity(e);
 		}
 	}
 	
+	/**
+	 * Resets the texture of the menu buttons
+	 */
 	private void resetButtonTextures() {
 		playButton.getComponent(Sprite.class).setSpritesheet("play_button");
 		loadButton.getComponent(Sprite.class).setSpritesheet("load_button");
 		optionsButton.getComponent(Sprite.class).setSpritesheet("options_button");
 		exitButton.getComponent(Sprite.class).setSpritesheet("exit_button");
 	}
-
+	
+	/**
+	 * Sets up the tutorial screen
+	 */
+	private void tutorial(){
+		tutorialActive = true;
+		
+		showMenuButtons(false);
+		
+		int width = 242;
+		int height = 64;
+		int x = Engine.screenWidth / 2-width/2;
+		int y = 20;
+		if(tutorialPlayRect == null){
+			tutorialPlayRect = new Rectangle(x, y, width, height);
+		}
+		if(tutorialPlayButton == null){
+			tutorialPlayButton = engine.entityCreator.createButton(x, y,"play_button", width, height);
+		}
+		tutorial = new Entity("Tutorial");
+		Sprite sprite = new Sprite("misc/tutorial",800,600);
+		sprite.setLayer(5);
+		Position pos = new Position(50,150);
+		tutorial.add(sprite);
+		tutorial.add(pos);
+		engine.addEntity(tutorial);
+	}
+	
+	/**
+	 * Registers or unregisters the menu buttons from the engine based on the new status
+	 * @param newStatus false if they should be unregistered and not shown, true to register and show the 
+	 * buttons
+	 */
+	private void showMenuButtons(boolean newStatus){
+		if(!newStatus){
+			engine.removeEntity(playButton);
+			engine.removeEntity(loadButton);
+			engine.removeEntity(optionsButton);
+			engine.removeEntity(exitButton);
+		} else {
+			engine.addEntity(playButton);
+			engine.addEntity(loadButton);
+			engine.addEntity(optionsButton);
+			engine.addEntity(exitButton);
+		}
+	}
 }

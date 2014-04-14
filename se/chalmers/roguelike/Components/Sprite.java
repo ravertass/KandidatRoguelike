@@ -27,7 +27,7 @@ public class Sprite implements IComponent {
 	private boolean visible;
 	private static HashMap<String,Texture> loadTextures = new HashMap<String,Texture>();
 	private String spritename;
-	
+	private int layer;
 	/**
 	 * A constructor where the starting sprite always is the upper-
 	 * leftmost one in the spritesheet and the sprite size is
@@ -53,8 +53,9 @@ public class Sprite implements IComponent {
 	 * starting sprite.
 	 * @param spriteY The tile y coord in the spritesheet for the 
 	 * starting sprite.
+	 * @param layer THe layer that the sprite should reside on
 	 */
-	public Sprite(String fileName, int spriteSize, int spriteX, int spriteY) {
+	public Sprite(String fileName, int spriteSize, int spriteX, int spriteY, int layer) {
 		spritename = fileName;
 		spritesheet = loadTexture(fileName);
 		this.sizeX = spriteSize;
@@ -62,6 +63,7 @@ public class Sprite implements IComponent {
 		this.spriteX = spriteX;
 		this.spriteY = spriteY;
 		visible = true;
+		this.layer = layer;
 	}
 	
 	/**
@@ -75,7 +77,7 @@ public class Sprite implements IComponent {
 	 * spritesheet.
 	 */
 	public Sprite(String fileName, int spriteSize) {
-		this(fileName, spriteSize, 0, 0);
+		this(fileName, spriteSize, 0, 0, 1);
 	}
 	
 	
@@ -228,14 +230,38 @@ public class Sprite implements IComponent {
 		spritesheet = loadTexture(fileName);
 	}
 	
+	
+	/**
+	 * Returns the filename of the texture
+	 * @return texture name
+	 */
 	public String getSpriteName(){
 		return spritename;
 	}
 	
+	/**
+	 * Clones the sprite
+	 */
 	public IComponent clone() {
 		Sprite s = new Sprite(spritename, sizeX, sizeY);
 		s.setVisibility(visible);
+		s.setLayer(layer);
 		return s;
 	}
 
+	/**
+	 * Returns the layer that the sprite resides on
+	 * @return the layer the sprite resides on
+	 */
+	public int getLayer(){
+		return layer;
+	}
+	
+	/**
+	 * Sets the layer that the sprite should reside on
+	 * @param layer the new layer number
+	 */
+	public void setLayer(int layer){
+		this.layer = layer;
+	}
 }
