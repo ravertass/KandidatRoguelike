@@ -120,17 +120,12 @@ public class Engine {
 		System.out.println("Starting new engine.");
 		entities = new ArrayList<Entity>();
 		entityCreator = new EntityCreator(this);
-		// gameState = GameState.DUNGEON;
 		gameState = GameState.MAIN_MENU;
 		seed = 1235L; // TODO: Switch to new Random().nextLong();
-		renderingSys = new RenderingSystem();
-//		plotEngine = new PlotEngine(seed); // make dependent on seed		
+		renderingSys = new RenderingSystem();	
 		mainmenuSys = new MainMenuSystem(this);
 		inputManager = new InputManager(this); // required to start the game
 		inputManager.addObserver(mainmenuSys);
-//		spawnSystems();
-//		registerInputSystems();
-
 	}
 
 	/**
