@@ -2,13 +2,14 @@ package se.chalmers.roguelike.Systems;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
-import se.chalmers.roguelike.Components.IComponent;
+import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Text;
@@ -21,11 +22,9 @@ public class MainMenuSystem implements ISystem, Observer {
 
 	private Rectangle playRect, optionsRect, exitRect, loadRect, tutorialPlayRect, newGameRect;
 	private Entity playButton, optionsButton, exitButton, loadButton, tutorialPlayButton, seedInfo, seedBox,
-		newGameButton;
-//	private boolean tutorialActive = false;
+		newGameButton, tutorial;
 
 	private ArrayList<Entity> buttons;
-	private Entity tutorial;
 
 	public enum MenuState {
 		DEFAULT, NEWGAME, TUTORIAL
@@ -35,12 +34,15 @@ public class MainMenuSystem implements ISystem, Observer {
 			
 	private Engine engine;
 
+	private String tmpSeed;
+	
 	/**
 	 * Sets up the buttons and internal logic required for the main menu
 	 * @param e engine being used by the game
 	 */
 	public MainMenuSystem(Engine e) {
 		this.engine = e;
+		tmpSeed = String.valueOf(Engine.seed);
 		buttons = new ArrayList<Entity>();
 		
 		playButton = engine.entityCreator.createButton(
@@ -154,11 +156,45 @@ public class MainMenuSystem implements ISystem, Observer {
 					engine.removeEntity(newGameButton);
 					engine.removeEntity(seedBox);
 					engine.removeEntity(seedInfo);
+					if(tmpSeed.length() == 0){
+						System.out.println("Seed required - random being used");
+						Engine.seed = new Random().nextLong();
+					} else {
+						Engine.seed = Long.parseLong(tmpSeed);
+					}
 					engine.newGame();
 				}
 			}
 		}
-
+		
+		if(Engine.gameState == Engine.GameState.MAIN_MENU) {
+			if(i == InputAction.NUM_0){
+				seedAdd(0);
+			} else if(i == InputAction.NUM_1){
+				seedAdd(1);
+			} else if(i == InputAction.NUM_2){
+				seedAdd(2);
+			} else if(i == InputAction.NUM_3){
+				seedAdd(3);
+			} else if(i == InputAction.NUM_4){
+				seedAdd(4);
+			} else if(i == InputAction.NUM_5){
+				seedAdd(5);
+			} else if(i == InputAction.NUM_6){
+				seedAdd(6);
+			} else if(i == InputAction.NUM_7){
+				seedAdd(7);
+			} else if(i == InputAction.NUM_8){
+				seedAdd(8);
+			} else if(i == InputAction.NUM_9){
+				seedAdd(9);
+			} else if(i == InputAction.BACKSPACE && tmpSeed.length() > 0) {
+				tmpSeed = tmpSeed.substring(0, tmpSeed.length()-1);
+			}
+			if(seedBox != null){
+				seedBox.getComponent(Text.class).setText(tmpSeed);
+			}
+		}
 	}
 
 	/**
@@ -250,7 +286,7 @@ public class MainMenuSystem implements ISystem, Observer {
 			seedBox = new Entity("Seed box");
 			seedBox.add(new Sprite("misc/seedbox", 260, 26));
 			seedBox.add(new Position(Engine.screenWidth/2-260/2,Engine.screenHeight-146));
-			seedBox.add(new Text(String.valueOf(Engine.seed)));
+			seedBox.add(new Text(tmpSeed));
 		}
 		if(newGameButton == null){
 			int width = 242;
@@ -263,5 +299,17 @@ public class MainMenuSystem implements ISystem, Observer {
 		engine.addEntity(seedInfo);
 		engine.addEntity(seedBox);
 		System.out.println("Time for a new game!");
+	}
+	
+	private void seedAdd(int value){
+		String newSeed = tmpSeed + value;
+		try{
+			Long.parseLong(newSeed);
+		} catch (NumberFormatException e){
+			System.out.println("Seed too long. Max seed: "+Long.MAX_VALUE);
+			return;
+		}
+		
+		tmpSeed = newSeed;
 	}
 }

@@ -37,7 +37,7 @@ public class InputManager implements Subject {
 	 */
 	public static enum InputAction {
 		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING, DUMMY, LOOT, INTERACTION,
-		TURN_NORTH, TURN_SOUTH, TURN_WEST, TURN_EAST
+		TURN_NORTH, TURN_SOUTH, TURN_WEST, TURN_EAST, NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, BACKSPACE
 		// TODO
 		// add
 		// more
@@ -194,5 +194,16 @@ public class InputManager implements Subject {
 		keyToAction.put(Keyboard.KEY_NUMPAD5, InputAction.DO_NOTHING);
 		keyToAction.put(Keyboard.KEY_G, InputAction.LOOT);
 		keyToAction.put(Keyboard.KEY_F, InputAction.INTERACTION);
+		keyToAction.put(Keyboard.KEY_0, InputAction.NUM_0);
+		keyToAction.put(Keyboard.KEY_1, InputAction.NUM_1);
+		keyToAction.put(Keyboard.KEY_2, InputAction.NUM_2);
+		keyToAction.put(Keyboard.KEY_3, InputAction.NUM_3);
+		keyToAction.put(Keyboard.KEY_4, InputAction.NUM_4);
+		keyToAction.put(Keyboard.KEY_5, InputAction.NUM_5);
+		keyToAction.put(Keyboard.KEY_6, InputAction.NUM_6);
+		keyToAction.put(Keyboard.KEY_7, InputAction.NUM_7);
+		keyToAction.put(Keyboard.KEY_8, InputAction.NUM_8);
+		keyToAction.put(Keyboard.KEY_9, InputAction.NUM_9);
+		keyToAction.put(Keyboard.KEY_BACK, InputAction.BACKSPACE);
 	}
 }
