@@ -16,10 +16,14 @@ import se.chalmers.roguelike.util.Subject;
 public class InputManager implements Subject {
 
 	private ArrayList<Observer> observers;
+	private ArrayList<Observer> observersToAdd;
+	private ArrayList<Observer> observersToRemove;
 	private Engine engine;
 
 	private long startTime;
 	private int pressedKey;
+	private boolean busy;
+
 
 	private HashMap<Integer, InputAction> keyToAction;
 
@@ -49,19 +53,30 @@ public class InputManager implements Subject {
 		keyToAction = new HashMap<Integer, InputAction>();
 		this.engine = engine;
 		observers = new ArrayList<Observer>();
+		observersToAdd = new ArrayList<Observer>();
+		observersToRemove = new ArrayList<Observer>();
 		setupKeyToAction();
+		busy = false;
 		startTime = System.currentTimeMillis();
 	}
 
 	@Override
 	public void addObserver(Observer o) {
-		observers.add(o);
+		if(!busy){
+			observers.add(o);
+		} else {
+			observersToAdd.add(o);
+		}
 
 	}
 
 	@Override
 	public void removeObserver(Observer o) {
-		observers.remove(o);
+		if(!busy){
+			observers.remove(o);
+		} else {
+			observersToRemove.add(o);
+		}
 
 	}
 
@@ -71,11 +86,27 @@ public class InputManager implements Subject {
 	 */
 	@Override
 	public void notifyObservers(final Enum<?> e) {
+		busy = true;
 		for (Observer o : observers) {
 			o.notify(e);
 		}
 		startTime = System.currentTimeMillis();
-
+		
+		/*
+		 * This code might look weird, but it's due to observers being added as a result of a notify
+		 * when newGame() in engine runs from the main menu system. Without this structure it causes
+		 * ConcurrentModificationException
+		 */
+		for(Observer o : observersToAdd){
+			observers.add(o);
+		}
+		observersToAdd.clear();
+		
+		for(Observer o : observersToRemove){
+			observers.remove(o);
+		}
+		observersToRemove.clear();
+		busy = false;
 	}
 
 	/**

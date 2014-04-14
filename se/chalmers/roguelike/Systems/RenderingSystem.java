@@ -49,6 +49,7 @@ import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Text;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
@@ -258,9 +259,11 @@ public class RenderingSystem implements ISystem {
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 				else if (Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
-				else if (tile.hasBeenSeen() && !entity.containsComponent(Engine.CompAI)){
-					// Draws all entities at the last position you saw them at, excluding entities that
-					// contains the AI component, should make sure they can't move
+				else if (tile.hasBeenSeen() && !entity.containsComponent(Engine.CompAI)) {
+					// Draws all entities at the last position you saw them at,
+					// excluding entities that
+					// contains the AI component, should make sure they can't
+					// move
 					glColor3f(0.5f, 0.5f, 0.5f);
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
@@ -309,11 +312,17 @@ public class RenderingSystem implements ISystem {
 				font.drawString(Engine.screenWidth - 170, 300, "\n\nVisited before:");
 				glColor3f(0.06f, 0.61f, 0.65f);
 				font.drawString(Engine.screenWidth - 78, 300, "\n\n" + visited);
-				glColor3f(1.0f, 1.0f, 1.0f);	}
+				glColor3f(1.0f, 1.0f, 1.0f);
+			}
 		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
-				drawNonTile(e.getComponent(Sprite.class), e.getComponent(Position.class));
+				Position pos = e.getComponent(Position.class);
+				drawNonTile(e.getComponent(Sprite.class), pos);
+				if (e.containsComponent(Engine.CompText)) {
+					String string = e.getComponent(Text.class).getText();
+					font.drawString(pos.getX(), pos.getY(), string);
+				}
 			}
 		}
 
@@ -541,7 +550,7 @@ public class RenderingSystem implements ISystem {
 			this.player = entity;
 		}
 		entitiesToDraw.add(entity);
-		Collections.sort(entitiesToDraw,spriteComparator);
+		Collections.sort(entitiesToDraw, spriteComparator);
 	}
 
 	/**
@@ -639,11 +648,12 @@ public class RenderingSystem implements ISystem {
 		font.drawString(Engine.screenWidth - menuWidth / 2, Engine.screenHeight - menuWidth - 22, (int) hp
 				+ "/" + (int) maxHp);
 		font.drawString(Engine.screenWidth - menuWidth, Engine.screenHeight - menuWidth - 20 - 20, info);
-		
+
 		if (Engine.debug) {
 			Position position = e.getComponent(Position.class);
-			String debug = "Player position: " + position.getX() + "x" + position.getY();
-			font.drawString(0, 0, debug);
+			String debug = "Player position: " + position.getX() + "x" + position.getY() + "\nSeed: "
+					+ Engine.seed;
+			font.drawString(0, 20, debug + "\n");
 		}
 		// draw inventory
 		Inventory inv = e.getComponent(Inventory.class);

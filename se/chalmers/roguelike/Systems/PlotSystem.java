@@ -116,7 +116,7 @@ public class PlotSystem implements ISystem {
 	private void setupStars() {
 		int radius = 50;
 
-		Random rand = new Random(1235L); // Make seed dependent later
+		Random rand = new Random(Engine.seed); // Make seed dependent later
 
 		int i = 0;
 		for (Scene scene : scenes) {

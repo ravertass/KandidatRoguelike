@@ -3,7 +3,6 @@ package se.chalmers.roguelike;
 import java.util.HashMap;
 
 import se.chalmers.roguelike.Components.*;
-import se.chalmers.roguelike.Components.Attribute;
 
 /**
  * Entity class 
@@ -80,6 +79,8 @@ public class Entity {
 			componentKey |= Engine.CompStair;
 		} else if(compClass == FieldOfView.class){
 			componentKey |= Engine.CompFieldOfView;
+		} else if(compClass == Text.class){
+			componentKey |= Engine.CompText;
 		}
 	}
 	

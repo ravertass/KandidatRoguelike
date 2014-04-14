@@ -8,8 +8,10 @@ import org.lwjgl.input.Mouse;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
+import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Text;
 import se.chalmers.roguelike.util.Observer;
 
 /**
@@ -17,12 +19,20 @@ import se.chalmers.roguelike.util.Observer;
  */
 public class MainMenuSystem implements ISystem, Observer {
 
-	private Rectangle playRect, optionsRect, exitRect, loadRect, tutorialPlayRect;
-	private Entity playButton, optionsButton, exitButton, loadButton, tutorialPlayButton;
-	private boolean tutorialActive = false;
+	private Rectangle playRect, optionsRect, exitRect, loadRect, tutorialPlayRect, newGameRect;
+	private Entity playButton, optionsButton, exitButton, loadButton, tutorialPlayButton, seedInfo, seedBox,
+		newGameButton;
+//	private boolean tutorialActive = false;
+
 	private ArrayList<Entity> buttons;
 	private Entity tutorial;
 
+	public enum MenuState {
+		DEFAULT, NEWGAME, TUTORIAL
+	}
+
+	private MenuState state = MenuState.DEFAULT;
+			
 	private Engine engine;
 
 	/**
@@ -76,7 +86,7 @@ public class MainMenuSystem implements ISystem, Observer {
 		int mouseX = Mouse.getX();
 		int mouseY = Mouse.getY();
 		resetButtonTextures();
-		if(!tutorialActive){
+		if(state == MenuState.DEFAULT) {
 			if(playRect != null && playRect.contains(mouseX,mouseY)){
 				playButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
 			} else if (loadRect != null && loadRect.contains(mouseX,mouseY)){
@@ -86,10 +96,14 @@ public class MainMenuSystem implements ISystem, Observer {
 			} else if (exitRect != null && exitRect.contains(mouseX,mouseY)){
 				exitButton.getComponent(Sprite.class).setSpritesheet("exit_button_selected");
 			}
-		} else if (tutorialPlayRect != null && tutorialPlayRect.contains(mouseX,mouseY)) {
-			tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
-		} else if (tutorialPlayRect != null && !tutorialPlayRect.contains(mouseX,mouseY)) {
-			tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button");
+		} else if(state == MenuState.TUTORIAL) {
+			if (tutorialPlayRect != null && tutorialPlayRect.contains(mouseX,mouseY)) {
+				tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
+			} else if (tutorialPlayRect != null && !tutorialPlayRect.contains(mouseX,mouseY)) {
+				tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button");
+			}
+		} else if(state == MenuState.NEWGAME) {
+			// Todo: Do something
 		}
 	}
 
@@ -116,9 +130,10 @@ public class MainMenuSystem implements ISystem, Observer {
 		if (Engine.gameState == Engine.GameState.MAIN_MENU && i.equals(InputManager.InputAction.MOUSECLICK)) {
 			int mouseX = Mouse.getX();
 			int mouseY = Mouse.getY();
-			if(!tutorialActive){
+			if(state == MenuState.DEFAULT) {
 				if(playRect != null && playRect.contains(mouseX,mouseY)){
-					engine.loadOverworld();
+				// engine.loadOverworld();
+					newGame();
 				} else if (loadRect != null && loadRect.contains(mouseX,mouseY)){
 					// Temporarily using the load button for tutorial
 					tutorial();
@@ -127,12 +142,19 @@ public class MainMenuSystem implements ISystem, Observer {
 				} else if (exitRect != null && exitRect.contains(mouseX,mouseY)){
 					System.exit(1); //TODO not the right thing to do but will do for now
 				}
-			} else {
+			} else if(state == MenuState.TUTORIAL) {
 				if(tutorialPlayRect != null && tutorialPlayRect.contains(mouseX,mouseY)){
 					engine.removeEntity(tutorialPlayButton);
 					engine.removeEntity(tutorial);
 					showMenuButtons(true);
-					tutorialActive = false;
+					state = MenuState.DEFAULT;
+				}
+			} else if(state == MenuState.NEWGAME) {
+				if(newGameRect != null && newGameRect.contains(mouseX,mouseY)) {
+					engine.removeEntity(newGameButton);
+					engine.removeEntity(seedBox);
+					engine.removeEntity(seedInfo);
+					engine.newGame();
 				}
 			}
 		}
@@ -174,7 +196,7 @@ public class MainMenuSystem implements ISystem, Observer {
 	 * Sets up the tutorial screen
 	 */
 	private void tutorial(){
-		tutorialActive = true;
+		state = MenuState.TUTORIAL;
 		
 		showMenuButtons(false);
 		
@@ -214,5 +236,32 @@ public class MainMenuSystem implements ISystem, Observer {
 			engine.addEntity(optionsButton);
 			engine.addEntity(exitButton);
 		}
+	}
+	
+	private void newGame() {
+		showMenuButtons(false);
+		state = MenuState.NEWGAME;
+		if(seedInfo == null){
+			seedInfo = new Entity("Seed information");
+			seedInfo.add(new Sprite("misc/seedtext", 260, 26));
+			seedInfo.add(new Position(Engine.screenWidth/2-260/2,Engine.screenHeight-100));
+		}
+		if(seedBox == null){
+			seedBox = new Entity("Seed box");
+			seedBox.add(new Sprite("misc/seedbox", 260, 26));
+			seedBox.add(new Position(Engine.screenWidth/2-260/2,Engine.screenHeight-146));
+			seedBox.add(new Text(String.valueOf(Engine.seed)));
+		}
+		if(newGameButton == null){
+			int width = 242;
+			int height = 64;
+			int x = Engine.screenWidth / 2-width/2;
+			int y = Engine.screenHeight-146-height-20;
+			newGameRect = new Rectangle(x, y, width, height);
+			newGameButton = engine.entityCreator.createButton(x, y,"play_button", width, height);
+		}
+		engine.addEntity(seedInfo);
+		engine.addEntity(seedBox);
+		System.out.println("Time for a new game!");
 	}
 }
