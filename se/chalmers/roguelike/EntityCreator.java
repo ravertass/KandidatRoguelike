@@ -182,7 +182,7 @@ public class EntityCreator {
 	public Entity createButton(int x, int y, String spriteName, int width, int height){
 		Entity button = new Entity("button");
 		Sprite sprite = new Sprite(spriteName,width, height);
-		sprite.setLayer(2);
+		sprite.setLayer(3);
 		button.add(sprite);
 		button.add(new Position(x,y));
 		engine.addEntity(button);
@@ -266,7 +266,9 @@ public class EntityCreator {
 	 */
 	public Entity createPopup(ArrayList<String> text, int x, int y, int width, int height) {
 		Entity popup = new Entity("popup");
-		popup.add(new Sprite("popupbackground", width, height));
+		Sprite sprite = new Sprite("popupbackground", width, height);
+		sprite.setLayer(2);
+		popup.add(sprite);
 		popup.add(new Position(x,y));
 		popup.add(new PopupText(text));
 		return popup;
