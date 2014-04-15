@@ -12,6 +12,7 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.util.ShadowCaster;
 import se.chalmers.roguelike.util.Util;
 import se.chalmers.roguelike.util.pathfinding.AStar;
 import se.chalmers.roguelike.util.pathfinding.AreaMap;
@@ -45,10 +46,10 @@ public class AISystem implements ISystem {
 			int y = e.getComponent(Position.class).getY();
 			Input input = e.getComponent(Input.class);
 			int dist = e.getComponent(FieldOfView.class).getViewDistance();
-			// int[][] fov = new ShadowCaster().calculateFOV(world, x, y, dist);
+			int[][] fov = new ShadowCaster().calculateFOV(world, x, y, dist);
 			ai = e.getComponent(AI.class);
-			// targetPlayer(ai, fov, player);
-			targetPlayer(ai, x, y, dist, player);
+			targetPlayer(ai, fov, player);
+			//targetPlayer(ai, x, y, dist, player);
 			Entity target = ai.getTarget();
 
 			if (target != null) {
@@ -154,7 +155,7 @@ public class AISystem implements ISystem {
 		int py = player.getComponent(Position.class).getY();
 
 		Entity target = ai.getTarget();
-		if (fieldOfView[py][px] == 1) {
+		if (fieldOfView[px][py] == 1) {
 			ai.setTarget(player);
 			if (target != ai.getTarget()) {
 				System.out.println("YOU HAVE BEEN FOUND BY AN ENEMY");
@@ -178,6 +179,7 @@ public class AISystem implements ISystem {
 	 * @param player
 	 */
 	private void targetPlayer(AI ai, int x, int y, int dist, Entity player) {
+		//TODO remove if no faults found in previous
 		int px = player.getComponent(Position.class).getX();
 		int py = player.getComponent(Position.class).getY();
 		ArrayList<Position> enemyDist = Util.bresenhamLine(x, y, px, py);
