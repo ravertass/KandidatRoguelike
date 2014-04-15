@@ -77,6 +77,9 @@ public class MarkovInstance {
 		return probList;
 	}
 	
+	/**
+	 * Gives a text representation of the Markov Instance
+	 */
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		sb.append("The sequence \"" + getString() + "\" has " + total + " followers spread over " 

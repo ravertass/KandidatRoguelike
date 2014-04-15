@@ -1,6 +1,5 @@
 package se.chalmers.plotgen.NameGen;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -13,11 +12,11 @@ public class Markov {
 	private final int MAX;
 	private final int ORDER;
 	private final String end = "EOW";
-	HashMap<String, MarkovInstance> zeroOrderMarkovTable;
-	HashMap<String, MarkovInstance> firstOrderMarkovTable;
-	HashMap<String, MarkovInstance> secondOrderMarkovTable;
-	HashMap<String, MarkovInstance> thirdOrderMarkovTable;
-	HashMap<String, MarkovInstance> fourthOrderMarkovTable;
+	private HashMap<String, MarkovInstance> zeroOrderMarkovTable;
+	private HashMap<String, MarkovInstance> firstOrderMarkovTable;
+	private HashMap<String, MarkovInstance> secondOrderMarkovTable;
+	private HashMap<String, MarkovInstance> thirdOrderMarkovTable;
+	private HashMap<String, MarkovInstance> fourthOrderMarkovTable;
 
 	public Markov(int k) {
 		MAX = 20;
@@ -263,6 +262,14 @@ public class Markov {
 		return name.toString();
 	}
 
+	/**
+	 * Initiates the next character
+	 * 
+	 * @param sequence
+	 * @param hmap
+	 * @param randomizer
+	 * @return
+	 */
 	private String initNextChar(String sequence,
 			HashMap<String, MarkovInstance> hmap, Random randomizer) {
 		ArrayList<String> list = new ArrayList<String>();
@@ -275,6 +282,12 @@ public class Markov {
 		return sequence + list.get(random);
 	}
 
+	/**
+	 * Just sets the first letter to uppercase
+	 * 
+	 * @param name
+	 * @return
+	 */
 	private String firstToUpperCase(String name) {
 		String startLetter = name.substring(0, 1).toUpperCase();
 		return startLetter + name.substring(1);

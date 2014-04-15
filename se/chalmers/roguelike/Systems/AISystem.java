@@ -12,7 +12,6 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
-import se.chalmers.roguelike.util.ShadowCaster;
 import se.chalmers.roguelike.util.Util;
 import se.chalmers.roguelike.util.pathfinding.AStar;
 import se.chalmers.roguelike.util.pathfinding.AreaMap;
@@ -20,9 +19,7 @@ import se.chalmers.roguelike.util.pathfinding.DiagonalHeuristic;
 
 public class AISystem implements ISystem {
 
-	/**
-	 * A list of entities that has some kind of AI
-	 */
+	// A list of entities that has some kind of AI
 	private ArrayList<Entity> entities;
 	private AI ai;
 	private Random rand;
@@ -34,12 +31,16 @@ public class AISystem implements ISystem {
 	
 	@Override
 	public void update() {
-		
 	}
 	
+	/**
+	 * The update loop that runs every turn
+	 * 
+	 * @param world
+	 * @param player
+	 */
 	public void update(Dungeon world, Entity player){
 		for (Entity e : entities){
-			//move, attack or sleep?
 			int x = e.getComponent(Position.class).getX();
 			int y = e.getComponent(Position.class).getY();
 			Input input = e.getComponent(Input.class);
@@ -61,9 +62,8 @@ public class AISystem implements ISystem {
 				//new PrintMap(map, path);
 				//what to do if path is null e.g path is blocked?
 				if(path == null){
-					input.setNextEvent(InputAction.DO_NOTHING);
+					randomMove(e, world);
 				} else if (path.size() <= e.getComponent(Weapon.class).getRange()){
-					//Attackerar man nu?
 					input.setAttackCords(targetPos);
 				} else {
 					int nextX = path.get(0).getX();
@@ -88,59 +88,71 @@ public class AISystem implements ISystem {
 					} 
 				}
 			} else {
-				boolean done = false;
-				if (!(world.getTile(x - 1, y + 1).isWalkable() 
-						|| world.getTile(x, y + 1).isWalkable() 
-						|| world.getTile(x + 1, y + 1).isWalkable() 
-						|| world.getTile(x - 1, y).isWalkable()
-						|| world.getTile(x, y - 1).isWalkable()
-						|| world.getTile(x + 1, y).isWalkable()
-						|| world.getTile(x - 1, y - 1).isWalkable()
-						|| world.getTile(x + 1, y - 1).isWalkable())){
-					input.setNextEvent(InputAction.DO_NOTHING);
-					done = true;
-					//System.out.println(e + " DID NOTHING!");
-				}
-				while (!done) {
-					int randNr = rand.nextInt(8);
-					if(randNr==0 && world.getTile(x - 1, y + 1).isWalkable()){
-						//System.out.println(e + " GOES NORTHWEST");
-						input.setNextEvent(InputAction.GO_NORTHWEST);
-						done = true;
-					} else if(randNr==1 && world.getTile(x, y + 1).isWalkable()){
-						//System.out.println(e + " GOES NORTH");
-						input.setNextEvent(InputAction.GO_NORTH);
-						done = true;
-					} else if(randNr==2 && world.getTile(x + 1, y + 1).isWalkable()){
-						//System.out.println(e+" GOES NORTHEAST");
-						input.setNextEvent(InputAction.GO_NORTHEAST);
-						done = true;
-					} else if(randNr==3 && world.getTile(x - 1, y).isWalkable()){
-						//System.out.println(e+" GOES WEST");
-						input.setNextEvent(InputAction.GO_WEST);
-						done = true;
-					} else if(randNr==4 && world.getTile(x, y - 1).isWalkable()){
-						//System.out.println(e + " GOES SOUTH");
-						input.setNextEvent(InputAction.GO_SOUTH);
-						done = true;
-					} else if(randNr==5 && world.getTile(x + 1, y).isWalkable()){
-						//System.out.println(e+" GOES EAST");
-						input.setNextEvent(InputAction.GO_EAST);
-						done = true;
-					} else if(randNr==6 && world.getTile(x - 1, y - 1).isWalkable()){
-						//System.out.println(e + " GOES SOUTHWEST");
-						input.setNextEvent(InputAction.GO_SOUTHWEST);
-						done = true;
-					} else if(randNr==7 && world.getTile(x + 1, y - 1).isWalkable()){
-						//System.out.println(e + " GOES SOUTHEAST");
-						input.setNextEvent(InputAction.GO_SOUTHEAST);
-						done = true;
-					} 
-				}
+				randomMove(e, world);
 			}
 		}
 	}
 
+	/**
+	 * Moves to a random position
+	 * 
+	 * @param e
+	 * @param world
+	 */
+	private void randomMove(Entity e, Dungeon world){
+		int x = e.getComponent(Position.class).getX();
+		int y = e.getComponent(Position.class).getY();
+		Input input = e.getComponent(Input.class);
+		boolean done = false;
+		if (!(world.getTile(x - 1, y + 1).isWalkable() 
+				|| world.getTile(x, y + 1).isWalkable() 
+				|| world.getTile(x + 1, y + 1).isWalkable() 
+				|| world.getTile(x - 1, y).isWalkable()
+				|| world.getTile(x, y - 1).isWalkable()
+				|| world.getTile(x + 1, y).isWalkable()
+				|| world.getTile(x - 1, y - 1).isWalkable()
+				|| world.getTile(x + 1, y - 1).isWalkable())){
+			input.setNextEvent(InputAction.DO_NOTHING);
+			done = true;
+		}
+		while (!done) {
+			int randNr = rand.nextInt(8);
+			if(randNr==0 && world.getTile(x - 1, y + 1).isWalkable()){
+				input.setNextEvent(InputAction.GO_NORTHWEST);
+				done = true;
+			} else if(randNr==1 && world.getTile(x, y + 1).isWalkable()){
+				input.setNextEvent(InputAction.GO_NORTH);
+				done = true;
+			} else if(randNr==2 && world.getTile(x + 1, y + 1).isWalkable()){
+				input.setNextEvent(InputAction.GO_NORTHEAST);
+				done = true;
+			} else if(randNr==3 && world.getTile(x - 1, y).isWalkable()){
+				input.setNextEvent(InputAction.GO_WEST);
+				done = true;
+			} else if(randNr==4 && world.getTile(x, y - 1).isWalkable()){
+				input.setNextEvent(InputAction.GO_SOUTH);
+				done = true;
+			} else if(randNr==5 && world.getTile(x + 1, y).isWalkable()){
+				input.setNextEvent(InputAction.GO_EAST);
+				done = true;
+			} else if(randNr==6 && world.getTile(x - 1, y - 1).isWalkable()){
+				input.setNextEvent(InputAction.GO_SOUTHWEST);
+				done = true;
+			} else if(randNr==7 && world.getTile(x + 1, y - 1).isWalkable()){
+				input.setNextEvent(InputAction.GO_SOUTHEAST);
+				done = true;
+			}
+		}
+	}
+	
+	/**
+	 * Target the player using the shadowcasting algorithm so the detection
+	 * feels more natural (currently broken)
+	 * 
+	 * @param ai
+	 * @param fieldOfView
+	 * @param player
+	 */
 	private void targetPlayer(AI ai, int[][] fieldOfView, Entity player) {
 		int px = player.getComponent(Position.class).getX();
 		int py = player.getComponent(Position.class).getY();
@@ -159,6 +171,16 @@ public class AISystem implements ISystem {
 		}
 	}
 	
+	/**
+	 * Targets the player if the entity is close enough using bresenham's line,
+	 * which means that walls doesn't prevent detection
+	 * 
+	 * @param ai
+	 * @param x
+	 * @param y
+	 * @param dist
+	 * @param player
+	 */
 	private void targetPlayer(AI ai, int x, int y, int dist, Entity player) {
 		int px = player.getComponent(Position.class).getX();
 		int py = player.getComponent(Position.class).getY();
@@ -178,9 +200,14 @@ public class AISystem implements ISystem {
 		}
 	}
 
+	/**
+	 * Creates a mapping over the world for what tiles are walkable and which are not
+	 * 
+	 * @param worldTiles
+	 * @param target
+	 * @return
+	 */
 	private int[][] createObstacleMap(Tile[][] worldTiles, Position target) {
-		
-		//Svarta tiles är null? Dörrar är walkable? Vad är walkable?
 		int[][] obstacleMap = new int[worldTiles.length][worldTiles[1].length];
 		for (int i = 0; i < obstacleMap.length; i++){
 			for (int j = 0; j < obstacleMap[i].length; j++) {
@@ -194,6 +221,14 @@ public class AISystem implements ISystem {
 		return obstacleMap;
 	}
 
+	/**
+	 * Returns the shortest path from the entity to its target using a*
+	 * 
+	 * @param start
+	 * @param target
+	 * @param map
+	 * @return
+	 */
 	private ArrayList<Position> track(Position start, Position target, AreaMap map) {
 		DiagonalHeuristic heuristic = new DiagonalHeuristic();
 		AStar findPath = new AStar(map, heuristic);
@@ -212,7 +247,7 @@ public class AISystem implements ISystem {
 	}
 	
 	/**
-	 * Removes an entity from the AISystem
+	 * Remove an entity from the AISystem
 	 * 
 	 * @param e
 	 */
