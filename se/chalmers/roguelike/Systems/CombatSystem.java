@@ -133,9 +133,9 @@ public class CombatSystem implements ISystem {
 					}
 
 				} else if (targetingSystem == TargetingSystem.CONE) {
-
+					// A cone, remove?
 				} else if (targetingSystem == TargetingSystem.NOVA) {
-
+					// Remove
 				} else if (targetingSystem == TargetingSystem.SINGLE_TARGET) {
 					attack(getFirstViableTarget(line, range), e);
 				}

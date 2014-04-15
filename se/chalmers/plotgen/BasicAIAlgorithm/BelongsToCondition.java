@@ -3,6 +3,9 @@ package se.chalmers.plotgen.BasicAIAlgorithm;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
 
+/**
+ * A condition that checks if a certain prop belongs to a certain actor.
+ */
 public class BelongsToCondition implements ICondition {
 
 	private Prop prop;
@@ -32,12 +35,11 @@ public class BelongsToCondition implements ICondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof BelongsToCondition) {
-			return (prop == (((BelongsToCondition) object).prop) & 
-					actor == (((BelongsToCondition) object).actor));
+			return (prop == (((BelongsToCondition) object).prop) & actor == (((BelongsToCondition) object).actor));
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "BelongsToCondition " + actor + " " + prop + " " + get();

@@ -13,8 +13,8 @@ import se.chalmers.roguelike.util.Util;
  * 
  * @link http://code.google.com/p/a-star-java/
  * 
- * New version is edited for use in this project
- *       
+ *       New version is edited for use in this project
+ * 
  */
 public class PathFinder {
 
@@ -26,12 +26,11 @@ public class PathFinder {
 
 		AStar aStar = new AStar(map, heuristic);
 
-		//Calc shortest path
-		ArrayList<Position> shortestPath = aStar.calcShortestPath(
-				map.getStartLocationX(), map.getStartLocationY(),
-				map.getGoalLocationX(), map.getGoalLocationY());
+		// Calc shortest path
+		ArrayList<Position> shortestPath = aStar.calcShortestPath(map.getStartLocationX(),
+				map.getStartLocationY(), map.getGoalLocationX(), map.getGoalLocationY());
 
-		//Calculating optimized waypoints
+		// Calculating optimized waypoints
 		ArrayList<Position> waypoints = calculateWayPoints(shortestPath);
 		return waypoints;
 	}
@@ -67,7 +66,8 @@ public class PathFinder {
 	}
 
 	private boolean lineClear(Position a, Position b) {
-		ArrayList<Position> pointsOnLine = Util.bresenhamLine((int) a.getX(), (int) a.getY(), (int) b.getX(), (int) b.getY());
+		ArrayList<Position> pointsOnLine = Util.bresenhamLine((int) a.getX(), (int) a.getY(), (int) b.getX(),
+				(int) b.getY());
 		for (Position p : pointsOnLine) {
 			if (map.getNode((int) p.getX(), (int) p.getY()).isObstacle) {
 				return false;

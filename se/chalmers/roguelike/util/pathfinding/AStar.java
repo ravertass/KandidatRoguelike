@@ -14,19 +14,18 @@ import se.chalmers.roguelike.Components.Position;
  * @link http://code.google.com/p/a-star-java/
  * 
  * New version is edited for use in this project
- *       
+ * 
  */
 public class AStar {
 
 	private AreaMap map;
 	private DiagonalHeuristic heuristic;
 	/**
-	 * closedList The list of Nodes not searched yet, sorted by their distance
-	 * to the goal as guessed by our heuristic.
+	 * closedList The list of Nodes not searched yet, sorted by their distance to the goal as guessed by our
+	 * heuristic.
 	 */
 	private ArrayList<Node> closedList;
 	private SortedNodeList openList;
-	private ArrayList<Position> shortestPath;
 
 	public AStar(AreaMap map, DiagonalHeuristic heuristic) {
 		this.map = map;
@@ -35,8 +34,7 @@ public class AStar {
 		openList = new SortedNodeList();
 	}
 
-	public ArrayList<Position> calcShortestPath(int startX, int startY, int goalX,
-			int goalY) {
+	public ArrayList<Position> calcShortestPath(int startX, int startY, int goalX, int goalY) {
 
 		// mark start and goal node
 		map.setStartLocation(startX, startY);
@@ -62,8 +60,7 @@ public class AStar {
 
 			// check if our current Node location is the goal Node. If it is, we
 			// are done.
-			if (current.getX() == map.getGoalLocationX()
-					&& current.getY() == map.getGoalLocationY()) {
+			if (current.getX() == map.getGoalLocationX() && current.getY() == map.getGoalLocationY()) {
 				return reconstructPath(current);
 			}
 
@@ -86,9 +83,8 @@ public class AStar {
 
 					// calculate how long the path is if we choose this neighbor
 					// as the next step in the path
-					float neighborDistanceFromStart = (current
-							.getDistanceFromStart() + map.getDistanceBetween(
-							current, neighbor));
+					float neighborDistanceFromStart = (current.getDistanceFromStart() + map
+							.getDistanceBetween(current, neighbor));
 
 					// add neighbor to the open list if it is not there
 					if (!openList.contains(neighbor)) {
@@ -96,8 +92,7 @@ public class AStar {
 						neighborIsBetter = true;
 						// if neighbor is closer to start it could also be
 						// better
-					} else if (neighborDistanceFromStart < current
-							.getDistanceFromStart()) {
+					} else if (neighborDistanceFromStart < current.getDistanceFromStart()) {
 						neighborIsBetter = true;
 					} else {
 						neighborIsBetter = false;
@@ -122,7 +117,6 @@ public class AStar {
 			path.add(0, node.getPosition());
 			node = node.getPreviousNode();
 		}
-		this.shortestPath = path;
 		return path;
 	}
 
@@ -155,5 +149,4 @@ public class AStar {
 			return list.contains(n);
 		}
 	}
-
 }

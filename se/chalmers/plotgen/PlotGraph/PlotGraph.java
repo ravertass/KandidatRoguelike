@@ -8,18 +8,15 @@ import se.chalmers.plotgen.util.DirectedGraph;
 /**
  * This is a graph which models an abstracted plot.
  * 
- * The edges contain Interactions, which are actions between 'entities' (Actors,
- * Props, Scenes). These will represent different choices for the player or the
- * NPCs. The Interactions will be in an abstracted form, written for the
- * computer easily interpreted by the game.
+ * The edges contain Actions, which are actions between SAPs (Scenes, Actors,
+ * Props). These represent different choices for the player. The Actions are
+ * written to be easily interpreted by the game.
  * 
  * The nodes contain strings with pieces of story. These strings are written for
  * humans, so they're easily interpreted by the player. A human should be able
  * to read all plot texts of a graph and understand the plot.
  * 
  * This graph is also a state machine; it knows which plot vertex we're at.
- * 
- * @author fabian
  */
 public class PlotGraph {
 	DirectedGraph<PlotVertex, PlotEdge> graph;
@@ -45,8 +42,7 @@ public class PlotGraph {
 	 */
 	// The way this is implemented, the directed graph wouldn't need
 	// separate edges, since one vertex can only be reached by one edge
-	public boolean addVertex(PlotVertex outVertex, PlotVertex inVertex,
-			PlotEdge inEdge) {
+	public boolean addVertex(PlotVertex outVertex, PlotVertex inVertex, PlotEdge inEdge) {
 		graph.addVertex(inVertex);
 		// If the outVertex doesn't exist, return false
 		return graph.addEdge(inEdge, outVertex, inVertex);
@@ -72,7 +68,8 @@ public class PlotGraph {
 	}
 
 	/**
-	 * @return all the outgoing edges and adjacent vertices from the active vertex
+	 * @return all the outgoing edges and adjacent vertices from the active
+	 *         vertex
 	 */
 	public HashMap<PlotEdge, PlotVertex> getAdjacentVertices() {
 		return graph.getAdjacencies(activeVertex);
@@ -97,9 +94,8 @@ public class PlotGraph {
 	// Because recursion roxx
 	// (this may seem like a bad idea because of stack overflow etc. but I don't
 	// think that will happen in this case)
-	private String addAdjacents(
-			ArrayList<PlotEdge> adjacentEdges,
-			PlotVertex vertex, String string, String spaces) {
+	private String addAdjacents(ArrayList<PlotEdge> adjacentEdges, PlotVertex vertex, String string,
+			String spaces) {
 
 		// These will make the text nicely formatted
 		spaces += "  ";
@@ -118,7 +114,7 @@ public class PlotGraph {
 		}
 		return string;
 	}
-	
+
 	public int size() {
 		return graph.size();
 	}

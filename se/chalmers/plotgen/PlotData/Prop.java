@@ -7,8 +7,8 @@ package se.chalmers.plotgen.PlotData;
  * 
  * Generally, you don't add props to actors or scenes; you add actors or scenes
  * to a prop.
- * 
- * @author fabian
+ * prop.setOwner()
+ * prop.setLocation
  */
 public class Prop extends PlotThing implements IPlotBody {
 

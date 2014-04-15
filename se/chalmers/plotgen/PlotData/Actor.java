@@ -9,9 +9,9 @@ import java.util.HashSet;
  * An actor belongs at a scene. An actor may hold multiple props.
  * 
  * Generally, you don't add an actor to a scene, you add a scene to an actor.
+ * actor.setLocation()
  * You also add an actor to a prop, not vice versa.
- * 
- * @author fabian
+ * prop.setOwner()
  */
 public class Actor extends PlotThing implements IPlotBody {
 

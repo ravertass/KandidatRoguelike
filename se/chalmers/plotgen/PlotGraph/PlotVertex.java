@@ -7,8 +7,6 @@ package se.chalmers.plotgen.PlotGraph;
  * that is related to the plot vertex. The string is to be easily interpreted
  * by a human. A human should be able to read all plot texts of a graph and
  * understand the plot.
- * 
- * @author fabian
  */
 public class PlotVertex {
 

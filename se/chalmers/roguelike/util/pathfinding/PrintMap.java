@@ -12,16 +12,17 @@ import se.chalmers.roguelike.Components.Position;
  * 
  * @link http://code.google.com/p/a-star-java/
  * 
- * New version is edited for use in this project
- *       
- * This class prints a graphic interpretation of AreaMaps with obstacles in it
+ *       New version is edited for use in this project
+ * 
+ *       This class prints a graphic interpretation of AreaMaps with obstacles in it
  */
 public class PrintMap {
 
 	public PrintMap(AreaMap map, ArrayList<Position> shortestPath) {
 		Node node;
-		if (shortestPath == null){
-			System.err.println("No path was found; either the path is non-existent or it is temporarily blocked.");
+		if (shortestPath == null) {
+			System.err
+					.println("No path was found; either the path is non-existent or it is temporarily blocked.");
 			return;
 		}
 		for (int y = 0; y < map.getMapHeight(); y++) {
