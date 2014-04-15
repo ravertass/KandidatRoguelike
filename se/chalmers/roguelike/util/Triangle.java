@@ -116,7 +116,7 @@ public class Triangle {
 
 	/**
 	 * This gives a triangle that is large enough to include the full rectangle with the given height and
-	 * width with the lower left corner as xPos and yPos
+	 * width with the lower left corner as xPos and yPos. This is used when your world is upside down.
 	 * 
 	 * @param height
 	 * @param width
