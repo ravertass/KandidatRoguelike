@@ -14,11 +14,17 @@ public class Pair<F, S> {
         this.first = first;
         this.second = second;
     }
-
+    /**
+     * Sets the first one in the pair.
+     * @param first
+     */
     public void setFirst(F first) {
         this.first = first;
     }
-
+    /**
+     * Sets the second one in the pair.
+     * @param second
+     */
     public void setSecond(S second) {
         this.second = second;
     }

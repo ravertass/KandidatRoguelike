@@ -32,10 +32,6 @@ public class Triangle {
 		this.y3 = (int) trianglePoint3[1];
 	}
 
-	public boolean contains(int x, int y) {
-		// TODO
-		return false;
-	}
 
 	public Circle circumCircle() {
 		double x1p2 = Math.pow(x1, 2);

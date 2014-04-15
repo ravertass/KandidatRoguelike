@@ -111,18 +111,5 @@ public class KruskalMST {
 	public double getWeight(){
 		return totalWeight;
 	}
-
-//	public static void main(String[] args){
-//		KruskalMST krus = new KruskalMST();
-//		ArrayList<Edge> example = new ArrayList<Edge>();
-//		example.add(new Edge(0,0,3,3));
-//		example.add(new Edge(1,2,3,3));
-//		example.add(new Edge(8,8,3,3));
-//		example.add(new Edge(8,8,1,2));
-//		example.add(new Edge(0,0,0,2));		
-//		example.add(new Edge(0,2,8,8));
-//		
-//		System.out.println(krus.createMST(example));
-//	}
 	
 }
