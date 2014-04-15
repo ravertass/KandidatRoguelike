@@ -44,8 +44,7 @@ public class OverworldSystem implements ISystem, Observer {
 	/**
 	 * Sets up a new instance of the overworld system.
 	 * 
-	 * @param engine
-	 *            the engine being used by the game
+	 * @param engine the engine being used by the game
 	 */
 	public OverworldSystem(Engine engine) {
 		this.engine = engine;
@@ -66,7 +65,8 @@ public class OverworldSystem implements ISystem, Observer {
 	}
 
 	/**
-	 * update function for the system. Currently handles the checks for plot related updates.
+	 * update function for the system. Currently handles the checks for plot
+	 * related updates.
 	 */
 	public void update() {
 		if (activeStar == null) {
@@ -159,11 +159,12 @@ public class OverworldSystem implements ISystem, Observer {
 			LevelGenerator generator = new LevelGenerator(seed);
 			starDungeon = generator.getDungeon();
 			activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
-		}
 
-		if (activeStar.getComponent(PlotAction.class).getAction() != null) {
-			if (activeStar.getComponent(PlotAction.class).getAction().getActionType() == Action.ActionType.KILL) {
-				starDungeon.addBoss(activeStar.getComponent(PlotAction.class).getAction().getObjectActor());
+			if (activeStar.getComponent(PlotAction.class).getAction() != null) {
+				if (activeStar.getComponent(PlotAction.class).getAction().getActionType() == Action.ActionType.KILL) {
+					starDungeon.addBoss(activeStar.getComponent(PlotAction.class).getAction()
+							.getObjectActor());
+				}
 			}
 		}
 
@@ -174,8 +175,7 @@ public class OverworldSystem implements ISystem, Observer {
 	/**
 	 * Makes a star active if it was clicked and adds a play-button.
 	 * 
-	 * @param star
-	 *            the star rectangle that was clicked
+	 * @param star the star rectangle that was clicked
 	 */
 	private void starClicked(Rectangle star) {
 		if (activeStar == null) {

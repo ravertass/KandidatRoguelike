@@ -184,6 +184,7 @@ public class LevelGenerator {
 		worldGrid = grid;
 
 		dungeon  = toDungeon();
+		dungeon.addPlotThingPosition(plotThingX, plotThingY);
 
 		//Generate nextLevel
 		if (stairsDown != null){

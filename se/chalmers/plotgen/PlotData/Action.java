@@ -112,6 +112,10 @@ public class Action {
 	public Scene getObjectScene() {
 		return objectScene;
 	}
+	
+	public Prop getObjectProp() {
+		return objectProp;
+	}
 
 	public ActionType getActionType() {
 		return type;

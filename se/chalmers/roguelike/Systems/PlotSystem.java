@@ -7,37 +7,16 @@ import java.util.Random;
 import se.chalmers.plotgen.PlotEngine;
 import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.plotgen.PlotData.Actor;
+import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
 import se.chalmers.plotgen.PlotGraph.PlotEdge;
 import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
-import se.chalmers.roguelike.EntityCreator;
-import se.chalmers.roguelike.Components.AI;
-import se.chalmers.roguelike.Components.Attribute;
-import se.chalmers.roguelike.Components.BlocksWalking;
-import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.DungeonComponent;
-import se.chalmers.roguelike.Components.FieldOfView;
-import se.chalmers.roguelike.Components.Health;
-import se.chalmers.roguelike.Components.IComponent;
-import se.chalmers.roguelike.Components.Input;
-import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.PlotAction;
-import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.Components.TurnsLeft;
-import se.chalmers.roguelike.Components.Weapon;
-import se.chalmers.roguelike.Components.Attribute.SpaceClass;
-import se.chalmers.roguelike.Components.Attribute.SpaceRace;
-import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.World.Dungeon;
-
-//TODO: Kanske ska man ha en entitet som är "OverworldMainCharacter", som bland
-// annat håller koll på om det aktuella uppdraget är klarat eller ej...?
-// Fast det känns nog fortfarande oklart hur system interagerar:
-// Visst får de väl inte ha entiteter utanför deras vanliga entitetssort?
 
 public class PlotSystem implements ISystem {
 
@@ -45,7 +24,9 @@ public class PlotSystem implements ISystem {
 	private PlotEngine plotEngine;
 	private ArrayList<Scene> scenes;
 	private Actor mainCharacter;
+	
 	private Actor secondCharacter;
+	private Prop plotItem;
 
 	// You could use a bi-directional map for this, but since there is none
 	// in the standard Java API, I won't.
@@ -81,20 +62,32 @@ public class PlotSystem implements ISystem {
 			}
 
 			if (edge.getAction().getActionType() == Action.ActionType.MEET) {
-				star = scenesStars.get(edge.getAction().getObjectActor()
-						.getLocation());
+				star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
+			}
+			
+			if (edge.getAction().getActionType() == Action.ActionType.GIVE) {
+				star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
+				//TODO lägg till en massa saker
 			}
 
 			if (edge.getAction().getActionType() == Action.ActionType.KILL) {
-				star = scenesStars.get(edge.getAction().getObjectActor()
-						.getLocation());
-				Dungeon starDungeon = star.getComponent(DungeonComponent.class)
-						.getDungeon();
-				
+				star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
+				Dungeon starDungeon = star.getComponent(DungeonComponent.class).getDungeon();
+
 				if (starDungeon != null) {
 					starDungeon.addBoss(edge.getAction().getObjectActor());
 				}
 			}
+
+			if (edge.getAction().getActionType() == Action.ActionType.TAKE) {
+				star = scenesStars.get(edge.getAction().getObjectProp().getLocation());
+				Dungeon starDungeon = star.getComponent(DungeonComponent.class).getDungeon();
+
+				if (starDungeon != null) {
+					starDungeon.addPlotLoot(edge.getAction().getObjectProp());
+				}
+			}
+
 			star.getComponent(PlotAction.class).setActionPerformed(false);
 			star.getComponent(PlotAction.class).setAction(edge.getAction());
 			star.getComponent(PlotAction.class).setPlotText(
@@ -105,8 +98,7 @@ public class PlotSystem implements ISystem {
 	private void nextAction(Action action) {
 		ArrayList<PlotEdge> edges = new ArrayList<PlotEdge>();
 		edges.addAll(plotGraph.getAdjacentVertices().keySet());
-		PlotVertex nextVertex = plotGraph.getAdjacentVertices().get(
-				new PlotEdge(action));
+		PlotVertex nextVertex = plotGraph.getAdjacentVertices().get(new PlotEdge(action));
 		plotGraph.setActiveVertex(nextVertex);
 	}
 
@@ -127,8 +119,7 @@ public class PlotSystem implements ISystem {
 			// Create the spaceship entity
 			engine.entityCreator.createSpaceShip(x, y);
 
-			Entity star = engine.entityCreator.createStar(x, y,
-					rand.nextLong(), (scene + " Star"));
+			Entity star = engine.entityCreator.createStar(x, y, rand.nextLong(), (scene + " Star"));
 			scenesStars.put(scene, star);
 			starsScenes.put(star, scene);
 			radius += 10;
@@ -149,8 +140,7 @@ public class PlotSystem implements ISystem {
 		scenes.addAll(scenesStars.keySet());
 
 		for (Scene scene : scenes) {
-			PlotAction plotAction = scenesStars.get(scene).getComponent(
-					PlotAction.class);
+			PlotAction plotAction = scenesStars.get(scene).getComponent(PlotAction.class);
 			if (plotAction.getActionPerformed()) {
 				nextAction(plotAction.getAction());
 				plotAction.setActionPerformed(false);
@@ -179,38 +169,41 @@ public class PlotSystem implements ISystem {
 
 		secondCharacter = new Actor("SecondChar");
 		secondCharacter.setLocation(scenes.get(2));
+		
+		plotItem = new Prop("PlotItem");
+		plotItem.setLocation(scenes.get(0));
 
 		plotGraph = new PlotGraph();
 
 		PlotVertex rootVertex = new PlotVertex("Första rutan!");
 		plotGraph.addRootVertex(rootVertex);
 
-		PlotEdge firstEdge = new PlotEdge(new Action(Action.ActionType.VISIT,
-				mainCharacter, scenes.get(1)));
+		PlotEdge firstEdge = new PlotEdge(new Action(Action.ActionType.VISIT, mainCharacter, scenes.get(1)));
 
 		PlotVertex secondVertex = new PlotVertex(
 				"Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann! Du vann!");
 		plotGraph.addVertex(rootVertex, secondVertex, firstEdge);
 
-		PlotEdge secondEdge = new PlotEdge(new Action(Action.ActionType.VISIT,
-				mainCharacter, scenes.get(2)));
+		PlotEdge secondEdge = new PlotEdge(new Action(Action.ActionType.VISIT, mainCharacter, scenes.get(2)));
 
 		PlotVertex thirdVertex = new PlotVertex(
 				"Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen! Igen!");
 		plotGraph.addVertex(secondVertex, thirdVertex, secondEdge);
 
-		PlotEdge thirdEdge = new PlotEdge(new Action(Action.ActionType.MEET,
-				mainCharacter, secondCharacter));
+		PlotEdge thirdEdge = new PlotEdge(new Action(Action.ActionType.MEET, mainCharacter, secondCharacter));
 
 		PlotVertex fourthVertex = new PlotVertex(
 				"You met this guy, You met this guy, You met this guy, You met this guy, You met this guy, You met this guy, You met this guy!");
 		plotGraph.addVertex(thirdVertex, fourthVertex, thirdEdge);
-		
-		PlotEdge fourthEdge = new PlotEdge(new Action(Action.ActionType.KILL,
-				mainCharacter, secondCharacter));
 
-		PlotVertex fifthVertex = new PlotVertex(
-				"A boss!");
+		PlotEdge fourthEdge = new PlotEdge(new Action(Action.ActionType.KILL, mainCharacter, secondCharacter));
+
+		PlotVertex fifthVertex = new PlotVertex("A boss!");
 		plotGraph.addVertex(fourthVertex, fifthVertex, fourthEdge);
+		
+		PlotEdge fifthEdge = new PlotEdge(new Action(Action.ActionType.TAKE, mainCharacter, plotItem));
+
+		PlotVertex sixthVertex = new PlotVertex("A plot item!");
+		plotGraph.addVertex(fifthVertex, sixthVertex, fifthEdge);
 	}
 }
