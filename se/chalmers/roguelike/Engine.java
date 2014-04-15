@@ -66,8 +66,7 @@ public class Engine {
 	public static final long CompPocketable = 1<<componentID++;
 	public static final long CompDoubleName = 1<<componentID++;
 	public static final long CompUsable = 1<<componentID++;
-	
-	
+	public static final long CompText = 1 << componentID++;
 	
 	// Constants: System requirements:
 
@@ -94,7 +93,7 @@ public class Engine {
 	public EntityCreator entityCreator;
 
 	private Dungeon dungeon; // remove static, just for testing unloading atm
-
+	public static long seed;
 	// Systems:
 	private RenderingSystem renderingSys;
 	private MoveSystem moveSys;
@@ -128,13 +127,12 @@ public class Engine {
 		System.out.println("Starting new engine.");
 		entities = new ArrayList<Entity>();
 		entityCreator = new EntityCreator(this);
-		// gameState = GameState.DUNGEON;
 		gameState = GameState.MAIN_MENU;
-		plotEngine = new PlotEngine(new Random().nextLong()); // make dependent
-																// on seed
-		spawnSystems();
-		registerInputSystems();
-		setCamera();
+		seed = 1235L; // TODO: Switch to new Random().nextLong();
+		renderingSys = new RenderingSystem();	
+		mainmenuSys = new MainMenuSystem(this);
+		inputManager = new InputManager(this); // required to start the game
+		inputManager.addObserver(mainmenuSys);
 	}
 
 	/**
@@ -173,13 +171,7 @@ public class Engine {
 
 	private void addOrRemoveEntity(Entity entity, boolean remove) {
 		long compKey = entity.getComponentKey();
-		// if((compKey & inputSysReq) == inputSysReq) {
-		// if(remove){
-		// inputSys.removeEntity(entity);
-		// } else {
-		// inputSys.addEntity(entity);
-		// }
-		// }
+		
 		if ((compKey & renderingSysReq) == renderingSysReq) {
 			if (remove) {
 				renderingSys.removeEntity(entity);
@@ -187,6 +179,14 @@ public class Engine {
 				renderingSys.addEntity(entity);
 			}
 		}
+		
+		// This is a very special case and really bad code, the reason it is like this is due to the 
+		// other systems not having been initiated yet and will cause crashes
+		
+		if(Engine.gameState == GameState.MAIN_MENU){
+			return;
+		}
+		
 		if ((compKey & moveSysReq) == moveSysReq) {
 			if (remove) {
 				moveSys.removeEntity(entity);
@@ -322,12 +322,12 @@ public class Engine {
 	 * Initializes the necessary systems.
 	 */
 	private void spawnSystems() {
-		renderingSys = new RenderingSystem();
+		//renderingSys = new RenderingSystem();
 		dungeon = new Dungeon();
-		inputManager = new InputManager(this); // This feels stupid that it
-												// should have engine component,
-												// maybe change once debug stuff
-												// is over for the load manager
+//		inputManager = new InputManager(this); // This feels stupid that it
+//												// should have engine component,
+//												// maybe change once debug stuff
+//												// is over for the load manager
 		moveSys = new MoveSystem();
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem(entityCreator, this);
@@ -339,7 +339,7 @@ public class Engine {
 
 		plotSys = new PlotSystem(this, plotEngine);
 		overworldSys = new OverworldSystem(this);
-		mainmenuSys = new MainMenuSystem(this);
+//		mainmenuSys = new MainMenuSystem(this);
 		inventorySys = new InventorySystem();
 		interactionSys = new InteractionSystem(this);
 		itemSys = new ItemSystem();
@@ -359,7 +359,7 @@ public class Engine {
 		inputManager.addObserver(playerInputSys);
 		inputManager.addObserver(highlightSys);
 		inputManager.addObserver(overworldSys);
-		inputManager.addObserver(mainmenuSys);
+////		inputManager.addObserver(mainmenuSys);
 		inputManager.addObserver(interactionSys);
 		inputManager.addObserver(inventorySys);
 	}
@@ -407,7 +407,9 @@ public class Engine {
 			mainmenuSys.unregister();
 			System.out.println("Unregister of mainmenu done");
 		}
-		overworldSys.register();
+		if(overworldSys != null){
+			overworldSys.register();
+		}
 		gameState = GameState.OVERWORLD;
 	}
 
@@ -423,5 +425,13 @@ public class Engine {
 		}
 		mainmenuSys.register();
 		gameState = GameState.MAIN_MENU;
+	}
+	
+	public void newGame(){
+		plotEngine = new PlotEngine(seed);
+		spawnSystems();
+		registerInputSystems();
+		setCamera();
+		loadOverworld();
 	}
 }
