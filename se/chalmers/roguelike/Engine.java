@@ -34,6 +34,7 @@ public class Engine {
 	public static int spriteSize = 16;
 	public static int screenHeight = 768;
 	public static int screenWidth = 1024;
+	public static int hudWidth = 200;
 	// Debug flag:
 	public static boolean debug = true;
 	// Constants: Components
