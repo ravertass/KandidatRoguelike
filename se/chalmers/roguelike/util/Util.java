@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import se.chalmers.roguelike.Components.Position;
-
+/**
+ * A class which gathers some static util-methods.
+ * @author twister
+ *
+ */
 public class Util {
 	
 	/**
@@ -27,7 +31,6 @@ public class Util {
 	 */
 	public static ArrayList<Position> calculateLine(int x0, int y0, int x1, int y1) {
 		ArrayList<Position> line = new ArrayList<Position>();
-		//Wizardry below
 		int dx = Math.abs(x1 - x0);
 		int dy = Math.abs(y1 - y0);
 		int x = x0;
@@ -85,24 +88,6 @@ public class Util {
 		        y1 = y1 + sy;
 		    }
 		}
-//		int dx = x1-x0;
-//		int dy = y1-y0;
-//		float error = 0.0f;
-//		float derror = 0.0f;
-//		if (dx != 0)
-//			 derror = Math.abs(dy/dx);
-//		else 
-//			derror = 0.0f;
-//		
-//		int y = y0;
-//		for (int x = x0; x<=x1; x++ ){
-//			line.add(new Position(x,y));
-//			error += derror;
-//			if (error >= 0.5) {
-//				y++;
-//				error -= 1.0;
-//			}
-//		}
 		ArrayList<Position> line = new ArrayList<Position>();
 		for (Position pos : templine) {
 			line.add(0, pos);
@@ -110,19 +95,6 @@ public class Util {
 		return line;
 	}
 	
-/*	 function line(x0, x1, y0, y1)
-     int deltax := x1 - x0
-     int deltay := y1 - y0
-     real error := 0
-     real deltaerr := abs (deltay / deltax)    // Assume deltax != 0 (line is not vertical),
-           // note that this division needs to be done in a way that preserves the fractional part
-     int y := y0
-     for x from x0 to x1
-         plot(x,y)
-         error := error + deltaerr
-         if error >= 0.5 then
-             y := y + 1
-             error := error - 1.0 */
 	public static ArrayList<Pair<Integer, Integer>> getDirectionPairs() {
 		ArrayList<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer,Integer>>();
 		result.add(new Pair<Integer,Integer>(1,1));

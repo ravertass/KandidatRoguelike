@@ -63,10 +63,20 @@ public class MobSpriteSystem implements ISystem {
 		}
 	}
 
+	/**
+	 * Adds an entity to the system
+	 * 
+	 * @param entity entity that should be added
+	 */
 	public void addEntity(Entity entity) {
 		entities.add(entity);
 	}
-	
+
+	/**
+	 * Removes an entity to the system
+	 * 
+	 * @param entity entity that should be removed
+	 */
 	public void removeEntity(Entity entity) {
 		entities.remove(entity);
 	}

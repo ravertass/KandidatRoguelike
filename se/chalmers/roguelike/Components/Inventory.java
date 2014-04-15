@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import se.chalmers.roguelike.Entity;
 
 /**
- * This class is representing an inventory for a character. All enteties with
- * this component is handled by the inventorysystem.
+ * This class is representing an inventory for a character. All entities with this component is handled by the
+ * inventorySystem.
  * 
  * @author twister
  * 
@@ -14,11 +14,10 @@ import se.chalmers.roguelike.Entity;
 public class Inventory implements IComponent {
 
 	private ArrayList<Entity> items;
-	
 	private int maxSize;
 
 	public Inventory(ArrayList<Entity> a) {
-		maxSize = 36; // TODO magic numberz
+		maxSize = 36; // TODO fixed size
 		items = a;
 	}
 
@@ -41,14 +40,15 @@ public class Inventory implements IComponent {
 	public void deleteItem(Entity e) {
 		items.remove(e);
 	}
+
 	/**
 	 * Boolean to return if the current inventory is full.
+	 * 
 	 * @return
 	 */
 	public boolean isFull() {
 		return items.size() >= maxSize;
 	}
-	
 
 	public int getSize() {
 		return items.size();
@@ -56,12 +56,9 @@ public class Inventory implements IComponent {
 
 	public IComponent clone() {
 		ArrayList<Entity> copiedItems = new ArrayList<Entity>();
-		for(Entity e : items) {
+		for (Entity e : items) {
 			copiedItems.add(e.clone());
 		}
 		return new Inventory(copiedItems);
 	}
-
-
-
 }

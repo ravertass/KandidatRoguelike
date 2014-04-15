@@ -2,7 +2,6 @@ package se.chalmers.roguelike.Systems;
 
 import java.util.ArrayList;
 
-import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.Direction;
@@ -112,16 +111,9 @@ public class MoveSystem implements ISystem{
 		int oldx = pos.getX();
 		int oldy = pos.getY();
 		if(world.isWalkable(newx, newy)){
-//			System.out.println(e + "MOVES");
-//			world.getTile(oldx, oldy).removeEntity(e);
 			world.removeEntity(oldx, oldy, e);
 			pos.set(newx,newy);
-//			world.getTile(newx, newy).addEntity(e);
 			world.addEntity(newx, newy, e);
-			if(e.containsComponent(Engine.CompPlayer)){
-				System.out.println("Moved to X: "+newx+" Y:"+newy+" dungeonID: "+world);
-			}
-			
 		}
 		turns.decreaseTurnsLeft();
 		dir.setDirection(direction);
@@ -145,5 +137,4 @@ public class MoveSystem implements ISystem{
 	public void removeEntity(Entity entity) {
 		entities.remove(entity);
 	}
-
 }

@@ -52,6 +52,10 @@ public class PlayerInputSystem implements ISystem, Observer {
 		
 	}
 	
+	/**
+	 * Sets a new camera
+	 * @param c the new camera
+	 */
 	public void setCamera(Camera c) {
 		this.camera = c;
 	}

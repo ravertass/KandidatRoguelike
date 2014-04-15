@@ -138,8 +138,7 @@ public class Dungeon {
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
 		this.tiles = tiles;
-		// this.setEnemies(enemies);
-		// entities.addAll(enemies);
+
 		for (Entity e : entities) {
 			Position pos = e.getComponent(Position.class);
 			addEntity(pos.getX(), pos.getY(), e);
@@ -210,12 +209,10 @@ public class Dungeon {
 	}
 
 	public Dungeon getPreviousDungeonLevel() {
-		System.out.println("getting prev " + this);
 		return previousDungeonLevel;
 	}
 
 	public void setPreviousDungeonLevel(Dungeon previousDungeonLevel) {
-		System.out.println("setting prev " + this);
 		this.previousDungeonLevel = previousDungeonLevel;
 	}
 

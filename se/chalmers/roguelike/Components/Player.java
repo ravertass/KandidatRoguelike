@@ -1,14 +1,10 @@
 package se.chalmers.roguelike.Components;
 
 /**
- * 
- * For now, this is only used as a flag.
- *
+ * A flag for player
  */
-public class Player implements IComponent{
-	// lol
+public class Player implements IComponent {
 	public IComponent clone() {
-		return new Player(); //mer lol här alltså
+		return new Player();
 	}
-
 }

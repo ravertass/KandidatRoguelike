@@ -4,7 +4,7 @@ public class SpaceShip implements IComponent {
 
 	private int xGoal, yGoal, xSpeed, ySpeed;
 	private double speed;
-	
+
 	public SpaceShip(double speed) {
 		this.setSpeed(speed);
 		xGoal = -1;
@@ -52,9 +52,8 @@ public class SpaceShip implements IComponent {
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
-	
+
 	public IComponent clone() {
 		return new SpaceShip(speed);
 	}
-
 }

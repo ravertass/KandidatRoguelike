@@ -103,10 +103,6 @@ public class HighlightSystem implements ISystem, Observer {
 				; //TODO maybe add stuff here?
 			}
 			
-			// System.out.println("Line: " + line);
-
-
-
 			if(!brokenLine) {
 				for(Position p : aoe) {
 					Tile tile = dungeon.getTile(p.getX(), p.getY());
@@ -123,48 +119,12 @@ public class HighlightSystem implements ISystem, Observer {
 			}
 			entities.clear();
 		}
-
-		/*
-		 * 
-		 * for (Entity e : entities) { if (Mouse.isButtonDown(1) &&
-		 * buttonClicked == 0) { // System.out.println("FIRE!!"); resetMouse();
-		 * } else if (buttonClicked == 0) { e.getComponent(Position.class).set(
-		 * (clickPos.getX() / 16) + camera.getPosition().getX(),
-		 * (clickPos.getY() / 16) + camera.getPosition().getY()); //
-		 * e.getComponent(Sprite.class).setVisibility(true); resetMouse();
-		 * 
-		 * } else if (buttonClicked == 1) {
-		 * 
-		 * } else if (!Mouse.isButtonDown(1)) {
-		 * 
-		 * } else if (Mouse.isButtonDown(1)) {
-		 * 
-		 * 
-		 * 
-		 * //Gets all the positions between the player (currently just 1,1) and
-		 * the Mouse ArrayList<Position> line = Util.calculateLine(new
-		 * Position(1, 1), new Position((Mouse.getX() / 16) +
-		 * camera.getPosition().getX(), (Mouse.getY() / 16) +
-		 * camera.getPosition().getY()));
-		 * 
-		 * // System.out.println("Line: " + line);
-		 * 
-		 * for (Position pos : line) { // Insert code for highlighting all the
-		 * tiles // ec.createHighlight(); }
-		 * 
-		 * e.getComponent(Position.class).set( (Mouse.getX() / 16) +
-		 * camera.getPosition().getX(), (Mouse.getY() / 16) +
-		 * camera.getPosition().getY()); //
-		 * e.getComponent(Sprite.class).setVisibility(true);
-		 * 
-		 * }
-		 * 
-		 * }
-		 */
-
 	}
 
-	@Override
+	/**
+	 * Adds an entity from the system
+	 * @param entity entity that should be added
+	 */
 	public void addEntity(Entity entity) {
 
 		if ((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
@@ -174,26 +134,35 @@ public class HighlightSystem implements ISystem, Observer {
 		}
 	}
 
-	@Override
+	/**
+	 * Removes an entity from the system
+	 * @param entity entity that should be removed
+	 */
 	public void removeEntity(Entity entity) {
 		// entities.remove(entity);
-
 	}
 
+	/**
+	 * Sets a camera that is used by the highlight system
+	 * @param c the camera that should be used
+	 */
 	public void setCamera(Camera c) {
 		this.camera = c;
 	}
 
-	@Override
+	/**
+	 * notify receives messages from the input system
+	 */
 	public void notify(Enum<?> i) {
 		if (i.equals(InputManager.InputAction.MOUSECLICK)) {
 			clickPos = new Position(Mouse.getX(), Mouse.getY());
 			buttonClicked = Mouse.getEventButton();
-
 		}
-
 	}
 
+	/**
+	 * Resets the previous mouse click to -1
+	 */
 	public void resetMouse() {
 		this.buttonClicked = -1;
 		this.clickPos = noClick;

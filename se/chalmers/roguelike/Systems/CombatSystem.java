@@ -32,6 +32,11 @@ public class CombatSystem implements ISystem {
 	private Engine engine;
 	private ArrayList<Entity> todie;
 
+	/**
+	 * Initializes the combat system
+	 * 
+	 * @param engine the engine for the game
+	 */
 	public CombatSystem(Engine engine) {
 		this.engine = engine;
 		entities = new ArrayList<Entity>();
@@ -101,7 +106,6 @@ public class CombatSystem implements ISystem {
 					int aoeSize = e.getComponent(Weapon.class).getAoESize();
 					
 					//Checks for wall:
-					int i = 0;
 					for (Position pos : line) {
 						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
 						if (!tile.isWalkable() && tile.blocksLineOfSight()){
@@ -109,7 +113,6 @@ public class CombatSystem implements ISystem {
 							input.resetAttackCords();
 							return;
 						}
-						i++;
 					}
 					
 					// blow adds all positions around the center with a radius
@@ -180,12 +183,22 @@ public class CombatSystem implements ISystem {
 	}
 
 	/**
-	 * attack method
+	 * Attacks a specific position
+	 * 
+	 * @param targetpos the position that should be attacked
+	 * @param attacker the entity that is performing the attack
 	 */
 	public void attack(Position targetpos, Entity attacker) {
 		attack(targetpos.getX(), targetpos.getY(), attacker);
 	}
 
+	/**
+	 * Attacks a specific tile
+	 * 
+	 * @param x the X coordinate that should be attacked
+	 * @param y the Y coordinate that should be attacked
+	 * @param attacker the entity that is performing the attack
+	 */
 	public void attack(int x, int y, Entity attacker) {
 		Weapon weapon = attacker.getComponent(Weapon.class);
 		Attribute attackerStats = attacker.getComponent(Attribute.class);
@@ -247,8 +260,7 @@ public class CombatSystem implements ISystem {
 				break;
 			Tile tile = dungeon.getTile(pos.getX(), pos.getY());
 			Entity target = tile.containsCharacter();
-			// if there is a valid target, attack then break the
-			// loop
+			// if there is a valid target, attack then break the loop
 			if (target != null) {
 				targetpos = target.getComponent(Position.class);
 				break;

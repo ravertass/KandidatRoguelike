@@ -1,26 +1,29 @@
 package se.chalmers.roguelike.Components;
 
 /**
- * This is a class used to keep a flag. Can be useful for ECS.
- *
+ * A component to see if an entity is selected
  */
-public class SelectedFlag implements IComponent{
+public class SelectedFlag implements IComponent {
+
 	boolean flag;
-	public SelectedFlag(){
+
+	public SelectedFlag() {
 		this(false);
 	}
-	public SelectedFlag(boolean flag){
+
+	public SelectedFlag(boolean flag) {
 		this.flag = flag;
 	}
-	public boolean getFlag(){
+
+	public boolean getFlag() {
 		return flag;
 	}
-	public void setFlag(boolean flag){
+
+	public void setFlag(boolean flag) {
 		this.flag = flag;
 	}
-	
+
 	public IComponent clone() {
 		return new SelectedFlag(flag);
 	}
-
 }

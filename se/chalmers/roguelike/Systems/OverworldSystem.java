@@ -59,9 +59,6 @@ public class OverworldSystem implements ISystem, Observer {
 		menuButton = engine.entityCreator.createButton(Engine.screenWidth - 80, 200 - 32, "button_menu", 80,
 				32);
 		menuRect = new Rectangle(Engine.screenWidth - 80, 200 - 32, 80, 32);
-		// setupStars(); //TODO kommer troligt vara onödig då PlotSystem nu
-		// gör
-		// detta
 		unregister();
 	}
 
@@ -133,7 +130,6 @@ public class OverworldSystem implements ISystem, Observer {
 				System.out.println("PLAY PRESSED!");
 				loadDungeon();
 			} else if (menuRect.contains(mouseX, mouseY) && !popupActive) {
-				// engine.loadMainMenu();
 				newPopup("Whatever nulla incididunt, delectus tousled bespoke Marfa gluten-free. Cliche biodiesel quinoa letterpress incididunt Thundercats keffiyeh hoodie scenester actually. Vice disrupt VHS, pariatur eu esse messenger bag hashtag leggings. Viral velit vegan selfies gluten-free fashion axe, ex deep v Austin culpa skateboard church-key bespoke delectus twee. Pariatur kitsch fixie occaecat excepteur Williamsburg. Next level hoodie distillery fap, non mlkshk blog 8-bit chia minim Etsy. Sunt deserunt actually Banksy deep v.");
 			} else if (popupActive && popupRect.contains(mouseX, mouseY)) {
 				engine.removeEntity(popupButton);
@@ -192,16 +188,13 @@ public class OverworldSystem implements ISystem, Observer {
 					32);
 			playRect = new Rectangle(Engine.screenWidth - 80, 200, 80, 32);
 		} else {
-			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates
-																		// current
-																		// star
+			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates current star
 		}
 		String coords = star.x + "," + star.y;
 		activeStar = stars.get(coords);
 		activeStar.getComponent(SelectedFlag.class).setFlag(true);
 
-		// This is where we check if there's a VISIT plot action coupled with
-		// the star
+		// This is where we check if there's a VISIT plot action coupled with the star
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
 			if (action.getActionType() == Action.ActionType.VISIT) {
@@ -212,8 +205,7 @@ public class OverworldSystem implements ISystem, Observer {
 	}
 
 	/**
-	 * Unregisters all the entities from the engine and its systems. Used when
-	 * switching from the overworld.
+	 * Unregisters all the entities from the engine and its systems. Used when switching from the overworld.
 	 */
 	public void unregister() {
 
@@ -225,8 +217,7 @@ public class OverworldSystem implements ISystem, Observer {
 	}
 
 	/**
-	 * Registers all the stars and other entities. Used when restoring the
-	 * overworld system.
+	 * Registers all the stars and other entities. Used when restoring the overworld system.
 	 */
 	public void register() {
 		// Register all the stars
@@ -243,7 +234,10 @@ public class OverworldSystem implements ISystem, Observer {
 
 	/**
 	 * Creates a number of stars
+	 * 
+	 * Currently not used, plotsystem now spawns the stars
 	 */
+	@SuppressWarnings("unused")
 	private void setupStars() {
 		int radius = 50;
 
@@ -292,16 +286,8 @@ public class OverworldSystem implements ISystem, Observer {
 		TrueTypeFont ttf = new TrueTypeFont(font, false);
 		StringBuilder sb = new StringBuilder();
 		for (String word : s.split(" ")) {
-			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { // magic
-																	// number
-																	// //TODO
-																	// why is
-																	// this
-																	// happening
-																	// and why
-																	// should it
-																	// be so
-																	// high?
+			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { // magic number
+				//TODO why is this happening and why should it be so high?
 				sequencedString.add(sb.toString());
 				sb = new StringBuilder();
 			}
