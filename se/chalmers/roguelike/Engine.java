@@ -262,9 +262,6 @@ public class Engine {
 				interactionSys.addEntity(entity);
 				// Same as the comment above
 				overworldSys.addEntity(entity);
-				
-				//TODO fedt testigt
-				plotSys.addEntity(entity);
 			}
 		}
 

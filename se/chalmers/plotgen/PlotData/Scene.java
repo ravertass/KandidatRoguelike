@@ -16,10 +16,23 @@ public class Scene extends PlotThing {
 	private HashSet<Actor> actors;
 	private HashSet<Prop> props;
 	
+	private HashSet<Actor> snapActors;
+	private HashSet<Prop> snapProps;
+	
 	public Scene(String name) {
 		super(name);
 		actors = new HashSet<Actor>();
 		props = new HashSet<Prop>();
+	}
+	
+	public void saveSnapShot() {
+		snapActors = actors;
+		snapProps = props;
+	}
+	
+	public void loadSnapShot() {
+		actors = snapActors;
+		props = snapProps;
 	}
 
 	public HashSet<Actor> getActors() {

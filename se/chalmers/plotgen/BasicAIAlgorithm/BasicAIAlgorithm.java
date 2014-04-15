@@ -53,7 +53,7 @@ public class BasicAIAlgorithm {
 
 		PlotGraph plotGraph = new PlotGraph();
 		// Add the first vertex
-		PlotVertex rootVertex = new PlotVertex("This is a story");
+		PlotVertex rootVertex = new PlotVertex("This is the story");
 		plotGraph.addRootVertex(rootVertex);
 		PlotVertex lastVertex = rootVertex;
 
@@ -132,6 +132,16 @@ public class BasicAIAlgorithm {
 			return null;
 		}
 
+		for (Actor actor : actors) {
+			actor.loadSnapShot();
+		}
+		for (Prop prop : props) {
+			prop.loadSnapShot();
+		}
+		for (Scene scene : scenes) {
+			scene.loadSnapShot();
+		}
+		
 		return plotGraph;
 	}
 
@@ -210,6 +220,16 @@ public class BasicAIAlgorithm {
 			// Determine the index of the next scene
 			// We loop through the same scenes again and again until we're done
 			i = (i + 1) % scenes.size();
+		}
+		
+		for (Actor actor : actors) {
+			actor.saveSnapShot();
+		}
+		for (Prop prop : props) {
+			prop.saveSnapShot();
+		}
+		for (Scene scene : scenes) {
+			scene.saveSnapShot();
 		}
 
 		/*

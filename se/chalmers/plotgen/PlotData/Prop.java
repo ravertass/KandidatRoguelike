@@ -14,11 +14,27 @@ public class Prop extends PlotThing implements IPlotBody {
 
 	private Scene location;
 	private Actor owner;
+	
+	private Scene snapLocation;
+	private Actor snapOwner;
 
 	public Prop(String name) {
 		super(name);
 		location = null;
 		owner = null;
+		
+		snapLocation = null;
+		snapOwner = null;
+	}
+	
+	public void saveSnapShot() {
+		snapLocation = location;
+		snapOwner = owner;
+	}
+	
+	public void loadSnapShot() {
+		location = snapLocation;
+		owner = snapOwner;
 	}
 
 	/**

@@ -18,14 +18,34 @@ public class Actor extends PlotThing implements IPlotBody {
 	private Scene location;
 	private HashSet<Prop> props;
 	private boolean alive;
+	
+	private Scene snapLocation;
+	private HashSet<Prop> snapProps;
+	private boolean snapAlive;
 
 	public Actor(String name) {
 		super(name);
 		location = null;
 		props = new HashSet<Prop>();
 		alive = true;
+		
+		snapLocation = null;
+		snapProps = null;
+		snapAlive = true;
 	}
 
+	public void saveSnapShot() {
+		snapLocation = location;
+		snapProps = props;
+		snapAlive = alive;
+	}
+	
+	public void loadSnapShot() {
+		location = snapLocation;
+		props = snapProps;
+		alive = snapAlive;
+	}
+	
 	public Scene getLocation() {
 		return location;
 	}
