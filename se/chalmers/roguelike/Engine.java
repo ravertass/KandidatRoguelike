@@ -279,8 +279,7 @@ public class Engine {
 	 * The game loop. Handles what should run for each state.
 	 */
 	public void run() {
-		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR,
-				SpaceRace.SPACE_ALIEN);
+		
 
 		while (!Display.isCloseRequested()) {
 			if (gameState == GameState.DUNGEON) {
@@ -432,6 +431,8 @@ public class Engine {
 		spawnSystems();
 		registerInputSystems();
 		setCamera();
+		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR,
+				SpaceRace.SPACE_ALIEN);
 		loadOverworld();
 	}
 }
