@@ -36,8 +36,9 @@ public class InputManager implements Subject {
 	 * 
 	 */
 	public static enum InputAction {
-		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, SET_FULLSCREEN, MOUSECLICK, DO_NOTHING, DUMMY, LOOT, INTERACTION,
-		TURN_NORTH, TURN_SOUTH, TURN_WEST, TURN_EAST, NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, BACKSPACE, ENTER
+		GO_NORTH, GO_SOUTH, GO_WEST, GO_EAST, GO_NORTHEAST, GO_NORTHWEST, GO_SOUTHWEST, GO_SOUTHEAST, 
+		SET_FULLSCREEN, MOUSECLICK, DO_NOTHING, DUMMY, LOOT, INTERACTION, TURN_NORTH, TURN_SOUTH, TURN_WEST, 
+		TURN_EAST, NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, BACKSPACE, ENTER
 	}
 	
 	/**
@@ -159,8 +160,7 @@ public class InputManager implements Subject {
 		while (Mouse.next()) {
 			if (Mouse.getEventButtonState()) {
 				if (Engine.debug) {
-					System.out.println("Mouse click at X: " + Mouse.getX()
-							+ " Y: " + Mouse.getY());
+					System.out.println("Mouse click at X: " + Mouse.getX() + " Y: " + Mouse.getY());
 				}
 				notifyObservers(InputAction.MOUSECLICK);
 			}
