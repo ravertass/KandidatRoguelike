@@ -85,8 +85,12 @@ public class Entity {
 			componentKey |= Engine.CompInventory;
 		} else if(compClass == Text.class){
 			componentKey |= Engine.CompText;
-		} else if(compClass == Pocketable.class){
+		} else if(compClass == Pocketable.class) {
 			componentKey |= Engine.CompPocketable;
+		} else if(compClass == PlotLoot.class) {
+			componentKey |= Engine.CompPlotLoot;
+		} else if(compClass == Player.class) {
+			componentKey |= Engine.CompPlayer;
 		}
 	}
 	

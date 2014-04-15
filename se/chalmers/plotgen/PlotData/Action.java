@@ -169,4 +169,8 @@ public class Action {
 		return ((this.toString().equals(object.toString())) 
 				& (object instanceof Action));
 	}
+
+	public Actor getSubjectActor() {
+		return subject;
+	}
 }

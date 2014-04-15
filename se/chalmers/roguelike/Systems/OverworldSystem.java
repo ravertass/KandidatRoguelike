@@ -12,12 +12,18 @@ import org.lwjgl.input.Mouse;
 import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.EntityCreator;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.IComponent;
+import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.PlotAction;
+import se.chalmers.roguelike.Components.PlotLoot;
+import se.chalmers.roguelike.Components.Pocketable;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
+import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.World.CellularLevelGenerator;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.LevelGenerator;
@@ -41,6 +47,7 @@ public class OverworldSystem implements ISystem, Observer {
 	private ArrayList<String> popupText;
 	private Entity popup;
 	private LinkedList<String> popupQueue;
+	private Entity player;
 
 	/**
 	 * Sets up a new instance of the overworld system.
@@ -79,11 +86,53 @@ public class OverworldSystem implements ISystem, Observer {
 				newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
 				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
 			}
+			
+			// This is where we check if there's a GIVE plot action coupled with
+			// the star
+			if (action.getActionType() == Action.ActionType.GIVE) {
+				
+				if (activeStar.getComponent(PlotAction.class).isMainCharacterSubject()) {
+					// If the main character should give the item to another character
+					
+					// Check if the player has the relevant item
+					boolean itemExists = false;
+					ArrayList<Entity> items = player.getComponent(Inventory.class).getItems();
+					for (Entity item : items) {
+						if (item.containsComponent(Engine.CompPlotLoot)) {
+							if (item.getComponent(PlotLoot.class).getProp().equals(action.getObjectProp())) {
+								itemExists = true;
+								break;
+							}
+						}
+					}
+					
+					if (itemExists) {
+						newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
+						activeStar.getComponent(PlotAction.class).setActionPerformed(true);
+					}
+				} else {
+					// If the main character should be given the item
+
+					// Create the item
+					ArrayList<IComponent> components = new ArrayList<IComponent>();
+					String name = "(Loot) " + action.getObjectProp();
+					String sprite = "keycard_red";
+					components.add(new Sprite(sprite));
+					components.add(new Pocketable());
+					components.add(new PlotLoot(action.getObjectProp()));
+					Entity item = EntityCreator.createEntity(name, components);
+					
+					player.getComponent(Inventory.class).addItem(item);
+					newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
+					activeStar.getComponent(PlotAction.class).setActionPerformed(true);
+				}
+			}
 
 			Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class).getDungeon();
-			// This is where we check if there's a KILL plot action coupled with
+			// This is where we check if there's a KILL or TAKE plot action coupled with
 			// the star, and if the player has performed it
-			if ((action.getActionType() == Action.ActionType.KILL) & (starDungeon != null)) {
+			if (((action.getActionType() == Action.ActionType.KILL) || (action.getActionType() == Action.ActionType.TAKE))
+					&& (starDungeon != null)) {
 				if (starDungeon.getPlotAccomplished()) {
 					newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
 					activeStar.getComponent(PlotAction.class).setActionPerformed(true);
@@ -98,10 +147,16 @@ public class OverworldSystem implements ISystem, Observer {
 	 * @param entity the entity that should be added to the system
 	 */
 	public void addEntity(Entity entity) {
-		int x = entity.getComponent(Position.class).getX();
-		int y = entity.getComponent(Position.class).getY();
-		starRectangles.add(new Rectangle(x, y, 16, 16));// test case
-		stars.put((x + "," + y), entity);
+		if (entity.containsComponent(Engine.CompPlayer)) {
+			// The entity is the player
+			player = entity;
+		} else {
+			// It's a star
+			int x = entity.getComponent(Position.class).getX();
+			int y = entity.getComponent(Position.class).getY();
+			starRectangles.add(new Rectangle(x, y, 16, 16));// test case
+			stars.put((x + "," + y), entity);
+		}
 	}
 
 	/**

@@ -68,6 +68,7 @@ public class Engine {
 	public static final long CompDoubleName = 1<<componentID++;
 	public static final long CompUsable = 1<<componentID++;
 	public static final long CompText = 1 << componentID++;
+	public static final long CompPlotLoot = 1 << componentID++;
 	
 	// Constants: System requirements:
 
@@ -265,11 +266,22 @@ public class Engine {
 				inventorySys.addEntity(entity);
 			}
 		}
+		
 		if(entity.containsComponent(CompPlayer)){
 			if(remove){
 				interactionSys.removeEntity(entity);
+				// This breaks the entity-component pattern a bit, but is needed,
+				// since the player is needed in the OverworldSystem
+				// Also stars are added to the OverworldSystem (see above)
+				// TODO: Maybe the Player should be reachable for all systems from the Engine?
+				overworldSys.removeEntity(entity);
 			} else {
 				interactionSys.addEntity(entity);
+				// Same as the comment above
+				overworldSys.addEntity(entity);
+				
+				//TODO fedt testigt
+				plotSys.addEntity(entity);
 			}
 		}
 
@@ -340,7 +352,7 @@ public class Engine {
 		plotSys = new PlotSystem(this, plotEngine);
 		overworldSys = new OverworldSystem(this);
 //		mainmenuSys = new MainMenuSystem(this);
-		inventorySys = new InventorySystem();
+		inventorySys = new InventorySystem(this);
 		interactionSys = new InteractionSystem(this);
 		itemSys = new ItemSystem();
 	}
@@ -435,5 +447,6 @@ public class Engine {
 		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR,
 				SpaceRace.SPACE_ALIEN);
 		loadOverworld();
+		addEntity(player);
 	}
 }

@@ -14,8 +14,14 @@ import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.EntityCreator;
 import se.chalmers.roguelike.Components.DungeonComponent;
+import se.chalmers.roguelike.Components.IComponent;
+import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.PlotAction;
+import se.chalmers.roguelike.Components.PlotLoot;
+import se.chalmers.roguelike.Components.Pocketable;
+import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.World.Dungeon;
 
 public class PlotSystem implements ISystem {
@@ -24,7 +30,7 @@ public class PlotSystem implements ISystem {
 	private PlotEngine plotEngine;
 	private ArrayList<Scene> scenes;
 	private Actor mainCharacter;
-	
+
 	private Actor secondCharacter;
 	private Prop plotItem;
 
@@ -36,6 +42,10 @@ public class PlotSystem implements ISystem {
 	private boolean starsCreated;
 
 	private PlotGraph plotGraph;
+
+	//TODO fedt testigt
+	private Prop objectProp;
+	private Entity player;
 
 	public PlotSystem(Engine engine, PlotEngine plotEngine) {
 		starsCreated = false;
@@ -62,13 +72,23 @@ public class PlotSystem implements ISystem {
 			}
 
 			if (edge.getAction().getActionType() == Action.ActionType.MEET) {
+				//TODO fedt testigt
+				//TODO test-kod
+				ArrayList<IComponent> components = new ArrayList<IComponent>();
+				String name = "(Loot) " + objectProp;
+				String sprite = "keycard_blue";
+				components.add(new Sprite(sprite));
+				components.add(new Pocketable());
+				components.add(new PlotLoot(objectProp));
+				Entity plotThing = EntityCreator.createEntity(name, components);
+				engine.addEntity(plotThing);
+				player.getComponent(Inventory.class).addItem(plotThing);
+
 				star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
 			}
-			
+
 			if (edge.getAction().getActionType() == Action.ActionType.GIVE) {
 				star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
-				//TODO lägg till en massa saker
-				// Det finns en Player-entitet som har en Inventory-komponent, som är relevant
 			}
 
 			if (edge.getAction().getActionType() == Action.ActionType.KILL) {
@@ -91,6 +111,8 @@ public class PlotSystem implements ISystem {
 
 			star.getComponent(PlotAction.class).setActionPerformed(false);
 			star.getComponent(PlotAction.class).setAction(edge.getAction());
+			star.getComponent(PlotAction.class).setMainCharacterIsSubject(
+					edge.getAction().getSubjectActor().equals(mainCharacter));
 			star.getComponent(PlotAction.class).setPlotText(
 					plotGraph.getAdjacentVertices().get(edge).getPlotText());
 		}
@@ -156,6 +178,9 @@ public class PlotSystem implements ISystem {
 	public void addEntity(Entity entity) {
 		// TODO Auto-generated method stub
 		// Osäkert om denna behövs?
+
+		//TODO fedt testigt
+		player = entity;
 	}
 
 	@Override
@@ -170,9 +195,10 @@ public class PlotSystem implements ISystem {
 
 		secondCharacter = new Actor("SecondChar");
 		secondCharacter.setLocation(scenes.get(2));
-		
+
 		plotItem = new Prop("PlotItem");
-		plotItem.setLocation(scenes.get(0));
+		//plotItem.setLocation(scenes.get(0));
+		plotItem.setOwner(mainCharacter);
 
 		plotGraph = new PlotGraph();
 
@@ -197,14 +223,23 @@ public class PlotSystem implements ISystem {
 				"You met this guy, You met this guy, You met this guy, You met this guy, You met this guy, You met this guy, You met this guy!");
 		plotGraph.addVertex(thirdVertex, fourthVertex, thirdEdge);
 
-		PlotEdge fourthEdge = new PlotEdge(new Action(Action.ActionType.KILL, mainCharacter, secondCharacter));
+		PlotEdge fourthEdgeB = new PlotEdge(new Action(Action.ActionType.GIVE, secondCharacter,
+				mainCharacter, plotItem));
 
-		PlotVertex fifthVertex = new PlotVertex("A boss!");
-		plotGraph.addVertex(fourthVertex, fifthVertex, fourthEdge);
-		
-		PlotEdge fifthEdge = new PlotEdge(new Action(Action.ActionType.TAKE, mainCharacter, plotItem));
+		PlotVertex fifthVertexB = new PlotVertex("You gave something away");
+		plotGraph.addVertex(fourthVertex, fifthVertexB, fourthEdgeB);
 
-		PlotVertex sixthVertex = new PlotVertex("A plot item!");
-		plotGraph.addVertex(fifthVertex, sixthVertex, fifthEdge);
+		//TODO fedt testigt
+		objectProp = plotItem;
+
+		//		PlotEdge fourthEdge = new PlotEdge(new Action(Action.ActionType.KILL, mainCharacter, secondCharacter));
+
+		//		PlotVertex fifthVertex = new PlotVertex("A boss!");
+		//		plotGraph.addVertex(fourthVertex, fifthVertex, fourthEdge);
+
+		//		PlotEdge fifthEdge = new PlotEdge(new Action(Action.ActionType.TAKE, mainCharacter, plotItem));
+
+		//		PlotVertex sixthVertex = new PlotVertex("A plot item!");
+		//		plotGraph.addVertex(fifthVertex, sixthVertex, fifthEdge);
 	}
 }

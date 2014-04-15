@@ -4,16 +4,22 @@ import se.chalmers.plotgen.PlotData.Action;
 
 public class PlotAction implements IComponent {
 
-	Action action;
-	String plotText;
-	Boolean actionPerformed;
+	private Action action;
+	private String plotText;
+	private Boolean actionPerformed;
+	private Boolean mainCharacterIsSubject;
 
 	public PlotAction() {
+		mainCharacterIsSubject = false;
 		actionPerformed = false;
 		action = null;
 		plotText = null;
 	}
 
+	public boolean isMainCharacterSubject() {
+		return mainCharacterIsSubject;
+	}
+	
 	public Action getAction() {
 		return action;
 	}
@@ -37,12 +43,17 @@ public class PlotAction implements IComponent {
 	public void setActionPerformed(boolean actionPerformed) {
 		this.actionPerformed = actionPerformed;
 	}
+	
+	public void setMainCharacterIsSubject(boolean mainCharacterIsSubject) {
+		this.mainCharacterIsSubject = mainCharacterIsSubject;
+	}
 
 	public IComponent clone() {
 		PlotAction pa = new PlotAction();
 		pa.setAction(action);
 		pa.setActionPerformed(actionPerformed);
 		pa.setPlotText(plotText);
+		pa.setMainCharacterIsSubject(mainCharacterIsSubject);
 		return pa;
 	}
 }

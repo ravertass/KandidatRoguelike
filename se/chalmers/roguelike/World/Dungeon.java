@@ -17,6 +17,7 @@ import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Inventory;
+import se.chalmers.roguelike.Components.PlotLoot;
 import se.chalmers.roguelike.Components.Pocketable;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
@@ -298,6 +299,7 @@ public class Dungeon {
 		String sprite = "keycard_blue";
 		components.add(new Sprite(sprite));
 		components.add(new Pocketable());
+		components.add(new PlotLoot(objectProp));
 		addPlotThing(components, name);
 	}
 }
