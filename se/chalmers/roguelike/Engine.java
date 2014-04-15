@@ -14,7 +14,8 @@ import se.chalmers.roguelike.Systems.InteractionSystem;
 import se.chalmers.roguelike.Systems.InventorySystem;
 import se.chalmers.roguelike.Systems.ItemSystem;
 import se.chalmers.roguelike.Systems.LevelingSystem;
-import se.chalmers.roguelike.Systems.MainMenuSystem;
+import se.chalmers.roguelike.Systems.MenuSystem;
+import se.chalmers.roguelike.Systems.MenuSystem.MenuState;
 import se.chalmers.roguelike.Systems.MobSpriteSystem;
 import se.chalmers.roguelike.Systems.MoveSystem;
 import se.chalmers.roguelike.Systems.OverworldSystem;
@@ -81,7 +82,7 @@ public class Engine {
 	public static final long overworldReq = CompDungeon | CompSelectedFlag | CompPosition;
 
 
-//	private ArrayList<Entity> entities; // useless?
+
 	public EntityCreator entityCreator;
 	private Dungeon dungeon;
 	public static long seed;
@@ -97,7 +98,7 @@ public class Engine {
 	private CombatSystem combatsystem;
 	private LevelingSystem levelingSys;
 	private OverworldSystem overworldSys;
-	private MainMenuSystem mainmenuSys;
+	private MenuSystem menuSys;
 	private InventorySystem inventorySys;
 	private InteractionSystem interactionSys;
 	private PlotSystem plotSys;
@@ -106,7 +107,7 @@ public class Engine {
 	private ItemSystem itemSys;
 
 	public enum GameState {
-		DUNGEON, MAIN_MENU, OVERWORLD
+		DUNGEON, MAIN_MENU, OVERWORLD, GAMEOVER
 	}
 
 	public static GameState gameState; // or private?
@@ -120,9 +121,9 @@ public class Engine {
 		gameState = GameState.MAIN_MENU;
 		seed = 1235L; // TODO: Switch to new Random().nextLong();
 		renderingSys = new RenderingSystem();
-		mainmenuSys = new MainMenuSystem(this);
+		menuSys = new MenuSystem(this);
 		inputManager = new InputManager(this); // required to start the game
-		inputManager.addObserver(mainmenuSys);
+		inputManager.addObserver(menuSys);
 	}
 
 	/**
@@ -292,7 +293,12 @@ public class Engine {
 			} else if (gameState == GameState.MAIN_MENU) {
 				renderingSys.update();
 				inputManager.update();
-				mainmenuSys.update();
+				menuSys.update();
+			} else if (gameState == GameState.GAMEOVER) {
+//				highlightSys.update(dungeon);
+				renderingSys.update();
+				inputManager.update();
+				menuSys.update();
 			}
 		}
 		Display.destroy();
@@ -384,7 +390,7 @@ public class Engine {
 			dungeon.unregister(this);
 			System.out.println("Unregister of dungeon done");
 		} else if (gameState == GameState.MAIN_MENU) {
-			mainmenuSys.unregister();
+			menuSys.unregister();
 			System.out.println("Unregister of mainmenu done");
 		}
 		if (overworldSys != null) {
@@ -403,7 +409,7 @@ public class Engine {
 		} else if (gameState == GameState.OVERWORLD) {
 			overworldSys.unregister();
 		}
-		mainmenuSys.register();
+		menuSys.register();
 		gameState = GameState.MAIN_MENU;
 	}
 
@@ -417,5 +423,14 @@ public class Engine {
 		setCamera();
 		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		loadOverworld();
+	}
+	
+	public void gameOver(){
+		if(gameState == GameState.DUNGEON){
+			dungeon.unregister(this);
+		}
+		highlightSys.unregister();
+		gameState = GameState.GAMEOVER;
+		menuSys.setState(MenuState.GAMEOVER);
 	}
 }

@@ -298,7 +298,8 @@ public class RenderingSystem implements ISystem {
 				glColor3f(1.0f, 1.0f, 1.0f);
 				font.drawString(Engine.screenWidth - 170, 300, "\n\nVisited before: " + visited);
 			}
-		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
+		} else if (Engine.gameState == Engine.GameState.MAIN_MENU || 
+				Engine.gameState == Engine.GameState.GAMEOVER) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
 				Position pos = e.getComponent(Position.class);

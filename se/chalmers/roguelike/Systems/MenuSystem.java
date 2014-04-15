@@ -18,19 +18,19 @@ import se.chalmers.roguelike.util.Observer;
 /**
  * The main menu system sets up and manages the main menu of the game.
  */
-public class MainMenuSystem implements ISystem, Observer {
+public class MenuSystem implements ISystem, Observer {
 
 	private Rectangle playRect, optionsRect, exitRect, loadRect, tutorialPlayRect, newGameRect;
 	private Entity playButton, optionsButton, exitButton, loadButton, tutorialPlayButton, seedInfo, seedBox,
 			newGameButton, tutorial;
 
-	private ArrayList<Entity> buttons;
+	private ArrayList<Entity> activeButtons;
 
 	public enum MenuState {
-		DEFAULT, NEWGAME, TUTORIAL
+		MAINMENU, NEWGAME, TUTORIAL, GAMEOVER
 	}
 
-	private MenuState state = MenuState.DEFAULT;
+	private MenuState state = MenuState.MAINMENU;
 
 	private Engine engine;
 
@@ -42,29 +42,29 @@ public class MainMenuSystem implements ISystem, Observer {
 	 * @param e
 	 *            engine being used by the game
 	 */
-	public MainMenuSystem(Engine e) {
+	public MenuSystem(Engine e) {
 		this.engine = e;
 		tmpSeed = String.valueOf(Engine.seed);
-		buttons = new ArrayList<Entity>();
+		activeButtons = new ArrayList<Entity>();
 
 		playButton = engine.entityCreator.createButton(Engine.screenWidth / 2 - 141,
 				Engine.screenHeight / 2 - 30 + 120, "play_button", 242, 62);
-		buttons.add(playButton);
+		activeButtons.add(playButton);
 		playRect = new Rectangle(Engine.screenWidth / 2 - 141, Engine.screenHeight / 2 - 30 + 120, 242, 60);
 
 		loadButton = engine.entityCreator.createButton(Engine.screenWidth / 2 - 141,
 				Engine.screenHeight / 2 - 30 + 60, "load_button", 242, 62);
-		buttons.add(loadButton);
+		activeButtons.add(loadButton);
 		loadRect = new Rectangle(Engine.screenWidth / 2 - 141, Engine.screenHeight / 2 - 30 + 60, 242, 60);
 
 		optionsButton = engine.entityCreator.createButton(Engine.screenWidth / 2 - 141,
 				Engine.screenHeight / 2 - 30, "options_button", 242, 62);
-		buttons.add(optionsButton);
+		activeButtons.add(optionsButton);
 		optionsRect = new Rectangle(Engine.screenWidth / 2 - 141, Engine.screenHeight / 2 - 30, 242, 60);
 
 		exitButton = engine.entityCreator.createButton(Engine.screenWidth / 2 - 141,
 				Engine.screenHeight / 2 - 30 - 60, "exit_button", 242, 62);
-		buttons.add(exitButton);
+		activeButtons.add(exitButton);
 		exitRect = new Rectangle(Engine.screenWidth / 2 - 141, Engine.screenHeight / 2 - 30 - 60, 242, 60);
 
 	}
@@ -79,7 +79,7 @@ public class MainMenuSystem implements ISystem, Observer {
 		int mouseX = Mouse.getX();
 		int mouseY = Mouse.getY();
 		resetButtonTextures();
-		if (state == MenuState.DEFAULT) {
+		if (state == MenuState.MAINMENU) {
 			if (playRect != null && playRect.contains(mouseX, mouseY)) {
 				playButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
 			} else if (loadRect != null && loadRect.contains(mouseX, mouseY)) {
@@ -123,9 +123,9 @@ public class MainMenuSystem implements ISystem, Observer {
 		if (Engine.gameState == Engine.GameState.MAIN_MENU && i.equals(InputManager.InputAction.MOUSECLICK)) {
 			int mouseX = Mouse.getX();
 			int mouseY = Mouse.getY();
-			if (state == MenuState.DEFAULT) {
+			if (state == MenuState.MAINMENU) {
 				if (playRect != null && playRect.contains(mouseX, mouseY)) {
-					newGame();
+					newGameMenu();
 				} else if (loadRect != null && loadRect.contains(mouseX, mouseY)) {
 					// Temporarily using the load button for tutorial
 					tutorial();
@@ -137,10 +137,7 @@ public class MainMenuSystem implements ISystem, Observer {
 				}
 			} else if (state == MenuState.TUTORIAL) {
 				if (tutorialPlayRect != null && tutorialPlayRect.contains(mouseX, mouseY)) {
-					engine.removeEntity(tutorialPlayButton);
-					engine.removeEntity(tutorial);
-					showMenuButtons(true);
-					state = MenuState.DEFAULT;
+					mainMenu();
 				}
 			} else if (state == MenuState.NEWGAME) {
 				if (newGameRect != null && newGameRect.contains(mouseX, mouseY)) {
@@ -149,7 +146,7 @@ public class MainMenuSystem implements ISystem, Observer {
 			}
 		}
 
-		if (Engine.gameState == Engine.GameState.MAIN_MENU) {
+		if (Engine.gameState == Engine.GameState.MAIN_MENU && state == MenuState.NEWGAME) {
 			if (i == InputAction.NUM_0) {
 				seedAdd(0);
 			} else if (i == InputAction.NUM_1) {
@@ -186,7 +183,7 @@ public class MainMenuSystem implements ISystem, Observer {
 	 * will register all the entities with engine.
 	 */
 	public void register() {
-		for (Entity e : buttons) {
+		for (Entity e : activeButtons) {
 			if (e != null)
 				engine.addEntity(e);
 		}
@@ -197,7 +194,7 @@ public class MainMenuSystem implements ISystem, Observer {
 	 * Unregisters all the menu buttons from the engine
 	 */
 	public void unregister() {
-		for (Entity e : buttons) {
+		for (Entity e : activeButtons) {
 			engine.removeEntity(e);
 		}
 	}
@@ -218,7 +215,8 @@ public class MainMenuSystem implements ISystem, Observer {
 	private void tutorial() {
 		state = MenuState.TUTORIAL;
 
-		showMenuButtons(false);
+		unregister();
+//		showMenuButtons(false);
 
 		int width = 242;
 		int height = 64;
@@ -232,6 +230,7 @@ public class MainMenuSystem implements ISystem, Observer {
 		} else {
 			engine.addEntity(tutorialPlayButton);
 		}
+		
 		if(tutorial == null){
 			tutorial = new Entity("Tutorial");
 			Sprite sprite = new Sprite("misc/tutorial", 800, 600);
@@ -241,35 +240,16 @@ public class MainMenuSystem implements ISystem, Observer {
 			tutorial.add(pos);
 		}
 		engine.addEntity(tutorial);
-	}
-
-	/**
-	 * Registers or unregisters the menu buttons from the engine based on the
-	 * new status
-	 * 
-	 * @param newStatus
-	 *            false if they should be unregistered and not shown, true to
-	 *            register and show the buttons
-	 */
-	private void showMenuButtons(boolean newStatus) {
-		if (!newStatus) {
-			engine.removeEntity(playButton);
-			engine.removeEntity(loadButton);
-			engine.removeEntity(optionsButton);
-			engine.removeEntity(exitButton);
-		} else {
-			engine.addEntity(playButton);
-			engine.addEntity(loadButton);
-			engine.addEntity(optionsButton);
-			engine.addEntity(exitButton);
-		}
+		activeButtons.add(tutorialPlayButton);
+		activeButtons.add(tutorial);
 	}
 
 	/**
 	 * Sets up the new game screen where seed can be entered
 	 */
-	private void newGame() {
-		showMenuButtons(false);
+	private void newGameMenu() {
+		//showMenuButtons(false);
+		unregister();
 		state = MenuState.NEWGAME;
 		if (seedInfo == null) {
 			seedInfo = new Entity("Seed information");
@@ -289,9 +269,12 @@ public class MainMenuSystem implements ISystem, Observer {
 			int y = Engine.screenHeight - 146 - height - 20;
 			newGameRect = new Rectangle(x, y, width, height);
 			newGameButton = engine.entityCreator.createButton(x, y, "play_button", width, height);
+			activeButtons.add(newGameButton);
 		}
 		engine.addEntity(seedInfo);
 		engine.addEntity(seedBox);
+		activeButtons.add(seedInfo);
+		activeButtons.add(seedBox);
 	}
 
 	/**
@@ -312,9 +295,7 @@ public class MainMenuSystem implements ISystem, Observer {
 	}
 	
 	private void loadNewGame(){
-		engine.removeEntity(newGameButton);
-		engine.removeEntity(seedBox);
-		engine.removeEntity(seedInfo);
+		unregister();
 		if (tmpSeed.length() == 0) {
 			System.out.println("Seed required - random being used");
 			Engine.seed = new Random().nextLong();
@@ -322,5 +303,22 @@ public class MainMenuSystem implements ISystem, Observer {
 			Engine.seed = Long.parseLong(tmpSeed);
 		}
 		engine.newGame();
+	}
+	
+	private void mainMenu() {
+		unregister();
+		engine.addEntity(playButton);
+		engine.addEntity(loadButton);
+		engine.addEntity(optionsButton);
+		engine.addEntity(exitButton);
+		activeButtons.add(playButton);
+		activeButtons.add(loadButton);
+		activeButtons.add(optionsButton);
+		activeButtons.add(exitButton);
+		state = MenuState.MAINMENU;
+	}
+	
+	public void setState(MenuState state){
+		this.state = state;
 	}
 }

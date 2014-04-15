@@ -155,7 +155,10 @@ public class CombatSystem implements ISystem {
 			if (e.getComponent(MobType.class).getType() == MobType.Type.BOSS) {
 				dungeon.setPlotAccomplished(true);
 			}
-			
+			if (e.containsComponent(Engine.CompPlayer)){
+				engine.gameOver();
+				System.out.println("Game over, best wishes from the combat system");
+			}
 			dungeon.getTile(e.getComponent(Position.class).getX(),
 					e.getComponent(Position.class).getY()).removeEntity(e);
 			engine.removeEntity(e);
@@ -209,10 +212,8 @@ public class CombatSystem implements ISystem {
 		int damage = -1;
 		if (target != null) {
 			targetStats = target.getComponent(Attribute.class);
-			int attackroll = Dice.roll(3, 10)
-					+ attackerStats.getMod(attackerStats.perception());
-			System.out.println("Attackroll: " + attackroll
-					+ "| Defender Agility: " + targetStats.agility());
+			int attackroll = Dice.roll(3, 10)+ attackerStats.getMod(attackerStats.perception());
+			System.out.println("Attackroll: " + attackroll	+ "| Defender Agility: " + targetStats.agility());
 			if (attackroll >= targetStats.agility()) {
 				damage = weapon.getDamage();
 				if (damage >= 0) {
@@ -221,8 +222,7 @@ public class CombatSystem implements ISystem {
 						attackerStats.increaseExperience(targetStats.xpyield());
 					}
 				}
-				System.out.println(attacker + " attacks " + target + " for "
-						+ damage + " damage.");
+				System.out.println(attacker + " attacks " + target + " for " + damage + " damage.");
 			} else {
 				System.out.println(attacker + " missed.");
 			}
