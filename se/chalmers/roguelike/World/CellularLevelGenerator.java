@@ -281,16 +281,32 @@ public class CellularLevelGenerator {
 				}
 
 				if (adjacentcount1 <= 0) {
-					if (rand.nextInt(100) + 1 <= 4)
-						dungeonEntities.add(spawnEnemy(x, y));
-					if (rand.nextInt(100) + 1 <= 8) {
-						Entity gold = EntityCreator.createGold(x, y, 100);
-						dungeonEntities.add(gold);
+					if(distanceFromStart(x,y) > 10) {
+						if (rand.nextInt(100) + 1 <= 4)
+							dungeonEntities.add(spawnEnemy(x, y));
+						if (rand.nextInt(100) + 1 <= 8) {
+							Entity gold = EntityCreator.createGold(x, y, 100);
+							dungeonEntities.add(gold);
+						}
+					
 					}
 				}
 
 			}
 		}
+	}
+	
+	private double distanceFromStart(int x, int y) {
+		
+		int x2 = startPos.getX();
+		int y2 = startPos.getY();
+		
+		int dx = Math.abs(x-x2);
+		int dy = Math.abs(y-y2);
+		
+		double distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+		
+		return distance;
 	}
 	
 	private void generatePlotThingPosition() {

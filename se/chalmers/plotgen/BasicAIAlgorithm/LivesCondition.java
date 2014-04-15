@@ -2,6 +2,9 @@ package se.chalmers.plotgen.BasicAIAlgorithm;
 
 import se.chalmers.plotgen.PlotData.Actor;
 
+/**
+ * A condition that checks if an actor is alive
+ */
 public class LivesCondition implements ICondition {
 
 	private Actor actor;

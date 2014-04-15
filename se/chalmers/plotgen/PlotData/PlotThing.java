@@ -1,10 +1,8 @@
 package se.chalmers.plotgen.PlotData;
 
 /**
- * The superclass for subjects and objects in plot actions, that is, actors and
- * props (and in the future, maybe scenes).
- * 
- * @author fabian
+ * The superclass for subjects and objects in plot actions, that is, actors,
+ * props and scenes.
  */
 public class PlotThing {
 	private String name;

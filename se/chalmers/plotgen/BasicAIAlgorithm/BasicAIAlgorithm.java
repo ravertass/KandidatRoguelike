@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
-import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
@@ -14,34 +13,33 @@ import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
 
 // TODO:
-// - Se till att algoritmen fungerar med generell indata [check-ish] (verkar fungera, ej övertestat)
-// - Gör så att PlotTest fungerar (eller gör en bedömning om det bör fungera eller ej)
 // - Refaktorera, plocka ut metoder som kan vara användbara även för en AdvancedAIAlgorithm
-// - Gör så att huvudpersonen inte kan dö
 // - Gör så att de noder som genereras är lite vettigare (enkel lösning: gör så de baseras på allas handlingar)
-// - Bevisa att olösbara problem kan uppstå
-// - Lös olösbara problem? (typ kasta ut dem och starta om)
 // - Skriv ordentligt om algoritmen
 // - Gör seriösa tester på algoritmen, med olika antal SAPs osv.
-// - Lös problemet där huvudpersonen önskar en person död, men inte dödar personen själv
-// - Se till så att även operatorer där huvudpersonen är objekt översätts till kanter i grafen
+// - Lös problemet där huvudpersonen önskar en person död, men inte dödar personen själv [check, va?]
+// - Gör MediumAIAlgorithm
 
+/**
+ * This class takes SAPs as input and creates Agents from the Actors. It then,
+ * when using createPlot(), simulates a story where the Agents try to accomplish
+ * their goals by using different operators (performing actions). A plot graph is
+ * returned.
+ */
 public class BasicAIAlgorithm {
 
 	private ArrayList<Scene> scenes;
 	private ArrayList<Actor> actors;
 	private ArrayList<Prop> props;
-	
+
 	private ArrayList<Agent> agents;
 	private Agent mainAgent;
 	private HashMap<Agent, ArrayList<Operator>> operators;
-	
+
 	private Random random;
 
-	private PlotGraph plotGraph;
-
-	public BasicAIAlgorithm(ArrayList<Scene> scenes, ArrayList<Actor> actors,
-			ArrayList<Prop> props, Random random) {
+	public BasicAIAlgorithm(ArrayList<Scene> scenes, ArrayList<Actor> actors, ArrayList<Prop> props,
+			Random random) {
 		this.scenes = scenes;
 		this.actors = actors;
 		this.props = props;
@@ -88,7 +86,7 @@ public class BasicAIAlgorithm {
 
 			for (Agent agent : agents) {
 				Operator op = chosenOps.get(agent);
-				
+
 				if (op == null) {
 					continue;
 				}
@@ -104,33 +102,31 @@ public class BasicAIAlgorithm {
 					// corresponding to the
 					// main agent's operator
 					PlotVertex newVertex = new PlotVertex("");
-					PlotEdge newEdge = new PlotEdge(chosenOps.get(mainAgent)
-							.getAction());
+					PlotEdge newEdge = new PlotEdge(chosenOps.get(mainAgent).getAction());
 
 					plotGraph.addVertex(lastVertex, newVertex, newEdge);
 					lastVertex = newVertex;
 				}
-				
+
 				// If the op was done to the main character
 				if (op.getAction().getObjectActor() == mainAgent.getSelf() & opPerformed) {
 					// Add an edge and a vertex to the plot graph
 					// corresponding to the
 					// performed operator
 					PlotVertex newVertex = new PlotVertex("");
-					PlotEdge newEdge = new PlotEdge(chosenOps.get(agent)
-							.getAction());
+					PlotEdge newEdge = new PlotEdge(chosenOps.get(agent).getAction());
 
 					plotGraph.addVertex(lastVertex, newVertex, newEdge);
-					lastVertex = newVertex;					
+					lastVertex = newVertex;
 				}
-				
+
 				// If the plot is too long, we'll try again
 				if (plotGraph.size() > 9) {
 					return null;
 				}
 			}
 		}
-		
+
 		// If the plot is too short, we'll also try again
 		if (plotGraph.size() < 4) {
 			return null;
@@ -139,7 +135,7 @@ public class BasicAIAlgorithm {
 		return plotGraph;
 	}
 
-	/** 
+	/**
 	 * @param op
 	 * @param agent
 	 * @return if it succeeds to perform the op
@@ -154,7 +150,7 @@ public class BasicAIAlgorithm {
 			}
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -281,7 +277,7 @@ public class BasicAIAlgorithm {
 
 		return chosenOps;
 	}
-	
+
 	// Different ops should have different weights
 	// E.g. it should be less likely that an actor kills than that it moves
 	private Operator randomizeOp(ArrayList<Operator> ops) {
@@ -306,29 +302,22 @@ public class BasicAIAlgorithm {
 		for (int i = 0; i < amountOfNulls; i++) {
 			weightedOps.add(null);
 		}
-		
+
 		Operator randomOp = weightedOps.get(random.nextInt(totalWeight));
 		return randomOp;
 		/*
-		// Randomize a number, choose a random op based on the
-		// randomized number and the ops' weights
-		Operator randomOp = null;
-		int randomInt = random.nextInt(totalWeight);
-		System.out.println(randomInt);
-		// TODO This doesn't seem to work
-		for (Operator op : ops) {
-			randomDouble -= op.getWeight();
-			if (randomDouble <= 0.0d) {
-				randomOp = op;
-				System.out.println(randomOp.getAction());
-				System.out.println(randomDouble);
-				System.out.println(randomOp.getWeight());
-				System.out.println("---");
-				break;
-			}
-		}
-		
-		return randomOp;*/
+		 * // Randomize a number, choose a random op based on the // randomized
+		 * number and the ops' weights Operator randomOp = null; int randomInt =
+		 * random.nextInt(totalWeight); System.out.println(randomInt); // TODO
+		 * This doesn't seem to work for (Operator op : ops) { randomDouble -=
+		 * op.getWeight(); if (randomDouble <= 0.0d) { randomOp = op;
+		 * System.out.println(randomOp.getAction());
+		 * System.out.println(randomDouble);
+		 * System.out.println(randomOp.getWeight()); System.out.println("---");
+		 * break; } }
+		 * 
+		 * return randomOp;
+		 */
 	}
 
 	// Defines all the operators for each agent
@@ -345,7 +334,7 @@ public class BasicAIAlgorithm {
 				if (actor == self) {
 					continue;
 				}
-				
+
 				Operator killOp = Operators.killOperator(self, actor);
 				// Special case:
 				// Set the weight of the killOp to 0 if the object actor
@@ -365,13 +354,12 @@ public class BasicAIAlgorithm {
 						}
 					}
 				}
-				
+
 				agentsOperators.add(killOp);
 				agentsOperators.add(Operators.meetOperator(self, actor));
 
 				for (Prop prop : props) {
-					agentsOperators.add(Operators.giveOperator(self, actor,
-							prop));
+					agentsOperators.add(Operators.giveOperator(self, actor, prop));
 				}
 			}
 
@@ -449,8 +437,7 @@ public class BasicAIAlgorithm {
 		}
 	}
 
-	private boolean checkConditions(ArrayList<ICondition> beTrue,
-			ArrayList<ICondition> beFalse) {
+	private boolean checkConditions(ArrayList<ICondition> beTrue, ArrayList<ICondition> beFalse) {
 		for (ICondition condition : beTrue) {
 			if (!condition.get()) {
 				return false;

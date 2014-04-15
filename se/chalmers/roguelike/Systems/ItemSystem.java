@@ -9,6 +9,7 @@ import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.DoubleName;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Player;
+import se.chalmers.roguelike.Components.Pocketable;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Usable;
 import se.chalmers.roguelike.util.Pair;
@@ -42,6 +43,7 @@ public class ItemSystem implements ISystem { // maybe this shouldnt be a system
 			Entity e = new Entity(colors.get(counter) + " potion");
 			e.add(new Sprite("potions/potion_" + colors.get(counter)));
 			e.add(new DoubleName(pe.toString().toLowerCase() + " potion"));
+			e.add(new Pocketable());
 			e.add(new Usable(pe));
 			lookupPotions.put(e, pe);
 			listPotions.add(new Pair<Entity, UseEffect>(e, pe));
