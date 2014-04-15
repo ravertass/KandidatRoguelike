@@ -62,8 +62,16 @@ public class InventorySystem implements ISystem, Observer {
 			Tile playerTile = world.getTile(p.getX(), p.getY());
 			toRemove.clear();
 			for (Entity e : playerTile.getEntities()) {
+				System.out.println(e.toString());
+				System.out.println((e.getComponentKey() & Engine.CompPocketable) == Engine.CompPocketable);
+				System.out.println(!player.getComponent(Inventory.class).isFull());
 				if ((e.getComponentKey() & Engine.CompPocketable) == Engine.CompPocketable
 						&& !player.getComponent(Inventory.class).isFull()) {
+					
+					//TODO kolla här om den plockade grejen är en plotrelaterad item
+					// dvs, lägg till en egen komponent som fungerar som flagga
+					// I så fall, säg till den aktiva stjärnan i dungeonen att den är plockad
+					
 					player.getComponent(Inventory.class).addItem(e);
 					toRemove.add(e);
 				}

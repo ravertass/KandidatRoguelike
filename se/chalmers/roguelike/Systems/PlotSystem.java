@@ -68,6 +68,7 @@ public class PlotSystem implements ISystem {
 			if (edge.getAction().getActionType() == Action.ActionType.GIVE) {
 				star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
 				//TODO lägg till en massa saker
+				// Det finns en Player-entitet som har en Inventory-komponent, som är relevant
 			}
 
 			if (edge.getAction().getActionType() == Action.ActionType.KILL) {

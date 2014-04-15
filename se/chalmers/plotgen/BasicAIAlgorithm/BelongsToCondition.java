@@ -35,7 +35,7 @@ public class BelongsToCondition implements ICondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof BelongsToCondition) {
-			return (prop == (((BelongsToCondition) object).prop) & actor == (((BelongsToCondition) object).actor));
+			return (prop == (((BelongsToCondition) object).prop) && actor == (((BelongsToCondition) object).actor));
 		}
 		return false;
 	}

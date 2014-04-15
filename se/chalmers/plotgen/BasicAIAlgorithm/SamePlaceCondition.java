@@ -37,7 +37,7 @@ public class SamePlaceCondition implements ICondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof SamePlaceCondition) {
-			return (actor == (((SamePlaceCondition) object).actor) & 
+			return (actor == (((SamePlaceCondition) object).actor) && 
 					plotBody == (((SamePlaceCondition) object).plotBody));
 		}
 		return false;

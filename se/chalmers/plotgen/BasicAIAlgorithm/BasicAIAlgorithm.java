@@ -68,7 +68,7 @@ public class BasicAIAlgorithm {
 		createOperators();
 
 		// While the main agent's goals aren't met and the main agent lives
-		while (!mainAgent.goalsMet() & mainAgent.getSelf().isAlive()) {
+		while (!mainAgent.goalsMet() && mainAgent.getSelf().isAlive()) {
 
 			// Check if agents are alive; if one is not, remove the agent
 			ArrayList<Agent> agentsToRemove = new ArrayList<Agent>();
@@ -97,7 +97,7 @@ public class BasicAIAlgorithm {
 				boolean opPerformed = performOp(op, agent);
 
 				// If the main character performed the op
-				if ((agent == mainAgent) & opPerformed) {
+				if ((agent == mainAgent) && opPerformed) {
 					// Add an edge and a vertex to the plot graph
 					// corresponding to the
 					// main agent's operator
@@ -109,7 +109,7 @@ public class BasicAIAlgorithm {
 				}
 
 				// If the op was done to the main character
-				if (op.getAction().getObjectActor() == mainAgent.getSelf() & opPerformed) {
+				if (op.getAction().getObjectActor() == mainAgent.getSelf() && opPerformed) {
 					// Add an edge and a vertex to the plot graph
 					// corresponding to the
 					// performed operator

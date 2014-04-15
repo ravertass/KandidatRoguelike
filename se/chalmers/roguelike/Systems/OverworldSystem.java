@@ -152,11 +152,11 @@ public class OverworldSystem implements ISystem, Observer {
 		if (starDungeon == null) {
 			System.out.println("No dungeon found! Generating one.");
 			long seed = activeStar.getComponent(Seed.class).getSeed();
-			
+
 			Random rand = new Random(seed);
 			//percentage of dungeons to be generated as caves vs regular dungeons
-			if (rand.nextInt(100)+1 <= 50) {
-				CellularLevelGenerator generator = new CellularLevelGenerator(50,50,seed);
+			if (rand.nextInt(100) + 1 <= 50) {
+				CellularLevelGenerator generator = new CellularLevelGenerator(50, 50, seed);
 				starDungeon = generator.getDungeon();
 			} else {
 				LevelGenerator generator = new LevelGenerator(seed);
@@ -168,6 +168,10 @@ public class OverworldSystem implements ISystem, Observer {
 				if (activeStar.getComponent(PlotAction.class).getAction().getActionType() == Action.ActionType.KILL) {
 					starDungeon.addBoss(activeStar.getComponent(PlotAction.class).getAction()
 							.getObjectActor());
+				}
+				if (activeStar.getComponent(PlotAction.class).getAction().getActionType() == Action.ActionType.TAKE) {
+					starDungeon.addPlotLoot(activeStar.getComponent(PlotAction.class).getAction()
+							.getObjectProp());
 				}
 			}
 		}
@@ -205,7 +209,8 @@ public class OverworldSystem implements ISystem, Observer {
 	}
 
 	/**
-	 * Unregisters all the entities from the engine and its systems. Used when switching from the overworld.
+	 * Unregisters all the entities from the engine and its systems. Used when
+	 * switching from the overworld.
 	 */
 	public void unregister() {
 
@@ -217,7 +222,8 @@ public class OverworldSystem implements ISystem, Observer {
 	}
 
 	/**
-	 * Registers all the stars and other entities. Used when restoring the overworld system.
+	 * Registers all the stars and other entities. Used when restoring the
+	 * overworld system.
 	 */
 	public void register() {
 		// Register all the stars

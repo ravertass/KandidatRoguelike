@@ -35,7 +35,7 @@ public class IsAtLocationCondition implements ICondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof IsAtLocationCondition) {
-			return (scene == (((IsAtLocationCondition) object).scene) & 
+			return (scene == (((IsAtLocationCondition) object).scene) && 
 					plotBody == (((IsAtLocationCondition) object).plotBody));
 		}
 		return false;
