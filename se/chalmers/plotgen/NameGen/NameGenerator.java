@@ -32,8 +32,7 @@ public class NameGenerator {
 	/**
 	 * teach the Markov instance a new set of names
 	 * 
-	 * @param fileName
-	 *            the name of the file you want as input
+	 * @param fileName the name of the file you want as input
 	 */
 	public void loadFile(String fileName) {
 		String filePath = "." + File.separator + "resources" + File.separator
@@ -59,8 +58,7 @@ public class NameGenerator {
 	 * this method takes the content of a file and then re-write the file with
 	 * one word per line
 	 * 
-	 * @param fileName
-	 *            the path to the file you want to prepare
+	 * @param fileName the path to the file you want to prepare
 	 */
 	public void setupFile(String fileName) {
 		ArrayList<String> names = new ArrayList<String>();
