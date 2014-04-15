@@ -65,9 +65,6 @@ public class InventorySystem implements ISystem, Observer {
 			Tile playerTile = world.getTile(p.getX(), p.getY());
 			toRemove.clear();
 			for (Entity e : playerTile.getEntities()) {
-				System.out.println(e.toString());
-				System.out.println((e.getComponentKey() & Engine.CompPocketable) == Engine.CompPocketable);
-				System.out.println(!player.getComponent(Inventory.class).isFull());
 				if ((e.getComponentKey() & Engine.CompPocketable) == Engine.CompPocketable
 						&& !player.getComponent(Inventory.class).isFull()) {
 					player.getComponent(Inventory.class).addItem(e);
@@ -111,7 +108,7 @@ public class InventorySystem implements ISystem, Observer {
 				System.out.println(x+y*6);
 				if((x+y*6) + 1 <= player.getComponent(Inventory.class).getSize()) {
 					Entity item = player.getComponent(Inventory.class).getItems().get(x + y * 6);
-					if(item != null) {
+					if(item != null && item.containsComponent(Engine.CompUsable)) {
 						itemSystem.useItem(player, item);
 						player.getComponent(Inventory.class).deleteItem(item);
 					}
