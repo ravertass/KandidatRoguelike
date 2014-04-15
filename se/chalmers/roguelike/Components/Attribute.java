@@ -20,17 +20,14 @@ public class Attribute implements IComponent {
 	private int agility;
 
 	public enum SpaceClass {
-		SPACE_WARRIOR, SPACE_ROGUE, SPACE_MAGE // TODO Moar to be added just
-												// dummy for now
+		SPACE_WARRIOR, SPACE_ROGUE, SPACE_MAGE // TODO Moar to be added just dummy for now
 	}
 
 	public enum SpaceRace {
-		SPACE_ALIEN, SPACE_HUMAN, SPACE_DWARF // TODO Moar to be added, just
-												// dummy for now
+		SPACE_ALIEN, SPACE_HUMAN, SPACE_DWARF // TODO Moar to be added, just dummy for now
 	}
 
-	public Attribute(String name, SpaceClass spaceClass, SpaceRace spaceRace,
-			int level, int xpyield) {
+	public Attribute(String name, SpaceClass spaceClass, SpaceRace spaceRace, int level, int xpyield) {
 		this.name = name;
 		this.level = level;
 
@@ -48,22 +45,15 @@ public class Attribute implements IComponent {
 			this.strength -= 4;
 		}
 		if (spaceRace == SpaceRace.SPACE_HUMAN) {
-			
+
 		}
 		if (spaceRace == SpaceRace.SPACE_DWARF) {
 			this.endurance += 4;
 			this.agility -= 4;
 		}
-//		System.out.println(name +   ", Strength: " + strength + 
-//									", Endurance: " + endurance + 
-//									", Perception: " + perception +
-//									", Intelligence: " + intelligence + 
-//									", Charisma: " + charisma + 
-//									", Agility: " + agility);
 	}
 
 	public int getMod(int statValue) {
-
 		return -4 + statValue / 4;
 	}
 
@@ -132,22 +122,29 @@ public class Attribute implements IComponent {
 	}
 
 	public int experience() {
-		return this.experience;
+		return experience;
 	}
 
 	public void increaseExperience(int x) {
-		this.experience += x;
+		experience += x;
 	}
 
 	public int xpyield() {
-		return this.xpyield;
+		return xpyield;
 	}
 
 	public void setXpYield(int x) {
-		this.xpyield = x;
+		xpyield = x;
 	}
 
-	public IComponent clone(){
+	@Override
+	public String toString() {
+		return (name + " is a " + spaceClass + " " + spaceRace + ", Strength: " + strength + ", Endurance: "
+				+ endurance + ", Perception: " + perception + ", Intelligence: " + intelligence
+				+ ", Charisma: " + charisma + ", Agility: " + agility);
+	}
+
+	public IComponent clone() {
 		Attribute attrib = new Attribute(name, spaceClass, spaceRace, level, xpyield);
 		attrib.experience = experience;
 		attrib.xpyield = xpyield;

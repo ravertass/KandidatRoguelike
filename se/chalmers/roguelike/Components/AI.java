@@ -2,27 +2,24 @@ package se.chalmers.roguelike.Components;
 
 import se.chalmers.roguelike.Entity;
 
-public class AI implements IComponent{
+public class AI implements IComponent {
 
-	/**
-	 * targets the player if it is close to the AI-entity
-	 */
+	// a target to follow or attack
 	private Entity target;
-	
-	
-	public AI(){
+
+	public AI() {
 		target = null;
 	}
-	
-	public void setTarget(Entity e){
+
+	public void setTarget(Entity e) {
 		target = e;
 	}
-	
-	public Entity getTarget(){
+
+	public Entity getTarget() {
 		return target;
 	}
-	
-	public IComponent clone() { 
+
+	public IComponent clone() {
 		AI newAI = new AI();
 		newAI.target = this.target;
 		return newAI;

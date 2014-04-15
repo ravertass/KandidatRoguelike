@@ -24,68 +24,68 @@ public class AISystem implements ISystem {
 	private AI ai;
 	private Random rand;
 
-	public AISystem(){
+	public AISystem() {
 		entities = new ArrayList<Entity>();
 		rand = new Random();
 	}
-	
+
 	@Override
 	public void update() {
 	}
-	
+
 	/**
 	 * The update loop that runs every turn
 	 * 
 	 * @param world
 	 * @param player
 	 */
-	public void update(Dungeon world, Entity player){
-		for (Entity e : entities){
+	public void update(Dungeon world, Entity player) {
+		for (Entity e : entities) {
 			int x = e.getComponent(Position.class).getX();
 			int y = e.getComponent(Position.class).getY();
 			Input input = e.getComponent(Input.class);
 			int dist = e.getComponent(FieldOfView.class).getViewDistance();
-	//		int[][] fov = new ShadowCaster().calculateFOV(world, x, y, dist);
+			// int[][] fov = new ShadowCaster().calculateFOV(world, x, y, dist);
 			ai = e.getComponent(AI.class);
-	//		targetPlayer(ai, fov, player);
+			// targetPlayer(ai, fov, player);
 			targetPlayer(ai, x, y, dist, player);
 			Entity target = ai.getTarget();
-			
-			if (target != null){
+
+			if (target != null) {
 				Position startPos = e.getComponent(Position.class);
 				Position targetPos = target.getComponent(Position.class);
 				Tile[][] worldTiles = world.getWorld();
 				int[][] obstacleMap = createObstacleMap(worldTiles, targetPos);
 				AreaMap map = new AreaMap(world.getWorldWidth(), world.getWorldHeight(), obstacleMap);
-				
+
 				ArrayList<Position> path = track(startPos, targetPos, map);
-				//new PrintMap(map, path);
-				//what to do if path is null e.g path is blocked?
-				if(path == null){
+				// new PrintMap(map, path);
+				// what to do if path is null e.g path is blocked?
+				if (path == null) {
 					randomMove(e, world);
-				} else if (path.size() <= e.getComponent(Weapon.class).getRange()){
+				} else if (path.size() <= e.getComponent(Weapon.class).getRange()) {
 					input.setAttackCords(targetPos);
 				} else {
 					int nextX = path.get(0).getX();
 					int nextY = path.get(0).getY();
-					
-					if(nextX == x - 1 && nextY == y + 1){
+
+					if (nextX == x - 1 && nextY == y + 1) {
 						input.setNextEvent(InputAction.GO_NORTHWEST);
-					} else if(nextX == x && nextY == y + 1){
+					} else if (nextX == x && nextY == y + 1) {
 						input.setNextEvent(InputAction.GO_NORTH);
-					} else if(nextX == x + 1 && nextY == y + 1){
+					} else if (nextX == x + 1 && nextY == y + 1) {
 						input.setNextEvent(InputAction.GO_NORTHEAST);
-					} else if(nextX == x - 1 && nextY == y){
+					} else if (nextX == x - 1 && nextY == y) {
 						input.setNextEvent(InputAction.GO_WEST);
-					} else if(nextX == x && nextY == y - 1){
+					} else if (nextX == x && nextY == y - 1) {
 						input.setNextEvent(InputAction.GO_SOUTH);
-					} else if(nextX == x + 1 && nextY == y){
+					} else if (nextX == x + 1 && nextY == y) {
 						input.setNextEvent(InputAction.GO_EAST);
-					} else if(nextX == x - 1 && nextY == y - 1){
+					} else if (nextX == x - 1 && nextY == y - 1) {
 						input.setNextEvent(InputAction.GO_SOUTHWEST);
-					} else if(nextX == x + 1 && nextY == y - 1){
+					} else if (nextX == x + 1 && nextY == y - 1) {
 						input.setNextEvent(InputAction.GO_SOUTHEAST);
-					} 
+					}
 				}
 			} else {
 				randomMove(e, world);
@@ -99,55 +99,51 @@ public class AISystem implements ISystem {
 	 * @param e
 	 * @param world
 	 */
-	private void randomMove(Entity e, Dungeon world){
+	private void randomMove(Entity e, Dungeon world) {
 		int x = e.getComponent(Position.class).getX();
 		int y = e.getComponent(Position.class).getY();
 		Input input = e.getComponent(Input.class);
 		boolean done = false;
-		if (!(world.getTile(x - 1, y + 1).isWalkable() 
-				|| world.getTile(x, y + 1).isWalkable() 
-				|| world.getTile(x + 1, y + 1).isWalkable() 
-				|| world.getTile(x - 1, y).isWalkable()
-				|| world.getTile(x, y - 1).isWalkable()
-				|| world.getTile(x + 1, y).isWalkable()
-				|| world.getTile(x - 1, y - 1).isWalkable()
-				|| world.getTile(x + 1, y - 1).isWalkable())){
+		if (!(world.getTile(x - 1, y + 1).isWalkable() || world.getTile(x, y + 1).isWalkable()
+				|| world.getTile(x + 1, y + 1).isWalkable() || world.getTile(x - 1, y).isWalkable()
+				|| world.getTile(x, y - 1).isWalkable() || world.getTile(x + 1, y).isWalkable()
+				|| world.getTile(x - 1, y - 1).isWalkable() || world.getTile(x + 1, y - 1).isWalkable())) {
 			input.setNextEvent(InputAction.DO_NOTHING);
 			done = true;
 		}
 		while (!done) {
 			int randNr = rand.nextInt(8);
-			if(randNr==0 && world.getTile(x - 1, y + 1).isWalkable()){
+			if (randNr == 0 && world.getTile(x - 1, y + 1).isWalkable()) {
 				input.setNextEvent(InputAction.GO_NORTHWEST);
 				done = true;
-			} else if(randNr==1 && world.getTile(x, y + 1).isWalkable()){
+			} else if (randNr == 1 && world.getTile(x, y + 1).isWalkable()) {
 				input.setNextEvent(InputAction.GO_NORTH);
 				done = true;
-			} else if(randNr==2 && world.getTile(x + 1, y + 1).isWalkable()){
+			} else if (randNr == 2 && world.getTile(x + 1, y + 1).isWalkable()) {
 				input.setNextEvent(InputAction.GO_NORTHEAST);
 				done = true;
-			} else if(randNr==3 && world.getTile(x - 1, y).isWalkable()){
+			} else if (randNr == 3 && world.getTile(x - 1, y).isWalkable()) {
 				input.setNextEvent(InputAction.GO_WEST);
 				done = true;
-			} else if(randNr==4 && world.getTile(x, y - 1).isWalkable()){
+			} else if (randNr == 4 && world.getTile(x, y - 1).isWalkable()) {
 				input.setNextEvent(InputAction.GO_SOUTH);
 				done = true;
-			} else if(randNr==5 && world.getTile(x + 1, y).isWalkable()){
+			} else if (randNr == 5 && world.getTile(x + 1, y).isWalkable()) {
 				input.setNextEvent(InputAction.GO_EAST);
 				done = true;
-			} else if(randNr==6 && world.getTile(x - 1, y - 1).isWalkable()){
+			} else if (randNr == 6 && world.getTile(x - 1, y - 1).isWalkable()) {
 				input.setNextEvent(InputAction.GO_SOUTHWEST);
 				done = true;
-			} else if(randNr==7 && world.getTile(x + 1, y - 1).isWalkable()){
+			} else if (randNr == 7 && world.getTile(x + 1, y - 1).isWalkable()) {
 				input.setNextEvent(InputAction.GO_SOUTHEAST);
 				done = true;
 			}
 		}
 	}
-	
+
 	/**
-	 * Target the player using the shadowcasting algorithm so the detection
-	 * feels more natural (currently broken)
+	 * Target the player using the shadowcasting algorithm so the detection feels more natural (currently
+	 * broken)
 	 * 
 	 * @param ai
 	 * @param fieldOfView
@@ -156,24 +152,24 @@ public class AISystem implements ISystem {
 	private void targetPlayer(AI ai, int[][] fieldOfView, Entity player) {
 		int px = player.getComponent(Position.class).getX();
 		int py = player.getComponent(Position.class).getY();
-	
+
 		Entity target = ai.getTarget();
-		if (fieldOfView[py][px] == 1){
+		if (fieldOfView[py][px] == 1) {
 			ai.setTarget(player);
-			if(target != ai.getTarget()){
+			if (target != ai.getTarget()) {
 				System.out.println("YOU HAVE BEEN FOUND BY AN ENEMY");
 			}
 		} else {
 			ai.setTarget(null);
-			if(target != ai.getTarget()){
+			if (target != ai.getTarget()) {
 				System.out.println("THE ENEMY LOST INTEREST IN TRACKING YOU");
 			}
 		}
 	}
-	
+
 	/**
-	 * Targets the player if the entity is close enough using bresenham's line,
-	 * which means that walls doesn't prevent detection
+	 * Targets the player if the entity is close enough using bresenham's line, which means that walls doesn't
+	 * prevent detection
 	 * 
 	 * @param ai
 	 * @param x
@@ -185,16 +181,16 @@ public class AISystem implements ISystem {
 		int px = player.getComponent(Position.class).getX();
 		int py = player.getComponent(Position.class).getY();
 		ArrayList<Position> enemyDist = Util.bresenhamLine(x, y, px, py);
-		
+
 		Entity target = ai.getTarget();
-		if (enemyDist.size() <= dist){
+		if (enemyDist.size() <= dist) {
 			ai.setTarget(player);
-			if(target != ai.getTarget()){
+			if (target != ai.getTarget()) {
 				System.out.println("YOU HAVE BEEN FOUND BY AN ENEMY");
 			}
 		} else {
 			ai.setTarget(null);
-			if(target != ai.getTarget()){
+			if (target != ai.getTarget()) {
 				System.out.println("THE ENEMY LOST INTEREST IN TRACKING YOU");
 			}
 		}
@@ -209,11 +205,12 @@ public class AISystem implements ISystem {
 	 */
 	private int[][] createObstacleMap(Tile[][] worldTiles, Position target) {
 		int[][] obstacleMap = new int[worldTiles.length][worldTiles[1].length];
-		for (int i = 0; i < obstacleMap.length; i++){
+		for (int i = 0; i < obstacleMap.length; i++) {
 			for (int j = 0; j < obstacleMap[i].length; j++) {
-				if(worldTiles[i][j] != null && worldTiles[i][j].isWalkable() || target.getX() == j && target.getY() == i){
+				if (worldTiles[i][j] != null && worldTiles[i][j].isWalkable() || target.getX() == j
+						&& target.getY() == i) {
 					obstacleMap[i][j] = 0;
-				} else{
+				} else {
 					obstacleMap[i][j] = 1;
 				}
 			}
@@ -242,10 +239,10 @@ public class AISystem implements ISystem {
 	 * 
 	 * @param e
 	 */
-	public void addEntity(Entity e){
-		entities.add(e);		
+	public void addEntity(Entity e) {
+		entities.add(e);
 	}
-	
+
 	/**
 	 * Remove an entity from the AISystem
 	 * 

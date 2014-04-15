@@ -1,7 +1,7 @@
 package se.chalmers.roguelike.Components;
 
 /**
- * The component interface.
+ * The component interface
  */
 public interface IComponent extends Cloneable {
 
