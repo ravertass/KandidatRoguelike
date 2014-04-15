@@ -5,8 +5,8 @@ import se.chalmers.plotgen.PlotData.Action;
 /**
  * This is an edge in a plot graph.
  * 
- * The edge contains an Interaction, which is a class that models an
- * action between different 'entities' in the plot. The Interaction should
+ * The edge contains an Action, which is a class that models an
+ * action between different 'entities' in the plot. The Action should
  * be easily interpreted by the game.
  * 
  * @author fabian

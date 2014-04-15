@@ -5,8 +5,6 @@ package se.chalmers.plotgen.PlotData;
  * 
  * These actions will be at the edges of the plot graph and should easily
  * translate to gameplay actions from the player in the game.
- * 
- * @author fabian
  */
 
 public class Action {
