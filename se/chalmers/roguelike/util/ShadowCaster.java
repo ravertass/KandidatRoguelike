@@ -61,9 +61,8 @@ public class ShadowCaster {
 	 */
 	private void castLight(int row, float start, float end, int xx, int xy, int yx, int yy) {
 	    float newStart = 0.0f;
-	    if (start < end) {
+	    if (start < end)
 	        return;
-	    }
 	    boolean blocked = false;
 	    for (int distance = row; distance <= radius && !blocked; distance++) {
 	        int deltaY = -distance;
@@ -78,12 +77,6 @@ public class ShadowCaster {
 	            } else if (end > leftSlope) {
 	                break;
 	            }
-	            //TODO implement radius here
-	            //check if it's within the lightable area and light if needed
-//	            if (rStrat.radius(deltaX, deltaY) <= radius) {
-//	                float bright = (float) (1 - (rStrat.radius(deltaX, deltaY) / radius));
-//	                lightMap[currentX][currentY] = bright;
-//	            }
 	            if(Util.inRadius(new Position(startx,starty), new Position(currentX,currentY), (int)radius))
 	            	lightMap[currentX][currentY] = 1;
 	 
