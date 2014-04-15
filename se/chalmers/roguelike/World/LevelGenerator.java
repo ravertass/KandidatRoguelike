@@ -13,18 +13,18 @@ import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.BlocksWalking;
-import se.chalmers.roguelike.Components.FieldOfView;
-import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.Components.Direction;
-import se.chalmers.roguelike.Components.MobType;
+import se.chalmers.roguelike.Components.FieldOfView;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.IComponent;
 import se.chalmers.roguelike.Components.Input;
 import se.chalmers.roguelike.Components.Inventory;
+import se.chalmers.roguelike.Components.MobType;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
+import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.KruskalMST;
@@ -55,7 +55,6 @@ public class LevelGenerator {
 	private String wall;
 
 	private long seed;
-	private ArrayList<Entity> enemies;
 
 	private Dungeon dungeon;
 	private int plotThingY;
@@ -180,10 +179,9 @@ public class LevelGenerator {
 		generateTreasurePositions();
 		generatePlotThingPosition();
 
-		print(grid);
 		worldGrid = grid;
 
-		dungeon  = toDungeon();
+		dungeon = toDungeon();
 		dungeon.addPlotThingPosition(plotThingX, plotThingY);
 
 		//Generate nextLevel
@@ -198,7 +196,7 @@ public class LevelGenerator {
 					nextDungeonLevel.getStartpos().getY(),
 					"stairs_down",nextDungeonLevel);
 			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
-			System.out.println("Created Subdungeon");
+
 			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(), 
 					nextDungeonLevel.getStartpos().getY(),  stairsDown.getX(), stairsDown.getY(),
 					"stairs_up", nextDungeonLevel
@@ -213,7 +211,6 @@ public class LevelGenerator {
 		}
 
 		if(largeRooms.size() == 0)
-
 			run();
 	}
 
@@ -221,7 +218,7 @@ public class LevelGenerator {
 		plotThingX = 0;
 		while (plotThingX == 0) {
 			for (Rectangle room : largeRooms) {
-				// I think this checks so we're not in the start room
+				//Skip the start room
 				if (room == largeRooms.get(0)) {
 					continue;
 				}
@@ -236,14 +233,13 @@ public class LevelGenerator {
 	}
 
 	private void generateEnemies() {
-		enemies = new ArrayList<Entity>();
 		NameGenerator ng = new NameGenerator(3, seed);
 		for (Rectangle room : largeRooms) {
 			if (rand.nextInt(4) == 0) {
 				ArrayList<IComponent> components = new ArrayList<IComponent>();
 
 				String name = ng.generateName();
-				String spriteName = "mobs/mob_slime";
+				String spriteName = "mobs/mob_bat";
 				components.add(new MobType(MobType.Type.GRUNT));
 				components.add(new Health(10));
 				components.add(new TurnsLeft(1));
@@ -272,17 +268,13 @@ public class LevelGenerator {
 						components));
 			}
 		}
-		System.out.println(enemies);
-
 	}
 
 	private void generateUnlockedDoors(char[][] worldGrid) {
-		// TODO
-		// TODO
+
 		for (Rectangle room : largeRooms) {
 			int x = room.x + Math.abs(xMinDisplacement);
 			int y = room.y + Math.abs(yMinDisplacement);
-			System.out.println("RoomX:" + x + ",RoomY:" + y);
 			if (rand.nextInt(100) + 1 <= 80) {
 
 				for (int i = x; i < x + room.width; i++) {
@@ -301,26 +293,9 @@ public class LevelGenerator {
 										&& worldGrid[j][i + 1] != '|')
 									worldGrid[j][i] = '|';
 							}
-
 						}
 					}
 				}
-				// for(int i=y; i < y+room.height; i++){
-				// if(worldGrid[i][x] == '.')
-				// worldGrid[i][x] = 'D';
-				// }
-				// for(int i=x; i < x+room.width; i++){
-				// if(worldGrid[y+room.height-1][i] == '.')
-				// worldGrid[y+room.height-1][i] = 'D';
-				// }
-				// for(int i=y+room.height; i > y; i--){
-				// if(worldGrid[i][x+room.width-1] == '.')
-				// worldGrid[i][x+room.width-1] = 'D';
-				// }
-				// for(int i=x+room.width; i > x; i--){
-				// if(worldGrid[y][i] == '.')
-				// worldGrid[y][i] = 'D';
-				// }
 			}
 		}
 	}
@@ -330,9 +305,7 @@ public class LevelGenerator {
 	 */
 
 	private void generateStairs() {
-		System.out.println("generateStairs() running");
 		if (rand.nextInt(100) + 1 <= stairProbability) {
-			System.out.println("STAIR GENERATED");
 			int stairsDownRoom = rand.nextInt(largeRooms.size()-1) + 1;
 			Rectangle room = largeRooms.get(stairsDownRoom);
 			int x = room.x + 1 + Math.abs(xMinDisplacement)
@@ -365,11 +338,6 @@ public class LevelGenerator {
 	private ArrayList<Edge> triangulateRooms(char[][] grid) {
 		// To see where we set nodes
 		ArrayList<Position> nodes = generateNodes();
-		// for (Position point : nodes) {
-		// grid[point.getY() + Math.abs(yMinDisplacement)][point.getX()
-		// + Math.abs(xMinDisplacement)] = 'o';
-		// }
-		// Sort the list of nodes (sorts by X-value, low to high)
 		Collections.sort(nodes);
 
 		DelauneyTriangulator dTriangulator = new DelauneyTriangulator(
@@ -398,14 +366,11 @@ public class LevelGenerator {
 			}
 		}
 		// Stats for how the room size is distributed
-		System.out.println("Amount of large rooms: " + largeRooms.size()
-				+ "\nAmount of small rooms: "
-				+ (amountOfRooms - largeRooms.size()));
 		return graph;
 	}
 
 	private void separateRooms() {
-		int iterations = 0;
+		
 		boolean intersectingRooms = true;
 		while (intersectingRooms) {
 			intersectingRooms = false;
@@ -432,19 +397,11 @@ public class LevelGenerator {
 					}
 				}
 			}
-			iterations++;
 		}
-		System.out.println("Amount of iterations: " + iterations);
 	}
 
 	private void drawRooms(char[][] worldGrid) {
 
-		// Clear the array
-		// for (int x = 0; x < width; x++) {
-		// for (int y = 0; y < height; y++) {
-		// worldGrid[y][x] = ' ';
-		// }
-		// }
 
 		// DRAW
 		for (Rectangle drawRoom : largeRooms) {
@@ -552,7 +509,6 @@ public class LevelGenerator {
 		worldGrid = new char[yMaxDisplacement][xMaxDisplacement];
 		height = yMaxDisplacement;
 		width = xMaxDisplacement;
-		System.out.println("Size of the world: " + width + "x" + height);
 		return worldGrid;
 	}
 
@@ -592,13 +548,11 @@ public class LevelGenerator {
 
 				}
 				else if (worldGrid[y][x] == '-') {
-//					tiles[y][x] = new Tile(new Sprite("door_horizontal"), true, true);
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
 					Entity door = EntityCreator.createDoor(x,y,"door_horizontal_closed",false);
 					dungeonEntities.add(door);
 				}
 				else if (worldGrid[y][x] == '|') {
-					//tiles[y][x] = new Tile(new Sprite("door_vertical"), true, true);
 					tiles[y][x] = new Tile(new Sprite(floor), true, false);
 					Entity door = EntityCreator.createDoor(x,y,"door_vertical_closed",false);
 					dungeonEntities.add(door);
@@ -621,10 +575,6 @@ public class LevelGenerator {
 		Dungeon dungeon = new Dungeon();
 		Tile[][] tiles = toTiles();
 		dungeon.setWorld(tiles[0].length,tiles.length, tiles, getStartPos(), dungeonEntities);
-//		for(Entity e : dungeonEntities){
-//			Position pos = e.getComponent(Position.class);
-//			dungeon.addEntity(pos.getX(), pos.getY(), e);
-//		}
 		return dungeon;
 	}
 
@@ -660,9 +610,5 @@ public class LevelGenerator {
 		int y = largeRooms.get(0).y + 1 + Math.abs(yMinDisplacement);
 		return new Position(x, y);
 	}
-
-	// public static void main(String[] args) {
-	// new LevelGenerator(123456789L, 100, 8, 7, 20);
-	// }
 
 }
