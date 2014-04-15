@@ -139,10 +139,7 @@ public class RenderingSystem implements ISystem {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, DISPLAY_WIDTH, 0, DISPLAY_HEIGHT, 1, -1);
-
-		// gluPerspective((float) 30, 1024f / 768f, 0.001f, 100);
 		glMatrixMode(GL_MODELVIEW);
-		// glEnable(GL_TEXTURE_2D);
 		// Enables the use of transparent PNGs
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -216,13 +213,11 @@ public class RenderingSystem implements ISystem {
 						glColor3f(1.0f, 1.0f, 1.0f);
 					}
 					if (tile != null && (Engine.debug || tile.hasBeenSeen())) {
-						// Tiles within of the camera view that will be drawn on
-						// minimap
+						// Tiles within of the camera view that will be drawn on minimap
 						drawMinimap(tile.getSprite(), drawPos);
 					}
 				} else if (tile != null && (Engine.debug || tile.hasBeenSeen())) {
-					// Tiles outside of the camera view that will be drawn on
-					// minimap
+					// Tiles outside of the camera view that will be drawn on minimap
 					glColor3f(0.5f, 0.5f, 0.5f);
 					drawMinimap(tile.getSprite(), drawPos);
 					glColor3f(1.0f, 1.0f, 1.0f);
@@ -260,10 +255,8 @@ public class RenderingSystem implements ISystem {
 				else if (Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 				else if (tile.hasBeenSeen() && !entity.containsComponent(Engine.CompAI)) {
-					// Draws all entities at the last position you saw them at,
-					// excluding entities that
-					// contains the AI component, should make sure they can't
-					// move
+					// Draws all entities at the last position you saw them at, excluding entities that
+					// contains the AI component, should make sure they can't move
 					glColor3f(0.5f, 0.5f, 0.5f);
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 					glColor3f(1.0f, 1.0f, 1.0f);
@@ -492,8 +485,7 @@ public class RenderingSystem implements ISystem {
 			float spriteULY, float spriteLRX, float spriteLRY) {
 
 		texture.bind();
-		glEnable(GL_BLEND); // remove? this should make sure that textures are
-		// enabled
+		glEnable(GL_BLEND);
 		glBegin(GL_QUADS);
 		glTexCoord2f(spriteULX, spriteLRY);
 		glVertex2d(x, y);
@@ -664,11 +656,9 @@ public class RenderingSystem implements ISystem {
 			}
 		}
 		int drawX = Engine.screenWidth - menuWidth + 4;
-		int drawY = 20 + Engine.spriteSize * 2 * 5; // times two for double
-													// size, and times 5 for
-													// size of inventory (6x6)
-		for (Entity ent : items) { // this will draw all the items currently in
-									// the inventory
+		int drawY = 20 + Engine.spriteSize * 2 * 5; // times 2 for double size, times 5 for inventory size (6x6)
+		for (Entity ent : items) { 
+			// this will draw all the items currently in the inventory
 			drawSprite(ent.getComponent(Sprite.class), drawX, drawY, Engine.spriteSize * 2,
 					Engine.spriteSize * 2);
 			if (drawX + Engine.spriteSize >= Engine.screenWidth) {
@@ -677,7 +667,6 @@ public class RenderingSystem implements ISystem {
 			} else {
 				drawX += Engine.spriteSize * 2;
 			}
-
 		}
 	}
 
