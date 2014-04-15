@@ -41,8 +41,8 @@ public class CellularLevelGenerator {
 	private long seed;
 	private Position stairsDown = null;
 
-	private String wall = "wall2";
-	private String floor = "sand";
+	private String wall;
+	private String floor;
 
 	private Position plotThingPos;
 
@@ -51,9 +51,33 @@ public class CellularLevelGenerator {
 		this.width = width;
 		this.seed = seed;
 		this.rand = new Random(seed);
+		generateSprites();
 		run();
 	}
+	
+	private void generateSprites() {
+		ArrayList<String> walls = new ArrayList<String>();
+		walls.add("brick");
+		walls.add("wall2");
+		walls.add("wall_red");
+		walls.add("wall_blue");
+		wall = walls.get(rand.nextInt(walls.size()));
 
+		ArrayList<String> floors = new ArrayList<String>();
+		floors.add("sand");
+		floors.add("snow");
+		floors.add("snowy_stone");
+		floors.add("stone");
+		floors.add("stone2");
+		floors.add("grass");
+		floors.add("grass_djungle");
+		floors.add("ice");
+		floors.add("brown_floor");
+		floors.add("light_brown_floor");
+		floors.add("floor_spiral");
+		floor = floors.get(rand.nextInt(floors.size()));
+	}
+	
 	public void run() {
 		worldGrid = new char[height][width];
 

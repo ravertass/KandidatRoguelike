@@ -139,7 +139,7 @@ public class LevelGenerator {
 		floors.add("floor_granite");
 		floors.add("floor_hourglass_yellow");
 		floors.add("floor_tiled_whiteandblack");
-
+		floors.add("floor_spiral");
 		floor = floors.get(rand.nextInt(floors.size()));
 	}
 
