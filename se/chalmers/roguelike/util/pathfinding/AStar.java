@@ -26,7 +26,6 @@ public class AStar {
 	 */
 	private ArrayList<Node> closedList;
 	private SortedNodeList openList;
-	private ArrayList<Position> shortestPath;
 
 	public AStar(AreaMap map, DiagonalHeuristic heuristic) {
 		this.map = map;
@@ -118,7 +117,6 @@ public class AStar {
 			path.add(0, node.getPosition());
 			node = node.getPreviousNode();
 		}
-		shortestPath = path;
 		return path;
 	}
 

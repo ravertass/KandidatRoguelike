@@ -314,7 +314,7 @@ public class Engine {
 
 		plotSys = new PlotSystem(this, plotEngine);
 		overworldSys = new OverworldSystem(this);
-		inventorySys = new InventorySystem();
+		inventorySys = new InventorySystem(this);
 		interactionSys = new InteractionSystem(this);
 		itemSys = new ItemSystem();
 	}

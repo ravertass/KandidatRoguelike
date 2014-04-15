@@ -35,9 +35,12 @@ public class InventorySystem implements ISystem, Observer {
 	private Rectangle inventoryBox;
 
 	private boolean timeToLoot;
+	
+	private Engine engine;
 
-	public InventorySystem() {
-		inventoryBox = new Rectangle(Engine.screenWidth - 200 + 4, 20, Engine.spriteSize * 2 * 6, Engine.spriteSize * 2 * 6);
+	public InventorySystem(Engine e) {
+		engine = e;
+		inventoryBox = new Rectangle(Engine.screenWidth - Engine.hudWidth + 4, 20, Engine.spriteSize * 2 * 6, Engine.spriteSize * 2 * 6);
 		itemSystem = new ItemSystem();
 		this.entities = new ArrayList<Entity>();
 		toRemove = new ArrayList<Entity>();
@@ -71,7 +74,7 @@ public class InventorySystem implements ISystem, Observer {
 			for (Entity e : toRemove) {
 
 				playerTile.removeEntity(e); // removes the picked up items from
-											// the current tile
+				engine.removeEntity(e);							// the current tile
 			}
 			timeToLoot = false;
 		}
@@ -105,7 +108,7 @@ public class InventorySystem implements ISystem, Observer {
 				System.out.println(x+y*6);
 				if((x+y*6) + 1 <= player.getComponent(Inventory.class).getSize()) {
 					Entity item = player.getComponent(Inventory.class).getItems().get(x + y * 6);
-					if(item != null) {
+					if(item != null && item.containsComponent(Engine.CompUsable)) {
 						itemSystem.useItem(player, item);
 						player.getComponent(Inventory.class).deleteItem(item);
 					}
