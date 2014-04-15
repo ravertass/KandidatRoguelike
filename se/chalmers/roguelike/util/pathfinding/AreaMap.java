@@ -12,12 +12,11 @@ import se.chalmers.roguelike.Components.Position;
  * 
  * @link http://code.google.com/p/a-star-java/
  * 
- * New version is edited for use in this project
- *       
- * The AreaMap holds information about the With, Height, Start position, Goal
- * position and Obstacles on the map. A place on the map is referred to by it's
- * (x,y) coordinates, where (0,0) is the upper left corner, and x is horizontal
- * and y is vertical.
+ *       New version is edited for use in this project
+ * 
+ *       The AreaMap holds information about the With, Height, Start position, Goal position and Obstacles on
+ *       the map. A place on the map is referred to by it's (x,y) coordinates, where (0,0) is the upper left
+ *       corner, and x is horizontal and y is vertical.
  */
 public class AreaMap {
 
@@ -31,8 +30,8 @@ public class AreaMap {
 	private int[][] obstacleMap = { { 0 } };
 
 	/**
-	 * Class constructor specifying the Width and Height of a otherwise empty
-	 * map (no start and goal location or obstacles).
+	 * Class constructor specifying the Width and Height of a otherwise empty map (no start and goal location
+	 * or obstacles).
 	 * 
 	 * @param mapWidth
 	 * @param mapHeight
@@ -44,17 +43,12 @@ public class AreaMap {
 	}
 
 	/**
-	 * Class constructor specifying the Width, Height and Obstacles of the map.
-	 * (no start and goal location) The Obstacle 2D array map can be any Width
-	 * and Height
+	 * Class constructor specifying the Width, Height and Obstacles of the map. (no start and goal location)
+	 * The Obstacle 2D array map can be any Width and Height
 	 * 
-	 * @param mapWidth
-	 *            the width of the map as int
-	 * @param mapHeight
-	 *            the Height of the map as int
-	 * @param obstacleMap
-	 *            a 2D int array map of the obstacles on the map. '1' is
-	 *            obstacle, '0' is not.
+	 * @param mapWidth the width of the map as int
+	 * @param mapHeight the Height of the map as int
+	 * @param obstacleMap a 2D int array map of the obstacles on the map. '1' is obstacle, '0' is not.
 	 */
 	public AreaMap(int mapWidth, int mapHeight, int[][] obstacleMap) {
 		this.mapWidth = mapWidth;
@@ -64,8 +58,7 @@ public class AreaMap {
 	}
 
 	/**
-	 * Sets up the Nodes of the map with the Width and Height specified in the
-	 * constructor or set methods.
+	 * Sets up the Nodes of the map with the Width and Height specified in the constructor or set methods.
 	 */
 	private void createMap() {
 		Node node;
@@ -143,13 +136,10 @@ public class AreaMap {
 	}
 
 	/**
-	 * Determine the distance between two neighbor Nodes as used by the AStar
-	 * algorithm.
+	 * Determine the distance between two neighbor Nodes as used by the AStar algorithm.
 	 * 
-	 * @param node1
-	 *            any Node
-	 * @param node2
-	 *            any of Node1's neighbors
+	 * @param node1 any Node
+	 * @param node2 any of Node1's neighbors
 	 * @return Float - the distance between the two neighbors
 	 */
 	public float getDistanceBetween(Node node1, Node node2) {
@@ -171,8 +161,8 @@ public class AreaMap {
 	}
 
 	/**
-	 * Removes all the map information about start location, goal location and
-	 * obstacles. Then remakes the map with the original Width and Height.
+	 * Removes all the map information about start location, goal location and obstacles. Then remakes the map
+	 * with the original Width and Height.
 	 */
 	public void clear() {
 		startLocationX = 0;
