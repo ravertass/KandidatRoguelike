@@ -329,6 +329,9 @@ public class Engine {
 		playerInputSys.setCamera(c);
 	}
 
+	/**
+	 * Adds the remaining observers that aren't registered from the start to the input manager 
+	 */
 	private void registerInputSystems() {
 		inputManager.addObserver(playerInputSys);
 		inputManager.addObserver(highlightSys);
@@ -404,6 +407,9 @@ public class Engine {
 		gameState = GameState.MAIN_MENU;
 	}
 
+	/**
+	 * Sets up a new game
+	 */
 	public void newGame() {
 		plotEngine = new PlotEngine(seed);
 		spawnSystems();
