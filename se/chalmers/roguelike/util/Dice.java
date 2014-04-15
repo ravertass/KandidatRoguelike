@@ -64,7 +64,6 @@ public class Dice {
 		return sum(rolls);
 	}
 	
-	
 	private static int sum (ArrayList<Integer> rolls) {
 		int total = 0;
 		for (Integer roll : rolls) {
