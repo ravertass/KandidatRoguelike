@@ -8,12 +8,16 @@ import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
 
 /**
- * Lots of hard-coded operators in this class.
- * 
- * @author fabian
+ * A class with static methods to generated hard-coded operators.
  */
 public class Operators {
 
+	/**
+	 * Operator counterpart for Action [Actor] [KILLS] [actor]
+	 * @param self
+	 * @param victim
+	 * @return the newly generated kill operator
+	 */
 	public static Operator killOperator(Actor self, Actor victim) {
 
 		// Set conditions that must be true
@@ -44,6 +48,12 @@ public class Operators {
 		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
 
+	/**
+	 * Operator counterpart for Action [Actor] [TAKES] [prop]
+	 * @param self
+	 * @param victim
+	 * @return the newly generated take operator
+	 */
 	public static Operator takeOperator(Actor self, Prop prop) {
 
 		// Set conditions that must be true
@@ -69,7 +79,13 @@ public class Operators {
 
 		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
-	
+
+	/**
+	 * Operator counterpart for Action [Actor] [MEETS] [actor]
+	 * @param self
+	 * @param victim
+	 * @return the newly generated meet operator
+	 */
 	public static Operator meetOperator(Actor self, Actor actor) {
 
 		// Set conditions that must be true
@@ -97,7 +113,12 @@ public class Operators {
 		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
 
-
+	/**
+	 * Operator counterpart for Action [Actor] [VISITS] [scene]
+	 * @param self
+	 * @param victim
+	 * @return the newly generated visit operator
+	 */
 	public static Operator visitOperator(Actor self, Scene targetLocation) {
 
 		// Set conditions that must be true
@@ -124,6 +145,12 @@ public class Operators {
 		return new Operator(beTrue, beFalse, setTrue, setFalse, action, weight);
 	}
 
+	/**
+	 * Operator counterpart for Action [Actor] [GIVES] [prop] to [actor]
+	 * @param self
+	 * @param victim
+	 * @return the newly generated give operator
+	 */
 	public static Operator giveOperator(Actor self, Actor recipient, Prop prop) {
 
 		// Set conditions that must be true

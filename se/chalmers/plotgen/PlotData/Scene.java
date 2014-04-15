@@ -10,8 +10,6 @@ import java.util.HashSet;
  * Generally, you add scenes to actors and props, not vice versa.
  * actor.setLocation(scene)
  * prop.setLocation(scene)
- * 
- * @author fabian
  */
 public class Scene extends PlotThing {
 

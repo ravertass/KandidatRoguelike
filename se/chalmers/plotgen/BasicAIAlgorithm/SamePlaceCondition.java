@@ -3,6 +3,9 @@ package se.chalmers.plotgen.BasicAIAlgorithm;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.IPlotBody;
 
+/**
+ * A condition that checks if two certain actors are at the same place.
+ */
 public class SamePlaceCondition implements ICondition {
 
 	private Actor actor;

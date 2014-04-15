@@ -4,6 +4,22 @@ import java.util.ArrayList;
 
 import se.chalmers.plotgen.PlotData.Action;
 
+/**
+ * An Operator is the BasicAIAlgorithm counterpart of a plotgen Action.
+ * These are actions that the agents perform in the BasicAIAlgorithm 
+ * plot generating simulation.
+ * 
+ * An Operator has four lists of conditions:
+ * 
+ * beTrue
+ * 	Conditions that should be true
+ * beFalse
+ * 	Conditions that should be false
+ * setTrue
+ * 	Conditions that will be set true
+ * setFalse
+ * 	Conditions that will be set false
+ */
 public class Operator {
 
 	// I had a hard time choosing between ArrayList or HashSet for these...

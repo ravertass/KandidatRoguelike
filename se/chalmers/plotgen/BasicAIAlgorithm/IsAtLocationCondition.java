@@ -3,6 +3,9 @@ package se.chalmers.plotgen.BasicAIAlgorithm;
 import se.chalmers.plotgen.PlotData.IPlotBody;
 import se.chalmers.plotgen.PlotData.Scene;
 
+/**
+ * A condition that checks if an actor is at a certain location.
+ */
 public class IsAtLocationCondition implements ICondition {
 
 	private IPlotBody plotBody;
