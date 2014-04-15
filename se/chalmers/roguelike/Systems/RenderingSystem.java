@@ -60,9 +60,8 @@ import se.chalmers.roguelike.util.SpriteComparator;
 import se.chalmers.roguelike.util.TrueTypeFont;
 
 /**
- * This is the system that draws everything to be drawn. It knows of all
- * entities with both position and sprites, and those are the components which
- * it uses.
+ * This is the system that draws everything to be drawn. It knows of all entities with both position and
+ * sprites, and those are the components which it uses.
  */
 public class RenderingSystem implements ISystem {
 
@@ -89,8 +88,7 @@ public class RenderingSystem implements ISystem {
 	private final int minimapHeight = menuWidth;
 
 	/**
-	 * Constructor for the rendering system. Sets up the necessary things for
-	 * LWJGL to work properly.
+	 * Constructor for the rendering system. Sets up the necessary things for LWJGL to work properly.
 	 */
 	public RenderingSystem() {
 		// Magic tricks done by lwjgl
@@ -113,8 +111,8 @@ public class RenderingSystem implements ISystem {
 		font = new TrueTypeFont(awtFont, false);
 
 		/*
-		 * This part is just to test it out, figure out a better way of loading
-		 * the texture and where to store it (outside of ECS?) and remove later
+		 * This part is just to test it out, figure out a better way of loading the texture and where to store
+		 * it (outside of ECS?) and remove later
 		 */
 		try {
 			owBackground = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/"
@@ -229,8 +227,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * update should be run of every iteration of the game loop.
 	 * 
-	 * Based on what the state the game engine is set to it will draw different
-	 * things.
+	 * Based on what the state the game engine is set to it will draw different things.
 	 */
 	public void update() {
 		if (Engine.gameState == Engine.GameState.DUNGEON) {
@@ -288,11 +285,10 @@ public class RenderingSystem implements ISystem {
 				}
 			}
 			/*
-			 * For some reason if we try to draw the text in the above loop, it
-			 * will mess up the textures for all the stars that are after the
-			 * one that is select. That is, if you select star 3, then 1-3 will
-			 * render fine, while star >3 will be broken. This is why I'm doing
-			 * it here instead after the loop.
+			 * For some reason if we try to draw the text in the above loop, it will mess up the textures for
+			 * all the stars that are after the one that is select. That is, if you select star 3, then 1-3
+			 * will render fine, while star >3 will be broken. This is why I'm doing it here instead after the
+			 * loop.
 			 */
 			if (activeStar != null) {
 				String visited = activeStar.getComponent(DungeonComponent.class).getDungeon() == null ? "no"
@@ -300,10 +296,7 @@ public class RenderingSystem implements ISystem {
 				glColor3f(0.06f, 0.61f, 0.65f);
 				font.drawString(Engine.screenWidth - 170, 300, "\n" + activeStar.toString());
 				glColor3f(1.0f, 1.0f, 1.0f);
-				font.drawString(Engine.screenWidth - 170, 300, "\n\nVisited before:");
-				glColor3f(0.06f, 0.61f, 0.65f);
-				font.drawString(Engine.screenWidth - 78, 300, "\n\n" + visited);
-				glColor3f(1.0f, 1.0f, 1.0f);
+				font.drawString(Engine.screenWidth - 170, 300, "\n\nVisited before: " + visited);
 			}
 		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
@@ -325,10 +318,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Method to draw an entity to the game window.
 	 * 
-	 * @param sprite
-	 *            The sprite that should be drawn on the screen
-	 * @param position
-	 *            The position where the sprite should be drawn
+	 * @param sprite The sprite that should be drawn on the screen
+	 * @param position The position where the sprite should be drawn
 	 */
 	private void draw(Sprite sprite, Position position) {
 		if (!sprite.getVisibility())
@@ -356,10 +347,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Method to draw non-tile objects
 	 * 
-	 * @param sprite
-	 *            The sprite that should be drawn on the screen
-	 * @param position
-	 *            The position where the sprite should be drawn
+	 * @param sprite The sprite that should be drawn on the screen
+	 * @param position The position where the sprite should be drawn
 	 */
 	private void drawNonTile(Sprite sprite, Position position) {
 		int sizeX = sprite.getWidth();
@@ -408,11 +397,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws the minimap
 	 * 
-	 * @param sprite
-	 *            the sprite of the tile you want to draw
-	 * @param position
-	 *            the position of the tile (will automatically be adjusted to
-	 *            the minimap location
+	 * @param sprite the sprite of the tile you want to draw
+	 * @param position the position of the tile (will automatically be adjusted to the minimap location
 	 */
 	private void drawMinimap(Sprite sprite, Position position) {
 		if (!sprite.getVisibility())
@@ -437,16 +423,11 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws a sprite on the screen
 	 * 
-	 * @param sprite
-	 *            the sprite that should be drawn
-	 * @param x
-	 *            the X-coordinate for the quad
-	 * @param y
-	 *            the Y-coordinate for the quad
-	 * @param width
-	 *            the width of the quad
-	 * @param height
-	 *            the height of the quad
+	 * @param sprite the sprite that should be drawn
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
 	 */
 	private void drawSprite(Sprite sprite, int x, int y, int width, int height) {
 		Texture texture = sprite.getTexture();
@@ -462,24 +443,15 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws a textured quad on the screen
 	 * 
-	 * @param texture
-	 *            the texture the quad is using
-	 * @param x
-	 *            the X-coordinate for the quad
-	 * @param y
-	 *            the Y-coordinate for the quad
-	 * @param width
-	 *            the width of the quad
-	 * @param height
-	 *            the height of the quad
-	 * @param spriteULX
-	 *            upper left X sprite value
-	 * @param spriteULY
-	 *            upper left Y sprite value
-	 * @param spriteLRX
-	 *            lower right X sprite value
-	 * @param spriteLRY
-	 *            lower right Y sprite value
+	 * @param texture the texture the quad is using
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
+	 * @param spriteULX upper left X sprite value
+	 * @param spriteULY upper left Y sprite value
+	 * @param spriteLRX lower right X sprite value
+	 * @param spriteLRY lower right Y sprite value
 	 */
 	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, float spriteULX,
 			float spriteULY, float spriteLRX, float spriteLRY) {
@@ -501,14 +473,10 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws an untextured quad
 	 * 
-	 * @param x
-	 *            the X-coordinate for the quad
-	 * @param y
-	 *            the Y-coordinate for the quad
-	 * @param width
-	 *            the width of the quad
-	 * @param height
-	 *            the height of the quad
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
 	 */
 	private void drawUntexturedQuad(int x, int y, int width, int height) {
 		glDisable(GL11.GL_TEXTURE_2D);
@@ -532,8 +500,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Adds an entity to the system
 	 * 
-	 * @param entity
-	 *            the entity that should be added
+	 * @param entity the entity that should be added
 	 */
 	public void addEntity(Entity entity) {
 		if ((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
@@ -546,8 +513,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Removes an entity from the system
 	 * 
-	 * @param entity
-	 *            the entity that should be removed
+	 * @param entity the entity that should be removed
 	 */
 	public void removeEntity(Entity entity) {
 		entitiesToDraw.remove(entity);
@@ -556,8 +522,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Sets the camera
 	 * 
-	 * @param c
-	 *            the camera
+	 * @param c the camera
 	 */
 	public void setCamera(Camera c) {
 		this.camera = c;
@@ -566,8 +531,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * draws healthbars for all entities that have health
 	 * 
-	 * @param e
-	 *            the entity that should have its healthbar drawn
+	 * @param e the entity that should have its healthbar drawn
 	 */
 	private void drawHealthbar(Entity e) {
 		Position epos = e.getComponent(Position.class); // tilebased positions
@@ -603,9 +567,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws the HUD
 	 * 
-	 * @param e
-	 *            the player entity that will have its information printed on
-	 *            the HUD
+	 * @param e the player entity that will have its information printed on the HUD
 	 */
 	private void drawHud(Entity e) {
 
@@ -656,8 +618,9 @@ public class RenderingSystem implements ISystem {
 			}
 		}
 		int drawX = Engine.screenWidth - menuWidth + 4;
-		int drawY = 20 + Engine.spriteSize * 2 * 5; // times 2 for double size, times 5 for inventory size (6x6)
-		for (Entity ent : items) { 
+		int drawY = 20 + Engine.spriteSize * 2 * 5; // times 2 for double size, times 5 for inventory size
+													// (6x6)
+		for (Entity ent : items) {
 			// this will draw all the items currently in the inventory
 			drawSprite(ent.getComponent(Sprite.class), drawX, drawY, Engine.spriteSize * 2,
 					Engine.spriteSize * 2);
@@ -673,8 +636,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Updates the dungeon being rendered.
 	 * 
-	 * @param dungeon
-	 *            the current dungeon being used
+	 * @param dungeon the current dungeon being used
 	 */
 	public void setDungeon(Dungeon dungeon) {
 		this.dungeon = dungeon;
