@@ -1,6 +1,5 @@
 package se.chalmers.roguelike.World;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +10,8 @@ import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.EntityCreator;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
+import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.FieldOfView;
@@ -23,8 +24,6 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
-import se.chalmers.roguelike.Components.Attribute.SpaceClass;
-import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 
 public class CellularLevelGenerator {
@@ -45,7 +44,6 @@ public class CellularLevelGenerator {
 	private String wall = "wall2";
 	private String floor = "sand";
 
-	private int numberOfSpawnPoints = 0;
 	private Position plotThingPos;
 
 	public CellularLevelGenerator(int width, int height, long seed) {
@@ -61,16 +59,13 @@ public class CellularLevelGenerator {
 
 		initGrid(worldGrid);
 		for (int i = 0; i < 5; i++) {
-			// print(worldGrid);
 			generation(worldGrid);
 		}
-		// print(worldGrid);
 		findPockets();
 		generateStartPosition();
 		generateEntities();
 		generateStairs();
 		generatePlotThingPosition();
-		// print(worldGrid);
 
 		dungeon = toDungeon();
 		
@@ -80,19 +75,14 @@ public class CellularLevelGenerator {
 		if (stairsDown != null) {
 
 			CellularLevelGenerator nextLevelGen = new CellularLevelGenerator(width - 10, height - 10, seed);
-			Dungeon nextDungeonLevel = nextLevelGen.getDungeon(); // was
-																	// toDungeon,
-																	// would
-																	// re-created
-																	// the
-																	// subdungeon
+			Dungeon nextDungeonLevel = nextLevelGen.getDungeon(); 
+			
 			dungeon.setNextDungeonLevel(nextDungeonLevel);
 			nextDungeonLevel.setPreviousDungeonLevel(dungeon);
 			Entity stair = EntityCreator.createStairs(stairsDown.getX(), stairsDown.getY(), nextDungeonLevel
 					.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(), "stairs_down",
 					nextDungeonLevel);
 			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
-			// System.out.println("Created Subdungeon");
 			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(),
 					nextDungeonLevel.getStartpos().getY(), stairsDown.getX(), stairsDown.getY(), "stairs_up",
 					nextDungeonLevel.getPreviousDungeonLevel());
@@ -125,8 +115,6 @@ public class CellularLevelGenerator {
 			}
 		}
 
-		// print(worldGrid);
-		// System.out.println("Number of groups: " + groups.size());
 		// Sort the groups by size, biggest to smallest
 		Collections.sort(groups, new Comparator<ArrayList<Position>>() {
 			public int compare(ArrayList<Position> a1, ArrayList<Position> a2) {
@@ -286,7 +274,6 @@ public class CellularLevelGenerator {
 	}
 
 	private void generateStairs() {
-		System.out.println("generateStairs() running");
 		if (rand.nextInt(100) + 1 <= (width + height / 2)) {
 			Position pos = cave.get(rand.nextInt(cave.size()));
 			stairsDown = pos;
@@ -297,7 +284,6 @@ public class CellularLevelGenerator {
 		ArrayList<IComponent> components = new ArrayList<IComponent>();
 		NameGenerator ng = new NameGenerator(3, seed);
 		String name = ng.generateName();
-		// String name = "Bat";
 		String sprite = "mobs/mob_bat";
 		components.add(new MobType(MobType.Type.GRUNT));
 		components.add(new Health(10));
@@ -354,17 +340,7 @@ public class CellularLevelGenerator {
 	}
 
 	public void generateStartPosition() {
-		// int x;
-		// int y;
-		// //Just pick a random position that is a floor
-		// while(true){
-		// x = rand.nextInt(width);
-		// y = rand.nextInt(height);
-		// if(worldGrid[y][x] == '.')
-		// break;
-		// }
 		Position pos = cave.get(rand.nextInt(cave.size()));
-		// System.out.println("Startpos:(x:"+x+",y:"+y+")");
 		startPos = pos;
 	}
 
@@ -374,9 +350,5 @@ public class CellularLevelGenerator {
 			System.out.println(worldGrid[y]);
 		}
 	}
-
-	// public static void main(String[] args) {
-	// new CellularLevelGenerator(50, 50, 123456789L);
-	// }
 
 }
