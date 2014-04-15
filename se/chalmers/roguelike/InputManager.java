@@ -123,7 +123,8 @@ public class InputManager implements Subject {
 					|| keyToAction.get(pressedKey) == InputAction.GO_SOUTHWEST
 					|| keyToAction.get(pressedKey) == InputAction.GO_SOUTH
 					|| keyToAction.get(pressedKey) == InputAction.GO_SOUTHEAST
-					|| keyToAction.get(pressedKey) == InputAction.GO_EAST)
+					|| keyToAction.get(pressedKey) == InputAction.GO_EAST
+					|| keyToAction.get(pressedKey) == InputAction.BACKSPACE)
 				notifyObservers(keyToAction.get(pressedKey));
 		}
 		while (Keyboard.next()) {
