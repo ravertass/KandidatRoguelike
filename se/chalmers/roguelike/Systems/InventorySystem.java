@@ -37,7 +37,7 @@ public class InventorySystem implements ISystem, Observer {
 	private boolean timeToLoot;
 
 	public InventorySystem() {
-		inventoryBox = new Rectangle(Engine.screenWidth - 200 + 4, 20, Engine.spriteSize * 2 * 6, Engine.spriteSize * 2 * 6);
+		inventoryBox = new Rectangle(Engine.screenWidth - Engine.hudWidth + 4, 20, Engine.spriteSize * 2 * 6, Engine.spriteSize * 2 * 6);
 		itemSystem = new ItemSystem();
 		this.entities = new ArrayList<Entity>();
 		toRemove = new ArrayList<Entity>();
