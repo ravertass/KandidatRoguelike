@@ -61,6 +61,7 @@ public class CellularLevelGenerator {
 		walls.add("wall2");
 		walls.add("wall_red");
 		walls.add("wall_blue");
+		walls.add("stone_wall");
 		wall = walls.get(rand.nextInt(walls.size()));
 
 		ArrayList<String> floors = new ArrayList<String>();

@@ -144,16 +144,7 @@ public class MainMenuSystem implements ISystem, Observer {
 				}
 			} else if (state == MenuState.NEWGAME) {
 				if (newGameRect != null && newGameRect.contains(mouseX, mouseY)) {
-					engine.removeEntity(newGameButton);
-					engine.removeEntity(seedBox);
-					engine.removeEntity(seedInfo);
-					if (tmpSeed.length() == 0) {
-						System.out.println("Seed required - random being used");
-						Engine.seed = new Random().nextLong();
-					} else {
-						Engine.seed = Long.parseLong(tmpSeed);
-					}
-					engine.newGame();
+					loadNewGame();
 				}
 			}
 		}
@@ -181,6 +172,8 @@ public class MainMenuSystem implements ISystem, Observer {
 				seedAdd(9);
 			} else if (i == InputAction.BACKSPACE && tmpSeed.length() > 0) {
 				tmpSeed = tmpSeed.substring(0, tmpSeed.length() - 1);
+			} else if (i == InputAction.ENTER) {
+				loadNewGame();
 			}
 			if (seedBox != null) {
 				seedBox.getComponent(Text.class).setText(tmpSeed);
@@ -236,13 +229,17 @@ public class MainMenuSystem implements ISystem, Observer {
 		}
 		if (tutorialPlayButton == null) {
 			tutorialPlayButton = engine.entityCreator.createButton(x, y, "play_button", width, height);
+		} else {
+			engine.addEntity(tutorialPlayButton);
 		}
-		tutorial = new Entity("Tutorial");
-		Sprite sprite = new Sprite("misc/tutorial", 800, 600);
-		sprite.setLayer(5);
-		Position pos = new Position(50, 150);
-		tutorial.add(sprite);
-		tutorial.add(pos);
+		if(tutorial == null){
+			tutorial = new Entity("Tutorial");
+			Sprite sprite = new Sprite("misc/tutorial", 800, 600);
+			sprite.setLayer(5);
+			Position pos = new Position(50, 150);
+			tutorial.add(sprite);
+			tutorial.add(pos);
+		}
 		engine.addEntity(tutorial);
 	}
 
@@ -312,5 +309,18 @@ public class MainMenuSystem implements ISystem, Observer {
 		}
 
 		tmpSeed = newSeed;
+	}
+	
+	private void loadNewGame(){
+		engine.removeEntity(newGameButton);
+		engine.removeEntity(seedBox);
+		engine.removeEntity(seedInfo);
+		if (tmpSeed.length() == 0) {
+			System.out.println("Seed required - random being used");
+			Engine.seed = new Random().nextLong();
+		} else {
+			Engine.seed = Long.parseLong(tmpSeed);
+		}
+		engine.newGame();
 	}
 }

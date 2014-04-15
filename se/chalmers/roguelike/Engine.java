@@ -1,8 +1,5 @@
 package se.chalmers.roguelike;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import org.lwjgl.opengl.Display;
 
 import se.chalmers.plotgen.PlotEngine;
@@ -37,10 +34,8 @@ public class Engine {
 	public static int hudWidth = 200;
 	// Debug flag:
 	public static boolean debug = true;
+
 	// Constants: Components
-
-
-	// / private int fps; // updates per second, not necessarly fps
 	private static long componentID = 0;
 	public static final long CompAttribute = 1 << componentID++;
 	public static final long CompHealth = 1 << componentID++;
@@ -63,10 +58,10 @@ public class Engine {
 	public static final long CompPlotAction = 1 << componentID++;
 	public static final long CompMobType = 1 << componentID++;
 	public static final long CompStair = 1 << componentID++;
-	public static final long CompInventory = 1<<componentID++;
-	public static final long CompPocketable = 1<<componentID++;
-	public static final long CompDoubleName = 1<<componentID++;
-	public static final long CompUsable = 1<<componentID++;
+	public static final long CompInventory = 1 << componentID++;
+	public static final long CompPocketable = 1 << componentID++;
+	public static final long CompDoubleName = 1 << componentID++;
+	public static final long CompUsable = 1 << componentID++;
 	public static final long CompText = 1 << componentID++;
 	public static final long CompPlotLoot = 1 << componentID++;
 	
@@ -75,26 +70,21 @@ public class Engine {
 	public static final long inventoryReq = CompInventory;
 	public static final long inputSysReq = CompInput;
 	public static final long renderingSysReq = CompSprite | CompPosition;
-	public static final long moveSysReq = CompInput | CompPosition
-			| CompDirection | CompTurnsLeft;
+	public static final long moveSysReq = CompInput | CompPosition | CompDirection | CompTurnsLeft;
 	public static final long mobSpriteSysReq = CompSprite | CompDirection;
 	public static final long highlightSysReq = CompSprite | CompPosition;
 	public static final long aiSysReq = CompFieldOfView | CompAI | CompInput;
 	public static final long playerInputSysReq = CompPlayer;
-	public static final long combatSystemReq = CompInput | CompHealth
-			| CompPosition | CompTurnsLeft | CompMobType;
+	public static final long combatSystemReq = CompInput | CompHealth | CompPosition | CompTurnsLeft
+			| CompMobType;
 	public static final long levelingSystemReq = CompAttribute;
 	public static final long dungeonReq = CompSprite | CompPosition;
-	public static final long overworldReq = CompDungeon | CompSelectedFlag
-			| CompPosition;
+	public static final long overworldReq = CompDungeon | CompSelectedFlag | CompPosition;
 
-	
-	/// private int fps; // updates per second, not necessarly fps
-	// private ArrayList<ISystem> systems; // Depreached, re-add later?
-	private ArrayList<Entity> entities; // useless?
+
+//	private ArrayList<Entity> entities; // useless?
 	public EntityCreator entityCreator;
-
-	private Dungeon dungeon; // remove static, just for testing unloading atm
+	private Dungeon dungeon;
 	public static long seed;
 	// Systems:
 	private RenderingSystem renderingSys;
@@ -115,7 +105,7 @@ public class Engine {
 	private PlotEngine plotEngine;
 	private MobSpriteSystem mobSpriteSys;
 	private ItemSystem itemSys;
-	
+
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
 	}
@@ -127,11 +117,10 @@ public class Engine {
 	 */
 	public Engine() {
 		System.out.println("Starting new engine.");
-		entities = new ArrayList<Entity>();
 		entityCreator = new EntityCreator(this);
 		gameState = GameState.MAIN_MENU;
 		seed = 1235L; // TODO: Switch to new Random().nextLong();
-		renderingSys = new RenderingSystem();	
+		renderingSys = new RenderingSystem();
 		mainmenuSys = new MainMenuSystem(this);
 		inputManager = new InputManager(this); // required to start the game
 		inputManager.addObserver(mainmenuSys);
@@ -144,7 +133,6 @@ public class Engine {
 	 *            entity to be added to the systems
 	 */
 	public void addEntity(Entity entity) {
-		entities.add(entity);
 		addOrRemoveEntity(entity, false);
 	}
 
@@ -154,10 +142,6 @@ public class Engine {
 	 * @param entity
 	 */
 	public void removeEntity(Entity entity) {
-		// maybe return a bool if it could remove it?�
-		// Check if removals really work properly or if we need to write some
-		// equals function
-		entities.remove(entity);
 		addOrRemoveEntity(entity, true);
 	}
 
@@ -173,7 +157,7 @@ public class Engine {
 
 	private void addOrRemoveEntity(Entity entity, boolean remove) {
 		long compKey = entity.getComponentKey();
-		
+
 		if ((compKey & renderingSysReq) == renderingSysReq) {
 			if (remove) {
 				renderingSys.removeEntity(entity);
@@ -181,14 +165,14 @@ public class Engine {
 				renderingSys.addEntity(entity);
 			}
 		}
-		
-		// This is a very special case and really bad code, the reason it is like this is due to the 
+
+		// This is a very special case and really bad code, the reason it is like this is due to the
 		// other systems not having been initiated yet and will cause crashes
-		
-		if(Engine.gameState == GameState.MAIN_MENU){
+
+		if (Engine.gameState == GameState.MAIN_MENU) {
 			return;
 		}
-		
+
 		if ((compKey & moveSysReq) == moveSysReq) {
 			if (remove) {
 				moveSys.removeEntity(entity);
@@ -242,8 +226,7 @@ public class Engine {
 				levelingSys.addEntity(entity);
 			}
 		}
-		if ((compKey & dungeonReq) == dungeonReq
-				&& (compKey & CompHighlight) != CompHighlight) {
+		if ((compKey & dungeonReq) == dungeonReq && (compKey & CompHighlight) != CompHighlight) {
 			// Bit of a special case, since this requires coordinates:
 			Position pos = entity.getComponent(Position.class);
 			if (remove) {
@@ -266,9 +249,9 @@ public class Engine {
 				inventorySys.addEntity(entity);
 			}
 		}
-		
-		if(entity.containsComponent(CompPlayer)){
-			if(remove){
+
+		if (entity.containsComponent(CompPlayer)) {
+			if (remove) {
 				interactionSys.removeEntity(entity);
 				// This breaks the entity-component pattern a bit, but is needed,
 				// since the player is needed in the OverworldSystem
@@ -285,14 +268,12 @@ public class Engine {
 			}
 		}
 
-		
 	}
 
 	/**
 	 * The game loop. Handles what should run for each state.
 	 */
 	public void run() {
-		
 
 		while (!Display.isCloseRequested()) {
 			if (gameState == GameState.DUNGEON) {
@@ -310,7 +291,7 @@ public class Engine {
 				if (player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0) {
 					aiSystem.update(dungeon, player);
 
-					if(Engine.debug){
+					if (Engine.debug) {
 						System.out.println("------------NEW TURN------------");
 					}
 				}
@@ -324,7 +305,6 @@ public class Engine {
 				renderingSys.update();
 				inputManager.update();
 				mainmenuSys.update();
-
 			}
 		}
 		Display.destroy();
@@ -334,12 +314,7 @@ public class Engine {
 	 * Initializes the necessary systems.
 	 */
 	private void spawnSystems() {
-		//renderingSys = new RenderingSystem();
 		dungeon = new Dungeon();
-//		inputManager = new InputManager(this); // This feels stupid that it
-//												// should have engine component,
-//												// maybe change once debug stuff
-//												// is over for the load manager
 		moveSys = new MoveSystem();
 		mobSpriteSys = new MobSpriteSystem();
 		highlightSys = new HighlightSystem(entityCreator, this);
@@ -351,7 +326,6 @@ public class Engine {
 
 		plotSys = new PlotSystem(this, plotEngine);
 		overworldSys = new OverworldSystem(this);
-//		mainmenuSys = new MainMenuSystem(this);
 		inventorySys = new InventorySystem(this);
 		interactionSys = new InteractionSystem(this);
 		itemSys = new ItemSystem();
@@ -367,11 +341,13 @@ public class Engine {
 		playerInputSys.setCamera(c);
 	}
 
+	/**
+	 * Adds the remaining observers that aren't registered from the start to the input manager 
+	 */
 	private void registerInputSystems() {
 		inputManager.addObserver(playerInputSys);
 		inputManager.addObserver(highlightSys);
 		inputManager.addObserver(overworldSys);
-////		inputManager.addObserver(mainmenuSys);
 		inputManager.addObserver(interactionSys);
 		inputManager.addObserver(inventorySys);
 	}
@@ -382,15 +358,19 @@ public class Engine {
 	public static void main(String[] args) {
 		new Engine().run();
 	}
-	
+
 	/**
 	 * Loads a dungeon and changes the gamestate to DUNGEON
-	 * @param dungeon the dungeon that should be loaded
-	 * @param startX the X-coord of the start position for the player
-	 * @param startY the Y-coord of the start position for the player
+	 * 
+	 * @param dungeon
+	 *            the dungeon that should be loaded
+	 * @param startX
+	 *            the X-coord of the start position for the player
+	 * @param startY
+	 *            the Y-coord of the start position for the player
 	 */
-	public void loadDungeon(Dungeon dungeon, int startX, int startY){
-		if(gameState == GameState.OVERWORLD){
+	public void loadDungeon(Dungeon dungeon, int startX, int startY) {
+		if (gameState == GameState.OVERWORLD) {
 			overworldSys.unregister();
 		}
 		if (this.dungeon != null) {
@@ -404,7 +384,7 @@ public class Engine {
 		addEntity(player);
 		gameState = GameState.DUNGEON;
 	}
-	
+
 	/**
 	 * Loads the overworld
 	 */
@@ -419,7 +399,7 @@ public class Engine {
 			mainmenuSys.unregister();
 			System.out.println("Unregister of mainmenu done");
 		}
-		if(overworldSys != null){
+		if (overworldSys != null) {
 			overworldSys.register();
 		}
 		gameState = GameState.OVERWORLD;
@@ -438,14 +418,16 @@ public class Engine {
 		mainmenuSys.register();
 		gameState = GameState.MAIN_MENU;
 	}
-	
-	public void newGame(){
+
+	/**
+	 * Sets up a new game
+	 */
+	public void newGame() {
 		plotEngine = new PlotEngine(seed);
 		spawnSystems();
 		registerInputSystems();
 		setCamera();
-		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR,
-				SpaceRace.SPACE_ALIEN);
+		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		loadOverworld();
 		addEntity(player);
 	}
