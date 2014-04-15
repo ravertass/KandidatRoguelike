@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -54,6 +55,7 @@ import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
 import se.chalmers.roguelike.util.FontRenderer;
 import se.chalmers.roguelike.util.ShadowCaster;
+import se.chalmers.roguelike.util.SpriteComparator;
 import se.chalmers.roguelike.util.TrueTypeFont;
 
 /**
@@ -72,6 +74,7 @@ public class RenderingSystem implements ISystem {
 	// TODO: Move these two away from here
 	private Texture owBackground = null;
 	private Texture owMenu = null;
+	private SpriteComparator spriteComparator;
 
 	private int[][] lightMap;
 
@@ -102,6 +105,7 @@ public class RenderingSystem implements ISystem {
 
 		// Initialize the list of entities to be drawn
 		entitiesToDraw = new ArrayList<Entity>();
+		spriteComparator = new SpriteComparator();
 
 		// Font
 		Font awtFont = new Font("/resources/fonts/circula-medium.otf", Font.BOLD, 14);
@@ -249,10 +253,18 @@ public class RenderingSystem implements ISystem {
 			// Draw all entities in system if they stand on a lit tile
 			for (Entity entity : entitiesToDraw) {
 				Position epos = entity.getComponent(Position.class);
+				Tile tile = dungeon.getTile(epos.getX(), epos.getY());
 				if ((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight)
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 				else if (Engine.debug || lightMap[epos.getX()][epos.getY()] == 1)
 					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
+				else if (tile.hasBeenSeen() && !entity.containsComponent(Engine.CompAI)){
+					// Draws all entities at the last position you saw them at, excluding entities that
+					// contains the AI component, should make sure they can't move
+					glColor3f(0.5f, 0.5f, 0.5f);
+					draw(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
+					glColor3f(1.0f, 1.0f, 1.0f);
+				}
 			}
 		} else if (Engine.gameState == Engine.GameState.OVERWORLD) {
 			drawBackground();
@@ -289,10 +301,14 @@ public class RenderingSystem implements ISystem {
 			if (activeStar != null) {
 				String visited = activeStar.getComponent(DungeonComponent.class).getDungeon() == null ? "no"
 						: "yes";
-				font.drawString(Engine.screenWidth - 170, 300, "Selected star: " + activeStar.toString());
-				font.drawString(Engine.screenWidth - 170, 300, "\nVisited before: " + visited);
-			}
-		} else if(Engine.gameState == Engine.GameState.MAIN_MENU) {
+				glColor3f(0.06f, 0.61f, 0.65f);
+				font.drawString(Engine.screenWidth - 170, 300, "\n" + activeStar.toString());
+				glColor3f(1.0f, 1.0f, 1.0f);
+				font.drawString(Engine.screenWidth - 170, 300, "\n\nVisited before:");
+				glColor3f(0.06f, 0.61f, 0.65f);
+				font.drawString(Engine.screenWidth - 78, 300, "\n\n" + visited);
+				glColor3f(1.0f, 1.0f, 1.0f);	}
+		} else if (Engine.gameState == Engine.GameState.MAIN_MENU) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
 				drawNonTile(e.getComponent(Sprite.class), e.getComponent(Position.class));
@@ -523,6 +539,7 @@ public class RenderingSystem implements ISystem {
 			this.player = entity;
 		}
 		entitiesToDraw.add(entity);
+		Collections.sort(entitiesToDraw,spriteComparator);
 	}
 
 	/**

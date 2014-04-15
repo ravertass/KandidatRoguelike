@@ -1,13 +1,31 @@
 package se.chalmers.roguelike.World;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
+import se.chalmers.plotgen.NameGen.NameGenerator;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.EntityCreator;
+import se.chalmers.roguelike.Components.AI;
+import se.chalmers.roguelike.Components.Attribute;
+import se.chalmers.roguelike.Components.BlocksWalking;
+import se.chalmers.roguelike.Components.Direction;
+import se.chalmers.roguelike.Components.FieldOfView;
+import se.chalmers.roguelike.Components.Health;
+import se.chalmers.roguelike.Components.IComponent;
+import se.chalmers.roguelike.Components.Input;
+import se.chalmers.roguelike.Components.Inventory;
+import se.chalmers.roguelike.Components.MobType;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.Components.Weapon;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
+import se.chalmers.roguelike.Components.Attribute.SpaceRace;
+import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 
 public class CellularLevelGenerator {
 
@@ -21,14 +39,20 @@ public class CellularLevelGenerator {
 	private ArrayList<Entity> dungeonEntities = new ArrayList<Entity>();
 	private Position startPos;
 	private ArrayList<Position> cave;
+	private long seed;
+	private Position stairsDown = null;
 
 	private String wall = "wall2";
 	private String floor = "sand";
 
+	private int numberOfSpawnPoints = 0;
+	private Position plotThingPos;
+
 	public CellularLevelGenerator(int width, int height, long seed) {
 		this.height = height;
 		this.width = width;
-		this.rand = new Random(/* seed */);
+		this.seed = seed;
+		this.rand = new Random(seed);
 		run();
 	}
 
@@ -37,13 +61,51 @@ public class CellularLevelGenerator {
 
 		initGrid(worldGrid);
 		for (int i = 0; i < 5; i++) {
-			print(worldGrid);
+			// print(worldGrid);
 			generation(worldGrid);
 		}
-		print(worldGrid);
+		// print(worldGrid);
 		findPockets();
 		generateStartPosition();
-		// dungeon = toDungeon();
+		generateEntities();
+		generateStairs();
+		generatePlotThingPosition();
+		// print(worldGrid);
+
+		dungeon = toDungeon();
+		
+		dungeon.addPlotThingPosition(plotThingPos.getX(), plotThingPos.getY());
+
+		// Generate nextLevel
+		if (stairsDown != null) {
+
+			CellularLevelGenerator nextLevelGen = new CellularLevelGenerator(width - 10, height - 10, seed);
+			Dungeon nextDungeonLevel = nextLevelGen.getDungeon(); // was
+																	// toDungeon,
+																	// would
+																	// re-created
+																	// the
+																	// subdungeon
+			dungeon.setNextDungeonLevel(nextDungeonLevel);
+			nextDungeonLevel.setPreviousDungeonLevel(dungeon);
+			Entity stair = EntityCreator.createStairs(stairsDown.getX(), stairsDown.getY(), nextDungeonLevel
+					.getStartpos().getX(), nextDungeonLevel.getStartpos().getY(), "stairs_down",
+					nextDungeonLevel);
+			dungeon.addEntity(stairsDown.getX(), stairsDown.getY(), stair);
+			// System.out.println("Created Subdungeon");
+			Entity stairUp = EntityCreator.createStairs(nextDungeonLevel.getStartpos().getX(),
+					nextDungeonLevel.getStartpos().getY(), stairsDown.getX(), stairsDown.getY(), "stairs_up",
+					nextDungeonLevel.getPreviousDungeonLevel());
+			nextDungeonLevel.addEntity(nextDungeonLevel.getStartpos().getX(), nextDungeonLevel.getStartpos()
+					.getY(), stairUp);
+		}
+		if (dungeon.getPreviousDungeonLevel() == null) {
+			int x = getStartPos().getX();
+			int y = getStartPos().getY();
+			Entity stairUp = EntityCreator.createStairs(x, y, -1, -1, "stairs_up", null);
+			dungeon.addEntity(x, y, stairUp);
+		}
+
 	}
 
 	private void findPockets() {
@@ -63,8 +125,8 @@ public class CellularLevelGenerator {
 			}
 		}
 
-		print(worldGrid);
-		System.out.println("Number of groups: " + groups.size());
+		// print(worldGrid);
+		// System.out.println("Number of groups: " + groups.size());
 		// Sort the groups by size, biggest to smallest
 		Collections.sort(groups, new Comparator<ArrayList<Position>>() {
 			public int compare(ArrayList<Position> a1, ArrayList<Position> a2) {
@@ -79,7 +141,6 @@ public class CellularLevelGenerator {
 			fill(groups.get(i), 'X');
 		}
 
-		print(worldGrid);
 	}
 
 	private void fill(ArrayList<Position> group, char c) {
@@ -194,6 +255,72 @@ public class CellularLevelGenerator {
 		}
 	}
 
+	public void generateEntities() {
+		int adjacentcount1;
+		for (int x = 1; x < width - 1; x++) {
+			for (int y = 1; y < height - 1; y++) {
+
+				adjacentcount1 = 0;
+				for (int xi = -1; xi <= 1; xi++) {
+					for (int yi = -1; yi <= 1; yi++) {
+						if (worldGrid[y + yi][x + xi] == 'X')
+							adjacentcount1++;
+					}
+				}
+
+				if (adjacentcount1 <= 0) {
+					if (rand.nextInt(100) + 1 <= 4)
+						dungeonEntities.add(spawnEnemy(x, y));
+					if (rand.nextInt(100) + 1 <= 8) {
+						Entity gold = EntityCreator.createGold(x, y, 100);
+						dungeonEntities.add(gold);
+					}
+				}
+
+			}
+		}
+	}
+	
+	private void generatePlotThingPosition() {
+		plotThingPos = cave.get(rand.nextInt(cave.size()));
+	}
+
+	private void generateStairs() {
+		System.out.println("generateStairs() running");
+		if (rand.nextInt(100) + 1 <= (width + height / 2)) {
+			Position pos = cave.get(rand.nextInt(cave.size()));
+			stairsDown = pos;
+		}
+	}
+
+	private Entity spawnEnemy(int x, int y) {
+		ArrayList<IComponent> components = new ArrayList<IComponent>();
+		NameGenerator ng = new NameGenerator(3, seed);
+		String name = ng.generateName();
+		// String name = "Bat";
+		String sprite = "mobs/mob_bat";
+		components.add(new MobType(MobType.Type.GRUNT));
+		components.add(new Health(10));
+		components.add(new TurnsLeft(1));
+		components.add(new Input());
+		components.add(new Sprite(sprite));
+		components.add(new Inventory()); // TODO add items that the
+											// enemy is carrying here,
+											// arraylist<entity> inside
+											// constructor
+		components.add(new Position(x, y));
+		components.add(new Direction());
+		components.add(new AI());
+		Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE, SpaceRace.SPACE_DWARF, 1, 50);
+		components.add(new BlocksWalking(true));
+		components.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); // hardcoded
+																					// equals
+																					// bad
+		components.add(new FieldOfView(8)); // hardcoded equals bad
+		components.add(attribute);
+		return EntityCreator.createEntity("(Enemy)" + name, components);
+	}
+
 	public Dungeon toDungeon() {
 		Dungeon dungeon = new Dungeon();
 		Tile[][] tiles = toTiles();
@@ -223,7 +350,6 @@ public class CellularLevelGenerator {
 	}
 
 	public Position getStartPos() {
-
 		return startPos;
 	}
 
@@ -249,8 +375,8 @@ public class CellularLevelGenerator {
 		}
 	}
 
-	public static void main(String[] args) {
-		new CellularLevelGenerator(30, 30, 12335689L);
-	}
+	// public static void main(String[] args) {
+	// new CellularLevelGenerator(50, 50, 123456789L);
+	// }
 
 }

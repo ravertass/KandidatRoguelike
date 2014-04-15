@@ -18,6 +18,7 @@ import se.chalmers.roguelike.Components.PlotAction;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
+import se.chalmers.roguelike.World.CellularLevelGenerator;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.LevelGenerator;
 import se.chalmers.roguelike.util.Observer;
@@ -155,9 +156,16 @@ public class OverworldSystem implements ISystem, Observer {
 		if (starDungeon == null) {
 			System.out.println("No dungeon found! Generating one.");
 			long seed = activeStar.getComponent(Seed.class).getSeed();
-
-			LevelGenerator generator = new LevelGenerator(seed);
-			starDungeon = generator.getDungeon();
+			
+			Random rand = new Random(seed);
+			//percentage of dungeons to be generated as caves vs regular dungeons
+			if (rand.nextInt(100)+1 <= 50) {
+				CellularLevelGenerator generator = new CellularLevelGenerator(50,50,seed);
+				starDungeon = generator.getDungeon();
+			} else {
+				LevelGenerator generator = new LevelGenerator(seed);
+				starDungeon = generator.getDungeon();
+			}
 			activeStar.getComponent(DungeonComponent.class).setDungeon(starDungeon);
 
 			if (activeStar.getComponent(PlotAction.class).getAction() != null) {

@@ -13,14 +13,17 @@ import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Usable;
 import se.chalmers.roguelike.util.Pair;
 
-public class ItemSystem implements ISystem {
+public class ItemSystem implements ISystem { // maybe this shouldnt be a system
+												// at all since it doesnt
+												// contain entities and doesnt
+												// use update
 
 	private static HashMap<Entity, UseEffect> lookupPotions;
 	private static ArrayList<Pair<Entity, UseEffect>> listPotions;
 
 	private ArrayList<String> colors;
 	private UseEffect[] effects;
-	
+
 	private static Random random;
 
 	public static enum UseEffect {
@@ -42,6 +45,7 @@ public class ItemSystem implements ISystem {
 			e.add(new Usable(pe));
 			lookupPotions.put(e, pe);
 			listPotions.add(new Pair<Entity, UseEffect>(e, pe));
+			counter++;
 		}
 	}
 
@@ -71,14 +75,17 @@ public class ItemSystem implements ISystem {
 	 */
 	public void useItem(Entity target, Entity item) {
 
-		if(item.getComponent(Usable.class) != null) {
+		if (item.getComponent(Usable.class) != null) {
 			UseEffect ue = item.getComponent(Usable.class).getUseEffect();
-			
-			if (ue == UseEffect.HEAL) { // Heals for 50% of the targets maxhealth.
+
+			if (ue == UseEffect.HEAL) { // Heals for 50% of the targets
+										// maxhealth.
 				Health h = target.getComponent(Health.class);
 				h.increaseHealth(h.getMaxHealth() / 2);
-			} else if (ue == UseEffect.TAKE_DAMAGE) { // takes 25 % damage if player
-														// drinks it, 50 % if thrown
+			} else if (ue == UseEffect.TAKE_DAMAGE) { // takes 25 % damage if
+														// player
+														// drinks it, 50 % if
+														// thrown
 				Health h = target.getComponent(Health.class);
 				if (target.getComponent(Player.class) != null) {
 					h.decreaseHealth(h.getMaxHealth() / 4);
@@ -87,13 +94,11 @@ public class ItemSystem implements ISystem {
 				}
 			}
 		}
-		
-
 
 	}
 
 	public static Entity getRandomPotion() {
-		if(random == null) {
+		if (random == null) {
 			random = new Random();
 		}
 		int i = random.nextInt(lookupPotions.size());

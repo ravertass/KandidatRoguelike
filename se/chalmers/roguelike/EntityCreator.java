@@ -69,8 +69,6 @@ public class EntityCreator {
 		ArrayList<Entity> inv = new ArrayList<Entity>();
 		inv.add(ItemSystem.getRandomPotion());
 		inv.add(ItemSystem.getRandomPotion());
-		inv.add(ItemSystem.getRandomPotion());
-		inv.add(ItemSystem.getRandomPotion());
 		player.add(new Inventory(inv));
 		player.add(new Gold(0));
 		player.add(new BlocksWalking(true));
@@ -184,7 +182,9 @@ public class EntityCreator {
 	 */
 	public Entity createButton(int x, int y, String spriteName, int width, int height){
 		Entity button = new Entity("button");
-		button.add(new Sprite(spriteName,width, height));
+		Sprite sprite = new Sprite(spriteName,width, height);
+		sprite.setLayer(3);
+		button.add(sprite);
 		button.add(new Position(x,y));
 		engine.addEntity(button);
 		return button;
@@ -267,7 +267,9 @@ public class EntityCreator {
 	 */
 	public Entity createPopup(ArrayList<String> text, int x, int y, int width, int height) {
 		Entity popup = new Entity("popup");
-		popup.add(new Sprite("popupbackground", width, height));
+		Sprite sprite = new Sprite("popupbackground", width, height);
+		sprite.setLayer(2);
+		popup.add(sprite);
 		popup.add(new Position(x,y));
 		popup.add(new PopupText(text));
 		return popup;
