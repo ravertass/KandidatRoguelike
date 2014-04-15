@@ -235,6 +235,10 @@ public class LevelGenerator {
 	private void generateEnemies() {
 		NameGenerator ng = new NameGenerator(3, seed);
 		for (Rectangle room : largeRooms) {
+			
+			if (room.equals(largeRooms.get(0)))
+					continue;
+			
 			if (rand.nextInt(4) == 0) {
 				ArrayList<IComponent> components = new ArrayList<IComponent>();
 
