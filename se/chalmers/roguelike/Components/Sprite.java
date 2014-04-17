@@ -101,7 +101,7 @@ public class Sprite implements IComponent {
 						+ fileName + ".png")));
 				loadTextures.put(fileName, texture);
 			} catch (FileNotFoundException e) {
-				System.out.println("The file does not exist");
+				System.out.println("The file " + fileName + " does not exist");
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
