@@ -135,7 +135,6 @@ public class HighlightSystem implements ISystem, Observer {
 		if ((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
 			this.player = entity;
 		} else if ((entity.getComponentKey() & Engine.CompHighlight) == Engine.CompHighlight) {
-			System.out.println("BORK!");
 			entities.add(entity);
 		}
 	}
