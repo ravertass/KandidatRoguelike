@@ -613,7 +613,7 @@ public class RenderingSystem implements ISystem {
 		// below the background to the inventory-positions will be drawn
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
-				drawSprite(new Sprite("noslipfloor"), Engine.screenWidth - 200 + 4 + i * Engine.spriteSize
+				drawSprite(new Sprite("tiles/noslipfloor"), Engine.screenWidth - 200 + 4 + i * Engine.spriteSize
 						* 2, 20 + j * Engine.spriteSize * 2, Engine.spriteSize * 2, Engine.spriteSize * 2);
 			}
 		}
