@@ -320,5 +320,8 @@ public class MenuSystem implements ISystem, Observer {
 	
 	public void setState(MenuState state){
 		this.state = state;
+		if(state == MenuState.GAMEOVER){
+			// Set up the game over screen here
+		}
 	}
 }
