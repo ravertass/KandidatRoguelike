@@ -11,5 +11,17 @@ public class StatusEffects {
 	public StatusEffects() {
 		statusEffects = new ArrayList<StatusEffect>();
 	}
+	
+	public void addEffect(StatusEffect se) {
+		this.statusEffects.add(se);
+	}
+	
+	public void removeEffect(StatusEffect se) {
+		this.statusEffects.remove(se);
+	}
+	
+	public void removeAllEffects() {
+		this.statusEffects.clear();
+	}
 
 }

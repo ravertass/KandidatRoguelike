@@ -1,7 +1,6 @@
 package se.chalmers.roguelike;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import org.lwjgl.opengl.Display;
 
@@ -24,6 +23,7 @@ import se.chalmers.roguelike.Systems.OverworldSystem;
 import se.chalmers.roguelike.Systems.PlayerInputSystem;
 import se.chalmers.roguelike.Systems.PlotSystem;
 import se.chalmers.roguelike.Systems.RenderingSystem;
+import se.chalmers.roguelike.Systems.StatusEffectSystem;
 import se.chalmers.roguelike.Systems.TurnSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.util.Camera;
@@ -68,6 +68,7 @@ public class Engine {
 	public static final long CompDoubleName = 1<<componentID++;
 	public static final long CompUsable = 1<<componentID++;
 	public static final long CompText = 1 << componentID++;
+	public static final long CompStatusEffect = 1 << componentID++;
 	
 	// Constants: System requirements:
 
@@ -86,6 +87,7 @@ public class Engine {
 	public static final long dungeonReq = CompSprite | CompPosition;
 	public static final long overworldReq = CompDungeon | CompSelectedFlag
 			| CompPosition;
+	public static final long statusEffectReq = CompStatusEffect;
 
 	
 	/// private int fps; // updates per second, not necessarly fps
@@ -114,6 +116,7 @@ public class Engine {
 	private PlotEngine plotEngine;
 	private MobSpriteSystem mobSpriteSys;
 	private ItemSystem itemSys;
+	private StatusEffectSystem statusEffectSys;
 	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
@@ -272,7 +275,11 @@ public class Engine {
 				interactionSys.addEntity(entity);
 			}
 		}
-
+		if((compKey & statusEffectReq) == statusEffectReq) {
+			if(remove) {
+				
+			}
+		}
 		
 	}
 
@@ -294,6 +301,7 @@ public class Engine {
 				highlightSys.update(dungeon);
 				levelingSys.update();
 				turnSystem.update();
+				statusEffectSys.update();
 
 				if (player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0) {
 					aiSystem.update(dungeon, player);
@@ -343,6 +351,7 @@ public class Engine {
 		inventorySys = new InventorySystem(this);
 		interactionSys = new InteractionSystem(this);
 		itemSys = new ItemSystem();
+		statusEffectSys = new StatusEffectSystem();
 	}
 
 	/**
