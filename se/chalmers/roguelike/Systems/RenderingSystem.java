@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -54,6 +55,7 @@ import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
 import se.chalmers.roguelike.util.Camera;
+import se.chalmers.roguelike.util.CombatLog;
 import se.chalmers.roguelike.util.FontRenderer;
 import se.chalmers.roguelike.util.ShadowCaster;
 import se.chalmers.roguelike.util.SpriteComparator;
@@ -75,6 +77,7 @@ public class RenderingSystem implements ISystem {
 	private Texture owBackground = null;
 	private Texture owMenu = null;
 	private SpriteComparator spriteComparator;
+	private boolean showCombatLog = true;
 
 	private int[][] lightMap;
 
@@ -84,6 +87,7 @@ public class RenderingSystem implements ISystem {
 	private final int DISPLAY_HEIGHT = Engine.screenHeight;
 
 	private final int menuWidth = 200;
+	private final int combatLogHeight = 117;
 	private final int minimapWidth = menuWidth;
 	private final int minimapHeight = menuWidth;
 
@@ -163,7 +167,7 @@ public class RenderingSystem implements ISystem {
 			}
 			Display.setDisplayMode(displayMode);
 			Display.setFullscreen(false);
-			Display.setTitle("AstRogue");
+			Display.setTitle("Astrogue");
 			Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -259,6 +263,7 @@ public class RenderingSystem implements ISystem {
 					glColor3f(1.0f, 1.0f, 1.0f);
 				}
 			}
+			drawCombatLog();
 		} else if (Engine.gameState == Engine.GameState.OVERWORLD) {
 			drawBackground();
 			drawMenuOW();
@@ -631,6 +636,35 @@ public class RenderingSystem implements ISystem {
 				drawX += Engine.spriteSize * 2;
 			}
 		}
+	}
+	
+	private void drawCombatLog(){
+		if(showCombatLog == true){
+
+			Texture combatlogBG = new Sprite("combatlog_bg").getTexture();
+			int sizeX = Engine.screenWidth-menuWidth;
+			int sizeY = combatLogHeight;
+
+			float spriteULX = 0.0f;
+			float spriteULY = 0.0f;
+			float spriteLRX = ((float) (sizeX)) / combatlogBG.getTextureWidth();
+			float spriteLRY = ((float) (sizeY)) / combatlogBG.getTextureHeight();
+			drawTexturedQuad(combatlogBG, 0, 0, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
+			
+			StringBuilder sb = new StringBuilder();
+			int x = 20;						//hard pixels appear different on different resolutions?
+			int y = combatLogHeight - 30; 	//hard pixels appear different on different resolutions?
+			List<String> log = CombatLog.getLog();
+			if (log.size() > 4){
+				log = log.subList(0, 5);
+			}
+			for (int i = log.size() - 1; !(i < 0); i--) {
+				sb.append(log.get(i));
+				sb.append("\n");
+			}
+			font.drawString(x, y, sb.toString());
+		}
+		drawNonTile(new Sprite("combatlog"), new Position(0, 0));
 	}
 
 	/**

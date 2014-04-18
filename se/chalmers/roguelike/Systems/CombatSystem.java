@@ -14,6 +14,7 @@ import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.util.CombatLog;
 import se.chalmers.roguelike.util.Dice;
 import se.chalmers.roguelike.util.Util;
 
@@ -155,7 +156,7 @@ public class CombatSystem implements ISystem {
 			if (e.getComponent(MobType.class).getType() == MobType.Type.BOSS) {
 				dungeon.setPlotAccomplished(true);
 			}
-			
+			CombatLog.addToLog(e.toString() + " died.");
 			dungeon.getTile(e.getComponent(Position.class).getX(),
 					e.getComponent(Position.class).getY()).removeEntity(e);
 			engine.removeEntity(e);
@@ -221,9 +222,12 @@ public class CombatSystem implements ISystem {
 						attackerStats.increaseExperience(targetStats.xpyield());
 					}
 				}
+				CombatLog.addToLog(attacker + " attacks " + target + " for "
+				+ damage + " damage.");
 				System.out.println(attacker + " attacks " + target + " for "
 						+ damage + " damage.");
 			} else {
+				CombatLog.addToLog(attacker + " missed.");
 				System.out.println(attacker + " missed.");
 			}
 		}
