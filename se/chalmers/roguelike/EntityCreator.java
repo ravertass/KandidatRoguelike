@@ -31,7 +31,6 @@ import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.Systems.ItemSystem;
-import se.chalmers.roguelike.Systems.StatusEffectSystem.StatusEffect;
 import se.chalmers.roguelike.World.Dungeon;
 
 /**
@@ -56,7 +55,7 @@ public class EntityCreator {
 	 * @param spaceRace the race of the player
 	 * @return the entity that represents a player
 	 */
-	public Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
+	public static Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
 		Entity player = new Entity("Player");
 		player.add(new MobType(MobType.Type.PLAYER));
 		player.add(new Health(50));

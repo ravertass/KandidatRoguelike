@@ -8,11 +8,14 @@ import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
+import se.chalmers.roguelike.EntityCreator;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Text;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
+import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Engine.GameState;
 import se.chalmers.roguelike.util.Observer;
 

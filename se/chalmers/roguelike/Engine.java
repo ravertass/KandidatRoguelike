@@ -1,4 +1,5 @@
 package se.chalmers.roguelike;
+
 import java.util.ArrayList;
 import org.lwjgl.opengl.Display;
 
@@ -67,7 +68,7 @@ public class Engine {
 	public static final long CompText = 1 << componentID++;
 	public static final long CompPlotLoot = 1 << componentID++;
 	public static final long CompStatusEffect = 1 << componentID++;
-	
+
 	// Constants: System requirements:
 
 	public static final long inventoryReq = CompInventory;
@@ -84,8 +85,6 @@ public class Engine {
 	public static final long dungeonReq = CompSprite | CompPosition;
 	public static final long overworldReq = CompDungeon | CompSelectedFlag | CompPosition;
 	public static final long statusEffectReq = CompStatusEffect;
-
-
 
 	public EntityCreator entityCreator;
 	private Dungeon dungeon;
@@ -110,7 +109,7 @@ public class Engine {
 	private MobSpriteSystem mobSpriteSys;
 	private ItemSystem itemSys;
 	private StatusEffectSystem statusEffectSys;
-	
+
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD, GAMEOVER
 	}
@@ -121,10 +120,12 @@ public class Engine {
 	 * Sets up the engine and it's variables.
 	 */
 	public Engine() {
-		System.out.println("Starting new engine.");
-		entityCreator = new EntityCreator(this);
+		
 		gameState = GameState.MAIN_MENU;
 		seed = 1235L; // TODO: Switch to new Random().nextLong();
+		
+		// Init systems, etc:
+		entityCreator = new EntityCreator(this);
 		renderingSys = new RenderingSystem();
 		menuSys = new MenuSystem(this);
 		inputManager = new InputManager(this); // required to start the game
@@ -156,8 +157,7 @@ public class Engine {
 	 * @param entity
 	 *            entity that should be added or removed
 	 * @param remove
-	 *            if true the entity should be removed from systems, if false it
-	 *            will be added
+	 *            if true the entity should be removed from systems, if false it will be added
 	 */
 
 	private void addOrRemoveEntity(Entity entity, boolean remove) {
@@ -269,14 +269,14 @@ public class Engine {
 				overworldSys.addEntity(entity);
 			}
 		}
-		if((compKey & statusEffectReq) == statusEffectReq) {
-			if(remove) {
+		if ((compKey & statusEffectReq) == statusEffectReq) {
+			if (remove) {
 				statusEffectSys.removeEntity(entity);
 			} else {
 				statusEffectSys.addEntity(entity);
 			}
 		}
-		
+
 	}
 
 	/**
@@ -316,7 +316,7 @@ public class Engine {
 				inputManager.update();
 				menuSys.update();
 			} else if (gameState == GameState.GAMEOVER) {
-//				highlightSys.update(dungeon);
+				// highlightSys.update(dungeon);
 				renderingSys.update();
 				inputManager.update();
 				menuSys.update();
@@ -329,6 +329,7 @@ public class Engine {
 	 * Initializes the necessary systems.
 	 */
 	private void spawnSystems() {
+		plotEngine = new PlotEngine(seed);
 		dungeon = new Dungeon();
 		moveSys = new MoveSystem();
 		mobSpriteSys = new MobSpriteSystem();
@@ -358,10 +359,10 @@ public class Engine {
 	}
 
 	/**
-	 * Adds the remaining observers that aren't registered from the start to the input manager 
+	 * Adds the remaining observers that aren't registered from the start to the input manager
 	 */
 	private void handleObservers(boolean add) {
-		if(add){
+		if (add) {
 			inputManager.addObserver(playerInputSys);
 			inputManager.addObserver(highlightSys);
 			inputManager.addObserver(overworldSys);
@@ -375,17 +376,12 @@ public class Engine {
 			inputManager.removeObserver(inventorySys);
 		}
 	}
-	
+
 	private void registerNewTurnSystems() {
 		turnSystem.addObserver(statusEffectSys);
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new Engine().run();
-	}
+
 
 	/**
 	 * Loads a dungeon and changes the gamestate to DUNGEON
@@ -450,21 +446,19 @@ public class Engine {
 	/**
 	 * Sets up a new game
 	 */
-	public void newGame() {
-		
-		plotEngine = new PlotEngine(seed);
-		handleObservers(false); // removes any old systems still listening
+	public void newGame() {	
+		handleObservers(false); // removes any old systems still listening (does nothing at first run)
 		spawnSystems();
-		registerNewTurnSystems(); // Might be buggy with some changes
+		registerNewTurnSystems(); // Might be buggy with some changes were observers need to be changed
 		handleObservers(true);
 		setCamera();
-		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
+		player = EntityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		loadOverworld();
-		addEntity(player);
+//		addEntity(player);
 	}
-	
-	public void gameOver(){
-		if(gameState == GameState.DUNGEON){
+
+	public void gameOver() {
+		if (gameState == GameState.DUNGEON) {
 			dungeon.unregister(this);
 		}
 		highlightSys.unregister();
@@ -472,4 +466,10 @@ public class Engine {
 		menuSys.setState(MenuState.GAMEOVER);
 	}
 	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		new Engine().run();
+	}
 }
