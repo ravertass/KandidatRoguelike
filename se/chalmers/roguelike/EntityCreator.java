@@ -26,10 +26,12 @@ import se.chalmers.roguelike.Components.Seed;
 import se.chalmers.roguelike.Components.SelectedFlag;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Stair;
+import se.chalmers.roguelike.Components.StatusEffects;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 import se.chalmers.roguelike.Systems.ItemSystem;
+import se.chalmers.roguelike.Systems.StatusEffectSystem.StatusEffect;
 import se.chalmers.roguelike.World.Dungeon;
 
 /**
@@ -69,6 +71,9 @@ public class EntityCreator {
 		ArrayList<Entity> inv = new ArrayList<Entity>();
 		inv.add(ItemSystem.getRandomPotion());
 		inv.add(ItemSystem.getRandomPotion());
+		StatusEffects se = new StatusEffects();
+		se.addEffect(StatusEffect.POISONED, 5);
+		player.add(se);
 		player.add(new Inventory(inv));
 		player.add(new Gold(0));
 		player.add(new BlocksWalking(true));

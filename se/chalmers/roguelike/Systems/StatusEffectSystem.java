@@ -60,10 +60,10 @@ public class StatusEffectSystem implements ISystem, Observer {
 			for(StatusEffect se : effects.keySet()) {
 				switch(se) {
 					case BURNING: 
-						e.getComponent(Health.class).decreaseHealth(5); //TODO magic number
+						e.getComponent(Health.class).decreaseHealth(3); //TODO magic number
 						break;
 					case POISONED:
-						e.getComponent(Health.class).decreaseHealth(5); //TODO moar magic numberz
+						e.getComponent(Health.class).decreaseHealth(2); //TODO moar magic numberz
 						break;
 					case PARALYZED:
 						e.getComponent(TurnsLeft.class).decreaseTurnsLeft();

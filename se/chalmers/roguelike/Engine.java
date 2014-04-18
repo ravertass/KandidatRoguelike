@@ -277,7 +277,9 @@ public class Engine {
 		}
 		if((compKey & statusEffectReq) == statusEffectReq) {
 			if(remove) {
-				
+				statusEffectSys.removeEntity(entity);
+			} else {
+				statusEffectSys.addEntity(entity);
 			}
 		}
 		
@@ -372,6 +374,10 @@ public class Engine {
 		inputManager.addObserver(interactionSys);
 		inputManager.addObserver(inventorySys);
 	}
+	
+	private void registerNewTurnSystems() {
+		turnSystem.addObserver(statusEffectSys);
+	}
 
 	/**
 	 * @param args
@@ -440,6 +446,7 @@ public class Engine {
 		plotEngine = new PlotEngine(seed);
 		spawnSystems();
 		registerInputSystems();
+		registerNewTurnSystems();
 		setCamera();
 		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR,
 				SpaceRace.SPACE_ALIEN);

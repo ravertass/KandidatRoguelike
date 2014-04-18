@@ -87,6 +87,8 @@ public class Entity {
 			componentKey |= Engine.CompText;
 		} else if(compClass == Pocketable.class) {
 			componentKey |= Engine.CompPocketable;
+		} else if(compClass == StatusEffects.class) {
+			componentKey |= Engine.CompStatusEffect;
 		}
 	}
 	
