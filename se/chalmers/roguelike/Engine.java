@@ -444,7 +444,7 @@ public class Engine {
 	}
 
 	/**
-	 * Sets up a new game
+	 * Sets up a new game reseting the previous one if there is any
 	 */
 	public void newGame() {	
 		handleObservers(false); // removes any old systems still listening (does nothing at first run)
@@ -456,7 +456,10 @@ public class Engine {
 		loadOverworld();
 //		addEntity(player);
 	}
-
+	
+	/**
+	 * Sets the engine and menu in game over mode
+	 */
 	public void gameOver() {
 		if (gameState == GameState.DUNGEON) {
 			dungeon.unregister(this);
