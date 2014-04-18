@@ -1,5 +1,5 @@
 package se.chalmers.roguelike;
-
+import java.util.ArrayList;
 import org.lwjgl.opengl.Display;
 
 import se.chalmers.plotgen.PlotEngine;
@@ -21,6 +21,7 @@ import se.chalmers.roguelike.Systems.OverworldSystem;
 import se.chalmers.roguelike.Systems.PlayerInputSystem;
 import se.chalmers.roguelike.Systems.PlotSystem;
 import se.chalmers.roguelike.Systems.RenderingSystem;
+import se.chalmers.roguelike.Systems.StatusEffectSystem;
 import se.chalmers.roguelike.Systems.TurnSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.util.Camera;
@@ -64,6 +65,7 @@ public class Engine {
 	public static final long CompUsable = 1 << componentID++;
 	public static final long CompText = 1 << componentID++;
 	public static final long CompPlotLoot = 1 << componentID++;
+	public static final long CompStatusEffect = 1 << componentID++;
 	
 	// Constants: System requirements:
 
@@ -80,6 +82,7 @@ public class Engine {
 	public static final long levelingSystemReq = CompAttribute;
 	public static final long dungeonReq = CompSprite | CompPosition;
 	public static final long overworldReq = CompDungeon | CompSelectedFlag | CompPosition;
+	public static final long statusEffectReq = CompStatusEffect;
 
 
 //	private ArrayList<Entity> entities; // useless?
@@ -105,7 +108,8 @@ public class Engine {
 	private PlotEngine plotEngine;
 	private MobSpriteSystem mobSpriteSys;
 	private ItemSystem itemSys;
-
+	private StatusEffectSystem statusEffectSys;
+	
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD
 	}
@@ -264,7 +268,14 @@ public class Engine {
 				overworldSys.addEntity(entity);
 			}
 		}
-
+		if((compKey & statusEffectReq) == statusEffectReq) {
+			if(remove) {
+				statusEffectSys.removeEntity(entity);
+			} else {
+				statusEffectSys.addEntity(entity);
+			}
+		}
+		
 	}
 
 	/**
@@ -278,6 +289,7 @@ public class Engine {
 				inputManager.update();
 				combatsystem.update(dungeon);
 				moveSys.update(dungeon);
+				statusEffectSys.update();
 				inventorySys.update(dungeon);
 				interactionSys.update();
 				mobSpriteSys.update();
@@ -326,6 +338,7 @@ public class Engine {
 		inventorySys = new InventorySystem(this);
 		interactionSys = new InteractionSystem(this);
 		itemSys = new ItemSystem();
+		statusEffectSys = new StatusEffectSystem();
 	}
 
 	/**
@@ -347,6 +360,10 @@ public class Engine {
 		inputManager.addObserver(overworldSys);
 		inputManager.addObserver(interactionSys);
 		inputManager.addObserver(inventorySys);
+	}
+	
+	private void registerNewTurnSystems() {
+		turnSystem.addObserver(statusEffectSys);
 	}
 
 	/**
@@ -423,6 +440,7 @@ public class Engine {
 		plotEngine = new PlotEngine(seed);
 		spawnSystems();
 		registerInputSystems();
+		registerNewTurnSystems();
 		setCamera();
 		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		loadOverworld();
