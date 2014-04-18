@@ -5,7 +5,7 @@ import se.chalmers.roguelike.Entity;
 public class StatusEffectSystem implements ISystem {
 	
 	public static enum StatusEffect {
-		
+		POISONED, SLOWED, BURNING, PARALYZED
 	}
 	
 	public StatusEffectSystem() {
