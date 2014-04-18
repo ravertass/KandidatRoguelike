@@ -338,12 +338,20 @@ public class Engine {
 	/**
 	 * Adds the remaining observers that aren't registered from the start to the input manager 
 	 */
-	private void registerInputSystems() {
-		inputManager.addObserver(playerInputSys);
-		inputManager.addObserver(highlightSys);
-		inputManager.addObserver(overworldSys);
-		inputManager.addObserver(interactionSys);
-		inputManager.addObserver(inventorySys);
+	private void handleObservers(boolean add) {
+		if(add){
+			inputManager.addObserver(playerInputSys);
+			inputManager.addObserver(highlightSys);
+			inputManager.addObserver(overworldSys);
+			inputManager.addObserver(interactionSys);
+			inputManager.addObserver(inventorySys);
+		} else {
+			inputManager.removeObserver(playerInputSys);
+			inputManager.removeObserver(highlightSys);
+			inputManager.removeObserver(overworldSys);
+			inputManager.removeObserver(interactionSys);
+			inputManager.removeObserver(inventorySys);
+		}
 	}
 
 	/**
@@ -417,9 +425,11 @@ public class Engine {
 	 * Sets up a new game
 	 */
 	public void newGame() {
+		
 		plotEngine = new PlotEngine(seed);
+		handleObservers(false); // removes any old systems still listening
 		spawnSystems();
-		registerInputSystems();
+		handleObservers(true);
 		setCamera();
 		player = entityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		loadOverworld();
@@ -433,4 +443,5 @@ public class Engine {
 		gameState = GameState.GAMEOVER;
 		menuSys.setState(MenuState.GAMEOVER);
 	}
+	
 }
