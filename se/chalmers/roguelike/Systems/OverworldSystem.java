@@ -48,6 +48,7 @@ public class OverworldSystem implements ISystem, Observer {
 	private Entity popup;
 	private LinkedList<String> popupQueue;
 	private Entity player;
+	private boolean registering;
 
 	/**
 	 * Sets up a new instance of the overworld system.
@@ -55,9 +56,11 @@ public class OverworldSystem implements ISystem, Observer {
 	 * @param engine the engine being used by the game
 	 */
 	public OverworldSystem(Engine engine) {
+		
 		this.engine = engine;
 		activeStar = null;
 		popupActive = false;
+		registering = false;
 		popupQueue = new LinkedList<String>();
 		stars = new HashMap<String, Entity>();
 		starRectangles = new ArrayList<Rectangle>();
@@ -65,6 +68,8 @@ public class OverworldSystem implements ISystem, Observer {
 				32);
 		menuButton = engine.entityCreator.createButton(Engine.screenWidth - 80, 200 - 32, "button_menu", 80,
 				32);
+		engine.addEntity(playButton);
+		engine.addEntity(menuButton);
 		menuRect = new Rectangle(Engine.screenWidth - 80, 200 - 32, 80, 32);
 		unregister();
 	}
@@ -147,15 +152,17 @@ public class OverworldSystem implements ISystem, Observer {
 	 * @param entity the entity that should be added to the system
 	 */
 	public void addEntity(Entity entity) {
-		if (entity.containsComponent(Engine.CompPlayer)) {
-			// The entity is the player
-			player = entity;
-		} else {
-			// It's a star
-			int x = entity.getComponent(Position.class).getX();
-			int y = entity.getComponent(Position.class).getY();
-			starRectangles.add(new Rectangle(x, y, 16, 16));// test case
-			stars.put((x + "," + y), entity);
+		if(!registering){
+			if (entity.containsComponent(Engine.CompPlayer)) {
+				// The entity is the player
+				player = entity;
+			} else {
+				// It's a star
+				int x = entity.getComponent(Position.class).getX();
+				int y = entity.getComponent(Position.class).getY();
+				starRectangles.add(new Rectangle(x, y, 16, 16));// test case
+				stars.put((x + "," + y), entity);
+			}
 		}
 	}
 
@@ -182,7 +189,6 @@ public class OverworldSystem implements ISystem, Observer {
 				starClicked(star);
 			}
 			if (playRect != null && playRect.contains(mouseX, mouseY) && !popupActive) {
-				System.out.println("PLAY PRESSED!");
 				loadDungeon();
 			} else if (menuRect.contains(mouseX, mouseY) && !popupActive) {
 				newPopup("Whatever nulla incididunt, delectus tousled bespoke Marfa gluten-free. Cliche biodiesel quinoa letterpress incididunt Thundercats keffiyeh hoodie scenester actually. Vice disrupt VHS, pariatur eu esse messenger bag hashtag leggings. Viral velit vegan selfies gluten-free fashion axe, ex deep v Austin culpa skateboard church-key bespoke delectus twee. Pariatur kitsch fixie occaecat excepteur Williamsburg. Next level hoodie distillery fap, non mlkshk blog 8-bit chia minim Etsy. Sunt deserunt actually Banksy deep v.");
@@ -245,6 +251,7 @@ public class OverworldSystem implements ISystem, Observer {
 			engine.removeEntity(playButton);
 			playButton = engine.entityCreator.createButton(Engine.screenWidth - 80, 200, "button_play", 80,
 					32);
+			engine.addEntity(playButton);
 			playRect = new Rectangle(Engine.screenWidth - 80, 200, 80, 32);
 		} else {
 			activeStar.getComponent(SelectedFlag.class).setFlag(false); // deactivates current star
@@ -252,7 +259,7 @@ public class OverworldSystem implements ISystem, Observer {
 		String coords = star.x + "," + star.y;
 		activeStar = stars.get(coords);
 		activeStar.getComponent(SelectedFlag.class).setFlag(true);
-
+		
 		// This is where we check if there's a VISIT plot action coupled with the star
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
@@ -282,6 +289,7 @@ public class OverworldSystem implements ISystem, Observer {
 	 */
 	public void register() {
 		// Register all the stars
+		registering = true;
 		for (Entity star : stars.values()) {
 			engine.addEntity(star);
 		}
@@ -291,6 +299,7 @@ public class OverworldSystem implements ISystem, Observer {
 		if (menuButton != null) {
 			engine.addEntity(menuButton);
 		}
+		registering = false;
 	}
 
 	/**
@@ -342,6 +351,7 @@ public class OverworldSystem implements ISystem, Observer {
 		popupActive = true;
 		popupButton = engine.entityCreator.createButton(Engine.screenHeight / 2, Engine.screenWidth / 3,
 				"play_button_selected", 242, 64);
+		engine.addEntity(popupButton);
 		popupRect = new Rectangle(Engine.screenHeight / 2, Engine.screenWidth / 3, 242, 64);
 		Font font = new Font("Times New Roman", Font.BOLD, 14);
 		TrueTypeFont ttf = new TrueTypeFont(font, false);

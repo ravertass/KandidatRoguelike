@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Engine;
+import se.chalmers.roguelike.Engine.GameState;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.EntityCreator;
 import se.chalmers.roguelike.InputManager;
@@ -51,6 +52,10 @@ public class HighlightSystem implements ISystem, Observer {
 	 * its visibility to true.
 	 */
 	public void update(Dungeon dungeon) {
+		if(Engine.gameState != GameState.DUNGEON){
+			// Prevents more from being added after state has changed
+			return;
+		}
 		if (Mouse.isButtonDown(1)) {
 			Position mousePos = new Position((Mouse.getX() / Engine.spriteSize)
 					+ camera.getPosition().getX(),
@@ -166,6 +171,14 @@ public class HighlightSystem implements ISystem, Observer {
 	public void resetMouse() {
 		this.buttonClicked = -1;
 		this.clickPos = noClick;
+	}
+	
+	public void unregister(){
+		System.out.println("Unregister");
+		for(Entity e : entities){
+			System.out.println("remove");
+			engine.removeEntity(e);
+		}
 	}
 
 }

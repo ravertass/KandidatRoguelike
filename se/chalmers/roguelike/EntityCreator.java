@@ -189,7 +189,7 @@ public class EntityCreator {
 		sprite.setLayer(3);
 		button.add(sprite);
 		button.add(new Position(x,y));
-		engine.addEntity(button);
+//		engine.addEntity(button);
 		return button;
 	}
 	
