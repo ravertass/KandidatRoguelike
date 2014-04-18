@@ -4,11 +4,16 @@ import java.util.ArrayList;
 
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.TurnsLeft;
+import se.chalmers.roguelike.InputManager.InputAction;
+import se.chalmers.roguelike.util.Observer;
+import se.chalmers.roguelike.util.Subject;
 
 /**
  * The turn system handles reseting of turns if no entity has any turns left.
  */
-public class TurnSystem implements ISystem {
+public class TurnSystem implements ISystem, Subject {
+	
+	private ArrayList<Observer> observers;
 	
 	private ArrayList<Entity> entities;
 	
@@ -16,6 +21,7 @@ public class TurnSystem implements ISystem {
 	 * Initializes a new turnsystem
 	 */
 	public TurnSystem(){
+		observers = new ArrayList<Observer>();
 		entities = new ArrayList<Entity>();
 	}
 	
@@ -33,6 +39,7 @@ public class TurnSystem implements ISystem {
 			int turnsLeft = e.getComponent(TurnsLeft.class).getTurnsLeft();
 			e.getComponent(TurnsLeft.class).setTurnsLeft(++turnsLeft);
 		}
+		notifyObservers(InputAction.NEWTURN);
 	}
 
 	/**
@@ -51,5 +58,26 @@ public class TurnSystem implements ISystem {
 	 */
 	public void removeEntity(Entity entity) {
 		entities.remove(entity);
+	}
+
+	@Override
+	public void addObserver(Observer o) {
+		observers.add(o);
+		
+	}
+
+	@Override
+	public void removeObserver(Observer o) {
+		observers.remove(o);
+	}
+	/**
+	 * This will notify all observers that there is now a new turn.
+	 */
+	@Override
+	public void notifyObservers(Enum<?> i) {
+		for(Observer o : observers) {
+			o.notify(InputAction.NEWTURN);
+		}
+		
 	}
 }

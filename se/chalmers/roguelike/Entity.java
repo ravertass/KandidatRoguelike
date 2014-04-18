@@ -91,6 +91,8 @@ public class Entity {
 			componentKey |= Engine.CompPlotLoot;
 		} else if(compClass == Player.class) {
 			componentKey |= Engine.CompPlayer;
+		} else if(compClass == StatusEffects.class) {
+			componentKey |= Engine.CompStatusEffect;
 		}
 	}
 	
