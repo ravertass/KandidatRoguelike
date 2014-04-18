@@ -151,9 +151,7 @@ public class MenuSystem implements ISystem, Observer {
 					loadNewGame();
 				}
 			} else if (state == MenuState.GAMEOVER) {
-				System.out.println("hej");
 				if (gameOverNewGameRect.contains(mouseX, mouseY)) {
-
 					mainMenu();
 				} else if (gameOverExitRect.contains(mouseX, mouseY)) {
 					System.exit(1);
