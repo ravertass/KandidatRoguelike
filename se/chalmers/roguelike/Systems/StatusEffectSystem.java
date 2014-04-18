@@ -1,15 +1,19 @@
 package se.chalmers.roguelike.Systems;
 
+import java.util.ArrayList;
+
 import se.chalmers.roguelike.Entity;
 
 public class StatusEffectSystem implements ISystem {
+	
+	public ArrayList<Entity> entities;
 	
 	public static enum StatusEffect {
 		POISONED, SLOWED, BURNING, PARALYZED
 	}
 	
 	public StatusEffectSystem() {
-		
+		entities = new ArrayList<Entity>();
 	}
 
 	@Override

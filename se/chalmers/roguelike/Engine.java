@@ -295,13 +295,13 @@ public class Engine {
 				inputManager.update();
 				combatsystem.update(dungeon);
 				moveSys.update(dungeon);
+				statusEffectSys.update();
 				inventorySys.update(dungeon);
 				interactionSys.update();
 				mobSpriteSys.update();
 				highlightSys.update(dungeon);
 				levelingSys.update();
 				turnSystem.update();
-				statusEffectSys.update();
 
 				if (player.getComponent(TurnsLeft.class).getTurnsLeft() <= 0) {
 					aiSystem.update(dungeon, player);
