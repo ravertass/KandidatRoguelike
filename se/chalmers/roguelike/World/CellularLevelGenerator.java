@@ -57,25 +57,25 @@ public class CellularLevelGenerator {
 	
 	private void generateSprites() {
 		ArrayList<String> walls = new ArrayList<String>();
-		walls.add("brick");
-		walls.add("wall2");
-		walls.add("wall_red");
-		walls.add("wall_blue");
-		walls.add("stone_wall");
+		walls.add("tiles/brick");
+		walls.add("tiles/wall2");
+		walls.add("tiles/wall_red");
+		walls.add("tiles/wall_blue");
+		walls.add("tiles/stone_wall");
 		wall = walls.get(rand.nextInt(walls.size()));
 
 		ArrayList<String> floors = new ArrayList<String>();
-		floors.add("sand");
-		floors.add("snow");
-		floors.add("snowy_stone");
-		floors.add("stone");
-		floors.add("stone2");
-		floors.add("grass");
-		floors.add("grass_djungle");
-		floors.add("ice");
-		floors.add("brown_floor");
-		floors.add("light_brown_floor");
-		floors.add("floor_spiral");
+		floors.add("tiles/sand");
+		floors.add("tiles/snow");
+		floors.add("tiles/snowy_stone");
+		floors.add("tiles/stone");
+		floors.add("tiles/stone2");
+		floors.add("tiles/grass");
+		floors.add("tiles/grass_djungle");
+		floors.add("tiles/ice");
+		floors.add("tiles/brown_floor");
+		floors.add("tiles/light_brown_floor");
+		floors.add("tiles/floor_spiral");
 		floor = floors.get(rand.nextInt(floors.size()));
 	}
 	

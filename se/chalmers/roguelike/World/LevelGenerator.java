@@ -268,7 +268,7 @@ public class LevelGenerator {
 																// equals bad
 				components.add(new FieldOfView(8)); // hardcoded equals bad
 				components.add(attribute);
-				dungeonEntities.add(EntityCreator.createEntity("(Enemy)" + name,
+				dungeonEntities.add(EntityCreator.createEntity("(Enemy) " + name,
 						components));
 			}
 		}
