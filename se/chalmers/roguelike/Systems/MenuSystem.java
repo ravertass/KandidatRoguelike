@@ -11,6 +11,7 @@ import se.chalmers.roguelike.Engine.GameState;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.InputManager.InputAction;
+import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.SelectedFlag;
@@ -41,7 +42,7 @@ public class MenuSystem implements ISystem, Observer {
 	private Engine engine;
 
 	private String tmpSeed;
-	private Entity selectedRace;
+	private Entity selectedRace, selectedClass;
 
 	/**
 	 * Sets up the buttons and internal logic required for the main menu
@@ -154,24 +155,43 @@ public class MenuSystem implements ISystem, Observer {
 				if (newGameRect != null && newGameRect.contains(mouseX, mouseY)) {
 					loadNewGame();
 				} else if (race1Rect.contains(mouseX, mouseY)) {
-					race1.getComponent(SelectedFlag.class).setFlag(true);
 					// This code gets a bit copy-pasty
 					if (selectedRace != null) {
 						selectedRace.getComponent(SelectedFlag.class).setFlag(false);
 					}
+					race1.getComponent(SelectedFlag.class).setFlag(true);					
 					selectedRace = race1;
 				} else if (race2Rect.contains(mouseX, mouseY)) {
-					race2.getComponent(SelectedFlag.class).setFlag(true);
 					if (selectedRace != null) {
 						selectedRace.getComponent(SelectedFlag.class).setFlag(false);
 					}
+					race2.getComponent(SelectedFlag.class).setFlag(true);
 					selectedRace = race2;
 				} else if (race3Rect.contains(mouseX, mouseY)) {
-					race3.getComponent(SelectedFlag.class).setFlag(true);
 					if (selectedRace != null) {
 						selectedRace.getComponent(SelectedFlag.class).setFlag(false);
 					}
+					race3.getComponent(SelectedFlag.class).setFlag(true);
 					selectedRace = race3;
+				} else if (class1Rect.contains(mouseX, mouseY)) {
+					// This code gets a bit copy-pasty
+					if (selectedClass != null) {
+						selectedClass.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					class1.getComponent(SelectedFlag.class).setFlag(true);
+					selectedClass = class1;
+				} else if (class2Rect.contains(mouseX, mouseY)) {
+					if (selectedClass != null) {
+						selectedClass.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					class2.getComponent(SelectedFlag.class).setFlag(true);
+					selectedClass = class2;
+				} else if (class3Rect.contains(mouseX, mouseY)) {
+					if (selectedClass != null) {
+						selectedClass.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					class3.getComponent(SelectedFlag.class).setFlag(true);
+					selectedClass = class3;
 				}
 			} else if (state == MenuState.GAMEOVER) {
 				if (gameOverNewGameRect.contains(mouseX, mouseY)) {
@@ -291,12 +311,14 @@ public class MenuSystem implements ISystem, Observer {
 		if (seedInfo == null) {
 			seedInfo = new Entity("Seed information");
 			seedInfo.add(new Sprite("misc/seedtext", 260, 26));
-			seedInfo.add(new Position(Engine.screenWidth / 2 - 260 / 2, Engine.screenHeight - 100 - bufferHeight));
+			seedInfo.add(new Position(Engine.screenWidth / 2 - 260 / 2, Engine.screenHeight - 100
+					- bufferHeight));
 		}
 		if (seedBox == null) {
 			seedBox = new Entity("Seed box");
 			seedBox.add(new Sprite("misc/seedbox", 260, 26));
-			seedBox.add(new Position(Engine.screenWidth / 2 - 260 / 2, Engine.screenHeight - 146 - bufferHeight));
+			seedBox.add(new Position(Engine.screenWidth / 2 - 260 / 2, Engine.screenHeight - 146
+					- bufferHeight));
 			seedBox.add(new Text(tmpSeed));
 		}
 		if (newGameButton == null) {
@@ -310,65 +332,66 @@ public class MenuSystem implements ISystem, Observer {
 		if (race1 == null) {
 			// If race1 is null, all three will be null
 
-			int width = 84;
+			int raceWidth = 84;
+			int classWidth = 100;
 			int logoHeight = 26;
 			int height = 14;
-			int race1X = Engine.screenWidth / 2 - width - width /3;
+			int race1X = Engine.screenWidth / 2 - raceWidth - raceWidth / 3;
 			int race1Y = Engine.screenHeight - 146 - 26 - 40 - bufferHeight; // Based on the seed box
-			int classX = race1X+width+30;
+			int classX = race1X + raceWidth + 30;
 
 			raceText = new Entity("RaceText");
-			raceText.add(new Sprite("misc/race", width, logoHeight));
+			raceText.add(new Sprite("misc/race", raceWidth, logoHeight));
 			raceText.add(new Position(race1X, race1Y));
 
 			// Race 1
 			race1 = new Entity("Race1");
-			race1.add(new Sprite("misc/spacealien", width, height));
+			race1.add(new Sprite("misc/spacealien", raceWidth, height));
 			race1.add(new Position(race1X, race1Y - logoHeight));
 			race1.add(new SelectedFlag(true));
-			race1Rect = new Rectangle(race1X, race1Y - logoHeight, width, height);
+			race1Rect = new Rectangle(race1X, race1Y - logoHeight, raceWidth, height);
 			selectedRace = race1;
 
 			// Race 2
 			race2 = new Entity("Race2");
-			race2.add(new Sprite("misc/spacehuman", width, height));
+			race2.add(new Sprite("misc/spacehuman", raceWidth, height));
 			race2.add(new Position(race1X, race1Y - height - logoHeight));
 			race2.add(new SelectedFlag(false));
-			race2Rect = new Rectangle(race1X, race1Y - height - logoHeight, width, height);
+			race2Rect = new Rectangle(race1X, race1Y - height - logoHeight, raceWidth, height);
 
 			// Race 3
 			race3 = new Entity("Race3");
-			race3.add(new Sprite("misc/spacedwarf", width, height));
+			race3.add(new Sprite("misc/spacedwarf", raceWidth, height));
 			race3.add(new Position(race1X, race1Y - 2 * height - logoHeight));
 			race3.add(new SelectedFlag(false));
-			race3Rect = new Rectangle(race1X, race1Y - 2 * height - logoHeight, width, height);
-			
-			
+			race3Rect = new Rectangle(race1X, race1Y - 2 * height - logoHeight, raceWidth, height);
+
 			// class stuff:
 			classText = new Entity("ClassText");
-			classText.add(new Sprite("misc/class", width, logoHeight));
+			classText.add(new Sprite("misc/class", raceWidth, logoHeight));
 			classText.add(new Position(classX, race1Y));
-			
+
 			// Class 1:
 			class1 = new Entity("Class1");
-			class1.add(new Sprite("misc/spacealien", width, height));
+			class1.add(new Sprite("misc/spacewarrior", classWidth, height));
 			class1.add(new Position(classX, race1Y - logoHeight));
 			class1.add(new SelectedFlag(true));
-			class1Rect = new Rectangle(classX, race1Y - logoHeight, width, height);
-			
+			class1Rect = new Rectangle(classX, race1Y - logoHeight, classWidth, height);
+			selectedClass = class1;
+
 			// Race 2
 			class2 = new Entity("Class2");
-			class2.add(new Sprite("misc/spacehuman", width, height));
+			class2.add(new Sprite("misc/spacerogue", classWidth, height));
 			class2.add(new Position(classX, race1Y - height - logoHeight));
 			class2.add(new SelectedFlag(false));
-			class3Rect = new Rectangle(classX, race1Y - height - logoHeight, width, height);
+			class2Rect = new Rectangle(classX, race1Y - height - logoHeight, classWidth, height);
 
 			// Race 3
 			class3 = new Entity("Class3");
-			class3.add(new Sprite("misc/spacedwarf", width, height));
+			class3.add(new Sprite("misc/spacemage", classWidth, height));
 			class3.add(new Position(classX, race1Y - 2 * height - logoHeight));
 			class3.add(new SelectedFlag(false));
-			class3Rect = new Rectangle(classX, race1Y - 2 * height - logoHeight, width, height);
+			class3Rect = new Rectangle(classX, race1Y - 2 * height - logoHeight, classWidth, height);
 		}
 
 		engine.addEntity(raceText);
@@ -378,7 +401,7 @@ public class MenuSystem implements ISystem, Observer {
 		engine.addEntity(class1);
 		engine.addEntity(class2);
 		engine.addEntity(class3);
-		engine.addEntity(classText);	
+		engine.addEntity(classText);
 		engine.addEntity(seedInfo);
 		engine.addEntity(seedBox);
 		engine.addEntity(newGameButton);
@@ -429,8 +452,24 @@ public class MenuSystem implements ISystem, Observer {
 		} else {
 			race = SpaceRace.SPACE_DWARF;
 		}
-		selectedRace = race1; // reset
-		engine.newGame(race);
+
+		SpaceClass spaceClass;
+		if (selectedClass == class1) {
+			spaceClass = SpaceClass.SPACE_WARRIOR;
+		} else if (selectedClass == class2) {
+			spaceClass = SpaceClass.SPACE_ROGUE;
+		} else {
+			spaceClass = SpaceClass.SPACE_MAGE;
+		}
+
+		// Reset:
+		selectedRace.getComponent(SelectedFlag.class).setFlag(false);
+		race1.getComponent(SelectedFlag.class).setFlag(true);
+		selectedRace = race1;
+		selectedClass.getComponent(SelectedFlag.class).setFlag(false);
+		class1.getComponent(SelectedFlag.class).setFlag(true);
+		selectedClass = class1;
+		engine.newGame(spaceClass, race);
 	}
 
 	private void mainMenu() {

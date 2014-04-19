@@ -620,7 +620,7 @@ public class RenderingSystem implements ISystem {
 		double hpPercentage = health.getHealthPercentage();
 		double maxHp = health.getMaxHealth();
 
-		String race;
+		String race, spaceClass;
 		if (attributes.spaceRace == Attribute.SpaceRace.SPACE_ALIEN) {
 			race = "Space Alien";
 		} else if (attributes.spaceRace == Attribute.SpaceRace.SPACE_DWARF) {
@@ -628,12 +628,21 @@ public class RenderingSystem implements ISystem {
 		} else {
 			race = "Space Human";
 		}
-		String info = "Name: " + attributes.getName() + "\nRace:" + race + "\nGold: " + gold.getGold()
-				+ "\nLevel: " + attributes.getLevel() + "\nXP: " + attributes.experience() + "\nStrength: "
-				+ attributes.strength() + "\nEndurance: " + attributes.endurance() + "\nPerception: "
-				+ attributes.perception() + "\nIntelligence: " + attributes.intelligence() + "\nCharisma: "
-				+ attributes.charisma() + "\nAgility: " + attributes.agility() + "\n"
-				+ "\nWeapon information: " + "\nDamage: " + weapon.getNumberOfDice() + "D6"
+		
+		if(attributes.spaceClass == Attribute.SpaceClass.SPACE_WARRIOR){
+			spaceClass = "Space Warrior";
+		} else if(attributes.spaceClass == Attribute.SpaceClass.SPACE_ROGUE){
+			spaceClass = "Space Rogue";
+		} else {
+			spaceClass = "Space Mage";
+		}
+		String info = "Name: " + attributes.getName() + "\nRace:" + race + "\nClass: " + spaceClass
+				+ "\nGold: " + gold.getGold() + "\nLevel: " + attributes.getLevel() + "\nXP: "
+				+ attributes.experience() + "\nStrength: " + attributes.strength() + "\nEndurance: "
+				+ attributes.endurance() + "\nPerception: " + attributes.perception() + "\nIntelligence: "
+				+ attributes.intelligence() + "\nCharisma: " + attributes.charisma() + "\nAgility: "
+				+ attributes.agility() + "\nWeapon information: " + "\nDamage: "
+				+ weapon.getNumberOfDice() + "D6"
 				+ (weapon.getModifier() == 0 ? "" : "+" + weapon.getModifier()) + "\nRange: "
 				+ weapon.getRange() + "\nTargeting system: " + weapon.getTargetingSystemString();
 
