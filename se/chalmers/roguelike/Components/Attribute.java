@@ -5,8 +5,8 @@ import se.chalmers.roguelike.util.Dice;
 public class Attribute implements IComponent {
 	private String name;
 
-	private SpaceClass spaceClass;
-	private SpaceRace spaceRace;
+	public SpaceClass spaceClass;
+	public SpaceRace spaceRace;
 
 	private int level;
 	private int experience;

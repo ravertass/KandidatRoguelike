@@ -446,13 +446,13 @@ public class Engine {
 	/**
 	 * Sets up a new game reseting the previous one if there is any
 	 */
-	public void newGame() {	
+	public void newGame(SpaceRace race) {	
 		handleObservers(false); // removes any old systems still listening (does nothing at first run)
 		spawnSystems();
 		registerNewTurnSystems(); // Might be buggy with some changes were observers need to be changed
 		handleObservers(true);
 		setCamera();
-		player = EntityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
+		player = EntityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, race);
 		loadOverworld();
 //		addEntity(player);
 	}
