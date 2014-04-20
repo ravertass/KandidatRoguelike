@@ -38,6 +38,9 @@ public class PlotSystem implements ISystem {
 	private HashMap<Entity, Scene> starsScenes;
 
 	private boolean starsCreated;
+	private String firstPlotText;
+	private Entity lastStar;
+	private boolean plotDone;
 
 	public PlotSystem(Engine engine, PlotEngine plotEngine) {
 		starsCreated = false;
@@ -47,69 +50,71 @@ public class PlotSystem implements ISystem {
 		this.engine = engine;
 		this.plotEngine = plotEngine;
 		mainCharacter = plotEngine.getActors().get(plotEngine.getActors().size() - 1);
-		// I vanliga fall är all plot kopplad till stjärnor
-		// Men, det finns ett gränsfall: Allra första plot-texten
-		// Lämpligtvis skriver man en metod i PlotSystem som returnerar den,
-		// sen skickar man med den med OverworldSystems konstruktor och
-		// skriver ut den det första man gör.
+		firstPlotText = plotEngine.getCurrentNode().getText();
+		plotDone = false;
 	}
 
 	private void actionsToStars() {
-		ArrayList<PlotEdge> edges = new ArrayList<PlotEdge>();
-		edges.addAll(plotEngine.getPossibleActions());
-		for (PlotEdge edge : edges) {
-			Entity star = null;
-			if (edge.getAction().getActionType() == Action.ActionType.VISIT) {
-				star = scenesStars.get(edge.getAction().getObjectScene());
-			}
-
-			if (edge.getAction().getActionType() == Action.ActionType.MEET) {
-				if (edge.getAction().getSubjectActor() == mainCharacter) {
-					star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
-				} else {
-					star = scenesStars.get(edge.getAction().getSubjectActor().getLocation());
-				}
-			}
-
-			if (edge.getAction().getActionType() == Action.ActionType.GIVE) {
-				star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
-			}
-
-			if (edge.getAction().getActionType() == Action.ActionType.KILL) {
-				star = scenesStars.get(edge.getAction().getObjectActor().getLocation());
-				Dungeon starDungeon = star.getComponent(DungeonComponent.class).getDungeon();
-
-				if (starDungeon != null) {
-					starDungeon.addBoss(edge.getAction().getObjectActor());
-				}
-			}
-
-			if (edge.getAction().getActionType() == Action.ActionType.TAKE) {
-				star = scenesStars.get(edge.getAction().getObjectProp().getLocation());
-				Dungeon starDungeon = star.getComponent(DungeonComponent.class).getDungeon();
-
-				if (starDungeon != null) {
-					starDungeon.addPlotLoot(edge.getAction().getObjectProp());
-				}
-			}
-
-			star.getComponent(PlotAction.class).setActionPerformed(false);
-			star.getComponent(PlotAction.class).setAction(edge.getAction());
-			star.getComponent(PlotAction.class).setMainCharacterIsSubject(
-					edge.getAction().getSubjectActor().equals(mainCharacter));
-			// Fulkod nedan, borde fixas i PlotEngine
-			star.getComponent(PlotAction.class).setPlotText(
-					plotEngine.getPlotGraph().getAdjacentVertices().get(edge).getPlotText());
+		if (lastStar == null) {
+			lastStar = scenesStars.get(mainCharacter.getLocation());
 		}
+		Action action = plotEngine.getPossibleAction();
+		Entity star = null;
+
+		if (action.getActionType() == Action.ActionType.VISIT) {
+			star = scenesStars.get(action.getObjectScene());
+		}
+
+		if (action.getActionType() == Action.ActionType.MEET) {
+			star = lastStar;
+			//			if (action.getSubjectActor() == mainCharacter) {
+			//				star = scenesStars.get(action.getObjectActor().getLocation());
+			//			} else {
+			//				star = scenesStars.get(action.getSubjectActor().getLocation());
+			//			}
+		}
+
+		if (action.getActionType() == Action.ActionType.GIVE) {
+			star = lastStar;
+			//			star = scenesStars.get(action.getObjectActor().getLocation());
+		}
+
+		if (action.getActionType() == Action.ActionType.KILL) {
+			star = lastStar;
+			//			star = scenesStars.get(action.getObjectActor().getLocation());
+			Dungeon starDungeon = star.getComponent(DungeonComponent.class).getDungeon();
+
+			if (starDungeon != null) {
+				starDungeon.addBoss(action.getObjectActor());
+			}
+		}
+
+		if (action.getActionType() == Action.ActionType.TAKE) {
+			star = lastStar;
+			//			star = scenesStars.get(action.getObjectProp().getLocation());
+			Dungeon starDungeon = star.getComponent(DungeonComponent.class).getDungeon();
+
+			if (starDungeon != null) {
+				starDungeon.addPlotLoot(action.getObjectProp());
+			}
+		}
+
+		if (action.getActionType() == Action.ActionType.LAST) {
+			star = lastStar;
+			plotDone = true;
+		}
+
+		lastStar = star;
+
+		star.getComponent(PlotAction.class).setActionPerformed(false);
+		star.getComponent(PlotAction.class).setAction(action);
+		star.getComponent(PlotAction.class).setMainCharacterIsSubject(
+				plotEngine.getNextNode().getAction().getSubjectActor().equals(mainCharacter));
+		star.getComponent(PlotAction.class).setPlotText(plotEngine.getNextNode().getText());
 	}
 
 	private void nextAction(Action action) {
-		try {
-			plotEngine.takeAction(new PlotEdge(action));
-		} catch (ImpossibleActionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		plotEngine.takeAction();
 	}
 
 	/**
@@ -120,16 +125,20 @@ public class PlotSystem implements ISystem {
 
 		Random rand = new Random(Engine.seed); // Make seed dependent later
 
+		// TODO doesn't do anything
+		// Create the spaceship entity
+		engine.entityCreator.createSpaceShip(0, 0);
+
 		int i = 0;
 		for (Scene scene : scenes) {
 			double rad = i * Math.PI / 180;
 			int x = (int) (radius * Math.cos(rad) + 400);
 			int y = (int) (radius * Math.sin(rad) + 400);
 
-			// Create the spaceship entity
-			engine.entityCreator.createSpaceShip(x, y);
+			boolean isFirstStar = (mainCharacter.getLocation() == scene);
 
-			Entity star = engine.entityCreator.createStar(x, y, rand.nextLong(), (scene + " Star"));
+			Entity star = engine.entityCreator.createStar(x, y, rand.nextLong(), (scene + " Star"),
+					isFirstStar);
 			scenesStars.put(scene, star);
 			starsScenes.put(star, scene);
 			radius += 10;
@@ -139,6 +148,13 @@ public class PlotSystem implements ISystem {
 
 	@Override
 	public void update() {
+		if (plotDone) {
+			lastStar.getComponent(PlotAction.class).setActionPerformed(false);
+			lastStar.getComponent(PlotAction.class).setAction(null);
+			lastStar.getComponent(PlotAction.class).setPlotText(null);
+			return;
+		}
+
 		if (!starsCreated) {
 			setupStars();
 			actionsToStars();
@@ -146,8 +162,7 @@ public class PlotSystem implements ISystem {
 		}
 
 		// TODO: Sjukt ineffektivt sätt att göra detta på... Lös!
-		ArrayList<Scene> scenes = new ArrayList<Scene>();
-		scenes.addAll(scenesStars.keySet());
+		ArrayList<Scene> scenes = new ArrayList<Scene>(scenesStars.keySet());
 
 		for (Scene scene : scenes) {
 			PlotAction plotAction = scenesStars.get(scene).getComponent(PlotAction.class);
@@ -171,6 +186,10 @@ public class PlotSystem implements ISystem {
 	public void removeEntity(Entity entity) {
 		// TODO Auto-generated method stub
 		// Osäkert om denna behövs?
+	}
+
+	public String getFirstPlotText() {
+		return firstPlotText;
 	}
 
 	/*

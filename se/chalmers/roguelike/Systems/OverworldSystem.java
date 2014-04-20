@@ -10,6 +10,7 @@ import java.util.Random;
 import org.lwjgl.input.Mouse;
 
 import se.chalmers.plotgen.PlotData.Action;
+import se.chalmers.plotgen.PlotData.Scene;
 import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.EntityCreator;
@@ -49,16 +50,20 @@ public class OverworldSystem implements ISystem, Observer {
 	private LinkedList<String> popupQueue;
 	private Entity player;
 	private boolean registering;
+	private String firstPlotText;
 
 	/**
 	 * Sets up a new instance of the overworld system.
 	 * 
 	 * @param engine the engine being used by the game
+	 * @param firstPlotText
+	 * @param firstScene 
 	 */
-	public OverworldSystem(Engine engine) {
-		
+	public OverworldSystem(Engine engine, String firstPlotText) {
+
 		this.engine = engine;
 		activeStar = null;
+		this.firstPlotText = firstPlotText;
 		popupActive = false;
 		registering = false;
 		popupQueue = new LinkedList<String>();
@@ -79,26 +84,37 @@ public class OverworldSystem implements ISystem, Observer {
 	 * related updates.
 	 */
 	public void update() {
+		if (firstPlotText != null) {
+			newPopup(firstPlotText);
+			firstPlotText = null;
+		}
 		if (activeStar == null) {
 			return;
 		}
 
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
+			// This is where we check if there's a LAST plot action coupled with
+			// the star
+			if (action.getActionType() == Action.ActionType.LAST) {
+				newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
+				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
+			}
+
 			// This is where we check if there's a MEET plot action coupled with
 			// the star
 			if (action.getActionType() == Action.ActionType.MEET) {
 				newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
 				activeStar.getComponent(PlotAction.class).setActionPerformed(true);
 			}
-			
+
 			// This is where we check if there's a GIVE plot action coupled with
 			// the star
 			if (action.getActionType() == Action.ActionType.GIVE) {
-				
+
 				if (activeStar.getComponent(PlotAction.class).isMainCharacterSubject()) {
 					// If the main character should give the item to another character
-					
+
 					// Check if the player has the relevant item
 					boolean itemExists = false;
 					ArrayList<Entity> items = player.getComponent(Inventory.class).getItems();
@@ -110,7 +126,7 @@ public class OverworldSystem implements ISystem, Observer {
 							}
 						}
 					}
-					
+
 					if (itemExists) {
 						newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
 						activeStar.getComponent(PlotAction.class).setActionPerformed(true);
@@ -126,7 +142,7 @@ public class OverworldSystem implements ISystem, Observer {
 					components.add(new Pocketable());
 					components.add(new PlotLoot(action.getObjectProp()));
 					Entity item = EntityCreator.createEntity(name, components);
-					
+
 					player.getComponent(Inventory.class).addItem(item);
 					newPopup(activeStar.getComponent(PlotAction.class).getPlotText());
 					activeStar.getComponent(PlotAction.class).setActionPerformed(true);
@@ -152,7 +168,7 @@ public class OverworldSystem implements ISystem, Observer {
 	 * @param entity the entity that should be added to the system
 	 */
 	public void addEntity(Entity entity) {
-		if(!registering){
+		if (!registering) {
 			if (entity.containsComponent(Engine.CompPlayer)) {
 				// The entity is the player
 				player = entity;
@@ -160,8 +176,12 @@ public class OverworldSystem implements ISystem, Observer {
 				// It's a star
 				int x = entity.getComponent(Position.class).getX();
 				int y = entity.getComponent(Position.class).getY();
-				starRectangles.add(new Rectangle(x, y, 16, 16));// test case
+				Rectangle starRectangle = new Rectangle(x, y, 16, 16);
+				starRectangles.add(starRectangle);
 				stars.put((x + "," + y), entity);
+				if (entity.containsComponent(Engine.CompFirstStarFlag)) {
+					starClicked(starRectangle);
+				}
 			}
 		}
 	}
@@ -211,7 +231,6 @@ public class OverworldSystem implements ISystem, Observer {
 	private void loadDungeon() {
 		Dungeon starDungeon = activeStar.getComponent(DungeonComponent.class).getDungeon();
 		if (starDungeon == null) {
-			System.out.println("No dungeon found! Generating one.");
 			long seed = activeStar.getComponent(Seed.class).getSeed();
 
 			Random rand = new Random(seed);
@@ -259,7 +278,7 @@ public class OverworldSystem implements ISystem, Observer {
 		String coords = star.x + "," + star.y;
 		activeStar = stars.get(coords);
 		activeStar.getComponent(SelectedFlag.class).setFlag(true);
-		
+
 		// This is where we check if there's a VISIT plot action coupled with the star
 		Action action = activeStar.getComponent(PlotAction.class).getAction();
 		if (action != null) {
@@ -331,7 +350,7 @@ public class OverworldSystem implements ISystem, Observer {
 	 * @param starname the name of the star
 	 */
 	private void createStar(int x, int y, long seed, String starname) {
-		Entity star = engine.entityCreator.createStar(x, y, seed, starname);
+		Entity star = engine.entityCreator.createStar(x, y, seed, starname, false);
 		starRectangles.add(new Rectangle(x, y, 16, 16));// test case
 		stars.put((x + "," + y), star);
 	}
@@ -357,13 +376,19 @@ public class OverworldSystem implements ISystem, Observer {
 		TrueTypeFont ttf = new TrueTypeFont(font, false);
 		StringBuilder sb = new StringBuilder();
 		for (String word : s.split(" ")) {
-			if (ttf.getWidth(sb.toString() + " " + word) > 1350) { // magic number
+			if (word.equals("\n")) {
+				sequencedString.add(sb.toString());
+				sb = new StringBuilder();
+				continue;
+			}
+			if (ttf.getWidth(sb.toString() + " " + word) > 960) { // magic number
 				//TODO why is this happening and why should it be so high?
 				sequencedString.add(sb.toString());
 				sb = new StringBuilder();
 			}
 			sb.append(word + " ");
 		}
+		sequencedString.add(sb.toString());
 		popupText = sequencedString;
 		popup = engine.entityCreator.createPopup(popupText, Engine.screenWidth / 2 - 250,
 				Engine.screenHeight / 2 - 150, 500, 300);

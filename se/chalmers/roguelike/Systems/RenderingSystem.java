@@ -99,7 +99,7 @@ public class RenderingSystem implements ISystem {
 		setupDisplay();
 		setupOpenGL();
 		try {
-			fontRenderer = new FontRenderer(new UnicodeFont("/resources/fonts/circula-medium.otf", 28, false,
+			fontRenderer = new FontRenderer(new UnicodeFont("/resources/graphics/fonts/circula-medium.otf", 28, false,
 					true), Color.white);
 		} catch (SlickException e) {
 			e.printStackTrace();
@@ -111,7 +111,7 @@ public class RenderingSystem implements ISystem {
 		spriteComparator = new SpriteComparator();
 
 		// Font
-		Font awtFont = new Font("/resources/fonts/circula-medium.otf", Font.BOLD, 14);
+		Font awtFont = new Font("/resources/graphics/fonts/circula-medium.otf", Font.BOLD, 14);
 		font = new TrueTypeFont(awtFont, false);
 
 		/*
@@ -119,9 +119,9 @@ public class RenderingSystem implements ISystem {
 		 * it (outside of ECS?) and remove later
 		 */
 		try {
-			owBackground = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/"
+			owBackground = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/graphics/"
 					+ "background_ow" + ".png")));
-			owMenu = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/"
+			owMenu = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/graphics/"
 					+ "menu_background_ow_long" + ".png")));
 		} catch (FileNotFoundException e) {
 			System.out.println("The file does not exist");

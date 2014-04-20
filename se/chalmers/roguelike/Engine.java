@@ -68,6 +68,7 @@ public class Engine {
 	public static final long CompText = 1 << componentID++;
 	public static final long CompPlotLoot = 1 << componentID++;
 	public static final long CompStatusEffect = 1 << componentID++;
+	public static final long CompFirstStarFlag = 1 << componentID++;
 
 	// Constants: System requirements:
 
@@ -258,15 +259,8 @@ public class Engine {
 		if (entity.containsComponent(CompPlayer)) {
 			if (remove) {
 				interactionSys.removeEntity(entity);
-				// This breaks the entity-component pattern a bit, but is needed,
-				// since the player is needed in the OverworldSystem
-				// Also stars are added to the OverworldSystem (see above)
-				// TODO: Maybe the Player should be reachable for all systems from the Engine?
-				overworldSys.removeEntity(entity);
 			} else {
 				interactionSys.addEntity(entity);
-				// Same as the comment above
-				overworldSys.addEntity(entity);
 			}
 		}
 		if ((compKey & statusEffectReq) == statusEffectReq) {
@@ -341,7 +335,7 @@ public class Engine {
 		levelingSys = new LevelingSystem();
 
 		plotSys = new PlotSystem(this, plotEngine);
-		overworldSys = new OverworldSystem(this);
+		overworldSys = new OverworldSystem(this, plotSys.getFirstPlotText());
 		inventorySys = new InventorySystem(this);
 		interactionSys = new InteractionSystem(this);
 		itemSys = new ItemSystem();
@@ -454,7 +448,8 @@ public class Engine {
 		setCamera();
 		player = EntityCreator.createPlayer(SpaceClass.SPACE_WARRIOR, SpaceRace.SPACE_ALIEN);
 		loadOverworld();
-//		addEntity(player);
+		overworldSys.addEntity(player);
+		//addEntity(player);
 	}
 
 	public void gameOver() {
@@ -467,7 +462,7 @@ public class Engine {
 	}
 	
 	/**
-	 * @param args
+	 * @param args don't matter
 	 */
 	public static void main(String[] args) {
 		new Engine().run();

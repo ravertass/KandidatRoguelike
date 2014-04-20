@@ -14,7 +14,9 @@ public class Action {
 		TAKE, // [Actor] [TAKES] [prop]
 		MEET, // [Actor] [MEETS] [actor]
 		VISIT, // [Actor] [VISITS] [scene]
-		GIVE // [Actor] [GIVES] [prop] (to) [actor]
+		GIVE, // [Actor] [GIVES] [prop] (to) [actor]
+		FIRST, // The first action in a plot
+		LAST // The last action in a plot
 	}
 
 	// These are always essential parts of an action
@@ -73,12 +75,21 @@ public class Action {
 	/**
 	 * To be used for KILL and MEET
 	 * 
-	 * @param type
 	 * @param subject
 	 * @param objectActor
 	 */
 	public Action(ActionType type, Actor subject, Actor objectActor) {
 		this(type, subject, objectActor, null, null);
+	}
+	
+	/**
+	 * To be used for FIRST and LAST
+	 * 
+	 * @param type
+	 * @param subject
+	 */
+	public Action(ActionType type, Actor subject) {
+		this(type, subject, null, null, null);
 	}
 
 	/**
@@ -159,6 +170,14 @@ public class Action {
 		if (type == ActionType.GIVE) {
 			returnString = subject + " gives " + objectProp + " to "
 					+ objectActor;
+		}
+		
+		if (type == ActionType.FIRST) {
+			returnString = subject + "'s story";
+		}
+		
+		if (type == ActionType.LAST) {
+			returnString = "The end";
 		}
 
 		return returnString;

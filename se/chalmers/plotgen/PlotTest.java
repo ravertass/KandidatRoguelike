@@ -27,22 +27,15 @@ public class PlotTest {
 			System.out.println(scene);
 		}
 		
-		System.out.println("\n" + plotEngine.getPlotGraph());
+		System.out.println("\n" + plotEngine.getPlotLine());
 		
-		System.out.println("\nActive vertex:\n" + plotEngine.getActiveVertex().getPlotText());
+		System.out.println("\nActive vertex:\n" + plotEngine.getCurrentNode().getText());
 		
 		PlotEdge takeAction = null;
 		System.out.println("\nPossible actions:");
-		for (PlotEdge plotEdge : plotEngine.getPossibleActions()) {
-			System.out.println(plotEdge.getAction());
-			 takeAction = plotEdge;
-		}
+		System.out.println(plotEngine.getPossibleAction());
 		
-		try {
-			System.out.println("\nVertex after taking the action:\n" + plotEngine.takeAction(takeAction));
-		} catch (ImpossibleActionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println("\nVertex after taking the action:\n" + plotEngine.takeAction());
+		
 	}
 }

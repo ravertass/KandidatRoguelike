@@ -11,6 +11,7 @@ import se.chalmers.roguelike.Components.BlocksWalking;
 import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.FieldOfView;
+import se.chalmers.roguelike.Components.FirstStarFlag;
 import se.chalmers.roguelike.Components.Gold;
 import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Highlight;
@@ -157,11 +158,15 @@ public class EntityCreator {
 	 * @param seed the seed for the dungeon the star will contain
 	 * @return the star entity
 	 */
-	public Entity createStar(int x, int y, long seed){
-		return createStar(x, y, seed, "Star");
+	public Entity createStar(int x, int y, long seed) {
+		return createStar(x, y, seed, "Star", false);
 	}
-	public Entity createStar(int x, int y, long seed, String starname){
+	
+	public Entity createStar(int x, int y, long seed, String starname, boolean isFirstStar) {
 		Entity star = new Entity(starname);
+		if (isFirstStar) {
+			star.add(new FirstStarFlag());
+		}
 		star.add(new Sprite("star"));
 		star.add(new Position(x,y));
 		star.add(new Seed(seed));

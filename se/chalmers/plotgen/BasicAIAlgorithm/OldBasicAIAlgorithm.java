@@ -5,15 +5,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
-import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
 import se.chalmers.plotgen.PlotGraph.PlotEdge;
 import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
-import se.chalmers.plotgen.PlotLine.PlotLine;
-import se.chalmers.plotgen.PlotLine.PlotNode;
 
 // TODO:
 // - Refaktorera, plocka ut metoder som kan vara användbara även för en AdvancedAIAlgorithm
@@ -26,10 +23,10 @@ import se.chalmers.plotgen.PlotLine.PlotNode;
 /**
  * This class takes SAPs as input and creates Agents from the Actors. It then,
  * when using createPlot(), simulates a story where the Agents try to accomplish
- * their goals by using different operators (performing actions). A plot graph
- * is returned.
+ * their goals by using different operators (performing actions). A plot graph is
+ * returned.
  */
-public class BasicAIAlgorithm {
+public class OldBasicAIAlgorithm {
 
 	private ArrayList<Scene> scenes;
 	private ArrayList<Actor> actors;
@@ -41,7 +38,7 @@ public class BasicAIAlgorithm {
 
 	private Random random;
 
-	public BasicAIAlgorithm(ArrayList<Scene> scenes, ArrayList<Actor> actors, ArrayList<Prop> props,
+	public OldBasicAIAlgorithm(ArrayList<Scene> scenes, ArrayList<Actor> actors, ArrayList<Prop> props,
 			Random random) {
 		this.scenes = scenes;
 		this.actors = actors;
@@ -49,14 +46,16 @@ public class BasicAIAlgorithm {
 		this.random = random;
 	}
 
-	public PlotLine createPlot() {
+	public PlotGraph createPlot() {
 
 		// Put actors on scenes and props on scenes and actors
 		placePlotBodies();
 
-		ArrayList<PlotNode> nodeList = new ArrayList<PlotNode>();
-		// Add the first node
-		nodeList.add(new PlotNode(new Action(Action.ActionType.FIRST, actors.get(actors.size() - 1))));
+		PlotGraph plotGraph = new PlotGraph();
+		// Add the first vertex
+		PlotVertex rootVertex = new PlotVertex("This is the story");
+		plotGraph.addRootVertex(rootVertex);
+		PlotVertex lastVertex = rootVertex;
 
 		// Create all agents
 		createAgents();
@@ -99,30 +98,37 @@ public class BasicAIAlgorithm {
 
 				// If the main character performed the op
 				if ((agent == mainAgent) && opPerformed) {
-					// Add a node to the plot
+					// Add an edge and a vertex to the plot graph
 					// corresponding to the
 					// main agent's operator
-					nodeList.add(new PlotNode(chosenOps.get(mainAgent).getAction()));
+					PlotVertex newVertex = new PlotVertex("");
+					PlotEdge newEdge = new PlotEdge(chosenOps.get(mainAgent).getAction());
+
+					plotGraph.addVertex(lastVertex, newVertex, newEdge);
+					lastVertex = newVertex;
 				}
 
 				// If the op was done to the main character
 				if (op.getAction().getObjectActor() == mainAgent.getSelf() && opPerformed) {
-					// Add a node to the plot
+					// Add an edge and a vertex to the plot graph
 					// corresponding to the
 					// performed operator
+					PlotVertex newVertex = new PlotVertex("");
+					PlotEdge newEdge = new PlotEdge(chosenOps.get(agent).getAction());
 
-					nodeList.add(new PlotNode(chosenOps.get(agent).getAction()));
+					plotGraph.addVertex(lastVertex, newVertex, newEdge);
+					lastVertex = newVertex;
 				}
 
 				// If the plot is too long, we'll try again
-				if (nodeList.size() > 9) {
+				if (plotGraph.size() > 9) {
 					return null;
 				}
 			}
 		}
 
 		// If the plot is too short, we'll also try again
-		if (nodeList.size() < 4) {
+		if (plotGraph.size() < 4) {
 			return null;
 		}
 
@@ -135,10 +141,8 @@ public class BasicAIAlgorithm {
 		for (Scene scene : scenes) {
 			scene.loadSnapShot();
 		}
-
-		nodeList.add(new PlotNode(new Action(Action.ActionType.LAST, actors.get(actors.size() - 1))));
 		
-		return new PlotLine(nodeList);
+		return plotGraph;
 	}
 
 	/**
@@ -217,7 +221,7 @@ public class BasicAIAlgorithm {
 			// We loop through the same scenes again and again until we're done
 			i = (i + 1) % scenes.size();
 		}
-
+		
 		for (Actor actor : actors) {
 			actor.saveSnapShot();
 		}

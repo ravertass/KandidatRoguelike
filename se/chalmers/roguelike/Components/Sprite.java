@@ -32,7 +32,7 @@ public class Sprite implements IComponent {
 	 * sprite size is STANDARD_SIZE (see above).
 	 * 
 	 * @param fileName The name of the image file. We're assuming that all images are PNGs and that they're
-	 *            all in the /resources/ directory. Example: For 'resources/guy.png', fileName is 'guy'.
+	 *            all in the /resources/graphics/ directory. Example: For 'resources/guy.png', fileName is 'guy'.
 	 */
 	public Sprite(String fileName) {
 		this(fileName, STANDARD_SIZE);
@@ -63,7 +63,7 @@ public class Sprite implements IComponent {
 	 * A constructor where the starting sprite always is the upper- leftmost one in the spritesheet.
 	 * 
 	 * @param fileName The name of the image file. We're assuming that all images are PNGs and that they're
-	 *            all in the /resources/ directory. Example: For 'resources/guy.png', fileName is 'guy'.
+	 *            all in the /resources/graphics/ directory. Example: For 'resources/guy.png', fileName is 'guy'.
 	 * @param spriteSize The size of the individual sprites in the spritesheet.
 	 */
 	public Sprite(String fileName, int spriteSize) {
@@ -97,7 +97,7 @@ public class Sprite implements IComponent {
 		Texture texture = loadTextures.get(fileName);
 		if (texture == null) {
 			try {
-				texture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/"
+				texture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/graphics/"
 						+ fileName + ".png")));
 				loadTextures.put(fileName, texture);
 			} catch (FileNotFoundException e) {

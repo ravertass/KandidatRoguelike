@@ -93,6 +93,8 @@ public class Entity {
 			componentKey |= Engine.CompPlayer;
 		} else if(compClass == StatusEffects.class) {
 			componentKey |= Engine.CompStatusEffect;
+		} else if(compClass == FirstStarFlag.class) {
+			componentKey |= Engine.CompFirstStarFlag;
 		}
 	}
 	

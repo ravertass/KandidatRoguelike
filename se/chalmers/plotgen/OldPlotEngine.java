@@ -5,16 +5,12 @@ import java.util.Random;
 import java.util.Set;
 
 import se.chalmers.plotgen.NameGen.NameGenerator;
-import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
 import se.chalmers.plotgen.PlotGraph.PlotEdge;
 import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
-import se.chalmers.plotgen.PlotLine.PlotLine;
-import se.chalmers.plotgen.PlotLine.PlotNode;
-import se.chalmers.plotgen.PlotLine.PlotTextGenerator;
 
 /**
  * This is the main class for the plot generator.
@@ -31,14 +27,14 @@ import se.chalmers.plotgen.PlotLine.PlotTextGenerator;
  * @author fabian
  */
 
-public class PlotEngine {
+public class OldPlotEngine {
 
 	private NameGenerator nameGen;
 
 	private ArrayList<Actor> actors;
 	private ArrayList<Prop> props;
 	private ArrayList<Scene> scenes;
-	private PlotLine plotLine;
+	private PlotGraph plotGraph;
 
 	/**
 	 * Initializes everything and randomizes new actors, props and a new plot.
@@ -56,13 +52,8 @@ public class PlotEngine {
 		generateProps(random);
 
 		generatePlot(random);
-		plotLine = new PlotTextGenerator(plotLine, actors.get(actors.size()-1)).generatePlotText();
 		
-		//TODO This is here since the first action now is NULL
-		// When the first node actually holds something meaningful, this will not be here
-		//takeAction();
-		
-		System.out.println(plotLine);
+		System.out.println(plotGraph);
 	}
 
 	public ArrayList<Scene> getScenes() {
@@ -82,8 +73,8 @@ public class PlotEngine {
 	 * 
 	 * @return
 	 */
-	public PlotLine getPlotLine() {
-		return plotLine;
+	public PlotGraph getPlotGraph() {
+		return plotGraph;
 	}
 
 	/**
@@ -137,7 +128,7 @@ public class PlotEngine {
 		int noOfScenes = random.nextInt(6) + 5;
 		
 		for (int i = 0; i < noOfScenes; i++) {
-			Scene scene = new Scene(nameGen.generateName(), random.nextInt(10));
+			Scene scene = new Scene(nameGen.generateName());
 			scenes.add(scene);
 		}
 	}
@@ -151,35 +142,37 @@ public class PlotEngine {
 	 * @return
 	 */
 	private void generatePlot(Random random) {
-		plotLine = PlotGenerator.basicAIAlgorithm(scenes, actors, props, random);
+		//plotGraph = PlotGenerator.basicAIAlgorithm(scenes, actors, props, random);
 	}
 
 	/**
-	 * @return the possible action
+	 * @return all the plotedges outgoing from the active vertex
 	 */
-	public Action getPossibleAction() {
-		if (plotLine.getNextNode() == null) {
-			return null;
-		}
-		return plotLine.getNextNode().getAction();
+	public Set<PlotEdge> getPossibleActions() {
+		return plotGraph.getAdjacentVertices().keySet();
 	}
 
-	public PlotNode getCurrentNode() {
-		return plotLine.getCurrentNode();
-	}
-	
-	public PlotNode getNextNode() {
-		return plotLine.getNextNode();
+	public PlotVertex getActiveVertex() {
+		return plotGraph.getActiveVertex();
 	}
 
 	/**
-	 * Advances the plot to the next plot node.
+	 * Sets the new active vertex accorting to the given edge.
 	 * 
-	 * @return the plot-text for the new active node
+	 * @param plotEdge
+	 *            the edge that contains the action to take
+	 * @return the plot-text for the new active vertex
+	 * @throws ImpossibleActionException
+	 *             if the given PlotEdge-action isn't possible
 	 */
-	public String takeAction() {
-		plotLine.incrementCurrentNode();
-		return plotLine.getCurrentNode().getText();
+	public String takeAction(PlotEdge plotEdge)
+			throws ImpossibleActionException {
+		if (!plotGraph.setActiveVertex(plotGraph.getAdjacentVertices().get(
+				plotEdge))) {
+			throw new ImpossibleActionException("Not a possible action: "
+					+ plotEdge);
+		}
+		return plotGraph.getActiveVertex().getPlotText();
 	}
 
 	/**
@@ -199,10 +192,10 @@ public class PlotEngine {
 			seed = new Random().nextLong();
 		}
 
-		new PlotEngine(seed);
+		new OldPlotEngine(seed);
 	}
 
-	public PlotEngine(long seed) {
+	public OldPlotEngine(long seed) {
 		run(seed);
 	}
 }

@@ -11,16 +11,17 @@ import se.chalmers.plotgen.PlotData.Scene;
 import se.chalmers.plotgen.PlotGraph.PlotEdge;
 import se.chalmers.plotgen.PlotGraph.PlotGraph;
 import se.chalmers.plotgen.PlotGraph.PlotVertex;
+import se.chalmers.plotgen.PlotLine.PlotLine;
 
 public class PlotGenerator {
 
-	public static PlotGraph basicAIAlgorithm(ArrayList<Scene> scenes,
+	public static PlotLine basicAIAlgorithm(ArrayList<Scene> scenes,
 	ArrayList<Actor> actors, ArrayList<Prop> props, Random random) {
-		PlotGraph plotGraph = null;
-		while (plotGraph == null) {
-			plotGraph = new BasicAIAlgorithm(scenes, actors, props, random).createPlot();
+		PlotLine plotLine = null;
+		while (plotLine == null) {
+			plotLine = new BasicAIAlgorithm(scenes, actors, props, random).createPlot();
 		}
-		return plotGraph;
+		return plotLine;
 	}
 	
 	// Notice that this should also alter the state of the Props, Actors and
