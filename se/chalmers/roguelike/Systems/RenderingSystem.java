@@ -303,16 +303,21 @@ public class RenderingSystem implements ISystem {
 				glColor3f(1.0f, 1.0f, 1.0f);
 				font.drawString(Engine.screenWidth - 170, 300, "\n\nVisited before: " + visited);
 			}
-		} else if (Engine.gameState == Engine.GameState.MAIN_MENU || 
-				Engine.gameState == Engine.GameState.GAMEOVER) {
+		} else if (Engine.gameState == Engine.GameState.MAIN_MENU
+				|| Engine.gameState == Engine.GameState.GAMEOVER) {
 			drawBackground();
 			for (Entity e : entitiesToDraw) {
+				SelectedFlag flag = e.getComponent(SelectedFlag.class);
+				if (flag != null && flag.getFlag()) {
+					glColor3f(1.0f, 0.0f, 0.0f);
+				}
 				Position pos = e.getComponent(Position.class);
 				drawNonTile(e.getComponent(Sprite.class), pos);
 				if (e.containsComponent(Engine.CompText)) {
 					String string = e.getComponent(Text.class).getText();
 					font.drawString(pos.getX(), pos.getY(), string);
 				}
+				glColor3f(1.0f, 1.0f, 1.0f);
 			}
 		}
 
@@ -324,8 +329,10 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Method to draw an entity to the game window.
 	 * 
-	 * @param sprite The sprite that should be drawn on the screen
-	 * @param position The position where the sprite should be drawn
+	 * @param sprite
+	 *            The sprite that should be drawn on the screen
+	 * @param position
+	 *            The position where the sprite should be drawn
 	 */
 	private void draw(Sprite sprite, Position position) {
 		if (!sprite.getVisibility())
@@ -353,8 +360,10 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Method to draw non-tile objects
 	 * 
-	 * @param sprite The sprite that should be drawn on the screen
-	 * @param position The position where the sprite should be drawn
+	 * @param sprite
+	 *            The sprite that should be drawn on the screen
+	 * @param position
+	 *            The position where the sprite should be drawn
 	 */
 	private void drawNonTile(Sprite sprite, Position position) {
 		int sizeX = sprite.getWidth();
@@ -403,8 +412,10 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws the minimap
 	 * 
-	 * @param sprite the sprite of the tile you want to draw
-	 * @param position the position of the tile (will automatically be adjusted to the minimap location
+	 * @param sprite
+	 *            the sprite of the tile you want to draw
+	 * @param position
+	 *            the position of the tile (will automatically be adjusted to the minimap location
 	 */
 	private void drawMinimap(Sprite sprite, Position position) {
 		if (!sprite.getVisibility())
@@ -429,11 +440,16 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws a sprite on the screen
 	 * 
-	 * @param sprite the sprite that should be drawn
-	 * @param x the X-coordinate for the quad
-	 * @param y the Y-coordinate for the quad
-	 * @param width the width of the quad
-	 * @param height the height of the quad
+	 * @param sprite
+	 *            the sprite that should be drawn
+	 * @param x
+	 *            the X-coordinate for the quad
+	 * @param y
+	 *            the Y-coordinate for the quad
+	 * @param width
+	 *            the width of the quad
+	 * @param height
+	 *            the height of the quad
 	 */
 	private void drawSprite(Sprite sprite, int x, int y, int width, int height) {
 		Texture texture = sprite.getTexture();
@@ -449,15 +465,24 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws a textured quad on the screen
 	 * 
-	 * @param texture the texture the quad is using
-	 * @param x the X-coordinate for the quad
-	 * @param y the Y-coordinate for the quad
-	 * @param width the width of the quad
-	 * @param height the height of the quad
-	 * @param spriteULX upper left X sprite value
-	 * @param spriteULY upper left Y sprite value
-	 * @param spriteLRX lower right X sprite value
-	 * @param spriteLRY lower right Y sprite value
+	 * @param texture
+	 *            the texture the quad is using
+	 * @param x
+	 *            the X-coordinate for the quad
+	 * @param y
+	 *            the Y-coordinate for the quad
+	 * @param width
+	 *            the width of the quad
+	 * @param height
+	 *            the height of the quad
+	 * @param spriteULX
+	 *            upper left X sprite value
+	 * @param spriteULY
+	 *            upper left Y sprite value
+	 * @param spriteLRX
+	 *            lower right X sprite value
+	 * @param spriteLRY
+	 *            lower right Y sprite value
 	 */
 	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, float spriteULX,
 			float spriteULY, float spriteLRX, float spriteLRY) {
@@ -479,10 +504,14 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws an untextured quad
 	 * 
-	 * @param x the X-coordinate for the quad
-	 * @param y the Y-coordinate for the quad
-	 * @param width the width of the quad
-	 * @param height the height of the quad
+	 * @param x
+	 *            the X-coordinate for the quad
+	 * @param y
+	 *            the Y-coordinate for the quad
+	 * @param width
+	 *            the width of the quad
+	 * @param height
+	 *            the height of the quad
 	 */
 	private void drawUntexturedQuad(int x, int y, int width, int height) {
 		glDisable(GL11.GL_TEXTURE_2D);
@@ -506,7 +535,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Adds an entity to the system
 	 * 
-	 * @param entity the entity that should be added
+	 * @param entity
+	 *            the entity that should be added
 	 */
 	public void addEntity(Entity entity) {
 		if ((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
@@ -519,7 +549,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Removes an entity from the system
 	 * 
-	 * @param entity the entity that should be removed
+	 * @param entity
+	 *            the entity that should be removed
 	 */
 	public void removeEntity(Entity entity) {
 		entitiesToDraw.remove(entity);
@@ -528,7 +559,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Sets the camera
 	 * 
-	 * @param c the camera
+	 * @param c
+	 *            the camera
 	 */
 	public void setCamera(Camera c) {
 		this.camera = c;
@@ -537,7 +569,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * draws healthbars for all entities that have health
 	 * 
-	 * @param e the entity that should have its healthbar drawn
+	 * @param e
+	 *            the entity that should have its healthbar drawn
 	 */
 	private void drawHealthbar(Entity e) {
 		Position epos = e.getComponent(Position.class); // tilebased positions
@@ -573,7 +606,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws the HUD
 	 * 
-	 * @param e the player entity that will have its information printed on the HUD
+	 * @param e
+	 *            the player entity that will have its information printed on the HUD
 	 */
 	private void drawHud(Entity e) {
 
@@ -586,12 +620,29 @@ public class RenderingSystem implements ISystem {
 		double hpPercentage = health.getHealthPercentage();
 		double maxHp = health.getMaxHealth();
 
-		String info = "Name: " + attributes.getName() + "\nGold: " + gold.getGold() + "\nLevel: "
-				+ attributes.getLevel() + "\nXP: " + attributes.experience() + "\nStrength: "
-				+ attributes.strength() + "\nEndurance: " + attributes.endurance() + "\nPerception: "
-				+ attributes.perception() + "\nIntelligence: " + attributes.intelligence() + "\nCharisma: "
-				+ attributes.charisma() + "\nAgility: " + attributes.agility() + "\n"
-				+ "\nWeapon information: " + "\nDamage: " + weapon.getNumberOfDice() + "D6"
+		String race, spaceClass;
+		if (attributes.spaceRace == Attribute.SpaceRace.SPACE_ALIEN) {
+			race = "Space Alien";
+		} else if (attributes.spaceRace == Attribute.SpaceRace.SPACE_DWARF) {
+			race = "Space Dwarf";
+		} else {
+			race = "Space Human";
+		}
+		
+		if(attributes.spaceClass == Attribute.SpaceClass.SPACE_WARRIOR){
+			spaceClass = "Space Warrior";
+		} else if(attributes.spaceClass == Attribute.SpaceClass.SPACE_ROGUE){
+			spaceClass = "Space Rogue";
+		} else {
+			spaceClass = "Space Mage";
+		}
+		String info = "Name: " + attributes.getName() + "\nRace:" + race + "\nClass: " + spaceClass
+				+ "\nGold: " + gold.getGold() + "\nLevel: " + attributes.getLevel() + "\nXP: "
+				+ attributes.experience() + "\nStrength: " + attributes.strength() + "\nEndurance: "
+				+ attributes.endurance() + "\nPerception: " + attributes.perception() + "\nIntelligence: "
+				+ attributes.intelligence() + "\nCharisma: " + attributes.charisma() + "\nAgility: "
+				+ attributes.agility() + "\nWeapon information: " + "\nDamage: "
+				+ weapon.getNumberOfDice() + "D6"
 				+ (weapon.getModifier() == 0 ? "" : "+" + weapon.getModifier()) + "\nRange: "
 				+ weapon.getRange() + "\nTargeting system: " + weapon.getTargetingSystemString();
 
@@ -619,8 +670,9 @@ public class RenderingSystem implements ISystem {
 		// below the background to the inventory-positions will be drawn
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
-				drawSprite(new Sprite("tiles/noslipfloor"), Engine.screenWidth - 200 + 4 + i * Engine.spriteSize
-						* 2, 20 + j * Engine.spriteSize * 2, Engine.spriteSize * 2, Engine.spriteSize * 2);
+				drawSprite(new Sprite("tiles/noslipfloor"), Engine.screenWidth - 200 + 4 + i
+						* Engine.spriteSize * 2, 20 + j * Engine.spriteSize * 2, Engine.spriteSize * 2,
+						Engine.spriteSize * 2);
 			}
 		}
 		int drawX = Engine.screenWidth - menuWidth + 4;
@@ -638,12 +690,12 @@ public class RenderingSystem implements ISystem {
 			}
 		}
 	}
-	
-	private void drawCombatLog(){
-		if(showCombatLog == true){
+
+	private void drawCombatLog() {
+		if (showCombatLog == true) {
 
 			Texture combatlogBG = new Sprite("combatlog_bg").getTexture();
-			int sizeX = Engine.screenWidth-menuWidth;
+			int sizeX = Engine.screenWidth - menuWidth;
 			int sizeY = combatLogHeight;
 
 			float spriteULX = 0.0f;
@@ -651,12 +703,12 @@ public class RenderingSystem implements ISystem {
 			float spriteLRX = ((float) (sizeX)) / combatlogBG.getTextureWidth();
 			float spriteLRY = ((float) (sizeY)) / combatlogBG.getTextureHeight();
 			drawTexturedQuad(combatlogBG, 0, 0, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
-			
+
 			StringBuilder sb = new StringBuilder();
-			int x = 20;						//hard pixels appear different on different resolutions?
-			int y = combatLogHeight - 30; 	//hard pixels appear different on different resolutions?
+			int x = 20; // hard pixels appear different on different resolutions?
+			int y = combatLogHeight - 30; // hard pixels appear different on different resolutions?
 			List<String> log = CombatLog.getLog();
-			if (log.size() > 4){
+			if (log.size() > 4) {
 				log = log.subList(0, 5);
 			}
 			for (int i = log.size() - 1; !(i < 0); i--) {
@@ -671,7 +723,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Updates the dungeon being rendered.
 	 * 
-	 * @param dungeon the current dungeon being used
+	 * @param dungeon
+	 *            the current dungeon being used
 	 */
 	public void setDungeon(Dungeon dungeon) {
 		this.dungeon = dungeon;

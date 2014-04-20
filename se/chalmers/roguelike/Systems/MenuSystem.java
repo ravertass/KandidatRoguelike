@@ -7,16 +7,16 @@ import java.util.Random;
 import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Engine;
+import se.chalmers.roguelike.Engine.GameState;
 import se.chalmers.roguelike.Entity;
-import se.chalmers.roguelike.EntityCreator;
 import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.InputManager.InputAction;
-import se.chalmers.roguelike.Components.Position;
-import se.chalmers.roguelike.Components.Sprite;
-import se.chalmers.roguelike.Components.Text;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
 import se.chalmers.roguelike.Components.Attribute.SpaceRace;
-import se.chalmers.roguelike.Engine.GameState;
+import se.chalmers.roguelike.Components.Position;
+import se.chalmers.roguelike.Components.SelectedFlag;
+import se.chalmers.roguelike.Components.Sprite;
+import se.chalmers.roguelike.Components.Text;
 import se.chalmers.roguelike.util.Observer;
 
 /**
@@ -25,9 +25,11 @@ import se.chalmers.roguelike.util.Observer;
 public class MenuSystem implements ISystem, Observer {
 
 	private Rectangle playRect, optionsRect, exitRect, loadRect, tutorialPlayRect, newGameRect,
-			gameOverNewGameRect, gameOverExitRect;
+			gameOverNewGameRect, gameOverExitRect, race1Rect, race2Rect, race3Rect, class1Rect, class2Rect,
+			class3Rect;
 	private Entity playButton, optionsButton, exitButton, loadButton, tutorialPlayButton, seedInfo, seedBox,
-			newGameButton, tutorial, gameOverLogo, gameOverNewGame, gameOverExit;
+			newGameButton, tutorial, gameOverLogo, gameOverNewGame, gameOverExit, race1, race2, race3,
+			raceText, classText, class1, class2, class3;
 
 	private ArrayList<Entity> activeButtons;
 
@@ -40,6 +42,7 @@ public class MenuSystem implements ISystem, Observer {
 	private Engine engine;
 
 	private String tmpSeed;
+	private Entity selectedRace, selectedClass;
 
 	/**
 	 * Sets up the buttons and internal logic required for the main menu
@@ -79,8 +82,7 @@ public class MenuSystem implements ISystem, Observer {
 	}
 
 	/**
-	 * Runs with each iteration of the game loop when the game state is set to
-	 * MAIN_MENU.
+	 * Runs with each iteration of the game loop when the game state is set to MAIN_MENU.
 	 * 
 	 * Will highlight the buttons when hovered over
 	 */
@@ -152,6 +154,44 @@ public class MenuSystem implements ISystem, Observer {
 			} else if (state == MenuState.NEWGAME) {
 				if (newGameRect != null && newGameRect.contains(mouseX, mouseY)) {
 					loadNewGame();
+				} else if (race1Rect.contains(mouseX, mouseY)) {
+					// This code gets a bit copy-pasty
+					if (selectedRace != null) {
+						selectedRace.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					race1.getComponent(SelectedFlag.class).setFlag(true);					
+					selectedRace = race1;
+				} else if (race2Rect.contains(mouseX, mouseY)) {
+					if (selectedRace != null) {
+						selectedRace.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					race2.getComponent(SelectedFlag.class).setFlag(true);
+					selectedRace = race2;
+				} else if (race3Rect.contains(mouseX, mouseY)) {
+					if (selectedRace != null) {
+						selectedRace.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					race3.getComponent(SelectedFlag.class).setFlag(true);
+					selectedRace = race3;
+				} else if (class1Rect.contains(mouseX, mouseY)) {
+					// This code gets a bit copy-pasty
+					if (selectedClass != null) {
+						selectedClass.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					class1.getComponent(SelectedFlag.class).setFlag(true);
+					selectedClass = class1;
+				} else if (class2Rect.contains(mouseX, mouseY)) {
+					if (selectedClass != null) {
+						selectedClass.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					class2.getComponent(SelectedFlag.class).setFlag(true);
+					selectedClass = class2;
+				} else if (class3Rect.contains(mouseX, mouseY)) {
+					if (selectedClass != null) {
+						selectedClass.getComponent(SelectedFlag.class).setFlag(false);
+					}
+					class3.getComponent(SelectedFlag.class).setFlag(true);
+					selectedClass = class3;
 				}
 			} else if (state == MenuState.GAMEOVER) {
 				if (gameOverNewGameRect.contains(mouseX, mouseY)) {
@@ -162,6 +202,7 @@ public class MenuSystem implements ISystem, Observer {
 			}
 		}
 
+		// Keyboard input
 		if (Engine.gameState == Engine.GameState.MAIN_MENU && state == MenuState.NEWGAME) {
 			if (i == InputAction.NUM_0) {
 				seedAdd(0);
@@ -196,8 +237,8 @@ public class MenuSystem implements ISystem, Observer {
 	}
 
 	/**
-	 * This method will be called when switching to the MainMenu gamestate and
-	 * will register all the entities with engine.
+	 * This method will be called when switching to the MainMenu gamestate and will register all the entities
+	 * with engine.
 	 */
 	public void register() {
 		for (Entity e : activeButtons) {
@@ -266,28 +307,112 @@ public class MenuSystem implements ISystem, Observer {
 		// showMenuButtons(false);
 		unregister();
 		state = MenuState.NEWGAME;
+		int bufferHeight = 150;
 		if (seedInfo == null) {
 			seedInfo = new Entity("Seed information");
 			seedInfo.add(new Sprite("misc/seedtext", 260, 26));
-			seedInfo.add(new Position(Engine.screenWidth / 2 - 260 / 2, Engine.screenHeight - 100));
+			seedInfo.add(new Position(Engine.screenWidth / 2 - 260 / 2, Engine.screenHeight - 100
+					- bufferHeight));
 		}
 		if (seedBox == null) {
 			seedBox = new Entity("Seed box");
 			seedBox.add(new Sprite("misc/seedbox", 260, 26));
-			seedBox.add(new Position(Engine.screenWidth / 2 - 260 / 2, Engine.screenHeight - 146));
+			seedBox.add(new Position(Engine.screenWidth / 2 - 260 / 2, Engine.screenHeight - 146
+					- bufferHeight));
 			seedBox.add(new Text(tmpSeed));
 		}
 		if (newGameButton == null) {
 			int width = 242;
 			int height = 64;
 			int x = Engine.screenWidth / 2 - width / 2;
-			int y = Engine.screenHeight - 146 - height - 20;
+			int y = Engine.screenHeight - 146 - height - 20 - 120 - bufferHeight; // Hard coded values for now
 			newGameRect = new Rectangle(x, y, width, height);
 			newGameButton = engine.entityCreator.createButton(x, y, "play_button", width, height);
 		}
+		if (race1 == null) {
+			// If race1 is null, all three will be null
+
+			int raceWidth = 84;
+			int classWidth = 100;
+			int logoHeight = 26;
+			int height = 14;
+			int race1X = Engine.screenWidth / 2 - raceWidth - raceWidth / 3;
+			int race1Y = Engine.screenHeight - 146 - 26 - 40 - bufferHeight; // Based on the seed box
+			int classX = race1X + raceWidth + 30;
+
+			raceText = new Entity("RaceText");
+			raceText.add(new Sprite("misc/race", raceWidth, logoHeight));
+			raceText.add(new Position(race1X, race1Y));
+
+			// Race 1
+			race1 = new Entity("Race1");
+			race1.add(new Sprite("misc/spacealien", raceWidth, height));
+			race1.add(new Position(race1X, race1Y - logoHeight));
+			race1.add(new SelectedFlag(true));
+			race1Rect = new Rectangle(race1X, race1Y - logoHeight, raceWidth, height);
+			selectedRace = race1;
+
+			// Race 2
+			race2 = new Entity("Race2");
+			race2.add(new Sprite("misc/spacehuman", raceWidth, height));
+			race2.add(new Position(race1X, race1Y - height - logoHeight));
+			race2.add(new SelectedFlag(false));
+			race2Rect = new Rectangle(race1X, race1Y - height - logoHeight, raceWidth, height);
+
+			// Race 3
+			race3 = new Entity("Race3");
+			race3.add(new Sprite("misc/spacedwarf", raceWidth, height));
+			race3.add(new Position(race1X, race1Y - 2 * height - logoHeight));
+			race3.add(new SelectedFlag(false));
+			race3Rect = new Rectangle(race1X, race1Y - 2 * height - logoHeight, raceWidth, height);
+
+			// class stuff:
+			classText = new Entity("ClassText");
+			classText.add(new Sprite("misc/class", raceWidth, logoHeight));
+			classText.add(new Position(classX, race1Y));
+
+			// Class 1:
+			class1 = new Entity("Class1");
+			class1.add(new Sprite("misc/spacewarrior", classWidth, height));
+			class1.add(new Position(classX, race1Y - logoHeight));
+			class1.add(new SelectedFlag(true));
+			class1Rect = new Rectangle(classX, race1Y - logoHeight, classWidth, height);
+			selectedClass = class1;
+
+			// Race 2
+			class2 = new Entity("Class2");
+			class2.add(new Sprite("misc/spacerogue", classWidth, height));
+			class2.add(new Position(classX, race1Y - height - logoHeight));
+			class2.add(new SelectedFlag(false));
+			class2Rect = new Rectangle(classX, race1Y - height - logoHeight, classWidth, height);
+
+			// Race 3
+			class3 = new Entity("Class3");
+			class3.add(new Sprite("misc/spacemage", classWidth, height));
+			class3.add(new Position(classX, race1Y - 2 * height - logoHeight));
+			class3.add(new SelectedFlag(false));
+			class3Rect = new Rectangle(classX, race1Y - 2 * height - logoHeight, classWidth, height);
+		}
+
+		engine.addEntity(raceText);
+		engine.addEntity(race1);
+		engine.addEntity(race2);
+		engine.addEntity(race3);
+		engine.addEntity(class1);
+		engine.addEntity(class2);
+		engine.addEntity(class3);
+		engine.addEntity(classText);
 		engine.addEntity(seedInfo);
 		engine.addEntity(seedBox);
 		engine.addEntity(newGameButton);
+		activeButtons.add(raceText);
+		activeButtons.add(race1);
+		activeButtons.add(race2);
+		activeButtons.add(race3);
+		activeButtons.add(class1);
+		activeButtons.add(class2);
+		activeButtons.add(class3);
+		activeButtons.add(classText);
 		activeButtons.add(newGameButton);
 		activeButtons.add(seedInfo);
 		activeButtons.add(seedBox);
@@ -319,7 +444,32 @@ public class MenuSystem implements ISystem, Observer {
 		} else {
 			Engine.seed = Long.parseLong(tmpSeed);
 		}
-		engine.newGame();
+		SpaceRace race;
+		if (selectedRace == race1) {
+			race = SpaceRace.SPACE_ALIEN;
+		} else if (selectedRace == race2) {
+			race = SpaceRace.SPACE_HUMAN;
+		} else {
+			race = SpaceRace.SPACE_DWARF;
+		}
+
+		SpaceClass spaceClass;
+		if (selectedClass == class1) {
+			spaceClass = SpaceClass.SPACE_WARRIOR;
+		} else if (selectedClass == class2) {
+			spaceClass = SpaceClass.SPACE_ROGUE;
+		} else {
+			spaceClass = SpaceClass.SPACE_MAGE;
+		}
+
+		// Reset:
+		selectedRace.getComponent(SelectedFlag.class).setFlag(false);
+		race1.getComponent(SelectedFlag.class).setFlag(true);
+		selectedRace = race1;
+		selectedClass.getComponent(SelectedFlag.class).setFlag(false);
+		class1.getComponent(SelectedFlag.class).setFlag(true);
+		selectedClass = class1;
+		engine.newGame(spaceClass, race);
 	}
 
 	private void mainMenu() {
