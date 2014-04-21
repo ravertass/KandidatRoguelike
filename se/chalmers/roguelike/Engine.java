@@ -1,6 +1,5 @@
 package se.chalmers.roguelike;
 
-import java.util.ArrayList;
 import org.lwjgl.opengl.Display;
 
 import se.chalmers.plotgen.PlotEngine;
