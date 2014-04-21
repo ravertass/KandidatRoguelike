@@ -14,7 +14,7 @@ import java.util.Locale;
 public class CombatLog {
 
 	private final static int logSize = 20;
-	private static List<String> log = new ArrayList<>(logSize);
+	private static List<String> log = new ArrayList<String>(logSize);
 	private static int pointer = 0;
 	private static int events = 0;
 
@@ -41,7 +41,7 @@ public class CombatLog {
 	 * @return
 	 */
 	public static List<String> getLog() {
-		List<String> listOfEvents = new ArrayList<>();
+		List<String> listOfEvents = new ArrayList<String>();
 		int index = pointer - 1;
 		
 		if (events == logSize) {
