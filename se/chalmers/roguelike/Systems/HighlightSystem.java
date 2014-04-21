@@ -174,9 +174,7 @@ public class HighlightSystem implements ISystem, Observer {
 	}
 	
 	public void unregister(){
-		System.out.println("Unregister");
 		for(Entity e : entities){
-			System.out.println("remove");
 			engine.removeEntity(e);
 		}
 	}
