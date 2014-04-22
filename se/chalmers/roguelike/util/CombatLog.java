@@ -17,6 +17,7 @@ public class CombatLog {
 	private static List<String> log = new ArrayList<String>(logSize);
 	private static int pointer = 0;
 	private static int events = 0;
+	private static boolean visible = true;
 
 	/**
 	 * a static method to add new event that should be written as output
@@ -62,5 +63,30 @@ public class CombatLog {
 			}
 		}
 		return listOfEvents;
+	}
+	
+	/**
+	 * Returns true if the log is shown
+	 * @return
+	 */
+	public static boolean isVisible() {
+		return visible;
+	}
+	
+	/**
+	 * Set true if the log should be visible
+	 * @param showLog
+	 */
+	public static void setActive(boolean showLog){
+		visible = showLog;
+	}
+	
+	/**
+	 * clears the log (useful for new games etc)
+	 */
+	public static void reset(){
+		log.clear();
+		pointer = 0;
+		events = 0;
 	}
 }

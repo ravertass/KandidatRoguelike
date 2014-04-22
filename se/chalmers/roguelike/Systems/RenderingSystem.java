@@ -692,7 +692,7 @@ public class RenderingSystem implements ISystem {
 	}
 
 	private void drawCombatLog() {
-		if (showCombatLog == true) {
+		if (CombatLog.isVisible()) {
 
 			Texture combatlogBG = new Sprite("combatlog_bg").getTexture();
 			int sizeX = Engine.screenWidth - menuWidth;

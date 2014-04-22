@@ -26,6 +26,7 @@ import se.chalmers.roguelike.Systems.StatusEffectSystem;
 import se.chalmers.roguelike.Systems.TurnSystem;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.util.Camera;
+import se.chalmers.roguelike.util.CombatLog;
 
 public class Engine {
 
@@ -446,6 +447,7 @@ public class Engine {
 		handleObservers(true);
 		setCamera();
 		player = EntityCreator.createPlayer(spaceClass, race);
+		CombatLog.reset();
 		loadOverworld();
 		overworldSys.addEntity(player);
 		//addEntity(player);
