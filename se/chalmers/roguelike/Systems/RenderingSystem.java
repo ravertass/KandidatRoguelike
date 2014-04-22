@@ -77,7 +77,6 @@ public class RenderingSystem implements ISystem {
 	private Texture owBackground = null;
 	private Texture owMenu = null;
 	private SpriteComparator spriteComparator;
-	private boolean showCombatLog = true;
 
 	private int[][] lightMap;
 
@@ -99,8 +98,8 @@ public class RenderingSystem implements ISystem {
 		setupDisplay();
 		setupOpenGL();
 		try {
-			fontRenderer = new FontRenderer(new UnicodeFont("/resources/graphics/fonts/circula-medium.otf", 28, false,
-					true), Color.white);
+			fontRenderer = new FontRenderer(new UnicodeFont("/resources/graphics/fonts/circula-medium.otf",
+					28, false, true), Color.white);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -119,8 +118,8 @@ public class RenderingSystem implements ISystem {
 		 * it (outside of ECS?) and remove later
 		 */
 		try {
-			owBackground = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/graphics/"
-					+ "background_ow" + ".png")));
+			owBackground = TextureLoader.getTexture("PNG", new FileInputStream(new File(
+					"./resources/graphics/" + "background_ow" + ".png")));
 			owMenu = TextureLoader.getTexture("PNG", new FileInputStream(new File("./resources/graphics/"
 					+ "menu_background_ow_long" + ".png")));
 		} catch (FileNotFoundException e) {
@@ -320,7 +319,7 @@ public class RenderingSystem implements ISystem {
 				glColor3f(1.0f, 1.0f, 1.0f);
 			}
 		}
-
+		drawDebugLog();
 		// Update and sync display
 		Display.update();
 		Display.sync(60);
@@ -329,10 +328,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Method to draw an entity to the game window.
 	 * 
-	 * @param sprite
-	 *            The sprite that should be drawn on the screen
-	 * @param position
-	 *            The position where the sprite should be drawn
+	 * @param sprite The sprite that should be drawn on the screen
+	 * @param position The position where the sprite should be drawn
 	 */
 	private void draw(Sprite sprite, Position position) {
 		if (!sprite.getVisibility())
@@ -360,10 +357,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Method to draw non-tile objects
 	 * 
-	 * @param sprite
-	 *            The sprite that should be drawn on the screen
-	 * @param position
-	 *            The position where the sprite should be drawn
+	 * @param sprite The sprite that should be drawn on the screen
+	 * @param position The position where the sprite should be drawn
 	 */
 	private void drawNonTile(Sprite sprite, Position position) {
 		int sizeX = sprite.getWidth();
@@ -412,10 +407,8 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws the minimap
 	 * 
-	 * @param sprite
-	 *            the sprite of the tile you want to draw
-	 * @param position
-	 *            the position of the tile (will automatically be adjusted to the minimap location
+	 * @param sprite the sprite of the tile you want to draw
+	 * @param position the position of the tile (will automatically be adjusted to the minimap location
 	 */
 	private void drawMinimap(Sprite sprite, Position position) {
 		if (!sprite.getVisibility())
@@ -440,16 +433,11 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws a sprite on the screen
 	 * 
-	 * @param sprite
-	 *            the sprite that should be drawn
-	 * @param x
-	 *            the X-coordinate for the quad
-	 * @param y
-	 *            the Y-coordinate for the quad
-	 * @param width
-	 *            the width of the quad
-	 * @param height
-	 *            the height of the quad
+	 * @param sprite the sprite that should be drawn
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
 	 */
 	private void drawSprite(Sprite sprite, int x, int y, int width, int height) {
 		Texture texture = sprite.getTexture();
@@ -465,24 +453,15 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws a textured quad on the screen
 	 * 
-	 * @param texture
-	 *            the texture the quad is using
-	 * @param x
-	 *            the X-coordinate for the quad
-	 * @param y
-	 *            the Y-coordinate for the quad
-	 * @param width
-	 *            the width of the quad
-	 * @param height
-	 *            the height of the quad
-	 * @param spriteULX
-	 *            upper left X sprite value
-	 * @param spriteULY
-	 *            upper left Y sprite value
-	 * @param spriteLRX
-	 *            lower right X sprite value
-	 * @param spriteLRY
-	 *            lower right Y sprite value
+	 * @param texture the texture the quad is using
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
+	 * @param spriteULX upper left X sprite value
+	 * @param spriteULY upper left Y sprite value
+	 * @param spriteLRX lower right X sprite value
+	 * @param spriteLRY lower right Y sprite value
 	 */
 	private void drawTexturedQuad(Texture texture, int x, int y, int width, int height, float spriteULX,
 			float spriteULY, float spriteLRX, float spriteLRY) {
@@ -504,14 +483,10 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws an untextured quad
 	 * 
-	 * @param x
-	 *            the X-coordinate for the quad
-	 * @param y
-	 *            the Y-coordinate for the quad
-	 * @param width
-	 *            the width of the quad
-	 * @param height
-	 *            the height of the quad
+	 * @param x the X-coordinate for the quad
+	 * @param y the Y-coordinate for the quad
+	 * @param width the width of the quad
+	 * @param height the height of the quad
 	 */
 	private void drawUntexturedQuad(int x, int y, int width, int height) {
 		glDisable(GL11.GL_TEXTURE_2D);
@@ -535,8 +510,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Adds an entity to the system
 	 * 
-	 * @param entity
-	 *            the entity that should be added
+	 * @param entity the entity that should be added
 	 */
 	public void addEntity(Entity entity) {
 		if ((entity.getComponentKey() & Engine.CompPlayer) == Engine.CompPlayer) {
@@ -549,8 +523,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Removes an entity from the system
 	 * 
-	 * @param entity
-	 *            the entity that should be removed
+	 * @param entity the entity that should be removed
 	 */
 	public void removeEntity(Entity entity) {
 		entitiesToDraw.remove(entity);
@@ -559,8 +532,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Sets the camera
 	 * 
-	 * @param c
-	 *            the camera
+	 * @param c the camera
 	 */
 	public void setCamera(Camera c) {
 		this.camera = c;
@@ -569,8 +541,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * draws healthbars for all entities that have health
 	 * 
-	 * @param e
-	 *            the entity that should have its healthbar drawn
+	 * @param e the entity that should have its healthbar drawn
 	 */
 	private void drawHealthbar(Entity e) {
 		Position epos = e.getComponent(Position.class); // tilebased positions
@@ -606,8 +577,7 @@ public class RenderingSystem implements ISystem {
 	/**
 	 * Draws the HUD
 	 * 
-	 * @param e
-	 *            the player entity that will have its information printed on the HUD
+	 * @param e the player entity that will have its information printed on the HUD
 	 */
 	private void drawHud(Entity e) {
 
@@ -628,10 +598,10 @@ public class RenderingSystem implements ISystem {
 		} else {
 			race = "Space Human";
 		}
-		
-		if(attributes.spaceClass == Attribute.SpaceClass.SPACE_WARRIOR){
+
+		if (attributes.spaceClass == Attribute.SpaceClass.SPACE_WARRIOR) {
 			spaceClass = "Space Warrior";
-		} else if(attributes.spaceClass == Attribute.SpaceClass.SPACE_ROGUE){
+		} else if (attributes.spaceClass == Attribute.SpaceClass.SPACE_ROGUE) {
 			spaceClass = "Space Rogue";
 		} else {
 			spaceClass = "Space Mage";
@@ -641,9 +611,8 @@ public class RenderingSystem implements ISystem {
 				+ attributes.experience() + "\nStrength: " + attributes.strength() + "\nEndurance: "
 				+ attributes.endurance() + "\nPerception: " + attributes.perception() + "\nIntelligence: "
 				+ attributes.intelligence() + "\nCharisma: " + attributes.charisma() + "\nAgility: "
-				+ attributes.agility() + "\nWeapon information: " + "\nDamage: "
-				+ weapon.getNumberOfDice() + "D6"
-				+ (weapon.getModifier() == 0 ? "" : "+" + weapon.getModifier()) + "\nRange: "
+				+ attributes.agility() + "\nWeapon information: " + "\nDamage: " + weapon.getNumberOfDice()
+				+ "D6" + (weapon.getModifier() == 0 ? "" : "+" + weapon.getModifier()) + "\nRange: "
 				+ weapon.getRange() + "\nTargeting system: " + weapon.getTargetingSystemString();
 
 		// draw hp bar
@@ -691,23 +660,28 @@ public class RenderingSystem implements ISystem {
 		}
 	}
 
+	/**
+	 * Draws all events in the combat log
+	 */
 	private void drawCombatLog() {
-		if (CombatLog.isVisible()) {
+		if (CombatLog.getInstance().isVisible()) {
 
-			Texture combatlogBG = new Sprite("combatlog_bg").getTexture();
-			int sizeX = Engine.screenWidth - menuWidth;
+			Texture combatLog_bg = new Sprite("combatlog_bg").getTexture();
+
+			// It seems like a border is automatically created around a texture so removing pixels for this
+			int sizeX = Engine.screenWidth - menuWidth - 6;
 			int sizeY = combatLogHeight;
 
 			float spriteULX = 0.0f;
 			float spriteULY = 0.0f;
-			float spriteLRX = ((float) (sizeX)) / combatlogBG.getTextureWidth();
-			float spriteLRY = ((float) (sizeY)) / combatlogBG.getTextureHeight();
-			drawTexturedQuad(combatlogBG, 0, 0, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
+			float spriteLRX = ((float) (sizeX)) / combatLog_bg.getTextureWidth();
+			float spriteLRY = ((float) (sizeY)) / combatLog_bg.getTextureHeight();
+			drawTexturedQuad(combatLog_bg, 0, 0, sizeX, sizeY, spriteULX, spriteULY, spriteLRX, spriteLRY);
 
 			StringBuilder sb = new StringBuilder();
 			int x = 20; // hard pixels appear different on different resolutions?
 			int y = combatLogHeight - 30; // hard pixels appear different on different resolutions?
-			List<String> log = CombatLog.getLog();
+			List<String> log = CombatLog.getInstance().getLog();
 			if (log.size() > 4) {
 				log = log.subList(0, 5);
 			}
@@ -721,10 +695,31 @@ public class RenderingSystem implements ISystem {
 	}
 
 	/**
+	 * If debug mode is active the debug log will be drawn on the screen
+	 */
+	private void drawDebugLog(){
+		if (Engine.debug) {
+			StringBuilder sb = new StringBuilder();
+			int x = 20; // hard pixels appear different on different resolutions?
+			int y = DISPLAY_HEIGHT - 30; // hard pixels appear different on different resolutions?
+			List<String> log = CombatLog.getInstance().getDebugLog();
+			if (log.size() > 9) {
+				log = log.subList(0, 10);
+			}
+			for (int i = log.size() - 1; !(i < 0); i--) {
+				sb.append(log.get(i));
+				sb.append("\n");
+			}
+			glColor3f(0.0f, 1.0f, 0.0f);
+			font.drawString(x, y, sb.toString());
+			glColor3f(1.0f, 1.0f, 1.0f);
+		}
+	}
+	
+	/**
 	 * Updates the dungeon being rendered.
 	 * 
-	 * @param dungeon
-	 *            the current dungeon being used
+	 * @param dungeon the current dungeon being used
 	 */
 	public void setDungeon(Dungeon dungeon) {
 		this.dungeon = dungeon;

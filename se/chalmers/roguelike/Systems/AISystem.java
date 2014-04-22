@@ -3,6 +3,7 @@ package se.chalmers.roguelike.Systems;
 import java.util.ArrayList;
 import java.util.Random;
 
+import se.chalmers.roguelike.Engine;
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.InputManager.InputAction;
 import se.chalmers.roguelike.Components.AI;
@@ -12,6 +13,7 @@ import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.World.Dungeon;
 import se.chalmers.roguelike.World.Tile;
+import se.chalmers.roguelike.util.CombatLog;
 import se.chalmers.roguelike.util.ShadowCaster;
 import se.chalmers.roguelike.util.Util;
 import se.chalmers.roguelike.util.pathfinding.AStar;
@@ -49,7 +51,7 @@ public class AISystem implements ISystem {
 			int[][] fov = new ShadowCaster().calculateFOV(world, x, y, dist);
 			ai = e.getComponent(AI.class);
 			targetPlayer(ai, fov, player);
-			//targetPlayer(ai, x, y, dist, player);
+			// targetPlayer(ai, x, y, dist, player);
 			Entity target = ai.getTarget();
 
 			if (target != null) {
@@ -158,12 +160,14 @@ public class AISystem implements ISystem {
 		if (fieldOfView[px][py] == 1) {
 			ai.setTarget(player);
 			if (target != ai.getTarget()) {
-				System.out.println("YOU HAVE BEEN FOUND BY AN ENEMY");
+				if (Engine.debug)
+					CombatLog.getInstance().addToLog("YOU HAVE BEEN FOUND BY AN ENEMY");
 			}
 		} else {
 			ai.setTarget(null);
 			if (target != ai.getTarget()) {
-				System.out.println("THE ENEMY LOST INTEREST IN TRACKING YOU");
+				if (Engine.debug)
+					CombatLog.getInstance().addToLog("THE ENEMY LOST INTEREST IN TRACKING YOU");
 			}
 		}
 	}
@@ -179,7 +183,7 @@ public class AISystem implements ISystem {
 	 * @param player
 	 */
 	private void targetPlayer(AI ai, int x, int y, int dist, Entity player) {
-		//TODO remove if no faults found in previous
+		// TODO remove if no faults found in previous
 		int px = player.getComponent(Position.class).getX();
 		int py = player.getComponent(Position.class).getY();
 		ArrayList<Position> enemyDist = Util.bresenhamLine(x, y, px, py);
@@ -188,12 +192,14 @@ public class AISystem implements ISystem {
 		if (enemyDist.size() <= dist) {
 			ai.setTarget(player);
 			if (target != ai.getTarget()) {
-				System.out.println("YOU HAVE BEEN FOUND BY AN ENEMY");
+				if (Engine.debug)
+					CombatLog.getInstance().addToLog("YOU HAVE BEEN FOUND BY AN ENEMY");
 			}
 		} else {
 			ai.setTarget(null);
 			if (target != ai.getTarget()) {
-				System.out.println("THE ENEMY LOST INTEREST IN TRACKING YOU");
+				if (Engine.debug)
+					CombatLog.getInstance().addToLog("THE ENEMY LOST INTEREST IN TRACKING YOU");
 			}
 		}
 	}

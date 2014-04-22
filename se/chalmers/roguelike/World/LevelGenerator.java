@@ -25,6 +25,7 @@ import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.TurnsLeft;
 import se.chalmers.roguelike.Components.Weapon;
 import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
+import se.chalmers.roguelike.util.CombatLog;
 import se.chalmers.roguelike.util.DelauneyTriangulator;
 import se.chalmers.roguelike.util.Edge;
 import se.chalmers.roguelike.util.KruskalMST;
@@ -77,7 +78,7 @@ public class LevelGenerator {
 	public LevelGenerator(long seed, int baseAmountOfRooms, int maxRoomSize,
 			int enoughRoomSize, int corridorDensity, int stairProbability,
 			String wall, String floor) {
-		System.out.println("Using seed: " + seed);
+		CombatLog.getInstance().addDebugEvent("Using seed: " + seed);
 		this.seed = seed;
 		rand = new Random(seed);
 		amountOfRooms = baseAmountOfRooms;
@@ -93,7 +94,7 @@ public class LevelGenerator {
 	}
 
 	public LevelGenerator(long seed) {
-		System.out.println("Using seed: " + seed);
+		CombatLog.getInstance().addDebugEvent("Using seed: " + seed);
 		this.seed = seed;
 		rand = new Random(seed);
 		amountOfRooms = 10 + rand.nextInt(50);

@@ -19,8 +19,7 @@ import se.chalmers.roguelike.util.Dice;
 import se.chalmers.roguelike.util.Util;
 
 /**
- * This system will handle everything that comes with entities losing and
- * gaining health.
+ * This system will handle everything that comes with entities losing and gaining health.
  * 
  */
 public class CombatSystem implements ISystem {
@@ -53,7 +52,7 @@ public class CombatSystem implements ISystem {
 		// For each entity capable of attacking
 		for (Entity e : entities) {
 			Input input = e.getComponent(Input.class);
-			if(e.getComponent(TurnsLeft.class).getTurnsLeft() <= 0){
+			if (e.getComponent(TurnsLeft.class).getTurnsLeft() <= 0) {
 				input.resetAttackCords();
 				break;
 			}
@@ -63,13 +62,11 @@ public class CombatSystem implements ISystem {
 
 				// calculate the line between the attacker and the
 				// attackcordinates
-				ArrayList<Position> line = Util.calculateLine(
-						e.getComponent(Position.class), attackCords);
+				ArrayList<Position> line = Util.calculateLine(e.getComponent(Position.class), attackCords);
 				// remove the first position in the line, since it is the
 				// character attacking
 				line.remove(0);
-				TargetingSystem targetingSystem = e.getComponent(Weapon.class)
-						.getTargetingSystem();
+				TargetingSystem targetingSystem = e.getComponent(Weapon.class).getTargetingSystem();
 				int range = e.getComponent(Weapon.class).getRange();
 
 				if (targetingSystem == TargetingSystem.LINE) {
@@ -95,9 +92,8 @@ public class CombatSystem implements ISystem {
 					}
 				} else if (targetingSystem == TargetingSystem.CIRCLE) {
 					Position targetPosition = getFirstViableTarget(line, range);
-					ArrayList<Position> possibleTargets = Util.circlePositions(
-							targetPosition, e.getComponent(Weapon.class)
-									.getAoESize());
+					ArrayList<Position> possibleTargets = Util.circlePositions(targetPosition, e
+							.getComponent(Weapon.class).getAoESize());
 					for (Position p : possibleTargets) { // TODO CHANGE
 															// EVERYTHING
 						attack(p, e);
@@ -105,29 +101,26 @@ public class CombatSystem implements ISystem {
 				} else if (targetingSystem == TargetingSystem.BOX && line.size() < range) {
 					ArrayList<Position> possibleTargets = new ArrayList<Position>();
 					int aoeSize = e.getComponent(Weapon.class).getAoESize();
-					
-					//Checks for wall:
+
+					// Checks for wall:
 					for (Position pos : line) {
 						Tile tile = dungeon.getTile(pos.getX(), pos.getY());
-						if (!tile.isWalkable() && tile.blocksLineOfSight()){
+						if (!tile.isWalkable() && tile.blocksLineOfSight()) {
 							// Possibly have the AoE attack hit at the wall then?
 							input.resetAttackCords();
 							return;
 						}
 					}
-					
+
 					// blow adds all positions around the center with a radius
 					// of the wepons getaoesize
-					for (int x = attackCords.getX() - aoeSize; x <= attackCords
-							.getX() + aoeSize; x++) {
-						for (int y = attackCords.getY() - aoeSize; y <= attackCords
-								.getY() + aoeSize; y++) {
+					for (int x = attackCords.getX() - aoeSize; x <= attackCords.getX() + aoeSize; x++) {
+						for (int y = attackCords.getY() - aoeSize; y <= attackCords.getY() + aoeSize; y++) {
 							possibleTargets.add(new Position(x, y));
 						}
 					}
 					for (Position p : possibleTargets) {
-						if (p.getX() >= 0 && p.getY() >= 0
-								&& p.getX() <= dungeon1.getWorldWidth()
+						if (p.getX() >= 0 && p.getY() >= 0 && p.getX() <= dungeon1.getWorldWidth()
 								&& p.getY() <= dungeon1.getWorldHeight()
 								&& dungeon1.getTile(p.getX(), p.getY()) != null)
 							attack(p, e);
@@ -151,18 +144,18 @@ public class CombatSystem implements ISystem {
 		// Kills all enemies with 0 hp.
 		for (Entity e : todie) {
 
-			// This checks if the enemy killed was a boss; if it was, the dungeon 
+			// This checks if the enemy killed was a boss; if it was, the dungeon
 			// should know that it has been killed
 			if (e.getComponent(MobType.class).getType() == MobType.Type.BOSS) {
 				dungeon.setPlotAccomplished(true);
 			}
-			CombatLog.addToLog(e.toString() + " died.");
-			if (e.containsComponent(Engine.CompPlayer)){
+			CombatLog.getInstance().addToLog(e.toString() + " died.");
+			if (e.containsComponent(Engine.CompPlayer)) {
 				engine.gameOver();
 				System.out.println("Game over, best wishes from the combat system");
 			}
-			dungeon.getTile(e.getComponent(Position.class).getX(),
-					e.getComponent(Position.class).getY()).removeEntity(e);
+			dungeon.getTile(e.getComponent(Position.class).getX(), e.getComponent(Position.class).getY())
+					.removeEntity(e);
 			engine.removeEntity(e);
 		}
 		todie.clear();
@@ -214,8 +207,11 @@ public class CombatSystem implements ISystem {
 		int damage = -1;
 		if (target != null) {
 			targetStats = target.getComponent(Attribute.class);
-			int attackroll = Dice.roll(3, 10)+ attackerStats.getMod(attackerStats.perception());
-			System.out.println("Attackroll: " + attackroll	+ "| Defender Agility: " + targetStats.agility());
+			int attackroll = Dice.roll(3, 10) + attackerStats.getMod(attackerStats.perception());
+			if (Engine.debug) {
+				CombatLog.getInstance().addToLog(
+						"Attackroll: " + attackroll + "| Defender Agility: " + targetStats.agility());
+			}
 			if (attackroll >= targetStats.agility()) {
 				damage = weapon.getDamage();
 				if (damage >= 0) {
@@ -224,12 +220,11 @@ public class CombatSystem implements ISystem {
 						attackerStats.increaseExperience(targetStats.xpyield());
 					}
 				}
-				CombatLog.addToLog(attacker + " attacks " + target + " for "
-				+ damage + " damage.");
-				System.out.println(attacker + " attacks " + target + " for "
-						+ damage + " damage.");
+				CombatLog.getInstance().addToLog(
+						attacker + " attacks " + target + " for " + damage + " damage.");
+				System.out.println(attacker + " attacks " + target + " for " + damage + " damage.");
 			} else {
-				CombatLog.addToLog(attacker + " missed.");
+				CombatLog.getInstance().addToLog(attacker + " missed.");
 				System.out.println(attacker + " missed.");
 			}
 		}
@@ -237,14 +232,11 @@ public class CombatSystem implements ISystem {
 	}
 
 	/**
-	 * an entity with a Health component heals for regen amount of HP or get
-	 * fullHP if the current health + regen is greater than the components
-	 * fullHP
+	 * an entity with a Health component heals for regen amount of HP or get fullHP if the current health +
+	 * regen is greater than the components fullHP
 	 * 
-	 * @param e
-	 *            the effected entity
-	 * @param regen
-	 *            amount of health regenerated
+	 * @param e the effected entity
+	 * @param regen amount of health regenerated
 	 */
 	public void regenerate(Entity e, int regen) {
 		Health health = e.getComponent(Health.class);
@@ -278,5 +270,4 @@ public class CombatSystem implements ISystem {
 		}
 		return targetpos;
 	}
-
 }

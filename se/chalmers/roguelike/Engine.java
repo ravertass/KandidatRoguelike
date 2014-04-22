@@ -110,6 +110,7 @@ public class Engine {
 	private MobSpriteSystem mobSpriteSys;
 	private ItemSystem itemSys;
 	private StatusEffectSystem statusEffectSys;
+	private CombatLog log;
 
 	public enum GameState {
 		DUNGEON, MAIN_MENU, OVERWORLD, GAMEOVER
@@ -130,7 +131,9 @@ public class Engine {
 		renderingSys = new RenderingSystem();
 		menuSys = new MenuSystem(this);
 		inputManager = new InputManager(this); // required to start the game
+		log = CombatLog.getInstance();
 		inputManager.addObserver(menuSys);
+		inputManager.addObserver(log);
 	}
 
 	/**
@@ -296,7 +299,7 @@ public class Engine {
 					aiSystem.update(dungeon, player);
 
 					if (Engine.debug) {
-						System.out.println("------------NEW TURN------------");
+						log.addToLog("------------NEW TURN------------");
 					}
 				}
 
@@ -362,12 +365,14 @@ public class Engine {
 			inputManager.addObserver(overworldSys);
 			inputManager.addObserver(interactionSys);
 			inputManager.addObserver(inventorySys);
+			inputManager.addObserver(log);
 		} else {
 			inputManager.removeObserver(playerInputSys);
 			inputManager.removeObserver(highlightSys);
 			inputManager.removeObserver(overworldSys);
 			inputManager.removeObserver(interactionSys);
 			inputManager.removeObserver(inventorySys);
+			inputManager.removeObserver(log);
 		}
 	}
 
@@ -412,9 +417,11 @@ public class Engine {
 		}
 		if (gameState == GameState.DUNGEON && dungeon != null) {
 			dungeon.unregister(this);
+			log.addDebugEvent("Unregister of dungeon done");
 			System.out.println("Unregister of dungeon done");
 		} else if (gameState == GameState.MAIN_MENU) {
 			menuSys.unregister();
+			log.addDebugEvent("Unregister of mainmenu done");
 			System.out.println("Unregister of mainmenu done");
 		}
 		if (overworldSys != null) {
@@ -447,7 +454,7 @@ public class Engine {
 		handleObservers(true);
 		setCamera();
 		player = EntityCreator.createPlayer(spaceClass, race);
-		CombatLog.reset();
+		log.reset();
 		loadOverworld();
 		overworldSys.addEntity(player);
 		//addEntity(player);
