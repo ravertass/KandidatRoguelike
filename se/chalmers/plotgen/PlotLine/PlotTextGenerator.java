@@ -90,7 +90,7 @@ public class PlotTextGenerator {
 			speaker = nodeList.get(i).getAction().getObjectActor();
 		}
 		// TODO: This text should be more varied
-		String plotText = mainCharacter + " meet " + speaker + ". \n ";
+		String plotText = mainCharacter + " met " + speaker + ". \n ";
 		
 		String plotThing = "";
 		String otherThing = "";

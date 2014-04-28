@@ -453,11 +453,10 @@ public class Engine {
 		registerNewTurnSystems(); // Might be buggy with some changes were observers need to be changed
 		handleObservers(true);
 		setCamera();
-		player = EntityCreator.createPlayer(spaceClass, race);
+		player = EntityCreator.createPlayer(spaceClass, race, plotEngine.getMainActor());
 		log.reset();
 		loadOverworld();
 		overworldSys.addEntity(player);
-		//addEntity(player);
 	}
 	
 	/**

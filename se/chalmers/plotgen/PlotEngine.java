@@ -2,16 +2,12 @@ package se.chalmers.plotgen;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Set;
 
 import se.chalmers.plotgen.NameGen.NameGenerator;
 import se.chalmers.plotgen.PlotData.Action;
 import se.chalmers.plotgen.PlotData.Actor;
 import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.plotgen.PlotData.Scene;
-import se.chalmers.plotgen.PlotGraph.PlotEdge;
-import se.chalmers.plotgen.PlotGraph.PlotGraph;
-import se.chalmers.plotgen.PlotGraph.PlotVertex;
 import se.chalmers.plotgen.PlotLine.PlotLine;
 import se.chalmers.plotgen.PlotLine.PlotNode;
 import se.chalmers.plotgen.PlotLine.PlotTextGenerator;
@@ -57,11 +53,9 @@ public class PlotEngine {
 
 		generatePlot(random);
 		plotLine = new PlotTextGenerator(plotLine, actors.get(actors.size()-1)).generatePlotText();
-		
-		//TODO This is here since the first action now is NULL
-		// When the first node actually holds something meaningful, this will not be here
-		//takeAction();
-		
+	}
+	
+	public void printPlot() {
 		System.out.println(plotLine);
 	}
 
@@ -99,7 +93,7 @@ public class PlotEngine {
 		int noOfActors = random.nextInt(3) + 3;
 		
 		for (int i = 0; i < noOfActors; i++) {
-			Actor actor = new Actor(nameGen.generateName());
+			Actor actor = new Actor(nameGen.generateName(), random.nextInt(6));
 			actors.add(actor);
 		}
 	}
@@ -118,7 +112,7 @@ public class PlotEngine {
 		int noOfProps = random.nextInt(6) + 5;
 		
 		for (int i = 0; i < noOfProps; i++) {
-			Prop prop = new Prop(nameGen.generateName());
+			Prop prop = new Prop(nameGen.generateName(), random.nextInt(5));
 			props.add(prop);
 		}
 	}
@@ -199,10 +193,14 @@ public class PlotEngine {
 			seed = new Random().nextLong();
 		}
 
-		new PlotEngine(seed);
+		new PlotEngine(seed).printPlot();
 	}
 
 	public PlotEngine(long seed) {
 		run(seed);
+	}
+
+	public Actor getMainActor() {
+		return actors.get(actors.size()-1);
 	}
 }

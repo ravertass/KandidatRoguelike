@@ -17,6 +17,7 @@ public class Scene extends PlotThing {
 
 	private HashSet<Actor> snapActors;
 	private HashSet<Prop> snapProps;
+	
 	private int type;
 
 	/**

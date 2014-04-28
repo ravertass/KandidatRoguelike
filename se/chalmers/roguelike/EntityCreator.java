@@ -2,6 +2,8 @@ package se.chalmers.roguelike;
 
 import java.util.ArrayList;
 
+import se.chalmers.plotgen.PlotData.Actor;
+import se.chalmers.plotgen.PlotData.Prop;
 import se.chalmers.roguelike.Components.AI;
 import se.chalmers.roguelike.Components.Attribute;
 import se.chalmers.roguelike.Components.Attribute.SpaceClass;
@@ -21,6 +23,8 @@ import se.chalmers.roguelike.Components.Inventory;
 import se.chalmers.roguelike.Components.MobType;
 import se.chalmers.roguelike.Components.Player;
 import se.chalmers.roguelike.Components.PlotAction;
+import se.chalmers.roguelike.Components.PlotLoot;
+import se.chalmers.roguelike.Components.Pocketable;
 import se.chalmers.roguelike.Components.PopupText;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Seed;
@@ -39,9 +43,13 @@ import se.chalmers.roguelike.World.Dungeon;
  * of components that should be added
  */
 public class EntityCreator {
+	
+	private static final String[] bossSprites = { "ginger_boy", "ginger_girl", "smurf", "woody", "megaman",
+	"devilmarine" };
+	private static final String[] lootSprites = { "blue", "green", "purple", "red", "yellow" };
 
 	private Engine engine;
-	
+
 	/**
 	 * Spawns a new entity creator instance
 	 * @param engine the game engine in use
@@ -54,9 +62,10 @@ public class EntityCreator {
 	 * Creates a player
 	 * @param spaceClass the class of the player
 	 * @param spaceRace the race of the player
+	 * @param actor 
 	 * @return the entity that represents a player
 	 */
-	public static Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace) {
+	public static Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace, Actor actor) {
 		Entity player = new Entity("Player");
 		player.add(new MobType(MobType.Type.PLAYER));
 		player.add(new Health(50));
@@ -71,11 +80,58 @@ public class EntityCreator {
 		ArrayList<Entity> inv = new ArrayList<Entity>();
 		inv.add(ItemSystem.getRandomPotion());
 		inv.add(ItemSystem.getRandomPotion());
+		for (Prop prop : actor.getProps()) {
+			inv.add(createPlotLoot(prop, 0, 0));
+		}
+		
 		player.add(new StatusEffects());
 		player.add(new Inventory(inv));
 		player.add(new Gold(0));
 		player.add(new BlocksWalking(true));
 		return player;
+	}
+	
+	public static Entity createPlotLoot(Prop prop, int x, int y) {
+		String name = "(Loot) " + prop;
+		Entity plotLoot = new Entity(name);
+		String spritePrefix = "keycard_";
+		String sprite = spritePrefix + lootSprites[prop.getType()];
+		plotLoot.add(new Position(x, y));
+		plotLoot.add(new Sprite(sprite));
+		plotLoot.add(new Pocketable());
+		plotLoot.add(new PlotLoot(prop));
+		
+		return plotLoot;
+	}
+	
+	public static Entity createBoss(Actor actor, int x, int y) {
+		String name = "(Boss) " + actor.toString();
+		Entity boss = new Entity(name);
+
+		String spritePrefix = "mobs/mob_";
+		String sprite = spritePrefix + bossSprites[actor.getType()];
+		boss.add(new MobType(MobType.Type.BOSS));
+		boss.add(new Health(20));
+		boss.add(new TurnsLeft(1));
+		boss.add(new Input());
+		boss.add(new Sprite(sprite));
+		ArrayList<Entity> inv = new ArrayList<Entity>();
+		//for (Prop prop : actor.getProps()) {
+//			inv.add(createPlotLoot(prop, 0, 0));
+		//}
+		boss.add(new Inventory(inv));
+
+		boss.add(new Direction());
+		boss.add(new AI());
+		Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE,
+				SpaceRace.SPACE_DWARF, 1, 50);
+		boss.add(new BlocksWalking(true));
+		boss.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); // hardcoded equals bad
+		boss.add(new FieldOfView(8)); // hardcoded equals bad
+		boss.add(attribute);
+		boss.add(new Position(x, y));
+		
+		return boss;
 	}
 
 	/**
@@ -294,4 +350,5 @@ public class EntityCreator {
 		spaceShip.add(new Position(x, y));
 		return spaceShip;
 	}
+
 }
