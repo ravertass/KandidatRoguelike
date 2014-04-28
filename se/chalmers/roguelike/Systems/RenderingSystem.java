@@ -631,7 +631,9 @@ public class RenderingSystem implements ISystem {
 			Position position = e.getComponent(Position.class);
 			String debug = "Player position: " + position.getX() + "x" + position.getY() + "\nSeed: "
 					+ Engine.seed;
-			font.drawString(0, 20, debug + "\n");
+			glColor3f(0.0f, 1.0f, 0.0f);
+			font.drawString(0, 140, debug + "\n");
+			glColor3f(1.0f, 1.0f, 1.0f);
 		}
 		// draw inventory
 		Inventory inv = e.getComponent(Inventory.class);
