@@ -114,9 +114,8 @@ public class InventorySystem implements ISystem, Observer {
 				// x and y are the "tilecords" in the inventory
 				int x = (Mouse.getX() - (Engine.screenWidth - 200 + 4))/(Engine.spriteSize*2);
 				int y = (Mouse.getY() - (20 + Engine.spriteSize*2*6)) / (Engine.spriteSize*2);
-				System.out.println(x+y*6);
 				if((x+y*6) + 1 <= player.getComponent(Inventory.class).getSize()) {
-					Entity item = player.getComponent(Inventory.class).getItems().get(x + y * 6);
+					Entity item = player.getComponent(Inventory.class).getItems().get(x - y * 6);
 					if(item != null && item.containsComponent(Engine.CompUsable)) {
 						itemSystem.useItem(player, item);
 						player.getComponent(Inventory.class).deleteItem(item);
