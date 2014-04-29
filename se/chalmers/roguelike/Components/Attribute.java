@@ -26,6 +26,10 @@ public class Attribute implements IComponent {
 	public enum SpaceRace {
 		SPACE_ALIEN, SPACE_HUMAN, SPACE_DWARF // TODO Moar to be added, just dummy for now
 	}
+	
+	public static enum Stat {
+		STRENGTH, ENDURANCE, PERCEPTION, INTELLIGENCE, CHARISMA, AGILLITY
+	}
 
 	public Attribute(String name, SpaceClass spaceClass, SpaceRace spaceRace, int level, int xpyield) {
 		this.name = name;
