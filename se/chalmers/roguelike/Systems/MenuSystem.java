@@ -107,7 +107,22 @@ public class MenuSystem implements ISystem, Observer {
 				tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button");
 			}
 		} else if (state == MenuState.NEWGAME) {
-			// Todo: Do something
+			if (newGameRect != null && newGameRect.contains(mouseX, mouseY)) {
+				newGameButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
+			} else if (newGameRect != null && !newGameRect.contains(mouseX, mouseY)) {
+				newGameButton.getComponent(Sprite.class).setSpritesheet("play_button");
+			}
+		} else if (state == MenuState.GAMEOVER) {
+			if (gameOverNewGameRect != null && gameOverNewGameRect.contains(mouseX, mouseY)) {
+				gameOverNewGame.getComponent(Sprite.class).setSpritesheet("play_button_selected");
+			} else if (gameOverNewGameRect != null && !gameOverNewGameRect.contains(mouseX, mouseY)) {
+				gameOverNewGame.getComponent(Sprite.class).setSpritesheet("play_button");
+			} 
+			if (gameOverExitRect != null && gameOverExitRect.contains(mouseX, mouseY)) {
+				gameOverExit.getComponent(Sprite.class).setSpritesheet("exit_button_selected");
+			} else if (gameOverExitRect != null && !gameOverExitRect.contains(mouseX, mouseY)) {
+				gameOverExit.getComponent(Sprite.class).setSpritesheet("exit_button");
+			} 
 		}
 	}
 

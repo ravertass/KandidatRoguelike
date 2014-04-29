@@ -34,6 +34,10 @@ import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
 
 public class Dungeon {
 
+	private static final String[] bossSprites = { "ginger_boy", "ginger_girl", "smurf", "woody", "megaman",
+			"devilmarine" };
+	private static final String[] lootSprites = { "blue", "green", "purple", "red", "yellow" };
+	
 	private int worldWidth;
 	private int worldHeight;
 	private Position startpos;
@@ -237,45 +241,17 @@ public class Dungeon {
 		plotThingY = y;
 	}
 
-	private void addPlotThing(ArrayList<IComponent> components, String entityName) {
-		if (nextDungeonLevel == null) {
-			components.add(new Position(plotThingX, plotThingY));
-			Entity plotThing = EntityCreator.createEntity(entityName, components);
-			addEntity(plotThingX, plotThingY, plotThing);
-		} else {
-			nextDungeonLevel.addPlotThing(components, entityName);
-		}
-	}
-
 	/**
 	 * This is the method with which you add a boss to the dungeon.
 	 * 
 	 * @param plotThing
 	 */
-	public void addBoss(Actor actor) {
-		ArrayList<IComponent> components = new ArrayList<IComponent>();
-
-		String name = "(Boss)" + actor.toString();
-		String sprite = "mobs/mob_smurf";
-		components.add(new MobType(MobType.Type.BOSS));
-		components.add(new Health(20));
-		components.add(new TurnsLeft(1));
-		components.add(new Input());
-		components.add(new Sprite(sprite));
-		components.add(new Inventory()); // TODO add items that the
-											// enemy is carrying here,
-											// arraylist<entity> inside
-											// constructor
-
-		components.add(new Direction());
-		components.add(new AI());
-		Attribute attribute = new Attribute(name, SpaceClass.SPACE_ROGUE,
-				SpaceRace.SPACE_DWARF, 1, 50);
-		components.add(new BlocksWalking(true));
-		components.add(new Weapon(2, 6, 0, TargetingSystem.SINGLE_TARGET, 1, 1)); // hardcoded equals bad
-		components.add(new FieldOfView(8)); // hardcoded equals bad
-		components.add(attribute);
-		addPlotThing(components, name);
+	public void addBoss(Actor actor) {		
+		if (nextDungeonLevel == null) {
+			addEntity(plotThingX, plotThingY, EntityCreator.createBoss(actor, plotThingX, plotThingY));
+		} else {
+			nextDungeonLevel.addBoss(actor);
+		}
 	}
 
 	/**
@@ -293,13 +269,10 @@ public class Dungeon {
 	}
 
 	public void addPlotLoot(Prop objectProp) {
-		ArrayList<IComponent> components = new ArrayList<IComponent>();
-
-		String name = "(Loot) " + objectProp;
-		String sprite = "keycard_blue";
-		components.add(new Sprite(sprite));
-		components.add(new Pocketable());
-		components.add(new PlotLoot(objectProp));
-		addPlotThing(components, name);
+		if (nextDungeonLevel == null) {
+			addEntity(plotThingX, plotThingY, EntityCreator.createPlotLoot(objectProp, plotThingX, plotThingY));
+		} else {
+			nextDungeonLevel.addPlotLoot(objectProp);
+		}
 	}
 }

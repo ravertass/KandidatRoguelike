@@ -22,9 +22,12 @@ public class Actor extends PlotThing implements IPlotBody {
 	private Scene snapLocation;
 	private HashSet<Prop> snapProps;
 	private boolean snapAlive;
+	
+	private int type;
 
-	public Actor(String name) {
+	public Actor(String name, int type) {
 		super(name);
+		this.type = type;
 		location = null;
 		props = new HashSet<Prop>();
 		alive = true;
@@ -32,6 +35,14 @@ public class Actor extends PlotThing implements IPlotBody {
 		snapLocation = null;
 		snapProps = null;
 		snapAlive = true;
+	}
+	
+	public Actor(String name) {
+		this(name, 0);
+	}
+	
+	public int getType() {
+		return type;
 	}
 
 	public void saveSnapShot() {
