@@ -325,7 +325,21 @@ public class CellularLevelGenerator {
 		ArrayList<IComponent> components = new ArrayList<IComponent>();
 		NameGenerator ng = new NameGenerator(3, seed);
 		String name = ng.generateName();
-		String sprite = "mobs/mob_bat";
+		
+		String sprite = null;
+		int whichSprite = rand.nextInt(5);
+		if (whichSprite == 0) {
+			sprite = "mobs/mob_bat";
+		} else if (whichSprite == 1) {
+			sprite = "mobs/mob_bear";
+		} else if (whichSprite == 2) {
+			sprite = "mobs/mob_slime";
+		} else if (whichSprite == 3) {
+			sprite = "mobs/mob_silly_ghost";
+		} else if (whichSprite == 4) {
+			sprite = "mobs/mob_snake";
+		}
+		
 		components.add(new MobType(MobType.Type.GRUNT));
 		components.add(new Health(10));
 		components.add(new TurnsLeft(1));

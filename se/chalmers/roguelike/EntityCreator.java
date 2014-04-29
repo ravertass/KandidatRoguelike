@@ -66,7 +66,7 @@ public class EntityCreator {
 	 * @return the entity that represents a player
 	 */
 	public static Entity createPlayer(SpaceClass spaceClass, SpaceRace spaceRace, Actor actor) {
-		Entity player = new Entity("Player");
+		Entity player = new Entity("(Player) " + actor.toString());
 		player.add(new MobType(MobType.Type.PLAYER));
 		player.add(new Health(50));
 		player.add(new TurnsLeft(1));
@@ -75,7 +75,7 @@ public class EntityCreator {
 		player.add(new Position(44, 44));
 		player.add(new Direction());
 		player.add(new Player());
-		player.add(new Attribute("Player", spaceClass, spaceRace, 1, 50));
+		player.add(new Attribute(actor.toString(), spaceClass, spaceRace, 1, 50));
 		player.add(new Weapon(2, 6, 0, TargetingSystem.BOX, 1, 10));
 		ArrayList<Entity> inv = new ArrayList<Entity>();
 		inv.add(ItemSystem.getRandomPotion());

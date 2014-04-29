@@ -33,10 +33,6 @@ import se.chalmers.roguelike.Components.Weapon.TargetingSystem;
  */
 
 public class Dungeon {
-
-	private static final String[] bossSprites = { "ginger_boy", "ginger_girl", "smurf", "woody", "megaman",
-			"devilmarine" };
-	private static final String[] lootSprites = { "blue", "green", "purple", "red", "yellow" };
 	
 	private int worldWidth;
 	private int worldHeight;
