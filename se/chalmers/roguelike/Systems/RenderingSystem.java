@@ -278,8 +278,8 @@ public class RenderingSystem implements ISystem {
 				} else if (entity.getComponent(PopupText.class) != null) {
 					drawNonTile(entity.getComponent(Sprite.class), entity.getComponent(Position.class));
 					ArrayList<String> popupText = entity.getComponent(PopupText.class).getText();
-					Position drawPos = new Position(entity.getComponent(Position.class).getX(), entity
-							.getComponent(Position.class).getY() + 300 - font.getHeight());
+					Position drawPos = new Position(entity.getComponent(Position.class).getX()+20, entity
+							.getComponent(Position.class).getY() + 338 - font.getHeight() - 20);
 					for (String s : popupText) {
 						font.drawString(drawPos.getX(), drawPos.getY(), s);
 						drawPos.setY(drawPos.getY() - font.getHeight());

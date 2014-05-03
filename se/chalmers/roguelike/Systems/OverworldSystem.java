@@ -369,9 +369,9 @@ public class OverworldSystem implements ISystem, Observer {
 
 		popupActive = true;
 		popupButton = engine.entityCreator.createButton(Engine.screenHeight / 2, Engine.screenWidth / 3,
-				"play_button_selected", 242, 64);
+				"ok_button", 242, 64);
 		engine.addEntity(popupButton);
-		popupRect = new Rectangle(Engine.screenHeight / 2, Engine.screenWidth / 3, 242, 64);
+		popupRect = new Rectangle((Engine.screenHeight / 2), (Engine.screenWidth / 3), 242, 64);
 		Font font = new Font("Times New Roman", Font.BOLD, 14);
 		TrueTypeFont ttf = new TrueTypeFont(font, false);
 		StringBuilder sb = new StringBuilder();
@@ -391,7 +391,7 @@ public class OverworldSystem implements ISystem, Observer {
 		sequencedString.add(sb.toString());
 		popupText = sequencedString;
 		popup = engine.entityCreator.createPopup(popupText, Engine.screenWidth / 2 - 250,
-				Engine.screenHeight / 2 - 150, 500, 300);
+				Engine.screenHeight / 2 - 150, 540, 340);
 		engine.addEntity(popup);
 	}
 }
