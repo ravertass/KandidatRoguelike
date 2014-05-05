@@ -27,7 +27,7 @@ public class MenuSystem implements ISystem, Observer {
 	private Rectangle playRect, optionsRect, exitRect, loadRect, tutorialPlayRect, newGameRect,
 			gameOverNewGameRect, gameOverExitRect, race1Rect, race2Rect, race3Rect, class1Rect, class2Rect,
 			class3Rect;
-	private Entity playButton, optionsButton, exitButton, loadButton, tutorialPlayButton, seedInfo, seedBox,
+	private Entity playButton, optionsButton, exitButton, tutorialButton, tutorialPlayButton, seedInfo, seedBox,
 			newGameButton, tutorial, gameOverLogo, gameOverNewGame, gameOverExit, race1, race2, race3,
 			raceText, classText, class1, class2, class3;
 
@@ -61,10 +61,10 @@ public class MenuSystem implements ISystem, Observer {
 		engine.addEntity(playButton);
 		playRect = new Rectangle(Engine.screenWidth / 2 - 141, Engine.screenHeight / 2 - 30 + 120, 242, 60);
 
-		loadButton = engine.entityCreator.createButton(Engine.screenWidth / 2 - 141,
-				Engine.screenHeight / 2 - 30 + 60, "load_button", 242, 62);
-		activeButtons.add(loadButton);
-		engine.addEntity(loadButton);
+		tutorialButton = engine.entityCreator.createButton(Engine.screenWidth / 2 - 141,
+				Engine.screenHeight / 2 - 30 + 60, "tutorial_button", 242, 62);
+		activeButtons.add(tutorialButton);
+		engine.addEntity(tutorialButton);
 		loadRect = new Rectangle(Engine.screenWidth / 2 - 141, Engine.screenHeight / 2 - 30 + 60, 242, 60);
 
 		optionsButton = engine.entityCreator.createButton(Engine.screenWidth / 2 - 141,
@@ -94,7 +94,7 @@ public class MenuSystem implements ISystem, Observer {
 			if (playRect != null && playRect.contains(mouseX, mouseY)) {
 				playButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
 			} else if (loadRect != null && loadRect.contains(mouseX, mouseY)) {
-				loadButton.getComponent(Sprite.class).setSpritesheet("load_button_selected");
+				tutorialButton.getComponent(Sprite.class).setSpritesheet("tutorial_button_selected");
 			} else if (optionsRect != null && optionsRect.contains(mouseX, mouseY)) {
 				optionsButton.getComponent(Sprite.class).setSpritesheet("options_button_selected");
 			} else if (exitRect != null && exitRect.contains(mouseX, mouseY)) {
@@ -102,9 +102,9 @@ public class MenuSystem implements ISystem, Observer {
 			}
 		} else if (state == MenuState.TUTORIAL) {
 			if (tutorialPlayRect != null && tutorialPlayRect.contains(mouseX, mouseY)) {
-				tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button_selected");
+				tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("back_button_selected");
 			} else if (tutorialPlayRect != null && !tutorialPlayRect.contains(mouseX, mouseY)) {
-				tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("play_button");
+				tutorialPlayButton.getComponent(Sprite.class).setSpritesheet("back_button");
 			}
 		} else if (state == MenuState.NEWGAME) {
 			if (newGameRect != null && newGameRect.contains(mouseX, mouseY)) {
@@ -277,7 +277,7 @@ public class MenuSystem implements ISystem, Observer {
 	 */
 	private void resetButtonTextures() {
 		playButton.getComponent(Sprite.class).setSpritesheet("play_button");
-		loadButton.getComponent(Sprite.class).setSpritesheet("load_button");
+		tutorialButton.getComponent(Sprite.class).setSpritesheet("tutorial_button");
 		optionsButton.getComponent(Sprite.class).setSpritesheet("options_button");
 		exitButton.getComponent(Sprite.class).setSpritesheet("exit_button");
 	}
@@ -297,7 +297,7 @@ public class MenuSystem implements ISystem, Observer {
 		int y = 20;
 
 		if (tutorialPlayButton == null) {
-			tutorialPlayButton = engine.entityCreator.createButton(x, y, "play_button", width, height);
+			tutorialPlayButton = engine.entityCreator.createButton(x, y, "back_button", width, height);
 			tutorialPlayRect = new Rectangle(x, y, width, height);
 		}
 
@@ -490,11 +490,11 @@ public class MenuSystem implements ISystem, Observer {
 	private void mainMenu() {
 		unregister();
 		engine.addEntity(playButton);
-		engine.addEntity(loadButton);
+		engine.addEntity(tutorialButton);
 		engine.addEntity(optionsButton);
 		engine.addEntity(exitButton);
 		activeButtons.add(playButton);
-		activeButtons.add(loadButton);
+		activeButtons.add(tutorialButton);
 		activeButtons.add(optionsButton);
 		activeButtons.add(exitButton);
 		state = MenuState.MAINMENU;

@@ -606,7 +606,7 @@ public class RenderingSystem implements ISystem {
 		} else {
 			spaceClass = "Space Mage";
 		}
-		String info = "Name: " + attributes.getName() + "\nRace:" + race + "\nClass: " + spaceClass
+		String info = "Name: " + attributes.getName() + "\nRace: " + race + "\nClass: " + spaceClass
 				+ "\nGold: " + gold.getGold() + "\nLevel: " + attributes.getLevel() + "\nXP: "
 				+ attributes.experience() + "\nStrength: " + attributes.strength() + "\nEndurance: "
 				+ attributes.endurance() + "\nPerception: " + attributes.perception() + "\nIntelligence: "

@@ -9,7 +9,6 @@ import java.util.Locale;
 import org.lwjgl.input.Mouse;
 
 import se.chalmers.roguelike.Engine;
-import se.chalmers.roguelike.InputManager;
 import se.chalmers.roguelike.InputManager.InputAction;
 
 /**
