@@ -14,6 +14,7 @@ import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.StatusEffects;
 import se.chalmers.roguelike.Components.Usable;
 import se.chalmers.roguelike.Systems.StatusEffectSystem.StatusEffect;
+import se.chalmers.roguelike.util.CombatLog;
 import se.chalmers.roguelike.util.Pair;
 
 public class ItemSystem implements ISystem { // maybe this shouldnt be a system
@@ -99,15 +100,19 @@ public class ItemSystem implements ISystem { // maybe this shouldnt be a system
 			} else if (ue == UseEffect.POISON && target.getComponent(StatusEffects.class) != null) {
 				target.getComponent(StatusEffects.class).addEffect(StatusEffect.POISONED, 10); //TODO MAGI :D
 				System.out.println("You feel sick");
+				CombatLog.getInstance().addToLog("You feel sick");
 			} else if(ue == UseEffect.BURN && target.getComponent(StatusEffects.class) != null) {
 				target.getComponent(StatusEffects.class).addEffect(StatusEffect.BURNING, 5); //TODO magic siffror
 				System.out.println("You burst into flames!");
+				CombatLog.getInstance().addToLog("You burst into flames!");
 			} else if(ue == UseEffect.CURE_POISON && target.getComponent(StatusEffects.class) != null) {
 				target.getComponent(StatusEffects.class).removeEffect(StatusEffect.POISONED);
 				System.out.println("You feel healthy");
+				CombatLog.getInstance().addToLog("You feel healthy");
 			} else if(ue == UseEffect.PARALYZE && target.getComponent(StatusEffects.class) != null) {
 				target.getComponent(StatusEffects.class).addEffect(StatusEffect.PARALYZED, 5); //TODO magic nuuuumber
 				System.out.println("Your body freezes");
+				CombatLog.getInstance().addToLog("Your body freezes");
 			}
 		}
 
