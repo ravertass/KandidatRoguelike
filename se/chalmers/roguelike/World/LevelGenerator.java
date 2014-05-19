@@ -458,9 +458,10 @@ public class LevelGenerator {
 				int y = position.getY() + Math.abs(yMinDisplacement);
 
 				grid[y][x] = '.';
-				if (rand.nextInt(100) + 1 <= 10) {
-					grid[y][x] = 'T';
-				}
+				// Generate traps
+//				if (rand.nextInt(100) + 1 <= 10) {
+//					grid[y][x] = 'T';
+//				}
 				//
 				for (Rectangle rectangle : rooms) {
 					if (rectangle.contains(position.getX(), position.getY())

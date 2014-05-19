@@ -36,7 +36,7 @@ public class Engine {
 	public static int screenWidth = 1024;
 	public static int hudWidth = 200;
 	// Debug flag:
-	public static boolean debug = true;
+	public static boolean debug = false;
 
 	// Constants: Components
 	private static long componentID = 0;
