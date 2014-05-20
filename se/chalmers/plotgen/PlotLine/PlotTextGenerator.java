@@ -72,11 +72,22 @@ public class PlotTextGenerator {
 		} else if (type == Action.ActionType.MEET) {
 			plotText = meetAction(i);
 		} else if (type == Action.ActionType.FIRST) {
-			//TODO: The first node should hold meaningful text
-			plotText = "This is a story";
+			plotText = "Welcome to Astrogue! We find ourselves in the outermost corners of space. " 
+					+ mainCharacter.toString() + " sets out on an adventure to ";
+			if (finalBoss == null) {
+				plotText += "find the legendary " + finalLoot.toString() + ". ";
+			} else {
+				plotText += "defeat the evil " + finalBoss.toString() + " and restore peace in the galaxy. ";
+			}
+			Action nextAction = nodeList.get(i+1).getAction();
+			if (nextAction.getActionType() == Action.ActionType.VISIT) {
+				plotText += mainCharacter.toString() + " first sets out for the " + nextAction.getObjectScene() 
+						+ " star system.";
+			}
+			
 		} else if (type == Action.ActionType.LAST) {
 			//TODO: The last node should hold meaningful text
-			plotText = "That was a story, the end!";
+			plotText = "Thank you for playing Astrogue!";
 		}
 
 		return plotText;
@@ -167,14 +178,20 @@ public class PlotTextGenerator {
 			}
 			
 			if (nextNextAction.getActionType() == Action.ActionType.MEET) {
-				if (nextNextAction.getObjectActor() == speaker) {
+				Actor speaker2;
+				if (nextNextAction.getObjectActor() == mainCharacter) {
+					speaker2 = nextNextAction.getSubjectActor();
+				} else {
+					speaker2 = nextNextAction.getObjectActor();
+				}
+				if (speaker2 == speaker) {
 					plotText += "I'll follow you.\"";
 				} else {
-					if (nextNextAction.getObjectActor() == finalBoss) {
+					if (speaker2 == finalBoss) {
 						plotText += "you'll meet that bastard!\"";
 					} else {
 						plotText += "you'll meet @b, who will help you.\"";
-						otherThing = nextNextAction.getObjectActor().toString();
+						otherThing = speaker2.toString();
 					}
 				}
 			}
@@ -246,7 +263,11 @@ public class PlotTextGenerator {
 
 	private String takeAction(int i) {
 		String plotThing = nodeList.get(i).getAction().getObjectProp().toString();
-		String scene = nodeList.get(i).getAction().getObjectProp().getLocation().toString();
+		String scene = "horrible";
+		Scene location = nodeList.get(i).getAction().getObjectProp().getLocation();
+		if (location != null) {
+			scene = location.toString();
+		}
 		String plotText = replacePlaceHolders(takeText, "", "", plotThing, scene, "");
 		return plotText;
 	}
