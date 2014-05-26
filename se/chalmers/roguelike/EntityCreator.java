@@ -71,7 +71,16 @@ public class EntityCreator {
 		player.add(new Health(50));
 		player.add(new TurnsLeft(1));
 		player.add(new Input());
-		player.add(new Sprite("mobs/mob_military_vet"));
+		Sprite sprite = null;
+		if (spaceRace == SpaceRace.SPACE_ALIEN) {
+			sprite = new Sprite("mobs/mob_blue");
+		} else if (spaceRace == SpaceRace.SPACE_HUMAN) {
+			sprite = new Sprite("mobs/mob_marine");
+		} else if (spaceRace == SpaceRace.SPACE_DWARF) {
+			sprite = new Sprite("mobs/mob_dwarf");
+		}
+		
+		player.add(sprite);
 		player.add(new Position(44, 44));
 		player.add(new Direction());
 		player.add(new Player());

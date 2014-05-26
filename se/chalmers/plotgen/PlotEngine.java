@@ -29,7 +29,9 @@ import se.chalmers.plotgen.PlotLine.PlotTextGenerator;
 
 public class PlotEngine {
 
-	private NameGenerator nameGen;
+	private NameGenerator actorNameGen;
+	private NameGenerator propNameGen;
+	private NameGenerator sceneNameGen;
 
 	private ArrayList<Actor> actors;
 	private ArrayList<Prop> props;
@@ -42,8 +44,11 @@ public class PlotEngine {
 	 * @param seed
 	 */
 	private void run(long seed) {
-		nameGen = new NameGenerator(4, seed); // TODO: Satte order på nameGen till 3
-											// som standard, för testning
+		actorNameGen = new NameGenerator(4, seed);
+		propNameGen = new NameGenerator(2, seed);
+		propNameGen.loadFile("thingnames");
+		sceneNameGen = new NameGenerator(3, seed);
+		sceneNameGen.loadFile("starnames");
 
 		Random random = new Random(seed);
 		
@@ -53,6 +58,7 @@ public class PlotEngine {
 
 		generatePlot(random);
 		plotLine = new PlotTextGenerator(plotLine, actors.get(actors.size()-1)).generatePlotText();
+		printPlot();
 	}
 	
 	public void printPlot() {
@@ -93,7 +99,7 @@ public class PlotEngine {
 		int noOfActors = random.nextInt(3) + 3;
 		
 		for (int i = 0; i < noOfActors; i++) {
-			Actor actor = new Actor(nameGen.generateName(), random.nextInt(6));
+			Actor actor = new Actor(actorNameGen.generateName(), random.nextInt(6));
 			actors.add(actor);
 		}
 	}
@@ -112,7 +118,7 @@ public class PlotEngine {
 		int noOfProps = random.nextInt(6) + 5;
 		
 		for (int i = 0; i < noOfProps; i++) {
-			Prop prop = new Prop(nameGen.generateName(), random.nextInt(5));
+			Prop prop = new Prop(propNameGen.generateName(), random.nextInt(5));
 			props.add(prop);
 		}
 	}
@@ -131,7 +137,7 @@ public class PlotEngine {
 		int noOfScenes = random.nextInt(6) + 5;
 		
 		for (int i = 0; i < noOfScenes; i++) {
-			Scene scene = new Scene(nameGen.generateName(), random.nextInt(10));
+			Scene scene = new Scene(sceneNameGen.generateName(), random.nextInt(10));
 			scenes.add(scene);
 		}
 	}

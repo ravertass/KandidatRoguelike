@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import se.chalmers.roguelike.Entity;
 import se.chalmers.roguelike.Components.Attribute;
+import se.chalmers.roguelike.util.CombatLog;
 
 /**
  * A system which controlls the levels of all effected entities and levels them
@@ -33,8 +34,10 @@ public class LevelingSystem implements ISystem {
 			for(int i = 1; i <= a.getLevel(); i++) {
 				maxXpForCurrentLevel += baseXP*(Math.pow(1.2, a.getLevel()));
 			}
-			if (a.experience() >= maxXpForCurrentLevel)
+			if (a.experience() >= maxXpForCurrentLevel){
 				a.setLevel(a.getLevel() + 1);
+				CombatLog.getInstance().addToLog("LEVEL UP! You feel slightly stronger...");
+			}
 		}
 
 	}

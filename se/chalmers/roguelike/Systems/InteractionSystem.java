@@ -10,6 +10,7 @@ import se.chalmers.roguelike.Components.Direction;
 import se.chalmers.roguelike.Components.Direction.Dir;
 import se.chalmers.roguelike.Components.DungeonComponent;
 import se.chalmers.roguelike.Components.Gold;
+import se.chalmers.roguelike.Components.Health;
 import se.chalmers.roguelike.Components.Position;
 import se.chalmers.roguelike.Components.Sprite;
 import se.chalmers.roguelike.Components.Stair;
@@ -72,6 +73,7 @@ public class InteractionSystem implements ISystem, Observer {
 				Gold playerGold = player.getComponent(Gold.class);
 				Gold entityGold = e.getComponent(Gold.class);
 				playerGold.setGold(playerGold.getGold()+entityGold.getGold());
+				player.getComponent(Health.class).increaseHealth(2);
 				engine.removeEntity(e);
 			}
 		}
