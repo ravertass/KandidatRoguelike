@@ -416,7 +416,7 @@ public class RenderingSystem implements ISystem {
 
 		int minimapX = (Engine.screenWidth - minimapWidth);
 		int minimapY = Engine.screenHeight - minimapHeight;
-		int size = 1;
+		int size = 2;
 		int camX = camera.getPosition().getX();
 		int camY = camera.getPosition().getY();
 
